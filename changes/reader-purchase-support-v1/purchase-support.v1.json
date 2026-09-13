@@ -1344,7 +1344,7 @@
     {
       "product_id": "PRD-PANASONIC-NP-TMLK1",
       "exact_model": "NP-TMLK1-K",
-      "name": "SOLOTA（ソロタ）",
+      "name": "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K",
       "anchor": "product-dish-np-tmlk1",
       "official_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
       "facts": [
@@ -1665,7 +1665,7 @@
     {
       "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
       "exact_model": "TDWS25SBL / TDWS25SRD",
-      "name": "ラクアmini color（ラクア ミニ カラー）",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini color",
       "anchor": "product-dish-rakua-mini-color",
       "official_url": "https://www.thanko.jp/view/item/000000004715",
       "facts": [
@@ -1931,7 +1931,7 @@
     {
       "product_id": "PRD-SIROCA-SS-MA251",
       "exact_model": "SS-MA251",
-      "name": "シロカ SS-MA251",
+      "name": "シロカ 食器洗い乾燥機 SS-MA251",
       "anchor": "product-dish-ss-ma251",
       "official_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
       "facts": [
@@ -2239,7 +2239,7 @@
     {
       "product_id": "PRD-PANASONIC-NP-TSP1",
       "exact_model": "NP-TSP1-W",
-      "name": "パナソニック NP-TSP1",
+      "name": "パナソニック 食器洗い乾燥機 NP-TSP1-W",
       "anchor": "product-dish-np-tsp1",
       "official_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
       "facts": [
@@ -2577,7 +2577,7 @@
     {
       "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
       "exact_model": "01521-09",
-      "name": "エアロフレックスDX2 01521",
+      "name": "PROTECA エアロフレックスDX2 01521",
       "anchor": "aeroflex-dx2-01521",
       "official_url": "https://www.proteca.jp/product/aeroflexDX2/",
       "facts": [
@@ -2657,7 +2657,7 @@
     {
       "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
       "exact_model": "CS2*09007 / 134679-1041",
-      "name": "C-Lite（シーライト）CS2*09007",
+      "name": "Samsonite C-Lite（シーライト）CS2*09007",
       "anchor": "samsonite-c-lite-cs2-09007",
       "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
       "facts": [
@@ -2737,7 +2737,7 @@
     {
       "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
       "exact_model": "QJ6-68002",
-      "name": "APPLITE 4.0（アップライト 4.0）QJ6-68002",
+      "name": "AMERICAN TOURISTER APPLITE 4.0 QJ6-68002",
       "anchor": "american-tourister-applite-qj6-68002",
       "official_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
       "facts": [
@@ -2897,7 +2897,7 @@
     {
       "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
       "exact_model": "F155260",
-      "name": "Roomba Mini（ルンバ ミニ）+ AutoEmpty F155260",
+      "name": "iRobot Roomba Mini + AutoEmpty F155260",
       "anchor": "product-robot-roomba-mini",
       "official_url": "https://store.irobot-jp.com/item/F155260.html",
       "facts": [
@@ -3192,7 +3192,7 @@
     {
       "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
       "exact_model": "N285060",
-      "name": "Roomba Plus（ルンバ）515 Combo + AutoWash N285060",
+      "name": "iRobot Roomba Plus 515 Combo + AutoWash N285060",
       "anchor": "product-robot-roomba-plus-515",
       "official_url": "https://store.irobot-jp.com/item/N285060.html",
       "facts": [
@@ -3442,7 +3442,7 @@
     {
       "product_id": "PRD-BLUETTI-AC70",
       "exact_model": "AC70",
-      "name": "BLUETTI（ブルーティ）AC70",
+      "name": "BLUETTI（ブルーティ）ポータブル電源 AC70",
       "anchor": "product-power-bluetti-ac70",
       "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
       "facts": [
@@ -3515,7 +3515,7 @@
     {
       "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
       "exact_model": "EcoFlow DELTA 3 Classic",
-      "name": "EcoFlow（エコフロー）DELTA 3 Classic",
+      "name": "EcoFlow（エコフロー）ポータブル電源 DELTA 3 Classic",
       "anchor": "product-power-delta-3-classic",
       "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
       "facts": [
@@ -3932,7 +3932,7 @@
     {
       "product_id": "PRD-PROTECA-STARIA-CXR-02350",
       "exact_model": "02350",
-      "name": "スタリアCXR 02350",
+      "name": "PROTECA スタリアCXR 02350",
       "anchor": "staria-cxr-02350",
       "official_url": "https://store.ace.jp/shop/g/g02350-12/",
       "facts": [
@@ -4006,7 +4006,7 @@
     {
       "product_id": "PRD-PROTECA-FRESTER-EX-01550",
       "exact_model": "01550",
-      "name": "フレスターEX 01550",
+      "name": "PROTECA フレスターEX 01550",
       "anchor": "frester-ex-01550",
       "official_url": "https://store.ace.jp/shop/g/g01550-11/",
       "facts": [
@@ -4080,7 +4080,7 @@
     {
       "product_id": "PRD-ACE-PALISADES3-Z-06910",
       "exact_model": "06910",
-      "name": "パリセイド3-Z 06910",
+      "name": "ace. パリセイド3-Z 06910",
       "anchor": "palisades3-z-06910",
       "official_url": "https://store.ace.jp/shop/g/g06910-03/",
       "facts": [
@@ -4255,7 +4255,7 @@
     {
       "product_id": "PRD-INNOVATOR-INV50",
       "exact_model": "INV50",
-      "name": "INV50",
+      "name": "innovator スーツケース INV50",
       "anchor": "innovator-inv50",
       "official_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
       "facts": [
@@ -4392,7 +4392,7 @@
     {
       "product_id": "PRD-PROTECA-FRESTER-EX-01551",
       "exact_model": "01551",
-      "name": "フレスターEX 01551",
+      "name": "PROTECA フレスターEX 01551",
       "anchor": "proteca-frester-ex-01551",
       "official_url": "https://store.ace.jp/shop/g/g01551-01/",
       "facts": [
@@ -4529,7 +4529,7 @@
     {
       "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
       "exact_model": "60561",
-      "name": "INTER CITY II 60561",
+      "name": "BERMAS INTER CITY II 60561",
       "anchor": "bermas-inter-city-ii-60561",
       "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
       "facts": [
@@ -4666,7 +4666,7 @@
     {
       "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
       "exact_model": "F115060",
-      "name": "Roomba Mini Slim + SlimCharge F115060",
+      "name": "iRobot Roomba Mini Slim + SlimCharge F115060",
       "anchor": "roomba-mini-slim-f115060",
       "official_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
       "facts": [
@@ -5071,7 +5071,7 @@
     {
       "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
       "exact_model": "TK-MDW22B",
-      "name": "ラクアmini Plus",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini Plus TK-MDW22B",
       "anchor": "product-dish-rakua-mini-plus",
       "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
       "facts": [

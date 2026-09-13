@@ -849,12 +849,14 @@ def render_pages(
             source = (page_sources or {})[slug]
             tree = fragment(source)
             roots = [node for node in tree.children if isinstance(node, Element)]
-            ids = [node.attrs["id"] for node in tree.walk() if node.attrs.get("id")]
+            anchor_ids = [
+                node.attrs["id"] for node in tree.walk() if node.attrs.get("id")
+            ]
             required = {*page["anchors"], "site-editorial-policy"}
             if (
                 len(roots) != 1
-                or len(ids) != len(set(ids))
-                or not required.issubset(ids)
+                or len(anchor_ids) != len(set(anchor_ids))
+                or not required.issubset(anchor_ids)
                 or tree.find(tag="h1")
                 or tree.find(tag="script")
             ):

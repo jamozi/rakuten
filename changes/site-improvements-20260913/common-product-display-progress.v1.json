@@ -1,0 +1,1347 @@
+{
+  "schema": "RAOS_COMMON_PRODUCT_DISPLAY_PROGRESS_V1",
+  "checked_at": "2026-09-13T03:15:05.916474+00:00",
+  "scope": "20 product leaf pages; navigation pages remain unchanged",
+  "publication_authorized": false,
+  "source_commit": "815d7488",
+  "shared_candidate": "8b3416d4e3d0d1293387744e93867d335b74213cd2ff913c938df40fb16dedce",
+  "pages": [
+    {
+      "slug": "without-installation",
+      "title": "工事なしの食洗機",
+      "post_id": 144,
+      "mode": "existing",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987b-b01a-70e3-8353-541edddbff88",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "carry-on-suitcase-comparison",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+      "post_id": 19,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ACE-CRESTA-06316",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-ACE-MAXPASS4-01471"
+      ],
+      "author_thread": "01a098c1-8a77-7550-ba35-7aa7883acf9b",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "carry-on-suitcase-under-100-seats",
+      "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
+      "post_id": 82,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PROTECA-STARIA-CXR-02350",
+        "PRD-PROTECA-FRESTER-EX-01550",
+        "PRD-ACE-PALISADES3-Z-06910",
+        "PRD-BERMAS-INTER-CITY-60524"
+      ],
+      "author_thread": "01a098c1-9120-7361-bf09-1674bde6c692",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+      "post_id": 83,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-FREQUENTER-LIEVE-1-250"
+      ],
+      "author_thread": "01a098c1-97e7-7d60-bb84-ff4a60c5d413",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "front-open-carry-on-suitcase-with-stopper",
+      "title": "前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
+      "post_id": 84,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-INNOVATOR-INV50",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-PROTECA-FRESTER-EX-01551",
+        "PRD-BERMAS-INTER-CITY-II-60561"
+      ],
+      "author_thread": "01a098c1-9f67-7d51-b78f-9ab404bf95d6",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "countertop-dishwasher-for-small-households",
+      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
+      "post_id": 41,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c1-da26-7933-832b-d986f44fd858",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "solota-vs-rakua-mini-plus",
+      "title": "SOLOTAとラクアmini Plus｜大きさ・食器量・乾燥方式",
+      "post_id": 86,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-PLUS"
+      ],
+      "author_thread": "01a098c1-df93-7df3-bdf8-e0f374cdf7ea",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-installation-measurement",
+      "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
+      "post_id": 262,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-2b84-7203-854b-ded5dceadd32",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-water-supply-methods",
+      "title": "食洗機の給水方法｜タンク・ポンプ・分岐水栓の違い",
+      "post_id": 263,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a0987c-3d94-7ec2-9bcc-c447e2ce4154",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-detergent-guide",
+      "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
+      "post_id": 264,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-31ef-7053-bb53-0de9507b6d41",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-cleaning-guide",
+      "title": "卓上食洗機のお手入れ｜機種ごとの清掃箇所・手順・確認時期",
+      "post_id": 265,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-396d-7592-919b-160f04c1f0ca",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-running-cost",
+      "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
+      "post_id": 266,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-40cf-70c1-91fb-52124933a225",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "compact-robot-vacuum-shortlist",
+      "title": "省スペースのロボット掃除機を条件で絞る",
+      "post_id": 30,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+      ],
+      "author_thread": "01a098c1-e5eb-7a22-959d-e7ef541ee59a",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "title": "Roomba MiniとK11+ Pro｜台の寸法と手入れで比較",
+      "post_id": 85,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+      ],
+      "author_thread": "01a098c1-ed2e-78c3-9e19-1d12ac1c79a5",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "portable-power-station-guide",
+      "title": "停電対策のポータブル電源4モデル比較｜容量・出力・重さで選ぶ",
+      "post_id": 28,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-JACKERY-500-NEW",
+        "PRD-BLUETTI-AC70",
+        "PRD-ECOFLOW-DELTA3-CLASSIC"
+      ],
+      "author_thread": "01a098c1-f344-7012-bfb7-a6ad5dd1a3e4",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "anker-solix-c300-c800-c1000-differences",
+      "title": "Anker Solix 4モデルの違い｜容量・出力・重量で選ぶ",
+      "post_id": 29,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2"
+      ],
+      "author_thread": "01a098c2-24e9-7693-b030-b6a97bf3eab0",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "compact-dishwasher-comparison",
+      "title": "小型の食洗機比較｜容量・寸法と使い方",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [],
+      "author_thread": "01a09879-c31a-71a0-bc4a-8e25573f797b",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "standard-dishwasher-comparison",
+      "title": "標準容量の食洗機比較｜16〜28点の選び方",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987c-8828-7a51-9473-762925e96608",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "large-dishwasher-comparison",
+      "title": "大容量の卓上食洗機比較｜40点モデルの給水・置き場",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987c-d1ab-7923-b9eb-610731e0e655",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    },
+    {
+      "slug": "dishwasher-branch-faucet-guide",
+      "title": "分岐水栓式の食洗機｜蛇口・置き場・費用の確認",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987b-fb6f-7901-af4f-d4f7101b8d92",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review"
+    }
+  ],
+  "catalog_products": [
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "name": "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K",
+      "exact_model": "NP-TMLK1-K",
+      "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "4d3c7ae9748063005aef9ffb120b0c1a64bb643b5b1dde6c8a15cc393195a0f4",
+          "300": "d8bbdc9a84c82e68263b4e6871f59f4957e86ed8146968553ff1f54a476201f5"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "2e414d4d6650ed1fc9e50f0bf851ad17e202eb0fc97f6dbfd9e2b74af1985e97"
+      },
+      "offers": [
+        {
+          "offer_id": "panasonic-rakuten-np-tmlk1-k",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-10T14:23:58.738Z",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini color",
+      "exact_model": "TDWS25SBL / TDWS25SRD",
+      "source_url": "https://www.thanko.jp/view/item/000000004715",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "a5105c27b1224f41a2d7515bec5f0ef3cfccda586266678bb2545e75167eb61d",
+          "300": "9debe937cc4ce362c25cb4ec3085f911d42e7ff9ca2c2d3211f646d1b72062dd"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "8842b4a2f389c735557f4274e8d99f9c286aa6c3ee9d3a85d2764db3f081c775"
+      },
+      "offers": [
+        {
+          "offer_id": "thanko-tdws25s",
+          "seller": "サンコー公式通販（THANKO）",
+          "checked_at": "2026-09-12T10:38:00+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "SOLD_OUT",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "CURRENT",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "name": "シロカ 食器洗い乾燥機 SS-MA251",
+      "exact_model": "SS-MA251",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
+          "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "8f55fea1f4b21f13ad4c8a45ac62b260bb01d8c0c2fde97ea2b29809c831f77a"
+      },
+      "offers": [
+        {
+          "offer_id": "siroca-ss-ma251-silver",
+          "seller": "シロカ公式通販",
+          "checked_at": "2026-09-12T10:59:00+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "CURRENT",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "name": "パナソニック 食器洗い乾燥機 NP-TSP1-W",
+      "exact_model": "NP-TSP1-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
+          "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "e0c6e737d5f9fe41f07f965802fe14b7cb6343291ff4532505b6725d9605f0d9"
+      },
+      "offers": [
+        {
+          "offer_id": "panasonic-rakuten-np-tsp1-w",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-10T14:18:06.011Z",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "SOLD_OUT",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "name": "PROTECA エアロフレックスDX2 01521",
+      "exact_model": "01521-09",
+      "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "22863736527e3f0b3dbc39c9ba4f992ee35c75f2542b0c0a2f52283247251065",
+          "300": "e4836d1334abbe42a291f4ffecb3d1a23880d0437ca902245db15ed11f887b85"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "a9c6c7dc0e12ec861380c416a4c8aa07a60f94a4f6483fc79c0833c67b8699be"
+      },
+      "offers": [
+        {
+          "offer_id": "ace-01521-09",
+          "seller": "エース公式通販",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "name": "Samsonite C-Lite（シーライト）CS2*09007",
+      "exact_model": "CS2*09007 / 134679-1041",
+      "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "e1a507dc4859df7baab1e156957f419d5b87e1c365fd9370436f8116e16edcbf",
+          "300": "09c9fd1295c85301d8d8b82f46ebebcfc77e31ffc116d442a79576edf8b92fa5"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "95b4b881bdb0a51944e0dd28ba2470cff652213b3b65e49217404ad44742f419"
+      },
+      "offers": [
+        {
+          "offer_id": "samsonite-c-lite-134679-1041",
+          "seller": "サムソナイト公式ストア",
+          "checked_at": "2026-09-12T10:38:00+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "CURRENT",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "name": "AMERICAN TOURISTER APPLITE 4.0 QJ6-68002",
+      "exact_model": "QJ6-68002",
+      "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d0a37afb1afdb884b869a6058236f08de80f9873a5dc771165291f7cad11cbb4",
+          "300": "be131fffa1bebb2d191e3c1523dd675487c0e995914e8438e0a99b30ac5bceba"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "db16c44119284223b8e76396f3c9375eb1523d560330996595c150732b6f7ddf"
+      },
+      "offers": [
+        {
+          "offer_id": "official-american-tourister-applite-4-qj6-68002",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "name": "FREQUENTER LIEVE（フリクエンター リエーヴェ）1-250",
+      "exact_model": "1-250",
+      "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "87e15d6c21a6f38fdbce59e3a50044bac1323b0bb85de91a5822ea4d7d1eefae",
+          "300": "8d009eef9c92efdb563144360fe7f7ad568b2c0011710877e1a9a5fe37a3234b"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "581ec3e6d1d1e602a55783315f84ed4e39056ebd720c066e3260f4aa5b6b3a8f"
+      },
+      "offers": [
+        {
+          "offer_id": "official-frequenter-lieve-1-250",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "name": "iRobot Roomba Mini + AutoEmpty F155260",
+      "exact_model": "F155260",
+      "source_url": "https://store.irobot-jp.com/item/F155260.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "OFFICIAL_PUBLICATION_KIT",
+        "source_asset": "assets/images/roomba-mini-official.jpg",
+        "source_sha256": "99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "checked_on": "2026-09-10"
+      },
+      "offers": [
+        {
+          "offer_id": "irobot-f155260-white",
+          "seller": "アイロボット公式ストア",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "PREORDER",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "name": "SwitchBot（スイッチボット）ロボット掃除機 K11+ Pro",
+      "exact_model": "K11+ Pro",
+      "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "04730e70837f6ffb2d8414e45548c40da69c6c79dcb98d5c516731496e256073",
+          "300": "4831f1874093a539e569417d1e33afdf1d69d1d932c9e4100a7a019a679e108a"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "a609af08ad2440a3668d0784266a5eca3ff6766aa1b92da40230e5d306c55c8b"
+      },
+      "offers": [
+        {
+          "offer_id": "switchbot-k11-pro-ivory",
+          "seller": "SwitchBot公式サイト",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "name": "SwitchBot（スイッチボット）ロボット掃除機 K10+ Pro Combo",
+      "exact_model": "K10+ Pro Combo",
+      "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "f013aa118d1795e7cb5073a1f508c5ac456d6169a9d575ddd55e75ef867b28b6",
+          "300": "0bc9a0807b5a7a5e603c083a89ce3bb2a80435dca2496d5b86c24b353e9b7f02"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "c18714bb7962316340663b0b7eb247d1cfa32d0792f1a7222e053f439e64c9e1"
+      },
+      "offers": [
+        {
+          "offer_id": "official-switchbot-k10-pro-combo",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "name": "iRobot Roomba Plus 515 Combo + AutoWash N285060",
+      "exact_model": "N285060",
+      "source_url": "https://store.irobot-jp.com/item/N285060.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "2aea0c873a7aa1ceab654bb6bd86515f7231f52fe931439a539be93f8738736f",
+          "300": "e469f6d8d74802b406666c2a71c234c1c15a55416f437e0b95b8a0c887138ba8"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "c2f783a961665529600897a17739b69e498fd3d595d45059f157ec205a00fcb6"
+      },
+      "offers": [
+        {
+          "offer_id": "official-irobot-roomba-plus-515-combo",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "name": "Anker（アンカー）Solix C300 Portable Power Station",
+      "exact_model": "A17225Z1",
+      "source_url": "https://www.ankerjapan.com/products/a1722",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1722",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "anker-a17225z1",
+          "seller": "Anker公式ストア",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "name": "Jackery（ジャクリ）ポータブル電源 500 New",
+      "exact_model": "Jackery ポータブル電源 500 New",
+      "source_url": "https://www.jackery.jp/products/explorer-500-new",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "addf6dc1b16a97414b30687a9bc912e4da804475decd9b7bc7901da5187cb19c",
+          "300": "0cb5c831e7307e1f7de8f2dc7e6109cc630e8f85d0087866c3ced4920a5ed7e9"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "e1e006dda70e3ec2cd79a2c1a16266dd393e1d2a2630f2d1ce216a3557c21ad4"
+      },
+      "offers": [
+        {
+          "offer_id": "jackery-500-new-base",
+          "seller": "Jackery公式ストア",
+          "checked_at": "2026-09-12T10:59:00+00:00",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "CURRENT",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BLUETTI-AC70",
+      "name": "BLUETTI（ブルーティ）ポータブル電源 AC70",
+      "exact_model": "AC70",
+      "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d9f46a99fe0e3fb1d2bf1d8efa46d62a55fef6504818723a16f2f01725bd3146",
+          "300": "3d07898e96bcebabdf362e54bc2d8190ccd9e8cabca9ce56ecd3e015c3ac94a1"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "80b8533e0aacd2e5892fe04b2459d8b8fc3e7f2911e8f64c151d8f809b864bb5"
+      },
+      "offers": [
+        {
+          "offer_id": "bluetti-ac70-base",
+          "seller": "BLUETTI公式ストア",
+          "checked_at": "2026-09-10T15:04:13.523Z",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "name": "EcoFlow（エコフロー）ポータブル電源 DELTA 3 Classic",
+      "exact_model": "EcoFlow DELTA 3 Classic",
+      "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d1876abfbb167d94a5b96a56b5b1bac113fa63c1b5f2d628542fa9c7347d6f74",
+          "300": "a631bf4d80ad9dabeb3944e5a6d4bea9ca71f4342a4cc5181028c6749796461a"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "2b9a068fde3d8f7a695241574d80404304ff231a9c11e77b17673d4fe7c42449"
+      },
+      "offers": [
+        {
+          "offer_id": "ecoflow-delta3-classic-base",
+          "seller": "EcoFlow公式ストア",
+          "checked_at": "2026-09-10T15:04:16.711Z",
+          "states": {
+            "identity_state": "VERIFIED",
+            "purchasability_state": "AVAILABLE",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "EXPIRED",
+            "shipping_state": "KNOWN",
+            "required_items_state": "KNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "name": "ACE クレスタ 06316",
+      "exact_model": "06316",
+      "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g06316-01/"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-cresta-06316",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "name": "ace.TOKYO LABEL ディフェレンス 05721",
+      "exact_model": "05721",
+      "source_url": "https://store.ace.jp/shop/g/g05721-04",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g05721-04"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-difference-05721",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "name": "PROTECA マックスパス4 01471",
+      "exact_model": "01471",
+      "source_url": "https://store.ace.jp/shop/g/g01471-02",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01471-02"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-maxpass4-01471",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "name": "PROTECA スタリアCXR 02350",
+      "exact_model": "02350",
+      "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g02350-12/"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-staria-cxr-02350",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "name": "PROTECA フレスターEX 01550",
+      "exact_model": "01550",
+      "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01550-11/"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-frester-ex-01550",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "name": "ace. パリセイド3-Z 06910",
+      "exact_model": "06910",
+      "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g06910-03/"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-palisades3-z-06910",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "name": "BERMAS INTER CITY 60524",
+      "exact_model": "60524（新仕様・USBポートなし）",
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "official-bermas-inter-city-60524",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "name": "innovator スーツケース INV50",
+      "exact_model": "INV50",
+      "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+      },
+      "offers": [
+        {
+          "offer_id": "official-innovator-inv50",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "name": "PROTECA フレスターEX 01551",
+      "exact_model": "01551",
+      "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01551-01/"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-frester-ex-01551",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "name": "BERMAS INTER CITY II 60561",
+      "exact_model": "60561",
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+      },
+      "offers": [
+        {
+          "offer_id": "official-bermas-inter-city-ii-60561",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "name": "iRobot Roomba Mini Slim + SlimCharge F115060",
+      "exact_model": "F115060",
+      "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.irobot-jp.com/category/ROOMBA/F115060.html"
+      },
+      "offers": [
+        {
+          "offer_id": "official-irobot-roomba-mini-slim-f115060",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "name": "Anker Solix C800 Plus Portable Power Station",
+      "exact_model": "A1754",
+      "source_url": "https://www.ankerjapan.com/products/a1754",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1754",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c800-plus",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "name": "Anker Solix C1000 Portable Power Station",
+      "exact_model": "A1761",
+      "source_url": "https://www.ankerjapan.com/products/a1761",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1761",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c1000",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "name": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "exact_model": "A17635Z1 / A1763521",
+      "source_url": "https://www.ankerjapan.com/products/a1763",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1763",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c1000-gen2",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini Plus TK-MDW22B",
+      "exact_model": "TK-MDW22B",
+      "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "TK-MDW22B本体構成の画像と販売ページの同一性を今回照合していません。",
+        "source": "https://www.thanko.jp/view/item/000000004055",
+        "checked_on": "2026-09-13"
+      },
+      "offers": [
+        {
+          "offer_id": "official-thanko-rakua-mini-plus",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "states": {
+            "identity_state": "UNKNOWN",
+            "purchasability_state": "UNKNOWN",
+            "affiliate_state": "UNAVAILABLE",
+            "price_state": "UNKNOWN",
+            "shipping_state": "UNKNOWN",
+            "required_items_state": "UNKNOWN",
+            "warranty_state": "KNOWN",
+            "spec_state": "UNKNOWN",
+            "installation_state": "UNKNOWN"
+          }
+        }
+      ]
+    }
+  ],
+  "new_products": "Author inventories remain pending; no invented shared IDs",
+  "acquisition_status": {
+    "legacy_capture": "existing five article scope only",
+    "installed_owner_local_doctor": "RAKUTEN_OWNER_LOCAL_DOCTOR_NOT_READY",
+    "valuecommerce_config": "READY_NOT_LIVE_VERIFIED",
+    "linkshare_config": "READY_NOT_LIVE_VERIFIED",
+    "authenticated_browser_session": "UNVERIFIED_NO_BROWSER_OR_NODE_REPL_TOOL"
+  }
+}

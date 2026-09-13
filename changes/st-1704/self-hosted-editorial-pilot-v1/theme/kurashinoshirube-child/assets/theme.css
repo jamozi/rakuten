@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: cb9d896879668209b69efbc6ccf720ae2eff230dbda86d224a4ba5b52ebf3e3d;
+  --raos-theme-runtime-revision-base: 7832abcbc004a0dde9d8228fc6c52db97337a94733d83bbedfebb0bbee3ce50e;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4371,7 +4371,7 @@ body .ks-cleaning-category .ks-cleaning-policy h2{font-size:16px;margin:0 0 10px
   .ks-cleaning-category .ks-cleaning-image-note{margin-top:-18px;line-height:1.8}
 }
 
-/* travel: reviewed category candidate 2026-09-13. */
+/* travel: stay-only reviewed category candidate. */
 /* Integration proposal: selectors are confined to the travel candidate. */
 #ks-travel-guide { --kt-ink:#252d2b; --kt-muted:#626861; --kt-line:#dcded5; --kt-accent:#34564c; max-width:1160px; width:100%; margin:0 auto; padding:0; color:var(--kt-ink); font-family:"Noto Sans JP","Yu Gothic",sans-serif; font-size:16px; line-height:1.75; }
 #ks-travel-guide *, #ks-travel-guide *::before, #ks-travel-guide *::after { box-sizing:border-box; }
@@ -4399,7 +4399,7 @@ body .ks-cleaning-category .ks-cleaning-policy h2{font-size:16px;margin:0 0 10px
 #ks-travel-guide .kt-card-copy { padding:17px 0 4px; }
 #ks-travel-guide .kt-card h3 { display:flex; justify-content:space-between; gap:8px; font-size:clamp(18px,1.8vw,23px); line-height:1.5; font-weight:600; margin:0 0 5px; }
 #ks-travel-guide .kt-card h3 span { font-size:18px; color:var(--kt-accent); }
-#ks-travel-guide .kt-capacity { display:block; margin:0 0 7px; color:var(--kt-accent); font-size:13px; line-height:1.6; font-weight:600; }
+#ks-travel-guide .kt-stay { display:block; margin:0 0 7px; color:var(--kt-accent); font-size:13px; line-height:1.6; font-weight:600; }
 #ks-travel-guide .kt-card p { font-size:14px; color:var(--kt-muted); }
 #ks-travel-guide .kt-scope { display:block; margin-top:13px; font-size:12px; color:var(--kt-muted); }
 #ks-travel-guide .kt-action { display:inline-block; font-size:13px; font-weight:600; color:var(--kt-accent); border-bottom:1px solid var(--kt-accent); margin-top:5px; padding:3px 0; }
@@ -4744,3 +4744,10 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .sm-page .sm-table{overflow-x:auto;border:1px solid var(--sm-line);margin:0 0 16px;-webkit-overflow-scrolling:touch}.sm-table table{width:100%;min-width:650px;border-collapse:collapse;margin:0;font-size:15px;line-height:1.7}.sm-table caption{padding:12px 14px;text-align:left;font-size:13px;color:#5b685f;background:#fff}.sm-table th,.sm-table td{padding:16px;border:0;border-top:1px solid var(--sm-line);vertical-align:top;text-align:left}.sm-table thead th{background:var(--sm-ink);color:#fff;font-size:16px;white-space:nowrap}.sm-table thead th:first-child{width:15%}.sm-table tbody th{width:15%;background:#edf2e9;white-space:nowrap;font-weight:700}.sm-table td{width:28.333%}.sm-table tr:nth-child(even) td{background:#f7f8f4}.sm-table tbody th:first-child{position:sticky;left:0;z-index:1;box-shadow:1px 0 0 var(--sm-line)}
 .sm-checks>section{display:grid;grid-template-columns:160px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--sm-line)}.sm-checks p{margin:0}.sm-page .ps-guide-model{padding:22px 0;border-bottom:1px solid var(--sm-line);margin:0}.sm-page .ps-guide-model>p{font-size:14px;color:#59665d;margin-bottom:8px}.sm-page details>summary{padding:12px 0;color:var(--sm-green);font-size:15px;font-weight:700;cursor:pointer}.sm-page details[open]>summary{margin-bottom:12px}.sm-page .ps-water-route{padding:18px;background:var(--sm-paper);margin:0 0 18px;font-size:14px}.ps-water-route figcaption{font-weight:700}.sm-page ul,.sm-page ol{padding-left:1.5em}.sm-page li{margin:8px 0}.sm-page .sm-inline-routes{font-size:14px}.sm-page #guide-previous-models h2,.sm-page #reader-unknowns h2{font-size:20px}.sm-page #guide-previous-models,.sm-page #reader-unknowns{font-size:14px}.sm-page #ks-next-read{padding:26px 0;border-top:2px solid var(--sm-ink)}.sm-page #ks-next-read>p:first-of-type{font-size:20px;font-weight:700;line-height:2.1}.sm-page #ks-next-read>p:last-child{font-size:14px}.sm-page .ps-history{font-size:13px;margin:24px 0}.sm-page .ps-editor{border-top:1px solid var(--sm-line);padding-top:20px}
 @media(max-width:640px){.sm-page{font-size:15px;line-height:1.85}.sm-intro{display:block}.sm-intro-copy{padding-top:18px}.sm-hero img{aspect-ratio:1.85;object-fit:cover}.sm-page .ps-lead{font-size:16px}.sm-page .ps-lead strong{font-size:20px}.sm-page h2{font-size:23px;margin-bottom:16px}.sm-page h3{font-size:18px}.sm-page>section{margin:32px 0}.sm-page .ps-toc{font-size:12px;gap:8px 15px;margin-bottom:20px}.sm-routes{padding:16px 0}.sm-routes>div{padding:0 10px}.sm-routes h3{font-size:16px;min-height:48px}.sm-routes p{font-size:12px;line-height:1.7}.sm-routes p strong{font-size:13px}.sm-page .sm-keypoint{padding:12px 14px;font-size:14px}.sm-table th,.sm-table td{padding:13px 12px}.sm-checks>section{display:block;padding:18px 0}.sm-page .ps-water-route{padding:14px}.sm-page #ks-next-read>p:first-of-type{font-size:18px}}
+
+/* Old water-guide bookmarks and the theme's return link must not consume step columns. */
+.sm-page .sm-checks > section { position: relative; }
+.sm-page .sm-checks > section > span[id] { position: absolute; inset-block-start: 0; }
+.sm-page .sm-checks > section > h3 { grid-column: 1; grid-row: 1; }
+.sm-page .sm-checks > section > p:not(.raos-back-to-toc-wrap) { grid-column: 2; grid-row: 1; }
+.sm-page .sm-checks > section > .raos-back-to-toc-wrap { grid-column: 1 / -1; }
