@@ -308,7 +308,7 @@ def render_pages(
                 )
 
             body = (
-                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="/wp-content/themes/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp" width="1672" height="941" fetchpriority="high" alt="朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ"></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリー</h2><div class="ks-home-feature-grid ks-home-category-grid">'
+                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="/wp-content/themes/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp" width="1672" height="941" alt="朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ"></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリー</h2><div class="ks-home-feature-grid ks-home-category-grid">'
                 + feature(41, "kitchen", "食器と食洗機のあるキッチンのイメージ")
                 + feature(83, "travel", "スーツケースと衣類を揃えた旅支度のイメージ")
                 + feature(30, "cleaning", "ロボット掃除機を置いた部屋のイメージ")
