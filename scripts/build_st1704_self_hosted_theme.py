@@ -544,7 +544,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except TypeError, ValueError, UnicodeError, RecursionError:
+    except (TypeError, ValueError, UnicodeError, RecursionError):  # fmt: skip
         _fail()
 
 
@@ -604,7 +604,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except UnicodeError, json.JSONDecodeError:
+    except (UnicodeError, json.JSONDecodeError):  # fmt: skip
         _fail()
     if type(document) is not dict:
         _fail()
@@ -701,7 +701,10 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
         if asset.output.relative_to(ROOT) in editorial_alts
     ]
     editorial_paths = {
-        asset.output.relative_to(THEME_ROOT).as_posix() for asset in editorial_assets
+        asset.output.relative_to(
+            theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix()
+        for asset in editorial_assets
     }
     assets["required_images"] = sorted(
         [
@@ -719,7 +722,9 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
                     if asset.output.relative_to(ROOT) in KITCHEN_CAPACITY_IMAGE_ALTS
                     else "HOMEPAGE_SAVED_BODY_IMAGE"
                 ),
-                "path": asset.output.relative_to(THEME_ROOT).as_posix(),
+                "path": asset.output.relative_to(
+                    theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+                ).as_posix(),
                 "provenance": theme_asset_owner.manifest_provenance(asset),
                 "sha256": asset.output_sha256,
                 "status": "FINAL",
@@ -799,7 +804,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):  # fmt: skip
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -925,11 +930,15 @@ def _validate_asset_manifest(
     if type(records) is not list or len(records) != 24:
         _fail()
     generated_assets = {
-        asset.output.relative_to(THEME_ROOT).as_posix(): asset
+        asset.output.relative_to(
+            theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix(): asset
         for asset in theme_asset_owner.ASSETS
     }
     generated_icons = {
-        icon.output.relative_to(THEME_ROOT).as_posix(): icon
+        icon.output.relative_to(
+            theme_icon_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix(): icon
         for icon in theme_icon_owner.ICONS
     }
     seen_paths: set[str] = set()
@@ -1431,11 +1440,20 @@ def validate_sources() -> dict[str, str]:
     _validate_asset_manifest(_json("raos-assets.v1.json"), sources)
 
     for asset in theme_asset_owner.ASSETS:
-        _validate_webp(asset.output.relative_to(THEME_ROOT).as_posix())
+        _validate_webp(
+            asset.output.relative_to(
+                theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+            ).as_posix()
+        )
     for icon in theme_icon_owner.ICONS:
         try:
             theme_icon_owner.validate_output(
-                icon, _read_source(icon.output.relative_to(THEME_ROOT).as_posix())
+                icon,
+                _read_source(
+                    icon.output.relative_to(
+                        theme_icon_owner.ROOT / THEME_REPOSITORY_ROOT
+                    ).as_posix()
+                ),
             )
         except theme_icon_owner.IconGenerationFailure:
             _fail()
@@ -1489,7 +1507,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):  # fmt: skip
         _fail()
 
 

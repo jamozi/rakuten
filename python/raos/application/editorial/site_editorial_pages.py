@@ -83,7 +83,9 @@ def metadata(
     products = {p["product_id"]: p for p in catalog["products"]}
     result = {}
     for row in registry["articles"]:
-        if row["post_type"] != "post":
+        # New owner-direct drafts have no verified publication identity yet.
+        # They can be previewed without entering published lists or counts.
+        if row["post_type"] != "post" or row.get("mode") == "new":
             continue
         own = data["articles"].get(str(row["post_id"]))
         if own is None:

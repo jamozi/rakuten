@@ -76,6 +76,32 @@ class ProjectionTest(unittest.TestCase):
         self.assertIn('href="/purposes/"', home)
         self.assertNotIn("悩み・目的から探す", home)
 
+    def test_unpublished_drafts_do_not_change_entry_pages_or_counts(self):
+        import json
+        from raos.application.editorial.site_editorial_pages import render_pages
+
+        data, registry, catalog = [
+            json.loads((ROOT / p).read_text()) for p in builder.INPUT_PATHS[:3]
+        ]
+        baseline = render_pages(registry, catalog, data, {})
+        for post_id in (None, 123456):
+            with self.subTest(post_id=post_id):
+                changed = copy.deepcopy(registry)
+                changed["articles"].append(
+                    {
+                        "article_key": "unpublished-comparison",
+                        "mode": "new",
+                        "post_id": post_id,
+                        "post_type": "post",
+                        "title": "未公開の比較候補",
+                        "slug": "unpublished-comparison",
+                    }
+                )
+                self.assertEqual(render_pages(changed, catalog, data, {}), baseline)
+                changed["articles"][-1].update(mode="existing", post_id=123456)
+                with self.assertRaisesRegex(ValueError, "Missing editorial category"):
+                    render_pages(changed, catalog, data, {})
+
     def test_home_uses_short_links_without_card_metadata(self):
         result = builder.build()
         home = next(v for k, v in result.items() if k.name == "home.html")
