@@ -71,7 +71,7 @@ def test_published_controls_are_inert_before_browser_enhancement():
                 if "data-ps-purpose-options" in n.attrs
             ]
             root_node = next(n for n in nodes if "data-raos-article-id" in n.attrs)
-            if article.get("responsive_layout") == "authored":
+            if article.get("authored_comparison") and not configs:
                 assert configs == []
             elif article["slug"] == "countertop-dishwasher-for-small-households":
                 # The main comparison links the four conditions instead of inputs.

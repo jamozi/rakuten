@@ -621,7 +621,7 @@
     "python/raos/application/editorial/reader_components.py": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542",
     "python/raos/application/editorial/reader_experience_projection.py": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
     "python/raos/application/editorial/reader_experience_v1.py": "ff0e3bafaf5b830e5f26c82696ded3bd8bd0c23d2eeb2205c0db6da402a11bd2",
-    "python/raos/application/editorial/reader_html.py": "b5a68a2756157c275d7ed8d9afb12d17b96d8bfe2658811adf6d06871bfc5156"
+    "python/raos/application/editorial/reader_html.py": "2a570565d06a687f1b8906d1b99c277f6385c6a313da5cb8985933e0830437f1"
   },
   "target_origin": "https://kurashinoshirube.com",
   "version": "1.0.0"

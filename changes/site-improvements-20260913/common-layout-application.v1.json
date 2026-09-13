@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_COMMON_LAYOUT_APPLICATION_V1",
-  "updated_at": "2026-09-13T08:42:05.087434+00:00",
+  "updated_at": "2026-09-13T09:08:01.457436+00:00",
   "production_published": false,
   "shared_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
   "previous_shared_robot_structure_verified": true,
@@ -25,7 +25,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "travel",
@@ -46,7 +47,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "kitchen",
@@ -67,7 +69,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "cleaning",
@@ -88,7 +91,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "preparedness",
@@ -109,7 +113,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "categories",
@@ -130,7 +135,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "small-space",
@@ -151,7 +157,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "save-housework",
@@ -172,7 +179,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "without-installation",
@@ -193,7 +201,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "easy-maintenance",
@@ -214,7 +223,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "comfortable-travel",
@@ -235,7 +245,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "prepare-outage",
@@ -256,7 +267,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "purposes",
@@ -277,7 +289,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "guides",
@@ -298,7 +311,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "comparisons",
@@ -319,7 +333,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "updates",
@@ -340,7 +355,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "carry-on-suitcase-comparison",
@@ -361,7 +377,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "carry-on-suitcase-under-100-seats",
@@ -382,7 +400,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "lightweight-carry-on-suitcase-under-3kg",
@@ -391,7 +411,7 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "APPROVED_LAYOUT_PRESERVED",
+      "common_product_format": "APPROVED_LAYOUT_PARITY_VERIFIED",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
       "reader_approval": "COMPLETE",
@@ -403,7 +423,10 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "shared_parity": "PASS_320_390_768_1440",
+      "narrow_layout": "APPROVED_AUTHOR_LAYOUT_EXCEPTION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "front-open-carry-on-suitcase-with-stopper",
@@ -424,7 +447,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "countertop-dishwasher-for-small-households",
@@ -445,7 +470,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "solota-vs-rakua-mini-plus",
@@ -466,7 +493,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-installation-measurement",
@@ -487,7 +516,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-water-supply-methods",
@@ -508,7 +538,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-detergent-guide",
@@ -529,7 +560,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-cleaning-guide",
@@ -550,7 +582,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-running-cost",
@@ -571,7 +604,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "compact-robot-vacuum-shortlist",
@@ -580,7 +614,7 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
@@ -594,7 +628,8 @@
       "broken_internal_anchors": [],
       "duplicate_disclosures": "NONE",
       "conclusions_approval": "COMPLETE",
-      "comparison_table": "AUTHOR_REVISION_PENDING"
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "roomba-mini-vs-switchbot-k11-pro",
@@ -615,7 +650,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "portable-power-station-guide",
@@ -636,7 +673,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "anker-solix-c300-c800-c1000-differences",
@@ -657,7 +696,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "about-ad-policy",
@@ -678,7 +719,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "comparison-policy",
@@ -699,7 +741,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "privacy-policy",
@@ -720,7 +763,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "compact-dishwasher-comparison",
@@ -741,7 +785,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "standard-dishwasher-comparison",
@@ -762,7 +808,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "large-dishwasher-comparison",
@@ -783,7 +831,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "dishwasher-branch-faucet-guide",
@@ -804,7 +854,8 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "small-carry-on-suitcase-comparison",
@@ -825,7 +876,9 @@
       ],
       "body_overflow": "NONE",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE"
+      "duplicate_disclosures": "NONE",
+      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "posts",
@@ -833,7 +886,8 @@
       "local_url": "http://127.0.0.1:41398/?post_type=post",
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
-      "shared_check": "PENDING"
+      "shared_check": "PENDING",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "search",
@@ -841,7 +895,8 @@
       "local_url": "http://127.0.0.1:41398/?s=食洗機",
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
-      "shared_check": "PENDING"
+      "shared_check": "PENDING",
+      "card_conversion_final_solution": false
     },
     {
       "slug": "not-found",
@@ -849,11 +904,18 @@
       "local_url": "http://127.0.0.1:41398/raos-review-nonexistent-20260913/",
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
-      "shared_check": "PENDING"
+      "shared_check": "PENDING",
+      "card_conversion_final_solution": false
     }
   ],
-  "table_acceptance": "PENDING_MATRIX_TABLE_REVIEW_NOT_SATISFIED_BY_NO_OVERFLOW",
-  "latest_user_clarification": "結論のみ1列。比較は横スクロールなしで行列の揃う実表。了承済み軽量の表示を保持。",
+  "table_acceptance": "ROBOT_NATIVE_TABLE_VERIFIED_COMMON_EXPANSION_IN_PROGRESS",
+  "latest_user_clarification": "robotで実表を共有確認後、Ankerを含む全比較記事と他ページの比較表・今後のひな型へ適用。結論は1列を維持。",
   "further_card_conversion": "STOPPED",
-  "shared_card_conversion_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054"
+  "shared_card_conversion_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
+  "robot_table_shared_candidate": "bddf16799a0cfd8ac918604c9a2bd009f139a3086583f0b648ae4ece39f10fc0",
+  "validation": {
+    "focused_tests": "248 passed, 18 subtests",
+    "native_table_preservation": "14 articles: product order, row text, links, old IDs and conditions preserved",
+    "make_fast": "Prior attempt stopped after user expanded table restoration; final run pending"
+  }
 }

@@ -3255,6 +3255,103 @@ def consolidate_comparison_details(html: str) -> str:
     return root.html()
 
 
+def matrix_comparison_markup(html: str) -> str:
+    """Keep each product row and combine its middle specification cells only."""
+    root = fragment(html)
+    for table in root.find(tag="table"):
+        if not (
+            table.has("ps-row-comparison") or table.has("compact-integrated-table")
+        ):
+            continue
+        heads = table.find(tag="thead")
+        if len(heads) != 1 or table.parent is None:
+            raise ValueError("PURCHASE_ROW_HEADERS_REQUIRED")
+        header_rows = heads[0].find(tag="tr")
+        headers = heads[0].find(tag="th")
+        if len(header_rows) != 1 or not 3 <= len(headers) <= 6:
+            raise ValueError("PURCHASE_ROW_COLUMNS_INVALID")
+        original_columns = len(headers)
+        for row in table.find(tag="tr"):
+            if row is header_rows[0]:
+                continue
+            cells = [
+                n
+                for n in row.children
+                if isinstance(n, Element) and n.tag in {"th", "td"}
+            ]
+            if len(cells) == 1 and cells[0].attrs.get("colspan") == str(
+                original_columns
+            ):
+                cells[0].attrs["colspan"] = "3"
+                continue
+            if len(cells) != original_columns:
+                raise ValueError("PURCHASE_ROW_HEADERS_MISMATCH")
+            if original_columns > 3:
+                combined = Element("td", {"class": "ps-matrix-specs"})
+                cells[1].insert_before(combined)
+                for cell in cells[1:-1]:
+                    if cell.attrs.get("id"):
+                        combined.append(
+                            Element("span", {"id": cell.attrs["id"], "tabindex": "-1"})
+                        )
+                    group = Element(
+                        "div",
+                        {
+                            "class": (
+                                (cell.attrs.get("class") or "")
+                                + " ps-matrix-spec-group"
+                            ).strip()
+                        },
+                    )
+                    for child in list(cell.children):
+                        group.append(child)
+                    combined.append(group)
+                    cell.remove()
+            else:
+                if not cells[1].has("ps-matrix-specs"):
+                    cells[1].attrs["class"] = (
+                        (cells[1].attrs.get("class") or "") + " ps-matrix-specs"
+                    ).strip()
+        if original_columns > 3:
+            spec = Element("th", {"scope": "col"}, ["仕様"])
+            headers[1].insert_before(spec)
+            for header in headers[1:-1]:
+                if header.attrs.get("id"):
+                    spec.append(
+                        Element("span", {"id": header.attrs["id"], "tabindex": "-1"})
+                    )
+                header.remove()
+        for colgroup in list(table.find(tag="colgroup")):
+            colgroup.remove()
+        for row in table.find(tag="tr"):
+            row.children = [
+                child
+                for child in row.children
+                if not isinstance(child, str) or child.strip()
+            ]
+        classes = (table.attrs.get("class") or "").split()
+        table.attrs["class"] = " ".join(
+            dict.fromkeys(
+                [c for c in classes if c != "ps-responsive-comparison"]
+                + ["ps-row-comparison", "ps-matrix-comparison"]
+            )
+        )
+        table.attrs["data-ps-spec-columns"] = "1"
+        parent_classes = (table.parent.attrs.get("class") or "").split()
+        table.parent.attrs["class"] = " ".join(
+            dict.fromkeys(
+                [c for c in parent_classes if c != "ps-responsive-scroll"]
+                + ["ps-row-scroll", "ps-matrix-scroll"]
+            )
+        )
+        label = table.parent.attrs.get("aria-label")
+        if label:
+            table.parent.attrs["aria-label"] = label.replace(
+                "。横にスクロールできます", ""
+            )
+    return root.html()
+
+
 def responsive_comparison_markup(html: str) -> str:
     """Keep the real table and its headings when cells stack into product cards."""
     root = fragment(html)
@@ -3391,7 +3488,7 @@ def compile_articles(
             if a["kind"] == "comparison" and a.get("authored_comparison") is not True:
                 html = consolidate_comparison_details(html)
             if a.get("responsive_layout") != "authored":
-                html = responsive_comparison_markup(html)
+                html = matrix_comparison_markup(html)
         if a.get("responsive_layout") != "authored":
             html = readable_tables(html)
         rendered = "<!-- wp:html -->\n" + html + "\n<!-- /wp:html -->\n"

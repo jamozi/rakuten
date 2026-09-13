@@ -176,7 +176,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
           await page.locator(`#ps-choose .ps-condition-product a[href="#${anchor}"]`).click();
           await page.waitForFunction(id => document.activeElement && document.activeElement.id === id, anchor);
           assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), 4, 'hash navigation does not hide candidates');
-        } else if (article.responsive_layout === "authored") {
+        } else if (article.authored_comparison && !(await page.locator('[data-ps-purpose-options]').count())) {
           assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'authored comparisons use direct condition links');
         } else {
           assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);

@@ -107,7 +107,7 @@ def block(markup: str) -> Element:
 
 
 def readable_tables(html: str) -> str:
-    """Label existing cells so narrow layouts need no duplicate table or script."""
+    """Keep native supporting tables contained and preserve their original cells."""
     root = fragment(html)
     changed = False
     for table in root.find(tag="table"):
@@ -116,6 +116,10 @@ def readable_tables(html: str) -> str:
         rows = table.find(tag="tr")
         if not rows or table.parent is None:
             continue
+        for node, name in [(table, "ks-readable-table"), (table.parent, "ks-readable-scroll")]:
+            if not node.has(name):
+                node.attrs["class"] = ((node.attrs.get("class") or "") + " " + name).strip()
+        changed = True
         first = [
             n
             for n in rows[0].children

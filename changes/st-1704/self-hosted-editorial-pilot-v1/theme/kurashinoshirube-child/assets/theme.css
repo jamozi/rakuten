@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 58ac2fe9446c230487200259967b12f8d71d107c303ba5bf5fab6cb9b16c6f60;
+  --raos-theme-runtime-revision-base: b9b3b530e4c56be49dccc977af491723142c9af5a3c1905f59c7c12e7ead47c3;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -5268,19 +5268,17 @@ body:has(.lw-carry-guide) #raos-related-title { text-align:center; text-wrap:bal
 
 /* Existing guide and reference tables keep one set of cells at narrow widths. */
 .ks-readable-scroll { container-type:inline-size; max-width:100%; }
-@container (max-width:900px) {
- .ks-readable-scroll { overflow:visible; }
- .ks-readable-scroll table.ks-readable-table { display:block; width:100%; min-width:0!important; max-width:100%; }
- .ks-readable-scroll table.ks-readable-table caption { display:block; width:100%; text-align:left; }
- .ks-readable-scroll table.ks-readable-table thead,
- .ks-readable-scroll table.ks-readable-table .ks-readable-head { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
- .ks-readable-scroll table.ks-readable-table tbody { display:block; width:100%; }
- .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head) { display:block; margin:18px 0; border:1px solid #d8dfd7; padding:16px; }
- .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>th,
- .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>td { display:block; width:auto!important; min-width:0!important; max-width:100%; position:static; padding:10px 0; border:0; overflow-wrap:anywhere; white-space:normal; text-align:left; }
- .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>td::before { display:block; content:attr(data-ks-column-label); font-weight:700; color:#354d3e; margin-bottom:5px; }
-}
-/* Article titles and section headings share a center line, including guide articles. */
+/* Supporting comparison tables keep their original columns and cell contents. */
+.ks-readable-scroll { overflow:visible; }
+table.ks-readable-table { display:table!important; width:100%!important; min-width:0!important; max-width:100%; table-layout:fixed; border-collapse:collapse; }
+table.ks-readable-table caption { display:table-caption; width:auto; text-align:left; }
+table.ks-readable-table thead { display:table-header-group!important; position:static!important; width:auto!important; height:auto!important; clip-path:none!important; overflow:visible; white-space:normal; }
+table.ks-readable-table tbody { display:table-row-group!important; width:auto!important; }
+table.ks-readable-table tr { display:table-row!important; position:static!important; width:auto!important; height:auto!important; clip-path:none!important; margin:0!important; padding:0!important; }
+table.ks-readable-table :is(th,td) { display:table-cell!important; position:static!important; width:auto!important; min-width:0!important; max-width:none!important; padding:10px 8px; vertical-align:top; white-space:normal; overflow-wrap:anywhere; word-break:normal; text-align:left; }
+table.ks-readable-table td::before { display:none!important; content:none!important; }
+@media(max-width:600px) { table.ks-readable-table :is(th,td) { padding:8px 5px; font-size:15px; line-height:1.7; } }
+
 .single-post .raos-article-title-grid,
 .single-post .wp-block-post-content #ks-next-read { margin-inline:auto!important; }
 .single-post .wp-block-post-title,

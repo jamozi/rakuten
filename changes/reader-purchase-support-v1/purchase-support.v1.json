@@ -452,7 +452,8 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
         }
       ],
-      "commerce_anchor": "ps-specs"
+      "commerce_anchor": "ps-specs",
+      "responsive_layout": "authored"
     },
     {
       "article_id": "portable-power-station-guide",
