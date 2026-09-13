@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 5e64da9e289d65119c6a4d4841646f3e9dabbbc47a70b3576cdf0261696b3c8a;
+  --raos-theme-runtime-revision-base: 765016c1cc665470379c4e417a3ab0410e8df63653ecd10b3282ab2b826e35d7;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4860,3 +4860,6 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .small-carry-on-comparison .ps-row-scroll .ps-row-comparison small { display:block; }
 .small-carry-on-comparison .sc-airline-scroll > .ps-table-scroll { overflow:visible; border:0; margin:0; }
 .small-carry-on-comparison .sc-airline-table th:first-child { position:sticky; left:0; z-index:2; background:#fafbf8; }
+
+.small-carry-on-comparison .sc-airline-table thead th:first-child { z-index:5; background:#eef3ed; }
+.small-carry-on-comparison .sc-airline-table small { display:block; }
