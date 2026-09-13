@@ -80,3 +80,179 @@
 .ps-article .raos-rakuten-image-300 img { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 1 / 1; margin: 0; object-fit: contain; }
 .ps-article .raos-rakuten-image-240 { display: none; }
 .ps-article .ps-product-image figcaption { font-size: .875em; }
+/* September site audit: prose stays readable; comparison data owns its scroll. */
+.ps-article { max-width: 72rem; margin-inline: auto; font-size: clamp(1rem, .96rem + .2vw, 1.125rem); }
+.ps-article > :is(p, ul, ol, nav), .ps-article section > :is(p, ul, ol), .ps-article .ps-comparison-method { max-width: 44rem; margin-inline: auto; }
+.ps-article section, .ps-article .ps-guide-diagrams > figure { min-width: 0; }
+.ps-article .ps-table-scroll { overscroll-behavior-inline: contain; }
+.ps-article .ps-comparison thead th { position: sticky; top: 0; z-index: 1; }
+.ps-article .ps-comparison tbody th { position: sticky; left: 0; z-index: 1; min-width: 6.5em; }
+.ps-article .ps-reference { margin-inline-start: .25em; white-space: nowrap; }
+.ps-article .ps-source { display: block; margin-top: .5em; }
+.ps-article .ps-guide-diagrams { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.ps-article .ps-guide-diagrams figure { margin: 0; padding: 1rem; background: var(--ps-soft); border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-diagrams pre { margin: .8em 0 0; padding: 0; white-space: pre-wrap; font: .9em/1.6 monospace; background: transparent; }
+.ps-article .ps-guide-diagrams figcaption { font-size: .9em; font-weight: 600; }
+.ps-article .ps-guide-print { padding: 1rem; border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-answer table { border-collapse: collapse; min-width: 38rem; width: 100%; }
+.ps-article .ps-guide-answer :is(th, td) { padding: .8em; text-align: left; vertical-align: top; border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-answer th { background: var(--ps-soft); }
+@media (max-width: 30em) {
+  .ps-article .ps-comparison :is(th, td) { padding: .65em; }
+  .ps-article .ps-comparison tbody th { min-width: 5em; max-width: 6.5em; }
+  .ps-article .ps-product { padding: .85em; }
+}
+@media print {
+  .ps-article details.ps-guide-print > * { display: block !important; }
+  .ps-article .ps-guide-print { break-inside: avoid; }
+  .ps-article .ps-comparison { min-width: 0; font-size: .75em; }
+  .ps-article .ps-comparison :is(th, td) { position: static; min-width: 0; padding: .3em; }
+}
+
+/* User-approved common direction: simple one-column condition introductions. */
+.ps-article .ps-condition-grid { grid-template-columns:minmax(0,1fr); gap:28px; }
+.ps-article .ps-condition-grid > div { background:transparent; border:0; border-bottom:1px solid #d8dfd7; border-radius:0; box-shadow:none; padding:0 0 28px; }
+
+/* Title and section-heading centers follow the article column. Prose stays left aligned. */
+.raos-editorial-v2-page .raos-article > .raos-article-title-grid { margin-inline:auto; }
+.raos-editorial-v2-page .wp-block-post-title { text-align:center; width:100%; }
+.ps-article > section { width:100%; max-width:100%; box-sizing:border-box; margin-inline:auto; }
+.ps-article h2 { text-align:center; width:100%; max-width:100%; box-sizing:border-box; }
+.ps-article .ps-condition-grid > div > h3 { text-align:center; }
+.raos-editorial-v2-page .raos-article-title-grid,
+.ps-article #ks-next-read { margin-inline:auto!important; }
+.raos-editorial-v2-page .wp-block-post-title,
+.raos-editorial-v2-page #raos-related-title,
+.ps-article h2 { text-align:center; text-wrap:balance; }
+.ps-article .sources-section { display:block; }
+.ps-article .purchase-caution { padding-inline-end:calc(1.6rem + 3px); }
+/* The editorial decorator inserts a main wrapper around ordinary sections. */
+.ps-article .raos-editorial-v2__main > section { margin-inline:auto; }
+.ps-article .method-section > h2 { grid-column:1 / -1; }
+/* Preserve the accepted 1080px desktop table through the WP decoration wrapper. */
+@media (min-width:1180px) {
+  .ps-article.lw-carry-guide .ps-row-scroll { max-width:none; }
+}
+
+/* Owner binding of the reviewed robot table proposal. */
+/* Dedicated proposal: preserve actual table rows and columns at every width. */
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-scroll { width:100%; max-width:100%; overflow:visible; border:0; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison {
+  display:table; width:100%; min-width:0; max-width:100%; table-layout:fixed;
+  border-collapse:collapse; border:1px solid #b9c6c0; background:#fff;
+}
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > caption { display:table-caption; caption-side:top; width:auto; margin:0; padding:0 0 16px; font-size:15px; line-height:1.75; text-align:left; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > thead { display:table-header-group; position:static; width:auto; height:auto; margin:0; overflow:visible; clip-path:none; white-space:normal; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > tbody { display:table-row-group; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr { display:table-row; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :is(th,td) {
+  display:table-cell; position:static; width:auto; min-width:0; max-width:none;
+  border:1px solid #b9c6c0; padding:16px 14px; vertical-align:top;
+  font-size:16px; line-height:1.8; text-align:left; white-space:normal;
+  overflow-wrap:anywhere; word-break:normal; box-shadow:none;
+}
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > thead > tr > th { background:#edf2ef; color:#17392a; font-weight:700; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :first-child { width:32%; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :nth-child(2) { width:42%; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :nth-child(3) { width:26%; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > tbody > tr > :is(th,td)::before { content:none; display:none; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-identity strong { font-size:17px; line-height:1.65; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-model { font-size:14px; line-height:1.6; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-media { min-width:0; margin-top:14px; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-product-image { width:100%; max-width:260px; margin:0 auto; padding:0; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .raos-rakuten-image-300 { width:220px; max-width:100%; margin:auto; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-product-image img { max-width:100%; height:auto; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-product-image figcaption { font-size:12px; font-weight:400; line-height:1.7; overflow-wrap:anywhere; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-fact { margin:0 0 18px; font-size:16px; line-height:1.8; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-fact:last-child { margin-bottom:0; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-fact-label { display:block; margin-bottom:4px; font-size:14px; font-weight:700; line-height:1.65; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-reference-price { font-size:15px; line-height:1.75; margin-top:0; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-reference-price::first-line { font-size:18px; font-weight:700; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-offer-link { display:inline-block; width:100%; max-width:100%; box-sizing:border-box; padding:12px 10px; font-size:16px; line-height:1.7; min-height:44px; text-align:center; white-space:normal; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-conditions { margin-top:18px; padding:8px; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-conditions summary { font-size:14px; line-height:1.65; overflow-wrap:anywhere; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-conditions :is(p,li) { font-size:15px; }
+@media (max-width:600px) {
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :is(th,td) { padding:12px 6px; font-size:15px; line-height:1.7; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :first-child { width:39%; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :nth-child(2) { width:32%; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.ps-row-comparison > :is(thead,tbody) > tr > :nth-child(3) { width:29%; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-identity strong { font-size:15px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-fact { font-size:15px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-fact-label { font-size:13px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-model { font-size:13px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-reference-price { font-size:15px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-reference-price::first-line { font-size:16px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-offer-link { padding:10px 4px; font-size:15px; }
+ .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] .ps-row-comparison .ps-row-conditions { padding:6px 3px; }
+}
+
+.ps-article.lw-carry-guide .ps-row-scroll { border:0; }
+
+/* Shared product tables: preserve actual rows and columns at every width. */
+.ps-article .ps-matrix-scroll { width:100%; max-width:100%; overflow:visible; border:0; }
+.ps-article table.ps-matrix-comparison {
+  display:table!important; width:100%; min-width:0!important; max-width:100%; table-layout:fixed;
+  border-collapse:collapse; border:1px solid #b9c6c0; background:#fff;
+}
+.ps-article table.ps-matrix-comparison > caption { display:table-caption; caption-side:top; width:auto!important; margin:0; padding:0 0 16px; font-size:15px; line-height:1.75; text-align:left; }
+.ps-article table.ps-matrix-comparison > thead { display:table-header-group!important; position:static!important; width:auto!important; height:auto!important; margin:0; overflow:visible; clip-path:none!important; white-space:normal; }
+.ps-article table.ps-matrix-comparison > tbody { display:table-row-group!important; }
+.ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr { display:table-row!important; }
+.ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :is(th,td) {
+  display:table-cell!important; position:static!important; width:auto!important; min-width:0!important; max-width:none!important;
+  border:1px solid #b9c6c0!important; padding:16px 14px!important; vertical-align:top;
+  font-size:16px; line-height:1.8; text-align:left; white-space:normal;
+  overflow-wrap:anywhere; word-break:normal; box-shadow:none;
+}
+.ps-article table.ps-matrix-comparison > thead > tr > th { background:#edf2ef; color:#17392a; font-weight:700; }
+.ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :first-child { width:32%!important; }
+.ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :nth-child(2) { width:42%!important; }
+.ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :nth-child(3) { width:26%!important; }
+.ps-article table.ps-matrix-comparison > tbody > tr > :is(th,td)::before { content:none!important; display:none!important; }
+.ps-article .ps-matrix-comparison .ps-row-identity strong { font-size:17px; line-height:1.65; }
+.ps-article .ps-matrix-comparison .ps-row-model { font-size:14px; line-height:1.6; }
+.ps-article .ps-matrix-comparison .ps-row-media { min-width:0!important; margin-top:14px; }
+.ps-article .ps-matrix-comparison .ps-product-image { width:100%; max-width:260px; margin:0 auto; padding:0; }
+.ps-article .ps-matrix-comparison .raos-rakuten-image-300 { width:220px; max-width:100%; margin:auto; }
+.ps-article .ps-matrix-comparison .ps-product-image img { max-width:100%; height:auto; }
+.ps-article .ps-matrix-comparison .ps-product-image figcaption { font-size:12px; font-weight:400; line-height:1.7; overflow-wrap:anywhere; }
+.ps-article .ps-matrix-comparison .ps-row-fact { margin:0 0 18px; font-size:16px; line-height:1.8; }
+.ps-article .ps-matrix-comparison .ps-row-fact:last-child { margin-bottom:0; }
+.ps-article .ps-matrix-comparison .ps-row-fact-label { display:block; margin-bottom:4px; font-size:14px; font-weight:700; line-height:1.65; }
+.ps-article .ps-matrix-comparison .ps-reference-price { font-size:15px; line-height:1.75; margin-top:0; }
+.ps-article .ps-matrix-comparison .ps-reference-price::first-line { font-size:18px; font-weight:700; }
+.ps-article .ps-matrix-comparison .ps-offer-link { display:inline-block; width:100%; max-width:100%; box-sizing:border-box; padding:12px 10px; font-size:16px; line-height:1.7; min-height:44px; text-align:center; white-space:normal; }
+.ps-article .ps-matrix-comparison .ps-row-conditions { margin-top:18px; padding:8px; }
+.ps-article .ps-matrix-comparison .ps-row-conditions summary { font-size:14px; line-height:1.65; overflow-wrap:anywhere; }
+.ps-article .ps-matrix-comparison .ps-row-conditions :is(p,li) { font-size:15px; }
+@media (max-width:600px) {
+ .ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :is(th,td) { padding:12px 6px!important; font-size:15px; line-height:1.7; }
+ .ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :first-child { width:39%!important; }
+ .ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :nth-child(2) { width:32%!important; }
+ .ps-article table.ps-matrix-comparison > :is(thead,tbody) > tr > :nth-child(3) { width:29%!important; }
+ .ps-article .ps-matrix-comparison .ps-row-identity strong { font-size:15px; }
+ .ps-article .ps-matrix-comparison .ps-row-fact { font-size:15px; }
+ .ps-article .ps-matrix-comparison .ps-row-fact-label { font-size:13px; }
+ .ps-article .ps-matrix-comparison .ps-row-model { font-size:13px; }
+ .ps-article .ps-matrix-comparison .ps-reference-price { font-size:15px; }
+ .ps-article .ps-matrix-comparison .ps-reference-price::first-line { font-size:16px; }
+ .ps-article .ps-matrix-comparison .ps-offer-link { padding:10px 4px; font-size:15px; }
+ .ps-article .ps-matrix-comparison .ps-row-conditions { padding:6px 3px; }
+}
+
+.ps-article table.ps-matrix-comparison { width:100%!important; }
+.ps-article table.ps-matrix-comparison > tbody > tr { width:auto!important; margin:0!important; padding:0!important; }
+.ps-article table.ps-matrix-comparison :is(th,td)[colspan] { width:auto!important; }
+.ps-matrix-spec-group + .ps-matrix-spec-group { margin-top:18px; }
+.ps-matrix-spec-group :is(p,ul,ol,dl) { max-width:100%; }
+.ps-matrix-scroll { overflow:visible!important; }
+
+/* Water guide: keep the shared native table and readable instructions in each row. */
+.sm-page .sm-supply-facts { margin: 0; }
+.sm-page .sm-supply-facts > div { margin-block-end: 1em; }
+.sm-page .sm-supply-facts dt { font-weight: 700; color: #52735c; }
+.sm-page .sm-supply-facts dd { margin: 0; }
+.sm-page .sm-table-routes { font-size: 13px; font-weight: 400; }
+.sm-page .sm-supply-cautions { margin-block-start: 1em; }
+.sm-page .sm-supply-supplement { margin-block-start: 2rem; }

@@ -309,11 +309,11 @@ def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[st
     if sorted(categories) != sorted(known):
         raise ValueError('READER_PRIMARY_CATEGORY_MUST_BE_UNIQUE')
     core = [
-        ('categories', '商品カテゴリから探す', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源の4カテゴリから、置き場所や使い方などの条件整理、記事の比較、購入前の確認まで順に進める入口です。各カテゴリの記事数と対象商品も分かります。', 'categories', list(known)),
-        ('purposes', '悩み・目的から探す', '一人暮らし・家事の時短・設置工事の回避・手入れ・旅行・停電への備えの6つの入口。商品名が決まっていなくても、困りごとから最初に読む1本と、記事ごとに決まることを確かめられます。', 'purposes', list(known)),
-        ('guides', '選び方ガイド', '食洗機の置き場所・給排水・洗剤・手入れ・費用を確かめる5本のガイドと、各比較記事の条件整理の節をまとめました。商品名を決める前に測る・数える・確認する入口です。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
-        ('comparisons', '比較・条件別の候補', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源の比較記事10本を、比較軸と候補数つきで案内します。候補が決まっている方が同じ軸で違いと妥協点を確かめる入口です。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
-        ('updates', '最近更新したガイド', '暮らしのしるべの掲載記事15本を、公開ページで確認した更新日と1文の変更点つきで新しい順に並べた一覧です。本文の編集日と商品仕様の確認日は別で、一括の再確認ではありません。', 'updates', list(known)),
+        ('categories', '商品カテゴリから探す', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。', 'categories', list(known)),
+        ('purposes', '悩み・目的から探す', '省スペース・残る家事・給排水・手入れ・旅行の荷物・停電への備えを、それぞれの問いから整理します。', 'purposes', list(known)),
+        ('guides', '選び方ガイド', '置き場所を測る、給水作業を比べる、費用を試算するなど、知りたい作業から選べます。ガイド記事と比較記事内の選び方を区別しています。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
+        ('comparisons', '商品比較の記事一覧', '商品ごとの比較記事を、主な違いと比較対象数つきで案内します。比較表と販売条件へ直接進めます。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
+        ('updates', '新着・内容を更新した記事', '新規公開と実質的な本文変更を区別した記事一覧です。公開日・内容更新日・具体的な変更点を確認できます。', 'updates', list(known)),
     ]
     hubs: list[dict[str, object]] = [dict(slug=slug, label=label, description=description, kind=kind, article_ids=ids) for slug,label,description,kind,ids in core]
     if slugs.intersection(cast(str, h['slug']) for h in hubs):

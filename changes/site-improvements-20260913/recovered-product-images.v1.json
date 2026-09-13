@@ -1,0 +1,166 @@
+{
+  "schema": "RAOS_OWNER_UI_RECOVERED_MEDIA_V1",
+  "checked_at": "2026-09-13T07:41:42.077341+00:00",
+  "source_html_modified": false,
+  "publication_authorized": false,
+  "records": [
+    {
+      "key": "thanko-white",
+      "requested_merchant_url": "https://item.rakuten.co.jp/thanko/000000003491/",
+      "gallery_index": 1,
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003491%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10004387&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother18%2Fsttdwadw-t10.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003491%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10004387&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother18%2Fsttdwadw-t10.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003491%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T07:34:04.678Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10004387&l-id=af_header_cta_link",
+      "source_sha256": {
+        "300": "eb0da82c108aacc9daa78ac60bdb660caf290a6247b1eb975ad6b0a5666ea214",
+        "240": "45d9a4450ca2557b39e17e4fa4bb922817a8212e63e11a0f89e774d6b1df715d"
+      },
+      "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+      "identity": {
+        "model": "STTDWADW",
+        "color": "white",
+        "jan": "4562331784470",
+        "basis": "Manufacturer model/JAN and manufacturer-operated Rakuten listing both identify STTDWADW white. Issued gallery index1 shows the white full-size Rakua; not mini/mini Plus."
+      },
+      "official_source": "https://www.thanko.jp/view/item/000000003491",
+      "prior_withheld_review": {
+        "state": "UNVERIFIED",
+        "reason": "発行画像がNO IMAGEのため掲載しない。別売場の対象ページも404。確認済みの販売リンクと参考価格は保持。",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/recovered-product-images/thanko-white-record.png",
+      "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+      "price_and_existing_text_offer_changed": false
+    },
+    {
+      "key": "inv50",
+      "requested_merchant_url": "https://item.rakuten.co.jp/newbag/i02inv50/",
+      "gallery_index": 3,
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577d8208.ac2a8822.577d8209.43ab0d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnewbag%2Fi02inv50%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577d8208.ac2a8822.577d8209.43ab0d39/?me_id=1192015&item_id=10029025&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fnewbag%2Fcabinet%2Finnovator03%2Fi02inv50_2.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577d8208.ac2a8822.577d8209.43ab0d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnewbag%2Fi02inv50%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577d8208.ac2a8822.577d8209.43ab0d39/?me_id=1192015&item_id=10029025&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fnewbag%2Fcabinet%2Finnovator03%2Fi02inv50_2.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577d8208.ac2a8822.577d8209.43ab0d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnewbag%2Fi02inv50%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T07:36:47.333Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1192015&item_id=10029025&l-id=af_header_cta_link",
+      "source_sha256": {
+        "300": "9ea89a4a6ffd51755d9cc916d25b5c9ac596278488002d4c9c74679be34a2d73",
+        "240": "8febd0c2a8aec8443e85521e374d0bc1dfc8eb7395840c8482f0cf924da233b6"
+      },
+      "product_id": "PRD-INNOVATOR-INV50",
+      "identity": {
+        "model": "INV50",
+        "colors": [
+          "PALE BLUE",
+          "STEEL GRAY"
+        ],
+        "jan_by_color": {
+          "PALE BLUE": "4543126437238",
+          "STEEL GRAY": "4543126437245"
+        },
+        "basis": "Newbag i02inv50 identifies INV50, H55 W35 D25cm,38L,3.3kg and both colors. Issued gallery3 visibly labels those colors and shows matching front-pocket model; not INV50G."
+      },
+      "official_source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "prior_withheld_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/recovered-product-images/inv50-record.png",
+      "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+      "price_and_existing_text_offer_changed": false
+    },
+    {
+      "key": "bermas-new",
+      "requested_merchant_url": "https://item.rakuten.co.jp/business-bugs/bermas-60524/",
+      "gallery_index": 4,
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e15b1.54c3a703.575e15b2.107f7695/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbusiness-bugs%2Fbermas-60524%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e15b1.54c3a703.575e15b2.107f7695/?me_id=1310601&item_id=10010577&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fbusiness-bugs%2Fcabinet%2Fitem62%2Fbermas-60524_6.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e15b1.54c3a703.575e15b2.107f7695/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbusiness-bugs%2Fbermas-60524%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e15b1.54c3a703.575e15b2.107f7695/?me_id=1310601&item_id=10010577&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fbusiness-bugs%2Fcabinet%2Fitem62%2Fbermas-60524_6.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e15b1.54c3a703.575e15b2.107f7695/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbusiness-bugs%2Fbermas-60524%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T07:37:35.700Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1310601&item_id=10010577&l-id=af_header_cta_link",
+      "source_sha256": {
+        "300": "e465095a9e70d0ea5da614b3c6429c98b16e357f513d1371b127662b6f479d2a",
+        "240": "307a9f1057892597336f2f972bda15480c0e69bb8c603a949aabc9106e08cae9"
+      },
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "identity": {
+        "model": "60524",
+        "color": "silver",
+        "configuration": "USB removed; changed interior; rear Travel Sentry ID",
+        "jan": "UNAVAILABLE",
+        "basis": "Manufacturer 60524-1 and vendor bermas-60524 both explicitly specify USB removal and rear ID. Issued gallery4 shows silver three views including rear ID; gallery9 lacks old USB ports and gallery15 is the new ID plate. Old bermas-60524-o and bms-81 listings are excluded."
+      },
+      "official_source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "prior_withheld_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+        "checked_on": "2026-09-13"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/recovered-product-images/bermas-new-record.png",
+      "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+      "price_and_existing_text_offer_changed": false
+    },
+    {
+      "key": "rimowa-ivory",
+      "requested_merchant_url": "https://item.rakuten.co.jp/retro/276129/?variantId=276129",
+      "gallery_index": 0,
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577d8581.0bb2279e.577d8582.6f0e015e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fretro%2F276129%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577d8581.0bb2279e.577d8582.6f0e015e/?me_id=1306546&item_id=10149541&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fretro%2Fcabinet%2Fitem20260729%2F276129-01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577d8581.0bb2279e.577d8582.6f0e015e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fretro%2F276129%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577d8581.0bb2279e.577d8582.6f0e015e/?me_id=1306546&item_id=10149541&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fretro%2Fcabinet%2Fitem20260729%2F276129-01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577d8581.0bb2279e.577d8582.6f0e015e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fretro%2F276129%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T07:39:02.156Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1306546&item_id=10149541&l-id=af_header_cta_link",
+      "source_sha256": {
+        "300": "417cc4a2e8bcf9bdda5b6d8f018229db0f519afc9b95ba9b6b6f181abf52b622",
+        "240": "e01be7ee53e9e0f7f11dd9a3f9e154b8e50b5ffedd1b270aabb6bd53a745f4a6"
+      },
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+      "identity": {
+        "model": "82353704",
+        "display_model": "823.53.70.4",
+        "color": "ivory",
+        "ean": "4003743040278",
+        "condition": "USED",
+        "basis": "Official RIMOWA article/EAN list identifies Essential Lite Cabin Ivory82353704; live retro page276129 HTTP200 title explicitly identifies823.53.70.4,37L,ivory,used. Issued gallery0 shows matching ivory four-wheel cabin case. Photo depicts a used listed item, not a new-product availability claim."
+      },
+      "official_source": "https://www.rimowa.com/jp/ja/luggage/colour/beige/キャビン/82353704.html",
+      "prior_withheld_review": {
+        "state": "UNVERIFIED",
+        "reason": "同一型番・構成の利用できる画像を確認中。"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/recovered-product-images/rimowa-ivory-record.png",
+      "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+      "price_and_existing_text_offer_changed": false
+    }
+  ],
+  "lookup_sources": [
+    "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+    "https://item.rakuten.co.jp/business-bugs/bermas-60524/",
+    "https://item.rakuten.co.jp/business-bugs/bermas-60524-o/",
+    "https://item.rakuten.co.jp/glv-p5/bms-81/",
+    "https://item.rakuten.co.jp/lifestyle-select-trues/60524-1/",
+    "https://item.rakuten.co.jp/newbag/i02inv50/",
+    "https://item.rakuten.co.jp/ec-tokoplus/2in0001/",
+    "https://item.rakuten.co.jp/arukikata-travel/15000016/",
+    "https://showroom.rimowa.com/accounts/rimowa/public/media/info/file_1_7623_66f152.pdf",
+    "https://showroom.rimowa.com/showroom/wholesale/preview/",
+    "https://item.rakuten.co.jp/retro/276129/",
+    "https://www.thanko.jp/view/item/000000003491",
+    "https://item.rakuten.co.jp/thanko/000000003491/"
+  ],
+  "notes": "Only independently verified issued image sources added. Existing product facts, reference prices, text offers and layout preserved. RIMOWA photo explicitly identifies used listing; no manufacturer image was copied without permission."
+}

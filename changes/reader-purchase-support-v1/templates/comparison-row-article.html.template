@@ -1,0 +1,22 @@
+<!-- 条件別結論だけを1列にする。比較は共通の3列表で行列の対応を保つ。狭幅も実表と画像・購入リンクを実測する。 -->
+<article class="ps-article">
+  <p class="ps-disclosure">広告表示は生成時にリンクと一致させます。</p>
+  <section id="comparison-conditions"><h2>条件別の結論</h2><div class="ps-condition-grid">
+    <div><h3>条件A</h3><div class="ps-condition-item"><div class="ps-condition-product-media" data-ps-media-product="REGISTERED_PRODUCT_ID_A" data-ps-condition="condition-a"></div><div class="ps-condition-copy"><p class="ps-condition-product">登録した商品名・型番A</p><p>向く理由と、確認済みの不得意な条件。</p><div class="ps-condition-product-purchase" data-ps-purchase-product="REGISTERED_PRODUCT_ID_A" data-ps-condition="condition-a"></div></div></div></div>
+    <div><h3>条件B</h3><div class="ps-condition-item"><div class="ps-condition-product-media" data-ps-media-product="REGISTERED_PRODUCT_ID_B" data-ps-condition="condition-b"></div><div class="ps-condition-copy"><p class="ps-condition-product">登録した商品名・型番B</p><p>向く理由と、確認済みの不得意な条件。</p><div class="ps-condition-product-purchase" data-ps-purchase-product="REGISTERED_PRODUCT_ID_B" data-ps-condition="condition-b"></div></div></div></div>
+  </div></section>
+  <section id="product-comparison">
+    <h2>商品を比べる</h2>
+    <div class="ps-table-scroll ps-row-scroll" tabindex="0" role="region" aria-label="商品比較表">
+      <table>
+        <caption>同じ用途で比較する対象型番</caption>
+        <thead><tr><th scope="col">商品・写真</th><th scope="col">用途に必要な仕様</th><th scope="col">参考価格・販売先</th></tr></thead>
+        <tbody>
+          <tr data-product-key="model-a"><th scope="row">登録した商品名・型番A<div class="ps-row-media" data-product-key="model-a"></div></th><td>同一型番の出典つき仕様。未確認の理由も記載。</td><td><div class="ps-row-offer" data-product-key="model-a"></div></td></tr>
+          <tr data-product-key="model-b"><th scope="row">登録した商品名・型番B<div class="ps-row-media" data-product-key="model-b"></div></th><td>同一型番の出典つき仕様。未確認の理由も記載。</td><td><div class="ps-row-offer" data-product-key="model-b"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section id="comparison-sources"><h2>比較条件・出典</h2><p>比較範囲・確認元・確認日・注意点を記載。</p></section>
+</article>

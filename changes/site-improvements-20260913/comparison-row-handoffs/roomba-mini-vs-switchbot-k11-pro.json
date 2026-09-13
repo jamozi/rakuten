@@ -1,0 +1,136 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/roomba-mini-vs-switchbot-k11-pro.html",
+  "runtime_article": {
+    "article_id": "roomba-mini-vs-switchbot-k11-pro",
+    "slug": "roomba-mini-vs-switchbot-k11-pro",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+    "body_sha256": "87a2f07e9eaaf2f6270d3aff5760c99f6071dd5661ed333075f77e4c23d6dfa3",
+    "bindings": [
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "seller_id": "rakuten-irobotstore",
+        "offer_id": "rakuten-observed-irobot-roomba-mini-autoempty-irobotstore",
+        "cta_id": "purchase-85-rakuten-observed-irobot-roomba-mini-autoempty-irobotstore-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c271c.86322106.577c271d.26628929/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Firobotstore%2Ff15%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "image-PRD-SWITCHBOT-K11-PRO-300",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K11-PRO-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "image-PRD-SWITCHBOT-K11-PRO-240",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K11-PRO-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "rakuten-observed-switchbot-k11-pro-r-kojima",
+        "cta_id": "purchase-85-rakuten-observed-switchbot-k11-pro-r-kojima-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-300",
+        "cta_id": "purchase-image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-240",
+        "cta_id": "purchase-image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "seller_id": "rakuten-edion",
+        "offer_id": "rakuten-observed-irobot-roomba-mini-slim-f115060-edion",
+        "cta_id": "purchase-85-rakuten-observed-irobot-roomba-mini-slim-f115060-edion-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-fc0ec27b804f97278d028f7ef15d3027",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY": "<figure class=\"ps-product-image ps-official-product-photo\" data-ps-media-sha256=\"99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433\"><img src=\"/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg\" width=\"2048\" height=\"2048\" loading=\"lazy\" decoding=\"async\" alt=\"Roomba Mini（白）とAutoEmpty充電ステーション。公式提供写真。\"><figcaption>アイロボット Roomba® Mini 掃除機＆床拭きロボット + AutoEmpty™ 充電ステーション<br>写真：<a href=\"https://irobotjp.mediaroom.com/media-kits?item=28\">アイロボットジャパン 公式掲載用素材</a></figcaption></figure>",
+      "PRD-SWITCHBOT-K11-PRO": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"roomba-mini-vs-switchbot-k11-pro\" data-raos-product-id=\"PRD-SWITCHBOT-K11-PRO\" data-raos-seller-id=\"rakuten-r-kojima\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K11-PRO-300\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K11-PRO-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-fc0ec27b804f97278d028f7ef15d3027\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"roomba-mini-vs-switchbot-k11-pro\" data-raos-product-id=\"PRD-SWITCHBOT-K11-PRO\" data-raos-seller-id=\"rakuten-r-kojima\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K11-PRO-240\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K11-PRO-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-fc0ec27b804f97278d028f7ef15d3027\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>K11+ Pro／本体・ステーション。スマートフォンは使用例（広告）</figcaption></figure>",
+      "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"roomba-mini-vs-switchbot-k11-pro\" data-raos-product-id=\"PRD-IROBOT-ROOMBA-MINI-SLIM-F115060\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-300\" data-raos-cta-id=\"purchase-image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-fc0ec27b804f97278d028f7ef15d3027\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10895187&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_540%2F0885155053633_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"roomba-mini-vs-switchbot-k11-pro\" data-raos-product-id=\"PRD-IROBOT-ROOMBA-MINI-SLIM-F115060\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-240\" data-raos-cta-id=\"purchase-image-PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-fc0ec27b804f97278d028f7ef15d3027\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10895187&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_540%2F0885155053633_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>F115060／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+    "PRD-SWITCHBOT-K11-PRO"
+  ],
+  "supplementary_product_ids": [
+    "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+  ],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/roomba-mini-vs-switchbot-k11-pro/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

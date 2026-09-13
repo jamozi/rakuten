@@ -164,7 +164,7 @@ timestamp on the committed evidence. URLs and private result paths are never
 logged, and every receipt reports `external_writes: 0`.
 
 Verify the reviewed FINAL packet. The Make target supplies only the three fixed
-owner-private request paths under `.secrets/rakuten-owner-local/requests/`;
+owner-private request paths under `.secrets/rakuten-owner-requests/`;
 caller-provided paths are not accepted:
 
 ```bash

@@ -128,6 +128,352 @@ class AssetSpec:
 
 ASSETS: Final = (
     AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-vacuum-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-vacuum-20260913.webp",
+        source_sha256="c371a7bae3b27a7ee1ce25e9708dfa012950566783d108f7387e23ee8992e45d",
+        output_sha256="8f0e97f57a588482e954f2ffc66f6b91e8bf9fd721be32ba09b347d04519abcf",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_CLEANING",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-mop-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-mop-20260913.webp",
+        source_sha256="a09a17eb85e64c475129ede959518dcb9de16381d60e566d14dccdaa4d2b5941",
+        output_sha256="f6478cefb6d8dc7578bbfa00e644ef37e5868bf5f506d4e068b56f85ec05b9a4",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_CLEANING",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-manual-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-manual-20260913.webp",
+        source_sha256="fba7dc299566d9bc0345650f65a8a3ebe5e4b688c9ba22f0774f1b120d431438",
+        output_sha256="58419320671c7ee81c3242afaeab6b3b3d56f53d34022ee5c5c85ed52cde34f1",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_CLEANING",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-dust-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-dust-20260913.webp",
+        source_sha256="516a7422623790972488fb026c57401517ebc4e6d40c86918280246dc5be5e73",
+        output_sha256="55e9e83b55eca1e692e7d0dd066ed5e541ce528f42e9ce1d3c81f40e177b4559",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_CLEANING",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-wash-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-wash-20260913.webp",
+        source_sha256="86440371bb8826370884b9027b7c1d33248879210a1a0f7a838a89af49ea5aa0",
+        output_sha256="94a95c0c3697ed8e985a73721cd8126e1d97cdfd4281824f7fa1bc0f3dd70f1c",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_CLEANING",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-small-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
+        source_sha256="777915758f42a2471fc9b95f58b45399451bc55ec94ef38693b50c18fd96304b",
+        output_sha256="db5b597e3d7b58683f1ca7172e35d45a3e500d7f6e5b969d7b97199d1038cbed",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-medium-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-medium-20260913.webp",
+        source_sha256="16013a3b0f83c2224afe5243995c63a4d1e6811bfb3904cd2ddd09844ac1842d",
+        output_sha256="153359cc150bd780c7cd4cbac128047b429b97420cb29cb5e07bc5a6239f7161",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-large-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-large-20260913.webp",
+        source_sha256="99966c44b8a17ab13f3de7038ff4effe33cc17761d6e4d38b68823b0606d37c4",
+        output_sha256="b04dfaba611c040064441e2c0d8206486d8c85fe7ad3fad74783766aba028983",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-light-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-light-20260913.webp",
+        source_sha256="a8abda6b7a0d5d309088063eab30ef955fe515c01441369db73188130107a88c",
+        output_sha256="798f9e48dfaa30e2bb890750f5d3463ce54deeca5f0b3fbc98f33150e8c9d814",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-access-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-access-20260913.webp",
+        source_sha256="d3ced595c8656fb43b446174173077370bef950d33a7dede08b0e7893531152b",
+        output_sha256="de0bdb2aaea722ca58640df54a3815c89263bdf1020ff6c1910fb4a7772d30fd",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-move-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-move-20260913.webp",
+        source_sha256="09efe511375cc9490eca06244b1cca90c8e0b0f8d6e3512757f37ecfed7023e7",
+        output_sha256="da8d443ec76385aec82ecab4554c0357b67f27a13f7bd54f90ec236d0817df8f",
+        source_width=1448,
+        source_height=1086,
+        output_width=900,
+        output_height=675,
+        video_filter="scale=900:675:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-small-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-small-20260913.webp",
+        source_sha256="f1ced6fc365023a1c7dbb2077249189b033f9dd6e13c274b4dd27b245e1e2458",
+        output_sha256="f7602b7505592df2d42f765bbdf1c2d3d0d7a9436ba5cb04feaec18be6de24ce",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_PREPAREDNESS",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-medium-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-medium-20260913.webp",
+        source_sha256="9dee1908f21d836e4f070416a16be9025edcbb56d52e93252fd8f3cc02655202",
+        output_sha256="6ac70394c787d699df91a6e4d18978864ccda763a9c3ba0598a37e349fd7bcf5",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_PREPAREDNESS",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-large-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-large-20260913.webp",
+        source_sha256="d9388ee5fb15800c30b88aa1a838192569ab42376d5ef9a6af8d4e6072b86c2f",
+        output_sha256="3e0431641a002ece5c09e032446e61b5e227daa9d88e6ca4237e2e6a051c7b69",
+        source_width=1536,
+        source_height=1024,
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_CATEGORY_PREPAREDNESS",
+        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-compact-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-compact-20260913.webp",
+        source_sha256="5644f9c3e8a018ea155896e9458f996f54a0fa86e17b4bb20a813d372bf11ff5",
+        output_sha256="f46216dccb204f7791fd30ef30f6be619d63810088c13c8d892aaecbdcdddabe",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_COMPACT",
+        allowed_uses=(
+            "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+            "ARTICLE_EDITORIAL_ILLUSTRATION",
+        ),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-standard-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-standard-20260913.webp",
+        source_sha256="12a8b050904326f7e70a3536ae7c21b126b9560c8990db84b322251f2b9a7e28",
+        output_sha256="6c1c766e69b7e39634f0363e087f255ed21ede528ce3d505a3c0eb5b03027a37",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_STANDARD",
+        allowed_uses=(
+            "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+            "ARTICLE_EDITORIAL_ILLUSTRATION",
+        ),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-large-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-large-20260913.webp",
+        source_sha256="4e2282644d880712f2b8f493c5fc2cd668ee1e1caf20b8978ca0ac3f8404d0cf",
+        output_sha256="aa69f7b790fe7e595789d7ed79e23089bea15b3aadde17089bffae684c92a3a8",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_LARGE",
+        allowed_uses=(
+            "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+            "ARTICLE_EDITORIAL_ILLUSTRATION",
+        ),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
+        source_sha256="2ca25edb8d70962bddfd27eb82ef152a44bdf580de329a01d90a03149a06a714",
+        output_sha256="ca474cabf712dab358947cdb2682c2acf41b514c0d9a9a999899f16adff4a1a7",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_COST_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cleaning-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cleaning-20260913.webp",
+        source_sha256="985571c9781f21c5deac335b082883c75896f058c7c14f002c7930aad9fb4e79",
+        output_sha256="4c8c76f65516d70838ce5db860606f351ab56fc6e7f0f9515748eeb5fae1c678",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_CLEANING_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-detergent-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-detergent-20260913.webp",
+        source_sha256="9daa39068a9e65eb4f952f900ed4aea2e93b20f8ce66d1e759b2302c4f95cb7e",
+        output_sha256="9f8162b99854100fe09846e91aab4ef80978afdb80efdd96c41e9c3e339c53f1",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_DETERGENT_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-water-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-water-20260913.webp",
+        source_sha256="8828c8cb7b26cd30c86e8d07ccf45f6d3687650e2d8e5d5d33e3cac372c2027d",
+        output_sha256="7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_WATER_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-lifestyle-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
+        source_sha256="8b272be7c7e1a9be6b113d68f4afd1d3874bbced08e4d839b2d032ff680ec38e",
+        output_sha256="8e8a39c5d34f41a889968de911fb8659b36ebc4e9c95bd2541797affa59943fe",
+        source_width=1672,
+        source_height=941,
+        output_width=1672,
+        output_height=941,
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_QUIET_LIVING_EDITORIAL",
+        allowed_uses=("HOMEPAGE_HERO",),
+    ),
+    AssetSpec(
         source=HOME_HERO_SOURCE,
         output=HOME_HERO_OUTPUT,
         source_sha256=(

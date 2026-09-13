@@ -1,0 +1,298 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/large-dishwasher-comparison.html",
+  "runtime_article": {
+    "article_id": "large-dishwasher-comparison",
+    "slug": "large-dishwasher-comparison",
+    "post_type": "post",
+    "kind": "curated_comparison",
+    "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+    "body_sha256": "4c95c875d6e4d98b365443f96e6a80c7a2608f66b9f9ac09bb88d9d2bb6ba2f8",
+    "bindings": [
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-SS-LH451-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-SS-LH451-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-SS-LH451-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-SS-LH451-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "rakuten-ui-ss-lh451-siroca",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-ss-lh451-siroca-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-ADW-L40B-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-ADW-L40B-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-ADW-L40B-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-ADW-L40B-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B",
+        "seller_id": "rakuten-edion",
+        "offer_id": "rakuten-ui-adw-l40b-edion",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-adw-l40b-edion-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TA5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TA5-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TA5-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TA5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TA5-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TA5-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TA5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "rakuten-ui-np-ta5-panasonic-store",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-np-ta5-panasonic-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TZ500-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TZ500-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TZ500-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TZ500-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "rakuten-ui-np-tz500-panasonic-store",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-np-tz500-panasonic-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TH5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TH5-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TH5-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TH5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-NP-TH5-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-NP-TH5-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-NP-TH5",
+        "seller_id": "rakuten-panasonic-store",
+        "offer_id": "rakuten-ui-np-th5-panasonic-store",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-np-th5-panasonic-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LA451",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-SS-LA451-300",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-SS-LA451-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LA451",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "image-PRD-LARGE-DISHWASHER-SS-LA451-240",
+        "cta_id": "purchase-image-PRD-LARGE-DISHWASHER-SS-LA451-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "large-dishwasher-comparison",
+        "product_id": "PRD-LARGE-DISHWASHER-SS-LA451",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "rakuten-ui-ss-la451-ec-current",
+        "cta_id": "purchase-large-dishwasher-comparison-rakuten-ui-ss-la451-ec-current-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-LARGE-DISHWASHER-SS-LH451": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-SS-LH451\" data-raos-seller-id=\"rakuten-siroca\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-SS-LH451-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-SS-LH451-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000222&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-lh451%2Fthumb_ss-lh451_new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-SS-LH451\" data-raos-seller-id=\"rakuten-siroca\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-SS-LH451-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-SS-LH451-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000222&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-lh451%2Fthumb_ss-lh451_new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>SS-LH451／ホワイト×ホワイト・本体（広告）</figcaption></figure>",
+      "PRD-LARGE-DISHWASHER-ADW-L40B": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-ADW-L40B\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-ADW-L40B-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-ADW-L40B-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10908053&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_578%2F4582678515766_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-ADW-L40B\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-ADW-L40B-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-ADW-L40B-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10908053&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_578%2F4582678515766_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>ADW-L40B(W)／ホワイト・本体（広告）</figcaption></figure>",
+      "PRD-LARGE-DISHWASHER-NP-TA5": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TA5\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TA5-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TA5-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001240&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-ta5_000.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TA5\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TA5-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TA5-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001240&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-ta5_000.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TA5-W／ホワイト・本体（広告）</figcaption></figure>",
+      "PRD-LARGE-DISHWASHER-NP-TZ500": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TZ500\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TZ500-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TZ500-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001238&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tz500_000.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TZ500\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TZ500-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TZ500-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001238&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tz500_000.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TZ500-W／2色の本体例（参考価格はホワイト）（広告）</figcaption></figure>",
+      "PRD-LARGE-DISHWASHER-NP-TH5": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TH5\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TH5-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TH5-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001239&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2F12923490%2Fnp-th5_main01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-NP-TH5\" data-raos-seller-id=\"rakuten-panasonic-store\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-NP-TH5-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-NP-TH5-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001239&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2F12923490%2Fnp-th5_main01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TH5-W／2色の本体例（参考価格はホワイト）（広告）</figcaption></figure>",
+      "PRD-LARGE-DISHWASHER-SS-LA451": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-SS-LA451\" data-raos-seller-id=\"rakuten-ec-current\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-SS-LA451-300\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-SS-LA451-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12870434&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9191%2F4589919848539.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"large-dishwasher-comparison\" data-raos-product-id=\"PRD-LARGE-DISHWASHER-SS-LA451\" data-raos-seller-id=\"rakuten-ec-current\" data-raos-offer-id=\"image-PRD-LARGE-DISHWASHER-SS-LA451-240\" data-raos-cta-id=\"purchase-image-PRD-LARGE-DISHWASHER-SS-LA451-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12870434&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9191%2F4589919848539.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>SS-LA451-W/HL／ホワイト×グレーの本体・使用例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-LARGE-DISHWASHER-SS-LH451",
+    "PRD-LARGE-DISHWASHER-ADW-L40B",
+    "PRD-LARGE-DISHWASHER-NP-TA5",
+    "PRD-LARGE-DISHWASHER-NP-TZ500",
+    "PRD-LARGE-DISHWASHER-NP-TH5",
+    "PRD-LARGE-DISHWASHER-SS-LA451"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": [
+    {
+      "key": "ss-lh451",
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LH451"
+    },
+    {
+      "key": "adw-l40b",
+      "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B"
+    },
+    {
+      "key": "np-ta5",
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TA5"
+    },
+    {
+      "key": "np-tz500",
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500"
+    },
+    {
+      "key": "np-th5",
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TH5"
+    },
+    {
+      "key": "ss-la451",
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LA451"
+    }
+  ],
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/large-dishwasher-comparison/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

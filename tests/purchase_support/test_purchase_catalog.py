@@ -1,4 +1,4 @@
-"""Exact identity, date/price and public projection boundaries across the 13 candidates."""
+"""Exact identity, date/price and public projection boundaries across the 19 candidates."""
 
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -43,12 +43,12 @@ def compile(catalog):
     )
 
 
-def test_all_sixteen_slots_have_actionable_research_and_preserve_identity_routes(
+def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
     catalog,
 ):
     validate_catalog(catalog)
     html, runtime = compile(catalog)
-    assert len(html) == 13 and len(catalog["products"]) == 16
+    assert len(html) == 23 and len(catalog["products"]) == 54
     roots = {slug: fragment(body) for slug, body in html.items()}
     for slug, root in roots.items():
         ids = [n.attrs["id"] for n in root.walk() if "id" in n.attrs]
@@ -86,11 +86,7 @@ def test_all_sixteen_slots_have_actionable_research_and_preserve_identity_routes
                     "snapshot_id",
                     "href",
                 }
-                | (
-                    {"link_purpose", "affiliate"}
-                    if a["slug"] != "portable-power-station-guide"
-                    else set()
-                )
+                | {"link_purpose", "affiliate"}
             )
             if len(b) == 10:
                 assert (b["link_purpose"], b["affiliate"]) in {
@@ -105,45 +101,27 @@ def test_all_sixteen_slots_have_actionable_research_and_preserve_identity_routes
                 if k != "href"
             )
         if a["bindings"]:
-            # External purchase CTAs follow the reasons: product card and seller panel only.
             placements = {b["placement"] for b in a["bindings"]}
-            assert placements == {"product_card", "final_summary"}
+            assert placements <= {"top_summary", "comparison_table", "final_summary"}
+            assert "comparison_table" in placements
             assert placements <= set(PLACEMENTS)
-    tsp = next(p for p in catalog["products"] if p["exact_model"] == "NP-TSP1-W")
-    assert not any(
-        b["product_id"] == tsp["product_id"]
-        for a in runtime["articles"]
-        for b in a["bindings"]
-    )
 
 
 @pytest.mark.parametrize("state", ["SOLD_OUT", "AVAILABLE", "UNKNOWN"])
 def test_comparison_sale_status_matches_verified_offers(catalog, state):
     product = catalog["products"][0]
     pid = product["product_id"]
-    offer = deepcopy(catalog["offers"][0])
-    offer.update(
-        product_id=pid,
-        product_model=product["exact_model"],
-        state=state,
-        identity_verified=True,
-    )
-    catalog["offers"] = [offer]
+    for offer in catalog["offers"]:
+        if offer["product_id"] == pid:
+            offer.update(state=state, identity_verified=True)
     html, _ = compile(catalog)
     root = fragment(html["countertop-dishwasher-for-small-households"])
-    row = next(n for n in root.find(tag="tr") if "data-ps-keep-row" in n.attrs)
-    cell = next(n for n in row.find(tag="td") if n.attrs.get("data-ps-product") == pid)
-    links = cell.find(tag="a")
+    row = next(n for n in root.find(tag="tr") if n.attrs.get("data-product-id") == pid)
+    links = [n for n in row.find(tag="a") if n.has("ps-offer-link")]
     assert len(links) == 1
-    assert links[0].attrs["href"] == "#ps-seller-" + product["anchor"]
-    assert "data-raos-cta-type" not in links[0].attrs
-    if state == "SOLD_OUT":
-        assert "確認した販売先は売り切れ" in cell.text()
-        assert "販売先未確認" not in cell.text()
-    else:
-        # The table sends readers to the dated seller panel instead of an external CTA.
-        assert "売り切れ" not in cell.text()
-        assert "販売先と確認日を見る" in cell.text()
+    assert links[0].attrs["data-raos-product-id"] == pid
+    assert links[0].attrs["data-raos-placement"] == "comparison_table"
+    assert not any(term in links[0].text() for term in ("在庫あり", "購入可能", "最安"))
 
 
 @pytest.mark.parametrize(
@@ -267,14 +245,19 @@ def test_published_water_conditions_and_unknowns_reach_guides(catalog):
         if n.attrs.get("data-raos-cost-profile") == "ss-ma251-spec"
     )
     assert profile.attrs["data-raos-water-litres"] == "6"
-    assert profile.attrs["data-raos-cost-course"] == "仕様掲載条件（コース別値は未確認）"
+    assert (
+        profile.attrs["data-raos-cost-course"] == "仕様掲載条件（コース別値は未確認）"
+    )
     assert "data-raos-energy-wh" not in profile.attrs
     unknown = next(
-        n for n in cost.walk()
+        n
+        for n in cost.walk()
         if n.attrs.get("data-raos-cost-profile") == "dws-33b-unknown"
     )
     assert unknown.attrs["data-raos-water-litres"] == "6"
-    assert unknown.attrs["data-raos-cost-course"] == "標準（食器18点・小物12点、水温20℃）"
+    assert (
+        unknown.attrs["data-raos-cost-course"] == "標準（食器18点・小物12点、水温20℃）"
+    )
     assert "data-raos-energy-wh" not in unknown.attrs
     installation = fragment(html["dishwasher-installation-measurement"])
     values = [
@@ -355,9 +338,14 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
     for article in catalog["articles"]:
         if article["kind"] == "guide":
             assert 'class="ps-research"' not in html[article["slug"]]
-    # Drainage conditions live in the installation guide; the water guide links to them.
+    # The water comparison now includes drainage and must propagate withdrawn facts.
     assert "排水条件は未確認です。" in html["dishwasher-installation-measurement"]
-    assert "排水条件は未確認です。" not in html["dishwasher-water-supply-methods"]
+    water = fragment(html["dishwasher-water-supply-methods"])
+    row = next(
+        n for n in water.find(tag="tr") if n.attrs.get("id") == product["anchor"]
+    )
+    assert "排水条件は未確認です。" in row.text()
+    assert "20cm" not in row.text()
     assert "必要余白は追加確認中" in html["dishwasher-installation-measurement"]
     assert "コース別の消費電力量は未確認" in html["dishwasher-running-cost"]
     assert 'class="ps-research"' in html["countertop-dishwasher-for-small-households"]
@@ -374,20 +362,30 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
                 for n in root.walk()
                 if n.attrs.get("id") == "ps-seller-" + product["anchor"]
             )
-            assert len([n for n in seller.walk() if n.has("ps-research")]) == 1
-        assert len([n for n in root.walk() if n.has("ps-research")]) == len(
-            article["product_ids"]
-        )
+            if not article.get("authored_comparison"):
+                assert len([n for n in seller.walk() if n.has("ps-research")]) == 1
+        if not article.get("authored_comparison"):
+            assert len([n for n in root.walk() if n.has("ps-research")]) == len(
+                article["product_ids"]
+            )
+        else:
+            assert not root.find(cls="ps-research")
 
 
-def test_comparison_decision_steps_precede_recommendations_and_escape_text(catalog):
+def test_comparison_decision_details_follow_summary_and_specs_and_escape_text(catalog):
     article = next(
         a for a in catalog["articles"] if a["slug"] == "portable-power-station-guide"
     )
     html, _ = compile(catalog)
     page = html[article["slug"]]
-    assert page.index('id="ps-decision-steps"') < page.index('id="ps-choose"')
-    assert "240÷0.8＝300Wh" in page
+    assert (
+        page.index('id="ps-choose"')
+        < page.index('id="ps-specs"')
+        < page.index('id="ps-decision-steps"')
+    )
+    assert (
+        "240Wh" in page and "80%なら必要容量300Wh" in page and "70%なら約343Wh" in page
+    )
     assert "稼働時間を保証しません" in page
     article["decision_steps"]["steps"][0] = "<script>not markup</script>"
     updated, _ = compile(catalog)
@@ -404,14 +402,20 @@ def test_reviewed_bookmarks_land_in_current_section_and_reject_missing_targets(c
         for identity, target in article["legacy_anchor_targets"].items():
             aliases = [n for n in root.walk() if n.attrs.get("id") == identity]
             assert len(aliases) == 1
-            assert aliases[0].parent.attrs.get("id") == target
-            assert aliases[0].parent.text()
+            ancestor = aliases[0].parent
+            if ancestor.tag == "th":
+                ancestor = ancestor.parent
+            assert ancestor.attrs.get("id") == (
+                "ps-choose" if target == "ps-products" else target
+            )
+            assert ancestor.text()
     article = next(
         a
         for a in catalog["articles"]
-        if a["slug"] == "lightweight-carry-on-suitcase-under-3kg"
+        if a.get("legacy_anchor_targets") and not a.get("authored_comparison")
     )
-    article["legacy_anchor_targets"]["under-3kg-comparison-title"] = "missing-section"
+    identity = next(iter(article["legacy_anchor_targets"]))
+    article["legacy_anchor_targets"][identity] = "missing-section"
     with pytest.raises(ValueError, match="PURCHASE_LEGACY_ALIAS_TARGET_INVALID"):
         compile(catalog)
 
@@ -491,70 +495,164 @@ def test_decision_steps_follow_the_scope_the_reader_has_selected(catalog):
     html, _ = compile(catalog)
     robot = html["compact-robot-vacuum-shortlist"]
     power = html["portable-power-station-guide"]
-    assert robot.index('id="ps-choose"') < robot.index('id="ps-decision-steps"') < robot.index('id="ps-specs"')
-    assert power.index('id="ps-decision-steps"') < power.index('id="ps-choose"')
+    assert (
+        robot.index('id="ps-choose"')
+        < robot.index('id="ps-specs"')
+        < robot.index('id="ps-decision-steps"')
+    )
+    assert (
+        power.index('id="ps-choose"')
+        < power.index('id="ps-specs"')
+        < power.index('id="ps-decision-steps"')
+    )
     assert robot.count('id="ps-decision-steps"') == 1
     assert power.count('id="ps-decision-steps"') == 1
 
 
 def test_historical_product_bookmarks_do_not_become_current_purchase_links(catalog):
     articles, _ = compile(catalog)
-    root = fragment(articles['lightweight-carry-on-suitcase-under-3kg'])
-    for identity, previous_model in [
-        ('under-3kg-cta-02-note', '82353171'),
-        ('under-3kg-cta-04-note', '134679-1549'),
-    ]:
-        alias = next(n for n in root.walk() if n.attrs.get('id') == identity)
-        note = alias.parent
-        assert previous_model in note.text()
-        assert '別の商品' in note.text()
-        assert [n.attrs.get('href') for n in note.find(tag='a')] == ['#ps-specs']
-    caution = next(n for n in root.walk() if n.attrs.get('id') == 'under-3kg-caution-title')
-    assert caution.tag == 'h2'
-    assert '運航会社' in caution.parent.text()
-    assert all(not n.children for n in root.walk() if n.has('ps-compat-anchors'))
+    root = fragment(articles["lightweight-carry-on-suitcase-under-3kg"])
+    for identity in ["under-3kg-cta-02-note", "under-3kg-cta-04-note"]:
+        alias = next(n for n in root.walk() if n.attrs.get("id") == identity)
+        # Historical bookmarks lead to the whole comparison, never to a
+        # different product's identity cell or merchant CTA.
+        assert alias.parent.attrs.get("id") == "ps-specs"
+        assert not alias.children
+        assert not alias.attrs.get("data-raos-product-id")
+        assert not alias.attrs.get("href")
+    rows = root.find(tag="tr")
+    assert not any("82353171" in n.text() or "134679-1549" in n.text() for n in rows)
+    caution = next(
+        n for n in root.walk() if n.attrs.get("id") == "under-3kg-caution-title"
+    )
+    assert caution.tag == "h2"
+    assert "運航会社" in caution.parent.text()
+    assert all(not n.children for n in root.walk() if n.has("ps-compat-anchors"))
 
 
 def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog):
     articles, _ = compile(catalog)
-    root = fragment(articles['kitchen'])
+    root = fragment(articles["kitchen"])
     for identity, phrase in [
-        ('kitchen-start', 'いつもの一食分'),
-        ('kitchen-axes', '電源条件'),
-        ('kitchen-comparisons', '未確認の機種は水道・洗剤だけ'),
-        ('purchase-checks', '送料込み'),
+        ("kitchen-start", "洗う量と、給水方法から。"),
+        ("kitchen-axes", "普段の食器の量と形"),
+        ("kitchen-comparisons", "大容量を比べる"),
+        ("purchase-checks", "送料・必要品を含む総額"),
     ]:
-        node = next(n for n in root.walk() if n.attrs.get('id') == identity)
+        node = next(n for n in root.walk() if n.attrs.get("id") == identity)
         assert phrase in node.text()
-    assert all(not n.children for n in root.walk() if n.has('ps-compat-anchors'))
-    assert len(root.find(tag='figure', cls='ks-category-visual')) == 1
-    assert 'SS-MA251' in root.text()
+    assert all(not n.children for n in root.walk() if n.has("ps-compat-anchors"))
+    assert len(root.find(tag="figure", cls="ks-category-visual")) == 1
+    assert "SS-MA251" not in root.text()
+    assert "工事なし（タンク式など）" in root.text()
+    assert len(root.find(tag="img")) == 5
 
 
 def test_luggage_bookmarks_reach_weight_formula_and_flight_checks(catalog):
     articles, _ = compile(catalog)
-    html = articles['lightweight-carry-on-suitcase-under-3kg']
+    html = articles["lightweight-carry-on-suitcase-under-3kg"]
     root = fragment(html)
-    caution = next(n for n in root.walk() if n.attrs.get('id') == 'purchase-check')
-    assert caution.parent.attrs['id'] == 'ps-flight-purchase-check'
-    assert '運航会社' in caution.parent.text()
-    method = next(n for n in root.walk() if n.attrs.get('id') == 'under-3kg-method-title')
-    assert method.tag == 'h2'
-    assert '総重量上限 − スーツケース本体 − 身の回り品' in method.parent.parent.text()
-    assert html.index('id="under-3kg-method-title"') < html.index('id="ps-specs"')
+    caution = next(n for n in root.walk() if n.attrs.get("id") == "purchase-check")
+    assert caution.parent.attrs["id"] == "ps-flight-purchase-check"
+    assert "運航会社" in caution.parent.text()
+    method = next(
+        n for n in root.walk() if n.attrs.get("id") == "under-3kg-method-title"
+    )
+    assert method.parent.attrs["id"] == "carry-on-rules"
+    assert "航空会社" in method.parent.text()
+    calculation = next(
+        n for n in root.walk() if n.attrs.get("id") == "suitcase-weight-example-title"
+    )
+    assert "総重量上限から身の回り品とケース本体を引いた計算例" in calculation.text()
+    assert "7−1−2.1＝3.9kg" in calculation.text()
+    assert "7−1−2.7＝3.3kg" in calculation.text()
+    assert (
+        html.index('id="carry-on-rules"')
+        < html.index('id="ps-choose"')
+        < html.index('id="ps-specs"')
+        < html.index('id="suitcase-weight-example-title"')
+        < html.index('id="ps-evidence"')
+    )
 
 
-def test_comparison_method_bookmarks_explain_scope_before_specifications(catalog):
+def test_comparison_method_bookmarks_explain_scope_in_details_after_sellers(catalog):
     articles, _ = compile(catalog)
     for slug, key, limitation in [
-        ('countertop-dishwasher-for-small-households', 'dish', '公表条件が異なります'),
-        ('compact-robot-vacuum-shortlist', 'robot', '軸名が未確認'),
-        ('portable-power-station-guide', 'power', '使用時間の保証ではありません'),
+        ("countertop-dishwasher-for-small-households", "dish", "公表条件が異なります"),
+        ("compact-robot-vacuum-shortlist", "robot", "軸名が未確認"),
+        ("portable-power-station-guide", "power", "使用時間の保証ではありません"),
     ]:
         html = articles[slug]
         root = fragment(html)
-        method = next(n for n in root.walk() if n.attrs.get('id') == f'blk-{key}-005-title')
-        assert method.tag == 'h2'
-        assert limitation in method.parent.text()
-        assert '広告報酬を加点せず' in method.parent.text()
-        assert html.index(f'id="blk-{key}-005-title"') < html.index('id="ps-specs"')
+        method = next(
+            n for n in root.walk() if n.attrs.get("id") == f"blk-{key}-005-title"
+        )
+        article = next(a for a in catalog["articles"] if a["slug"] == slug)
+        if article.get("authored_comparison"):
+            assert method.tag == "span"
+            assert limitation.replace(
+                "軸名が未確認", "軸名未確認"
+            ) in root.text().replace("軸名が未確認", "軸名未確認")
+            assert not root.find(cls="ps-comparison-method")
+            assert len(root.find(tag="section", cls="ps-source-product")) == 0
+        else:
+            assert method.tag == "h2"
+            assert limitation in method.parent.text()
+            assert "広告報酬を加点せず" in method.parent.text()
+            assert (
+                html.index('id="ps-offers"')
+                < html.index(f'id="blk-{key}-005-title"')
+                < html.index('id="ps-evidence"')
+            )
+
+
+def test_ten_comparisons_share_exact_identities_and_keep_slim_supplementary(catalog):
+    comparisons = {
+        a["post_id"]: a for a in catalog["articles"] if a["kind"] == "comparison"
+    }
+    assert {pid: len(a["product_ids"]) for pid, a in comparisons.items()} == {
+        41: 4,
+        83: 4,
+        30: 4,
+        28: 4,
+        19: 3,
+        82: 4,
+        84: 4,
+        85: 2,
+        86: 2,
+        29: 4,
+    }
+    assert set(catalog["target_post_ids"]) == set(comparisons)
+    products = {p["product_id"]: p for p in catalog["products"]}
+    assert len(products) == len(catalog["products"]) == 54
+    assert set(comparisons[85]["product_ids"]) <= set(comparisons[30]["product_ids"])
+    assert "PRD-ANKER-SOLIX-C300" in set(comparisons[28]["product_ids"]) & set(
+        comparisons[29]["product_ids"]
+    )
+    assert "PRD-ACE-DIFFERENCE-05721" in set(comparisons[19]["product_ids"]) & set(
+        comparisons[84]["product_ids"]
+    )
+    assert "PRD-PANASONIC-NP-TMLK1" in set(comparisons[41]["product_ids"]) & set(
+        comparisons[86]["product_ids"]
+    )
+    assert products["PRD-THANKO-RAKUA-MINI-PLUS"]["exact_model"] == "TK-MDW22B"
+    assert "PRD-THANKO-RAKUA-MINI-PLUS" not in comparisons[41]["product_ids"]
+    slim = "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+    assert comparisons[85]["supplementary_product_ids"] == [slim]
+    assert all(slim not in a["product_ids"] for a in comparisons.values())
+    bodies, _ = compile(catalog)
+    root = fragment(bodies[comparisons[85]["slug"]])
+    primary = next(n for n in root.walk() if n.attrs.get("id") == "ps-specs")
+    assert "F115060" not in primary.text()
+    supplemental = next(
+        n for n in root.walk() if n.attrs.get("id") == "ps-other-configurations"
+    )
+    assert "F115060" in supplemental.text() and "主比較とは別" in supplemental.text()
+    assert "自動ゴミ収集はなく" in supplemental.text()
+
+
+def test_rejects_overlap_between_primary_and_supplementary_identities(catalog):
+    article = next(a for a in catalog["articles"] if a["post_id"] == 85)
+    article["supplementary_product_ids"] = [article["product_ids"][0]]
+    with pytest.raises(ValueError):
+        validate_catalog(catalog)

@@ -1,0 +1,197 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/lightweight-carry-on-suitcase-under-3kg.html",
+  "runtime_article": {
+    "article_id": "lightweight-carry-on-suitcase-under-3kg",
+    "slug": "lightweight-carry-on-suitcase-under-3kg",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+    "body_sha256": "db70ab1733d50cc02a935d4a84bf280c723ab9c155e7e061bace52da35cdcd2c",
+    "bindings": [
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-AEROFLEX-DX2-01521-300",
+        "cta_id": "purchase-image-PRD-PROTECA-AEROFLEX-DX2-01521-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-AEROFLEX-DX2-01521-240",
+        "cta_id": "purchase-image-PRD-PROTECA-AEROFLEX-DX2-01521-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-proteca-aeroflex-dx2-01521-ace-store",
+        "cta_id": "purchase-83-rakuten-observed-proteca-aeroflex-dx2-01521-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "seller_id": "rakuten-samsonite",
+        "offer_id": "image-PRD-SAMSONITE-C-LITE-CS2-09007-300",
+        "cta_id": "purchase-image-PRD-SAMSONITE-C-LITE-CS2-09007-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "seller_id": "rakuten-samsonite",
+        "offer_id": "image-PRD-SAMSONITE-C-LITE-CS2-09007-240",
+        "cta_id": "purchase-image-PRD-SAMSONITE-C-LITE-CS2-09007-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "seller_id": "rakuten-samsonite",
+        "offer_id": "rakuten-observed-samsonite-c-lite-cs2-09007-samsonite",
+        "cta_id": "purchase-83-rakuten-observed-samsonite-c-lite-cs2-09007-samsonite-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "seller_id": "rakuten-galleria",
+        "offer_id": "image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-300",
+        "cta_id": "purchase-image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "seller_id": "rakuten-galleria",
+        "offer_id": "image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-240",
+        "cta_id": "purchase-image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "seller_id": "rakuten-galleria",
+        "offer_id": "rakuten-observed-american-tourister-applite-4-qj6-68002-galleria",
+        "cta_id": "purchase-83-rakuten-observed-american-tourister-applite-4-qj6-68002-galleria-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+        "seller_id": "rakuten-endolust",
+        "offer_id": "image-PRD-FREQUENTER-LIEVE-1-250-300",
+        "cta_id": "purchase-image-PRD-FREQUENTER-LIEVE-1-250-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+        "seller_id": "rakuten-endolust",
+        "offer_id": "image-PRD-FREQUENTER-LIEVE-1-250-240",
+        "cta_id": "purchase-image-PRD-FREQUENTER-LIEVE-1-250-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+        "seller_id": "rakuten-endolust",
+        "offer_id": "rakuten-observed-frequenter-lieve-1-250-endolust",
+        "cta_id": "purchase-83-rakuten-observed-frequenter-lieve-1-250-endolust-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ceb6a93f77d1f6fc59d23866b0d1c1ee",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-PROTECA-AEROFLEX-DX2-01521": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-PROTECA-AEROFLEX-DX2-01521\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-AEROFLEX-DX2-01521-300\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-AEROFLEX-DX2-01521-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-PROTECA-AEROFLEX-DX2-01521\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-AEROFLEX-DX2-01521-240\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-AEROFLEX-DX2-01521-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>01521-09／09 グレー×ホワイト・本体（広告）</figcaption></figure>",
+      "PRD-SAMSONITE-C-LITE-CS2-09007": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-SAMSONITE-C-LITE-CS2-09007\" data-raos-seller-id=\"rakuten-samsonite\" data-raos-offer-id=\"image-PRD-SAMSONITE-C-LITE-CS2-09007-300\" data-raos-cta-id=\"purchase-image-PRD-SAMSONITE-C-LITE-CS2-09007-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-SAMSONITE-C-LITE-CS2-09007\" data-raos-seller-id=\"rakuten-samsonite\" data-raos-offer-id=\"image-PRD-SAMSONITE-C-LITE-CS2-09007-240\" data-raos-cta-id=\"purchase-image-PRD-SAMSONITE-C-LITE-CS2-09007-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>CS2*09007 / 134679-1041／ブラック・本体（広告）</figcaption></figure>",
+      "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-300\" data-raos-cta-id=\"purchase-image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10037660&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fgalleria%2Fcabinet%2F000481%2Fact00031-sz11.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-240\" data-raos-cta-id=\"purchase-image-PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10037660&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fgalleria%2Fcabinet%2F000481%2Fact00031-sz11.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>QJ6-68002／GREY×RED・本体（広告）</figcaption></figure>",
+      "PRD-FREQUENTER-LIEVE-1-250": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-FREQUENTER-LIEVE-1-250\" data-raos-seller-id=\"rakuten-endolust\" data-raos-offer-id=\"image-PRD-FREQUENTER-LIEVE-1-250-300\" data-raos-cta-id=\"purchase-image-PRD-FREQUENTER-LIEVE-1-250-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e168a.0e5ce007.575e168b.7238f7a2/?me_id=1412461&item_id=10000293&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fendolust%2Fcabinet%2Ffq%2F1-250-33-11_21.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"lightweight-carry-on-suitcase-under-3kg\" data-raos-product-id=\"PRD-FREQUENTER-LIEVE-1-250\" data-raos-seller-id=\"rakuten-endolust\" data-raos-offer-id=\"image-PRD-FREQUENTER-LIEVE-1-250-240\" data-raos-cta-id=\"purchase-image-PRD-FREQUENTER-LIEVE-1-250-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ceb6a93f77d1f6fc59d23866b0d1c1ee\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e168a.0e5ce007.575e168b.7238f7a2/?me_id=1412461&item_id=10000293&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fendolust%2Fcabinet%2Ffq%2F1-250-33-11_21.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>1-250／ダークグレー・本体（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-PROTECA-AEROFLEX-DX2-01521",
+    "PRD-SAMSONITE-C-LITE-CS2-09007",
+    "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+    "PRD-FREQUENTER-LIEVE-1-250"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/lightweight-carry-on-suitcase-under-3kg/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

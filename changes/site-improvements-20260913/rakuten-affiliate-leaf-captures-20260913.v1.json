@@ -1,0 +1,527 @@
+{
+  "schema": "RAOS_OWNER_UI_AFFILIATE_CAPTURE_V1",
+  "source_html_modified": false,
+  "records": [
+    {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/06316/?variantId=41775",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10007275&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Facedby%2F06316_lp_03.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10007275&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Facedby%2F06316_lp_03.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:59:59.751Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10007275&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "51d8cb37be401bf65479c413bd2bc19ae390db13c1b32a3632197bb5b8779464",
+        "300": "0abed461e063c382c555e19e10c90c1d2338558c971c916c3eae0224223f885a"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322293+00:00"
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/05721/?variantId=06",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009372&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F05721_thum.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009372&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F05721_thum.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:05:27.322Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009372&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "4d760f2adb0e67d172fc880fa4fdf31d3e2e0f381b5edc6969f2ca8ee72f4f98",
+        "300": "c073848d7c45ac5e77509e65c5fda8fcf78360a7a66977e65bf285c3b118ccf3"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322308+00:00"
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/01471/?variantId=02",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009099&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2024%2Fproteca%2F01471.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009099&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2024%2Fproteca%2F01471.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:05:38.671Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009099&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "0ccd245817902f111041a16c3eb4441c42434b086dee9ef1c2988b27551ee649",
+        "300": "18a56667639eb44da6da685187535ad6c14af81b316238df106c5c6e8cfcb4ae"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322310+00:00"
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/02350/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10008100&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2023%2Fproteca%2F02350.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10008100&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2023%2Fproteca%2F02350.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:05:48.532Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10008100&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "e4e61ffbd43aaabd4b36ac7866d56b47417129c5bbc4416243bccd08bc4c8dd3",
+        "300": "d9e4281aabbc76f05df0f30a5b3225a4501201f385a34d2a33b706d0cddc18db"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322311+00:00"
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/01550/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009746&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01550.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009746&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01550.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:05:59.356Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009746&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "f401b6c4565709b98d31ffb752bb9f2b89f12997575dde9cf1bebd9bd6e480ff",
+        "300": "3d2dca3bdd35e70c8344f192f786eb44880b990e6716b34b4cbbcf4448687323"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322312+00:00"
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/06910/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009334&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F06910.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009334&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F06910.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:06:10.642Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009334&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "87134bcb4eb533f2020a005876bda1327daee76e3f95ce395d2be55cc0efbe0a",
+        "300": "0cd479099f26a2c16ff04d05553be6f65e968b56adafd56b060f23492af2cb64"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322313+00:00"
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "requested_merchant_url": "https://item.rakuten.co.jp/selection/bermas-60504/",
+      "image_identity_state": "PENDING_VISUAL_REVIEW",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/57529879.11a09022.5752987a.e1387e35/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fselection%2Fbermas-60504%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/57529879.11a09022.5752987a.e1387e35/?me_id=1191490&item_id=10014300&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fselection%2Fcabinet%2Fitem62%2Fbermas-60504_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/57529879.11a09022.5752987a.e1387e35/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fselection%2Fbermas-60504%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/57529879.11a09022.5752987a.e1387e35/?me_id=1191490&item_id=10014300&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fselection%2Fcabinet%2Fitem62%2Fbermas-60504_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/57529879.11a09022.5752987a.e1387e35/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fselection%2Fbermas-60504%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:07:00.696Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1191490&item_id=10014300&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "32c654829925a1cd763bad53048027ca383151557aecde686c9250177e415751",
+        "300": "1f3b3e943bc9b450892d8be3f02dbbbdc014ebaae813d5384a4f3d4235551ebe"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/01521/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:00:11.969Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009188&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "85e834f5e5819330a7dcabea533ed164e6749ff95a925cf9d397327099e28e71",
+        "300": "bb4d9e01bd38b5b8e46a7e69d7fba8205d0f151764a8fa2a2582ba0609c90b06"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322314+00:00"
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "requested_merchant_url": "https://item.rakuten.co.jp/samsonite/cs2-007/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:00:23.873Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1212086&item_id=10002672&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "67b28ff6240be684c03de36dccb504a8b96dc296b39f15b2dbca80e37034056f",
+        "300": "00720c1ec5bdcdcdf7b59b495fa781cfba7933163ffc40ee4ba7e2cae60b637c"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322315+00:00"
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "requested_merchant_url": "https://item.rakuten.co.jp/galleria/act00031/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10037660&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fgalleria%2Fcabinet%2F000481%2Fact00031-sz11.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10037660&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fgalleria%2Fcabinet%2F000481%2Fact00031-sz11.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Fact00031%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:00:36.731Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1210849&item_id=10037660&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "b2c10de195e06e6f6545d75a302dd25446a3bf7b93057c5b08c28c5463fd639b",
+        "300": "314c5ab2adb43151206295e76e28780b391a7765767be65f4401c9410575c5c7"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322316+00:00"
+    },
+    {
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "requested_merchant_url": "https://item.rakuten.co.jp/endolust/1-250-33/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e168a.0e5ce007.575e168b.7238f7a2/?me_id=1412461&item_id=10000293&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fendolust%2Fcabinet%2Ffq%2F1-250-33-11_21.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e168a.0e5ce007.575e168b.7238f7a2/?me_id=1412461&item_id=10000293&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fendolust%2Fcabinet%2Ffq%2F1-250-33-11_21.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e168a.0e5ce007.575e168b.7238f7a2/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fendolust%2F1-250-33%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:00:49.941Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1412461&item_id=10000293&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "9f7cfb41bac7aaea3a71484d44fe1374463ba5f00c87a3436831e1794633b074",
+        "300": "6bdc8d6adcfa536ce5c0a1bb9869a9f183648c632c2c96168497c762cc4c93ff"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322316+00:00"
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "requested_merchant_url": "https://item.rakuten.co.jp/galleria/inn00029/",
+      "image_identity_state": "PENDING_VISUAL_REVIEW",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Finn00029%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10027216&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202505_1%2Finn00029.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Finn00029%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10027216&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202505_1%2Finn00029.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Finn00029%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:07:51.073Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1210849&item_id=10027216&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "077530e0c793e0cd16c8c2c55ddccf9fb2334a906cee1d3cabbc92fa75b5b765",
+        "300": "809ff0350b0055792503dfd156e63e6d0e958731d3923c59672cc3490bad9c30"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/01551/?variantId=02",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009516&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01551_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009516&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01551_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T06:07:58.757Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009516&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "8179fd609bd86104f2341ff46ecafd08f5c08d330800d0ce13b64e5b788fb4ec",
+        "300": "27cab45b5654db6ef3259f8a74cf5cc28946d051ea5a394099ca1ad487ac7866"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/frester-01551-side-issued-image.png",
+      "reviewed_at": "2026-09-13T06:10:15.593206+00:00"
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "requested_merchant_url": "https://item.rakuten.co.jp/travel-passport/bar0069/?variantId=bar006901",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/57529779.048e6bd6.5752977a.d65237c9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftravel-passport%2Fbar0069%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/57529779.048e6bd6.5752977a.d65237c9/?me_id=1242710&item_id=10011304&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Ftravel-passport%2Fcabinet%2Fimg30%2Fbar0069_10.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/57529779.048e6bd6.5752977a.d65237c9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftravel-passport%2Fbar0069%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/57529779.048e6bd6.5752977a.d65237c9/?me_id=1242710&item_id=10011304&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Ftravel-passport%2Fcabinet%2Fimg30%2Fbar0069_10.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/57529779.048e6bd6.5752977a.d65237c9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftravel-passport%2Fbar0069%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:01:01.401Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1242710&item_id=10011304&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "05793d663f952d25c58016efb35245088a71b2d61df0d4abec74c071a2afe678",
+        "300": "33b547ce929290baeaee533014d27bf07bd726a8fbaea5dbfd6c4f78cb24c16b"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322318+00:00"
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "requested_merchant_url": "https://item.rakuten.co.jp/irobotstore/f15/?variantId=f155260",
+      "image_identity_state": "PENDING_VISUAL_REVIEW",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c271c.86322106.577c271d.26628929/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Firobotstore%2Ff15%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c271c.86322106.577c271d.26628929/?me_id=1278318&item_id=10000580&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Firobotstore%2Fcabinet%2Fitem_thum%2Fbr_thum%2Fmini_ae_2nen_rank.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c271c.86322106.577c271d.26628929/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Firobotstore%2Ff15%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c271c.86322106.577c271d.26628929/?me_id=1278318&item_id=10000580&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Firobotstore%2Fcabinet%2Fitem_thum%2Fbr_thum%2Fmini_ae_2nen_rank.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c271c.86322106.577c271d.26628929/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Firobotstore%2Ff15%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:08:55.203Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1278318&item_id=10000580&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "d5a340798428b53054901fe630e58d79c099b2014408b2f30e092017437eef48",
+        "300": "88a166d0895e20b12770ea8d12957e562c786fa0a3c6a9f00b846296aeb2a184"
+      }
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "requested_merchant_url": "https://item.rakuten.co.jp/r-kojima/0810224630279/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:09:05.556Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1270903&item_id=11737771&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "e2cb63fd07edca6997a0dc22661549214b6ef328cf0364b5a2bd52d957bc0aeb",
+        "300": "07e8d6063239dca06948f2ada5b20b3ec2885e212b915b64d3854966a31c4d7a"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322319+00:00"
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ec-current/0810150542370/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12827451&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9127%2F0810150542370.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12827451&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9127%2F0810150542370.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:09:16.209Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1220942&item_id=12827451&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "f013aa118d1795e7cb5073a1f508c5ac456d6169a9d575ddd55e75ef867b28b6",
+        "300": "0bc9a0807b5a7a5e603c083a89ce3bb2a80435dca2496d5b86c24b353e9b7f02"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322320+00:00"
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "requested_merchant_url": "https://item.rakuten.co.jp/biccamera/0885155054982/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1781.6d1f2196.575e1782.0b4be596/?me_id=1269553&item_id=15492258&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbiccamera%2Fcabinet%2Fproduct%2F17338%2F00000015132941_a01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1781.6d1f2196.575e1782.0b4be596/?me_id=1269553&item_id=15492258&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbiccamera%2Fcabinet%2Fproduct%2F17338%2F00000015132941_a01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:09:25.836Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1269553&item_id=15492258&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "3616cb707017976e16ca70468dcc36c39fee64fcf7ce960945077857bf20147a",
+        "300": "5a0744ccd897ddc53035e0f7f6c0206a433e77778c26a4098d1311f1b32c4fe0"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322320+00:00"
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "requested_merchant_url": "https://item.rakuten.co.jp/edion/0885155053633/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10895187&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_540%2F0885155053633_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10895187&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_540%2F0885155053633_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F0885155053633%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:09:35.369Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1272415&item_id=10895187&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "a65840b5c51f814b9baf3eddd85df146c6b00a40a636865009223ee044f43cca",
+        "300": "33fb2d2d5099085273d0e105067916739617062fcfbcbd7ec704917720468575"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322321+00:00"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "requested_merchant_url": "https://item.rakuten.co.jp/d-shop1one/4571411221002/?variantId=4571411221002",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:13:45.924Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1297887&item_id=10242119&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "02fcdb9b554171c5261607ebc4a8af78721ca943529b4dd8f3355f8e1142db64",
+        "300": "1648945d6dfa74939d9d9cbbba7dc75146a9b457423a7df48c8c973cf7128904"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322322+00:00"
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "requested_merchant_url": "https://item.rakuten.co.jp/jackery-japan/n-p-400200-bkor-jk2/?variantId=21-0001-000321",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e179b.7cd88447.575e179c.6ef44ecb/?me_id=1374756&item_id=10000000&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjackery-japan%2Fcabinet%2F11954865%2F500new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e179b.7cd88447.575e179c.6ef44ecb/?me_id=1374756&item_id=10000000&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjackery-japan%2Fcabinet%2F11954865%2F500new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:11:42.026Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1374756&item_id=10000000&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "addf6dc1b16a97414b30687a9bc912e4da804475decd9b7bc7901da5187cb19c",
+        "300": "0cb5c831e7307e1f7de8f2dc7e6109cc630e8f85d0087866c3ced4920a5ed7e9"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322322+00:00"
+    },
+    {
+      "product_id": "PRD-BLUETTI-AC70",
+      "requested_merchant_url": "https://item.rakuten.co.jp/bluettijapan/bluettijapan_ac70/?variantId=bluettijapan_ac70",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e17db.03a02739.575e17dc.4f5e842e/?me_id=1406431&item_id=10000107&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbluettijapan%2Fcabinet%2F13205169%2Fac70.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e17db.03a02739.575e17dc.4f5e842e/?me_id=1406431&item_id=10000107&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbluettijapan%2Fcabinet%2F13205169%2Fac70.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:11:52.895Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406431&item_id=10000107&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "d9f46a99fe0e3fb1d2bf1d8efa46d62a55fef6504818723a16f2f01725bd3146",
+        "300": "3d07898e96bcebabdf362e54bc2d8190ccd9e8cabca9ce56ecd3e015c3ac94a1"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322323+00:00"
+    },
+    {
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ecmaison/compass1782726434/?variantId=compass_sku_1782726442412",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000665&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1782726354.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000665&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1782726354.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:10:49.128Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1433039&item_id=10000665&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "d1876abfbb167d94a5b96a56b5b1bac113fa63c1b5f2d628542fa9c7347d6f74",
+        "300": "a631bf4d80ad9dabeb3944e5a6d4bea9ca71f4342a4cc5181028c6749796461a"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322324+00:00"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "requested_merchant_url": "https://item.rakuten.co.jp/d-shop1one/4571411217234/?variantId=4571411217234",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10240088&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item-2%2F4571411217234.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10240088&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item-2%2F4571411217234.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:13:55.945Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1297887&item_id=10240088&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "2f9d45b8ae20b97971eda39502ac10f99145c8885b003545f6181e63d247a63e",
+        "300": "4b637bdeaa1c130101867aa771103c39d75631252b605205267413a4d7d1af09"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322325+00:00"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ecmaison/compass1753502424/?variantId=compass_sku_1753502443403",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000155&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1753502400.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000155&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1753502400.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:11:09.006Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1433039&item_id=10000155&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "8ec31797add93889cf66fef419f1dc0f0eed7060faececf08135f8a7e61cd9c3",
+        "300": "e6a7293fbfbdc854737349d82e0644a5f621935080b9825efc55858b2717bb63"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322325+00:00"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "requested_merchant_url": "https://item.rakuten.co.jp/anker/a1763/?variantId=A17635Z1",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1790.a23de582.575e1791.59249bdf/?me_id=1294713&item_id=10002336&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fanker%2Fcabinet%2Ftmb%2Fa1%2Fa17635z1_normal.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1790.a23de582.575e1791.59249bdf/?me_id=1294713&item_id=10002336&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fanker%2Fcabinet%2Ftmb%2Fa1%2Fa17635z1_normal.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:11:18.911Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1294713&item_id=10002336&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "46a118caf6eaad46c65b63f628ba66c4531dd69dd1b2cf70899e07681fd5b1b0",
+        "300": "9fbe12f96d9fd7c96a80725737a2a49601ef940dffddb5236bd41f0b3ebbc41c"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322326+00:00"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "requested_merchant_url": "https://item.rakuten.co.jp/siroca/ss-ma251/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:12:03.406Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406186&item_id=10000024&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
+        "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322327+00:00"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "requested_merchant_url": "https://item.rakuten.co.jp/edion/4549980451250/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10748437&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fpana_img_001%2F4549980451250_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10748437&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fpana_img_001%2F4549980451250_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T04:04:54.782Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1272415&item_id=10748437&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
+        "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+      "reviewed_at": "2026-09-13T05:22:16.322327+00:00"
+    }
+  ],
+  "superseded_records": [
+    {
+      "record": {
+        "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+        "requested_merchant_url": "https://item.rakuten.co.jp/ace-store/01551/?variantId=02",
+        "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+        "sources": {
+          "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009516&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01551.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+          "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009516&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01551.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+        },
+        "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01551%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+        "captured_at": "2026-09-13T04:08:01.273Z",
+        "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1240825&item_id=10009516&l-id=af_header_cta_link",
+        "source_sha256": {
+          "240": "b9dc912047bc0e0d285a928a01fc2bef74d60f70209227f2664e5fa4c5a3840c",
+          "300": "0191f92e5e5580aa383f48caaebb782437fac971ac63f3a31d6c88dce9c92b18"
+        },
+        "visual_review_evidence": "output/site-improvements-20260913/leaf-issued-images.png; /tmp/raos-affiliate-ui/small-six-images.png; /tmp/raos-affiliate-ui/updated-power-photos.png",
+        "reviewed_at": "2026-09-13T05:22:16.322317+00:00"
+      },
+      "reason": "画像の容量35～45L表示が公式本文36/45Lと不一致のため、数値記載のない側面写真へ正規発行画面で選び直した。"
+    }
+  ]
+}

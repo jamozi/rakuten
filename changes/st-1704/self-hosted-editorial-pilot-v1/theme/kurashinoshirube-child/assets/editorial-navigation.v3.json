@@ -516,7 +516,7 @@
           "roomba-mini-vs-switchbot-k11-pro",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源の4カテゴリから、置き場所や使い方などの条件整理、記事の比較、購入前の確認まで順に進める入口です。各カテゴリの記事数と対象商品も分かります。",
+        "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。",
         "kind": "categories",
         "label": "商品カテゴリから探す",
         "slug": "categories"
@@ -534,7 +534,7 @@
           "roomba-mini-vs-switchbot-k11-pro",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "一人暮らし・家事の時短・設置工事の回避・手入れ・旅行・停電への備えの6つの入口。商品名が決まっていなくても、困りごとから最初に読む1本と、記事ごとに決まることを確かめられます。",
+        "description": "省スペース・残る家事・給排水・手入れ・旅行の荷物・停電への備えを、それぞれの問いから整理します。",
         "kind": "purposes",
         "label": "悩み・目的から探す",
         "slug": "purposes"
@@ -545,7 +545,7 @@
           "st1704-countertop-dishwasher-for-small-households",
           "st1704-compact-robot-vacuum-shortlist"
         ],
-        "description": "食洗機の置き場所・給排水・洗剤・手入れ・費用を確かめる5本のガイドと、各比較記事の条件整理の節をまとめました。商品名を決める前に測る・数える・確認する入口です。",
+        "description": "置き場所を測る、給水作業を比べる、費用を試算するなど、知りたい作業から選べます。ガイド記事と比較記事内の選び方を区別しています。",
         "kind": "collection",
         "label": "選び方ガイド",
         "slug": "guides"
@@ -562,9 +562,9 @@
           "front-open-carry-on-suitcase-with-stopper",
           "roomba-mini-vs-switchbot-k11-pro"
         ],
-        "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源の比較記事10本を、比較軸と候補数つきで案内します。候補が決まっている方が同じ軸で違いと妥協点を確かめる入口です。",
+        "description": "商品ごとの比較記事を、主な違いと比較対象数つきで案内します。比較表と販売条件へ直接進めます。",
         "kind": "collection",
-        "label": "比較・条件別の候補",
+        "label": "商品比較の記事一覧",
         "slug": "comparisons"
       },
       {
@@ -580,9 +580,9 @@
           "roomba-mini-vs-switchbot-k11-pro",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "暮らしのしるべの掲載記事15本を、公開ページで確認した更新日と1文の変更点つきで新しい順に並べた一覧です。本文の編集日と商品仕様の確認日は別で、一括の再確認ではありません。",
+        "description": "新規公開と実質的な本文変更を区別した記事一覧です。公開日・内容更新日・具体的な変更点を確認できます。",
         "kind": "updates",
-        "label": "最近更新したガイド",
+        "label": "新着・内容を更新した記事",
         "slug": "updates"
       },
       {
@@ -592,7 +592,7 @@
           "lightweight-carry-on-suitcase-under-3kg",
           "front-open-carry-on-suitcase-with-stopper"
         ],
-        "description": "機内持ち込みスーツケースの比較記事4本。利用便の規定と荷物量を先に確かめ、軽さ・容量・前開き・ストッパーの条件から候補を絞り、搭乗前と購入前に確認する項目まで案内します。",
+        "description": "スーツケースの各辺・総外寸・重量・容量・開口構造を比較します。利用便の制約と拡張時の条件を分けて案内します。",
         "kind": "category",
         "label": "旅行・外出",
         "slug": "travel"
@@ -602,7 +602,7 @@
           "st1704-countertop-dishwasher-for-small-households",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "タンク式食洗機の比較記事2本と、置き場所・給排水・洗剤・手入れ・費用のガイド5本。置ける寸法といつもの食器量、毎回の給水から、工事なしで続けられる一台を選ぶ入口です。",
+        "description": "食洗機を買う前の採寸・給排水・比較と、購入後の洗剤・手入れ・費用を分けて案内します。",
         "kind": "category",
         "label": "キッチン・家事",
         "slug": "kitchen"
@@ -612,7 +612,7 @@
           "st1704-compact-robot-vacuum-shortlist",
           "roomba-mini-vs-switchbot-k11-pro"
         ],
-        "description": "ロボット掃除機の比較記事2本。本体とステーションの置き場、任せたい掃除と自分に残る手入れを分けて考え、小型2機種を中心に家に無理なく迎えられる構成を選ぶ入口です。",
+        "description": "吸引・水拭き・自動収集・モップ洗浄乾燥を分け、本体と台の寸法、帰還経路、部品交換の空間を比べます。",
         "kind": "category",
         "label": "掃除・時短",
         "slug": "cleaning"
@@ -622,7 +622,7 @@
           "st1704-portable-power-station-guide",
           "st1704-anker-solix-c300-c800-c1000-differences"
         ],
-        "description": "ポータブル電源の比較記事2本。停電時に使いたい機器と時間から必要な容量Whと出力Wを分けて考え、運べる重さ、Anker Solixの世代差、購入前の確認項目まで案内します。",
+        "description": "必要な容量Wh、同時使用W、起動時の条件、端子を分けて比較します。製品の違いと容量計算例へ直接進めます。",
         "kind": "category",
         "label": "防災・電源",
         "slug": "preparedness"
@@ -634,7 +634,7 @@
           "roomba-mini-vs-switchbot-k11-pro",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "一人暮らしや狭い部屋で、食洗機やロボット掃除機を置きたい方へ。本体寸法だけでなく扉を開く空間や充電台の余白まで測り、まず読む1本と各記事で決まることを案内します。",
+        "description": "本体・可動部・周囲空間を分けて採寸します。",
         "kind": "purpose",
         "label": "一人暮らし・省スペース",
         "slug": "small-space"
@@ -645,7 +645,7 @@
           "st1704-compact-robot-vacuum-shortlist",
           "roomba-mini-vs-switchbot-k11-pro"
         ],
-        "description": "洗い物や床掃除を任せて家事を短くしたい方へ。食洗機とロボット掃除機で任せられる作業と、給水・ゴミ捨て・手入れなど自分に残る作業を分け、まず読む1本から案内します。",
+        "description": "洗い物と床掃除で、準備・片づけ・手入れを比べます。",
         "kind": "purpose",
         "label": "家事を短くしたい",
         "slug": "save-housework"
@@ -655,9 +655,9 @@
           "st1704-countertop-dishwasher-for-small-households",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "分岐水栓の工事をせずにタンク式食洗機を使いたい方へ。「工事不要」の表示だけで決めず、置き場所・排水・電源・アースの確認順と、条件に合う機種の比較記事4本を案内します。",
+        "description": "給水と、電源・接地・排水・台の条件を分けます。",
         "kind": "purpose",
-        "label": "設置工事を避けたい",
+        "label": "食洗機の分岐水栓工事を避けたい人へ",
         "slug": "without-installation"
       },
       {
@@ -666,7 +666,7 @@
           "st1704-compact-robot-vacuum-shortlist",
           "roomba-mini-vs-switchbot-k11-pro"
         ],
-        "description": "買ったあとの手入れや消耗品を続けやすいものを選びたい方へ。食洗機の洗剤・清掃・費用のガイドと、ロボット掃除機やスーツケースで残る作業を確かめる記事を案内します。",
+        "description": "食洗機・掃除機・スーツケースごとに確認できます。",
         "kind": "purpose",
         "label": "手入れを続けやすいものを選びたい",
         "slug": "easy-maintenance"
@@ -678,9 +678,9 @@
           "lightweight-carry-on-suitcase-under-3kg",
           "front-open-carry-on-suitcase-with-stopper"
         ],
-        "description": "旅行の荷物を軽くしたい、移動中に取り出したい、小型機に持ち込みたい方へ。利用便と荷物量から機内持ち込みスーツケースの比較記事4本を選び、搭乗前の確認まで案内します。",
+        "description": "階段・車内・保安検査・宿・帰路の荷物で考えます。",
         "kind": "purpose",
-        "label": "旅行を快適にしたい",
+        "label": "旅行の荷物・移動を楽にしたい",
         "slug": "comfortable-travel"
       },
       {
@@ -688,9 +688,9 @@
           "st1704-portable-power-station-guide",
           "st1704-anker-solix-c300-c800-c1000-differences"
         ],
-        "description": "停電に備えてポータブル電源を選びたい方へ。使いたい機器と時間から必要な容量と出力を決め、4モデルの比較とAnker Solixの世代差の記事へ。医療機器への給電は対象外です。",
+        "description": "使う機器・必要時間・場所から、買い足す必要を考えます。",
         "kind": "purpose",
-        "label": "防災に備えたい",
+        "label": "停電に備えたい",
         "slug": "prepare-outage"
       }
     ],
@@ -709,7 +709,7 @@
   },
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
   "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
-  "source_portfolio_sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
+  "source_portfolio_sha256": "cbe6ca9cdf5258e4648869452ae9447fcfef975ff74655fea7326ff43de5142f",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

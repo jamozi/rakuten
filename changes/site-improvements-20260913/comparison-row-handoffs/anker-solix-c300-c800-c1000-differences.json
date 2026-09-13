@@ -1,0 +1,197 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/anker-solix-c300-c800-c1000-differences.html",
+  "runtime_article": {
+    "article_id": "anker-solix-c300-c800-c1000-differences",
+    "slug": "anker-solix-c300-c800-c1000-differences",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+    "body_sha256": "db8202a57b124b6081d943714ec3d234f8bb2017bf7f34b85e5ff8f58a7a3b38",
+    "bindings": [
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C300-300",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C300-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C300-240",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C300-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "rakuten-observed-anker-solix-c300-d-shop1one",
+        "cta_id": "purchase-29-rakuten-observed-anker-solix-c300-d-shop1one-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C800-PLUS-300",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C800-PLUS-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C800-PLUS-240",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C800-PLUS-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "rakuten-observed-anker-solix-c800-plus-d-shop1one",
+        "cta_id": "purchase-29-rakuten-observed-anker-solix-c800-plus-d-shop1one-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "image-PRD-ANKER-SOLIX-C1000-300",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C1000-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "image-PRD-ANKER-SOLIX-C1000-240",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C1000-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "rakuten-observed-anker-solix-c1000-ecmaison",
+        "cta_id": "purchase-29-rakuten-observed-anker-solix-c1000-ecmaison-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+        "seller_id": "rakuten-anker",
+        "offer_id": "image-PRD-ANKER-SOLIX-C1000-GEN2-300",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C1000-GEN2-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+        "seller_id": "rakuten-anker",
+        "offer_id": "image-PRD-ANKER-SOLIX-C1000-GEN2-240",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C1000-GEN2-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "anker-solix-c300-c800-c1000-differences",
+        "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+        "seller_id": "rakuten-anker",
+        "offer_id": "rakuten-observed-anker-solix-c1000-gen2-anker",
+        "cta_id": "purchase-29-rakuten-observed-anker-solix-c1000-gen2-anker-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-ff50225c6bff752ecd5ac254be587942",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-ANKER-SOLIX-C300": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C300\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C300-300\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C300-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C300\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C300-240\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C300-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>A17225Z1／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ANKER-SOLIX-C800-PLUS": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C800-PLUS\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C800-PLUS-300\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C800-PLUS-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10240088&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item-2%2F4571411217234.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C800-PLUS\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C800-PLUS-240\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C800-PLUS-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411217234%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10240088&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item-2%2F4571411217234.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>A1754／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ANKER-SOLIX-C1000": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C1000\" data-raos-seller-id=\"rakuten-ecmaison\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C1000-300\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C1000-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000155&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1753502400.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C1000\" data-raos-seller-id=\"rakuten-ecmaison\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C1000-240\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C1000-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1753502424%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000155&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1753502400.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>A1761／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ANKER-SOLIX-C1000-GEN2": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C1000-GEN2\" data-raos-seller-id=\"rakuten-anker\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C1000-GEN2-300\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C1000-GEN2-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1790.a23de582.575e1791.59249bdf/?me_id=1294713&item_id=10002336&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fanker%2Fcabinet%2Ftmb%2Fa1%2Fa17635z1_normal.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"anker-solix-c300-c800-c1000-differences\" data-raos-product-id=\"PRD-ANKER-SOLIX-C1000-GEN2\" data-raos-seller-id=\"rakuten-anker\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C1000-GEN2-240\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C1000-GEN2-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-ff50225c6bff752ecd5ac254be587942\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1790.a23de582.575e1791.59249bdf/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fanker%2Fa1763%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1790.a23de582.575e1791.59249bdf/?me_id=1294713&item_id=10002336&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fanker%2Fcabinet%2Ftmb%2Fa1%2Fa17635z1_normal.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>A17635Z1 / A1763521／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-ANKER-SOLIX-C300",
+    "PRD-ANKER-SOLIX-C800-PLUS",
+    "PRD-ANKER-SOLIX-C1000",
+    "PRD-ANKER-SOLIX-C1000-GEN2"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/anker-solix-c300-c800-c1000-differences/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

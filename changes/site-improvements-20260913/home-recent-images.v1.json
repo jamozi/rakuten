@@ -1,0 +1,81 @@
+{
+  "created_on": "2026-09-13",
+  "method": "BUILT_IN_IMAGE_GEN",
+  "model": "NOT_EXPOSED_BY_TOOL",
+  "intent": "Four distinct anonymous editorial still lifes; no product identity, measured performance, dosing or installation claims",
+  "visual_review": "Distinct principal objects and compositions; common natural light, warm ivory, wood and sage; no headings, logos or brand marks",
+  "records": [
+    {
+      "article_id": 266,
+      "theme": "cost",
+      "alt": "電卓と家計ノートで食洗機の費用を考える編集イメージ",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
+      "source_sha256": "2ca25edb8d70962bddfd27eb82ef152a44bdf580de329a01d90a03149a06a714",
+      "output_sha256": "ca474cabf712dab358947cdb2682c2acf41b514c0d9a9a999899f16adff4a1a7",
+      "bytes": 46190,
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "output_dimensions": [
+        900,
+        600
+      ]
+    },
+    {
+      "article_id": 265,
+      "theme": "cleaning",
+      "alt": "フィルターと柔らかな布を並べたお手入れの編集イメージ",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cleaning-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cleaning-20260913.webp",
+      "source_sha256": "985571c9781f21c5deac335b082883c75896f058c7c14f002c7930aad9fb4e79",
+      "output_sha256": "4c8c76f65516d70838ce5db860606f351ab56fc6e7f0f9515748eeb5fae1c678",
+      "bytes": 67166,
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "output_dimensions": [
+        900,
+        600
+      ]
+    },
+    {
+      "article_id": 264,
+      "theme": "detergent",
+      "alt": "洗剤容器と計量スプーンを並べた編集イメージ",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-detergent-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-detergent-20260913.webp",
+      "source_sha256": "9daa39068a9e65eb4f952f900ed4aea2e93b20f8ce66d1e759b2302c4f95cb7e",
+      "output_sha256": "9f8162b99854100fe09846e91aab4ef80978afdb80efdd96c41e9c3e339c53f1",
+      "bytes": 43132,
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "output_dimensions": [
+        900,
+        600
+      ]
+    },
+    {
+      "article_id": 263,
+      "theme": "water",
+      "alt": "給水容器と未接続のホースを並べた編集イメージ",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-water-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-water-20260913.webp",
+      "source_sha256": "8828c8cb7b26cd30c86e8d07ccf45f6d3687650e2d8e5d5d33e3cac372c2027d",
+      "output_sha256": "7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+      "bytes": 48162,
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "output_dimensions": [
+        900,
+        600
+      ]
+    }
+  ]
+}

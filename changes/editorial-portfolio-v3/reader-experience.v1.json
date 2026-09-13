@@ -1632,7 +1632,7 @@
       {
         "slug": "travel",
         "label": "旅行・外出",
-        "description": "機内持ち込みスーツケースの比較記事4本。利用便の規定と荷物量を先に確かめ、軽さ・容量・前開き・ストッパーの条件から候補を絞り、搭乗前と購入前に確認する項目まで案内します。",
+        "description": "スーツケースの各辺・総外寸・重量・容量・開口構造を比較します。利用便の制約と拡張時の条件を分けて案内します。",
         "kind": "category",
         "article_ids": [
           "st1703-first-suitcase-comparison",
@@ -1644,7 +1644,7 @@
       {
         "slug": "kitchen",
         "label": "キッチン・家事",
-        "description": "タンク式食洗機の比較記事2本と、置き場所・給排水・洗剤・手入れ・費用のガイド5本。置ける寸法といつもの食器量、毎回の給水から、工事なしで続けられる一台を選ぶ入口です。",
+        "description": "食洗機を買う前の採寸・給排水・比較と、購入後の洗剤・手入れ・費用を分けて案内します。",
         "kind": "category",
         "article_ids": [
           "st1704-countertop-dishwasher-for-small-households",
@@ -1654,7 +1654,7 @@
       {
         "slug": "cleaning",
         "label": "掃除・時短",
-        "description": "ロボット掃除機の比較記事2本。本体とステーションの置き場、任せたい掃除と自分に残る手入れを分けて考え、小型2機種を中心に家に無理なく迎えられる構成を選ぶ入口です。",
+        "description": "吸引・水拭き・自動収集・モップ洗浄乾燥を分け、本体と台の寸法、帰還経路、部品交換の空間を比べます。",
         "kind": "category",
         "article_ids": [
           "st1704-compact-robot-vacuum-shortlist",
@@ -1664,7 +1664,7 @@
       {
         "slug": "preparedness",
         "label": "防災・電源",
-        "description": "ポータブル電源の比較記事2本。停電時に使いたい機器と時間から必要な容量Whと出力Wを分けて考え、運べる重さ、Anker Solixの世代差、購入前の確認項目まで案内します。",
+        "description": "必要な容量Wh、同時使用W、起動時の条件、端子を分けて比較します。製品の違いと容量計算例へ直接進めます。",
         "kind": "category",
         "article_ids": [
           "st1704-portable-power-station-guide",
@@ -1674,7 +1674,7 @@
       {
         "slug": "small-space",
         "label": "一人暮らし・省スペース",
-        "description": "一人暮らしや狭い部屋で、食洗機やロボット掃除機を置きたい方へ。本体寸法だけでなく扉を開く空間や充電台の余白まで測り、まず読む1本と各記事で決まることを案内します。",
+        "description": "本体・可動部・周囲空間を分けて採寸します。",
         "kind": "purpose",
         "article_ids": [
           "st1704-countertop-dishwasher-for-small-households",
@@ -1686,7 +1686,7 @@
       {
         "slug": "save-housework",
         "label": "家事を短くしたい",
-        "description": "洗い物や床掃除を任せて家事を短くしたい方へ。食洗機とロボット掃除機で任せられる作業と、給水・ゴミ捨て・手入れなど自分に残る作業を分け、まず読む1本から案内します。",
+        "description": "洗い物と床掃除で、準備・片づけ・手入れを比べます。",
         "kind": "purpose",
         "article_ids": [
           "st1704-countertop-dishwasher-for-small-households",
@@ -1696,8 +1696,8 @@
       },
       {
         "slug": "without-installation",
-        "label": "設置工事を避けたい",
-        "description": "分岐水栓の工事をせずにタンク式食洗機を使いたい方へ。「工事不要」の表示だけで決めず、置き場所・排水・電源・アースの確認順と、条件に合う機種の比較記事4本を案内します。",
+        "label": "食洗機の分岐水栓工事を避けたい人へ",
+        "description": "給水と、電源・接地・排水・台の条件を分けます。",
         "kind": "purpose",
         "article_ids": [
           "st1704-countertop-dishwasher-for-small-households",
@@ -1707,7 +1707,7 @@
       {
         "slug": "easy-maintenance",
         "label": "手入れを続けやすいものを選びたい",
-        "description": "買ったあとの手入れや消耗品を続けやすいものを選びたい方へ。食洗機の洗剤・清掃・費用のガイドと、ロボット掃除機やスーツケースで残る作業を確かめる記事を案内します。",
+        "description": "食洗機・掃除機・スーツケースごとに確認できます。",
         "kind": "purpose",
         "article_ids": [
           "st1704-countertop-dishwasher-for-small-households",
@@ -1717,8 +1717,8 @@
       },
       {
         "slug": "comfortable-travel",
-        "label": "旅行を快適にしたい",
-        "description": "旅行の荷物を軽くしたい、移動中に取り出したい、小型機に持ち込みたい方へ。利用便と荷物量から機内持ち込みスーツケースの比較記事4本を選び、搭乗前の確認まで案内します。",
+        "label": "旅行の荷物・移動を楽にしたい",
+        "description": "階段・車内・保安検査・宿・帰路の荷物で考えます。",
         "kind": "purpose",
         "article_ids": [
           "st1703-first-suitcase-comparison",
@@ -1729,8 +1729,8 @@
       },
       {
         "slug": "prepare-outage",
-        "label": "防災に備えたい",
-        "description": "停電に備えてポータブル電源を選びたい方へ。使いたい機器と時間から必要な容量と出力を決め、4モデルの比較とAnker Solixの世代差の記事へ。医療機器への給電は対象外です。",
+        "label": "停電に備えたい",
+        "description": "使う機器・必要時間・場所から、買い足す必要を考えます。",
         "kind": "purpose",
         "article_ids": [
           "st1704-portable-power-station-guide",

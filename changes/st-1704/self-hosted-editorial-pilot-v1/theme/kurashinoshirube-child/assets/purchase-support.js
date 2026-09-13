@@ -22,6 +22,37 @@
     if (offer.total_scope_complete !== true || !amounts.every(money)) return result;
     return { state: 'CURRENT', total: result.subtotal, subtotal: result.subtotal };
   };
+  // Keep every price surface on the same clock policy. Invalid/expired values
+  // must never return as a dated subtotal after the initial server rendering.
+  const pricePresentation = (offer, now) => {
+    const cost = offerCost(offer, now);
+    const expiry = Math.min(time(offer.valid_until), time(offer.checked_at) + DAY);
+    if (!['CURRENT', 'INCOMPLETE'].includes(cost.state)) return {
+      state: cost.state,
+      text: `${cost.state === 'EXPIRED' ? '販売条件の表示期限切れ。' : '販売条件を再確認中。'}現在の価格・送料・必須品は販売先で確認してください。購入総額や予算内とは判断できません。`,
+    };
+    const format = new Intl.NumberFormat('ja-JP');
+    const labels = ['本体税込', '送料', '必須品'];
+    const amounts = COST_FIELDS.map((key, i) => `${labels[i]}：${money(offer[key]) ? format.format(offer[key]) + '円' : '未確認'}`).join('／');
+    const total = cost.state === 'CURRENT' ? `購入総額：${format.format(cost.total)}円。` :
+      `${cost.subtotal === null ? '' : `確認できた費目の小計：${format.format(cost.subtotal)}円。`}購入総額は未確認です。`;
+    return { state: cost.state, text: `${amounts}。${total}表示期限：${new Date(expiry).toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'})}（日本時間）。現在の販売条件は販売先で再確認してください。` };
+  };
+  const referencePricePresentation = (ref, now) => {
+    const fallback = { state: 'UNKNOWN', text: '価格は販売先で確認', expiry: NaN };
+    if (!ref || ref.schema !== 'RAOS_REFERENCE_PRICE_V1' || ref.verified !== true ||
+        !Number.isSafeInteger(ref.amount_yen) || ref.amount_yen <= 0 || ref.amount_yen > 1000000000 ||
+        ref.currency !== 'JPY' || ref.tax_included !== true || ref.scope !== 'base_unit' ||
+        ref.pricing_basis !== 'listed_sale_price' || !ref.product_id || !ref.exact_model ||
+        !ref.variant || !ref.variant_id || !ref.seller || !ref.seller_id ||
+        typeof ref.source_url !== 'string' || !/^https:\/\//.test(ref.source_url) ||
+        !ref.source_locator || !/^[a-f0-9]{64}$/.test(ref.evidence_sha256 || '')) return fallback;
+    const checked = time(ref.checked_at), deadline = time(ref.valid_until), expiry = Math.min(deadline, checked + DAY);
+    if (!Number.isFinite(checked) || !Number.isFinite(deadline) || !Number.isFinite(now) || checked > now || deadline <= checked) return fallback;
+    if (now >= expiry) return { ...fallback, state: 'EXPIRED', expiry };
+    const date = new Date(checked).toLocaleString('ja-JP', {timeZone:'Asia/Tokyo', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+    return {state:'CURRENT_REFERENCE', expiry, text:`参考価格 ${new Intl.NumberFormat('ja-JP').format(ref.amount_yen)}円\n本体・税込\n${ref.seller}\n${date} 確認`};
+  };
   const budgetState = (offers, budget, now) => {
     if (!money(budget)) return 'UNKNOWN';
     const costs = offers.map(o => offerCost(o, now));
@@ -30,7 +61,7 @@
     return 'OVER_BUDGET';
   };
   const sameKnownValues = values => values.length > 1 && values.every(v =>
-    typeof v === 'string' && v.trim() && !/未確認|不明|UNKNOWN|UNAVAILABLE|確認中|未検証|未実施|未計測/i.test(v)) &&
+    typeof v === 'string' && v.trim() && !/未確認|不明|UNKNOWN|UNAVAILABLE|確認中|未検証|未実施|未計測|未公表|不一致|再確認/i.test(v)) &&
     values.every(v => v.replace(/\s+/g, ' ').trim() === values[0].replace(/\s+/g, ' ').trim());
   const installationFields = [
     ['width_mm', '本体を置く幅'], ['depth_mm', '本体を置く奥行'], ['height_mm', '本体を置く高さ'],
@@ -207,12 +238,12 @@
       const pairMount = find('[data-ps-pair-options]');
       if (!pairMount) return;
       const options = optionsFrom(pairMount, 'data-ps-pair-options');
-      if (!options || options.length !== 4) return;
+      if (!options || options.length < 2 || options.length > 4) return;
       addSelect(pairMount, '候補A', { 'data-ps-pair': 'a' }, options);
       addSelect(pairMount, '候補B', { 'data-ps-pair': 'b' }, options);
       const label = create('label', '');
       label.append(create('input', '', { type: 'checkbox', 'data-ps-differences': '' }), page.createTextNode('同じ公表値の行を隠す'));
-      pairMount.append(label, create('button', '4候補に戻す', { type: 'button', 'data-ps-pair-reset': '' }),
+      pairMount.append(label, create('button', `${options.length}候補に戻す`, { type: 'button', 'data-ps-pair-reset': '' }),
         create('p', '', { 'data-ps-pair-result': '', role: 'status', 'aria-live': 'polite' }));
     });
     guarded(() => {
@@ -238,13 +269,17 @@
         let hiddenRows = 0;
         for (const row of table.querySelectorAll('tbody tr')) {
           const cells = [...row.querySelectorAll('td[data-ps-product]')].filter(c => !c.hidden);
-          const values = cells.map(c => c.textContent);
+          const values = cells.map(c => {
+            const value = c.cloneNode(true);
+            value.querySelectorAll('.ps-reference, .ps-source').forEach(n => n.remove());
+            return value.textContent;
+          });
           const unconfirmed = cells.some(c => c.dataset.psFactState && c.dataset.psFactState !== 'KNOWN');
           row.hidden = !row.hasAttribute('data-ps-keep-row') && diff.checked && !duplicate && !unconfirmed && sameKnownValues(values);
           if (row.hidden) hiddenRows++;
         }
-        result.textContent = duplicate ? '同じ商品が選ばれています。別の商品を選んでください。比較表は4候補を表示しています。' :
-          `${selected.length ? '選んだ2候補' : '4候補'}を表示。${hiddenRows}行を非表示にしました。未確認を含む行は残しています。`;
+        result.textContent = duplicate ? `同じ商品が選ばれています。別の商品を選んでください。比較表は${columns.length}候補を表示しています。` :
+          `${selected.length ? '選んだ2候補' : `${columns.length}候補`}を表示。${hiddenRows}行を非表示にしました。未確認を含む行は残しています。`;
       };
       a.addEventListener('change', () => { paired = true; update(); });
       b.addEventListener('change', () => { paired = true; update(); });
@@ -306,25 +341,28 @@
       controls.append(staged);
       controls.hidden = false;
     }));
-    const formatter = new Intl.NumberFormat('ja-JP');
     watchClock(browser, page, now => {
       const deadlines = [];
+      for (const node of all('[data-ps-reference-price]')) {
+        let ref = null;
+        try { ref = JSON.parse(node.getAttribute('data-ps-reference-price')); } catch (_) { /* no unverified amount */ }
+        const result = referencePricePresentation(ref, now);
+        node.textContent = result.text;
+        node.dataset.psReferenceState = result.state;
+        deadlines.push(result.expiry);
+      }
       for (const { node, offer } of sellers) {
-        const cost = offerCost(offer, now), status = node.querySelector('.ps-price-status');
+        const presentation = pricePresentation(offer, now), status = node.querySelector('.ps-price-status');
         const expiry = Math.min(time(offer.valid_until), time(offer.checked_at) + DAY);
-        if (node.dataset && 'psPriceState' in node.dataset) {
-          node.dataset.psPriceState = !money(offer.price_yen) || !Number.isFinite(expiry) || time(offer.checked_at) > now ? 'UNKNOWN'
-            : now >= expiry ? 'EXPIRED' : 'CURRENT';
-        }
+        if (node.dataset) node.dataset.psPriceState = presentation.state;
         deadlines.push(expiry);
-        if (status) status.textContent = cost.state === 'CURRENT' ? `確認した費目の購入総額：${formatter.format(cost.total)}円。表示期限：${new Date(expiry).toLocaleString('ja-JP')}。販売先で現在条件を再確認してください。` :
-          `${cost.state === 'EXPIRED' ? '販売条件の表示期限切れ。' : '購入総額は未確認。'}${cost.subtotal === null ? '' : `確認時の費目の小計：${formatter.format(cost.subtotal)}円。`}現在の購入総額や予算内とは判断できません。販売先で再確認してください。`;
+        if (status) status.textContent = presentation.text;
       }
       guarded(() => refreshBudget(now));
       return deadlines;
     });
     root.dataset.psMounted = '1';
   };
-  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationSummary, watchClock, mount };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationSummary, watchClock, mount };
   if (typeof document !== 'undefined' && typeof window !== 'undefined') document.querySelectorAll('.ps-article').forEach(root => mount(root, document, window));
 })();

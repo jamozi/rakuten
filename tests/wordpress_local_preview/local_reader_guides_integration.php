@@ -91,6 +91,7 @@ foreach (['kurashinoshirube_has_exact_keys', 'kurashinoshirube_article_bindings'
     'kurashinoshirube_reader_hub_page', 'kurashinoshirube_resolve_reader_hub_page', 'kurashinoshirube_flush_reader_hub_page_cache', 'kurashinoshirube_reader_hub_title',
     'kurashinoshirube_reader_hub_parent_slug', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
     'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_page_head', 'kurashinoshirube_reader_hub_url',
+    'kurashinoshirube_site_editorial_record', 'kurashinoshirube_site_editorial_date',
     'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_journeys', 'kurashinoshirube_reader_group_cards',
     'kurashinoshirube_reader_journey_stage', 'kurashinoshirube_reader_journey_shelves', 'kurashinoshirube_reader_journey_shortcuts',
     'kurashinoshirube_enqueue_local_running_cost', 'kurashinoshirube_verified_asset_uri',
@@ -196,6 +197,7 @@ $id = $seeded_ids[0];
 check(kurashinoshirube_public_article_identity($id)['article_id'] === 'test-guide-1', 'shared identity');
 check(kurashinoshirube_reader_article_category($id)['url'] === home_url('/kitchen/'), 'article category navigation');
 $card = kurashinoshirube_reader_guide_card(get_post($id));
+check(str_contains($card, '未確認') && !str_contains($card, '2026年9月5日'), 'unknown editorial update never falls back to WP modified date');
 check(str_contains($card, 'キッチン・家事 / 選び方ガイド') && str_contains($card, '/local-preview-test-guide-1/'), 'guide card metadata and local link');
 check(str_contains(kurashinoshirube_reader_group_cards('category'), '5記事を読む'), 'category card count');
 check(str_contains(kurashinoshirube_reader_group_cards('category'), '>食洗機</span>'), 'product name is the category card title');

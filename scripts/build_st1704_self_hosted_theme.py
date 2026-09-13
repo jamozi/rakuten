@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51"
+    "82bc43878cbab7ffff456f2656e3513acf4c692b544cf174dc10da9c182d7746"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -80,6 +80,56 @@ SOLOTA_RAKUA_ASSET_INPUT_PATH: Final = (
 HOME_HERO_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/home-hero.webp"
 )
+HOME_LIFESTYLE_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp"
+)
+HOME_RECENT_IMAGE_ALTS: Final = {
+    THEME_REPOSITORY_ROOT / f"assets/images/home-recent-{name}-20260913.webp": alt
+    for name, alt in (
+        ("cost", "電卓と家計ノートで食洗機の費用を考える編集イメージ"),
+        ("cleaning", "フィルターと柔らかな布を並べたお手入れの編集イメージ"),
+        ("detergent", "洗剤容器と計量スプーンを並べた編集イメージ"),
+        ("water", "給水容器と未接続のホースを並べた編集イメージ"),
+    )
+}
+CATEGORY_IMAGE_ALTS: Final = {
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-vacuum-20260913.webp": "木の床を掃除するロボット掃除機のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-mop-20260913.webp": "光が差す床とロボット掃除機のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-manual-20260913.webp": "ダストボックスを手入れする手元のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-dust-20260913.webp": "ロボット掃除機とドックのある部屋のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-wash-20260913.webp": "給水タンクと柔らかな布を並べたAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-small-20260913.webp": "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-medium-20260913.webp": "スーツケースの横に着替えを揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-large-20260913.webp": "大きなスーツケースと衣類や靴を揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-light-20260913.webp": "スーツケースの持ち手を握る旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-access-20260913.webp": "前面収納を開き、小物を収めたスーツケースのイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-move-20260913.webp": "駅の通路でスーツケースを転がして歩くイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-small-20260913.webp": "窓辺のテーブルに置いたノートPCとスマートフォン。AI生成の利用シーンイメージ。",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-medium-20260913.webp": "キャンプのテーブルに置いた扇風機とランタン。AI生成の利用シーンイメージ。",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-large-20260913.webp": "炊飯器と冷蔵庫のある自宅のキッチン。AI生成の利用シーンイメージ。",
+}
+KITCHEN_CAPACITY_IMAGE_ALTS: Final = {
+    THEME_REPOSITORY_ROOT / f"assets/images/kitchen-capacity-{name}-20260913.webp": alt
+    for name, alt in (
+        ("compact", "少量の皿・茶碗・カップを並べた食器量の編集イメージ"),
+        ("standard", "皿・鉢・カップをまとめた一食分の食器量の編集イメージ"),
+        ("large", "重ねた食器と大皿・鍋を並べたまとめ洗いの編集イメージ"),
+    )
+}
 SUITCASE_GUIDE_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp"
 )
@@ -92,7 +142,9 @@ SUITCASE_UNDER_100_ASSET_INPUT_PATH: Final = (
 SUITCASE_UNDER_3KG_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-under-3kg.webp"
 )
-BRAND_LOGO_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/images/brand-mark-512.png"
+BRAND_LOGO_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/brand-mark-512.png"
+)
 APPLE_TOUCH_ICON_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/apple-touch-icon.png"
 )
@@ -117,6 +169,8 @@ READER_RUNTIME_ASSET_PATH: Final = (
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     ANALYTICS_CONSENT_GATE_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/consent-controls.js",
+    THEME_REPOSITORY_ROOT / "assets/site-editorial-metadata.v1.json",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.js",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.css",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.v1.json",
@@ -144,6 +198,10 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     FAVICON_ICO_INPUT_PATH,
     HOME_HERO_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-hero.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp",
+    *HOME_RECENT_IMAGE_ALTS,
+    *KITCHEN_CAPACITY_IMAGE_ALTS,
+    *CATEGORY_IMAGE_ALTS,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
@@ -186,6 +244,8 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256": "assets/site-editorial-metadata.v1.json",
+    "KURASHINOSHIRUBE_CONSENT_CONTROLS_ASSET_SHA256": "assets/consent-controls.js",
     "KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256": "assets/purchase-support.v1.json",
     "KURASHINOSHIRUBE_PURCHASE_UI_SHA256": "assets/purchase-support.js",
     "KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256": "assets/purchase-analytics.js",
@@ -360,6 +420,10 @@ def _validate_owner_bindings() -> None:
             ANKER_GENERATIONS_ASSET_INPUT_PATH,
             DISHWASHER_ASSET_INPUT_PATH,
             HOME_HERO_ASSET_INPUT_PATH,
+            HOME_LIFESTYLE_ASSET_INPUT_PATH,
+            *HOME_RECENT_IMAGE_ALTS,
+            *KITCHEN_CAPACITY_IMAGE_ALTS,
+            *CATEGORY_IMAGE_ALTS,
             PORTABLE_POWER_ASSET_INPUT_PATH,
             ROBOT_VACUUM_ASSET_INPUT_PATH,
             ROOMBA_K11_ASSET_INPUT_PATH,
@@ -512,7 +576,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except (TypeError, ValueError, UnicodeError, RecursionError):
+    except (TypeError, ValueError, UnicodeError, RecursionError):  # fmt: skip
         _fail()
 
 
@@ -572,7 +636,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except (UnicodeError, json.JSONDecodeError):
+    except (UnicodeError, json.JSONDecodeError):  # fmt: skip
         _fail()
     if type(document) is not dict:
         _fail()
@@ -658,6 +722,52 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     rendered[THEME_ROOT / "theme-contract.v1.json"] = _canonical_json(contract)
 
     assets = _load_json_payload(sources["raos-assets.v1.json"])
+    editorial_alts = {
+        HOME_LIFESTYLE_ASSET_INPUT_PATH: "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
+        **HOME_RECENT_IMAGE_ALTS,
+        **KITCHEN_CAPACITY_IMAGE_ALTS,
+        **CATEGORY_IMAGE_ALTS,
+    }
+    editorial_assets = [
+        asset
+        for asset in theme_asset_owner.ASSETS
+        if asset.output.relative_to(ROOT) in editorial_alts
+    ]
+    editorial_paths = {
+        asset.output.relative_to(
+            theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix()
+        for asset in editorial_assets
+    }
+    assets["required_images"] = sorted(
+        [
+            record
+            for record in assets["required_images"]
+            if record["path"] not in editorial_paths
+        ]
+        + [
+            {
+                "alt": editorial_alts[asset.output.relative_to(ROOT)],
+                "canvas_height": asset.output_height,
+                "canvas_width": asset.output_width,
+                "delivery": (
+                    "CATEGORY_SAVED_BODY_IMAGE"
+                    if asset.output.relative_to(ROOT)
+                    in {*KITCHEN_CAPACITY_IMAGE_ALTS, *CATEGORY_IMAGE_ALTS}
+                    else "HOMEPAGE_SAVED_BODY_IMAGE"
+                ),
+                "path": asset.output.relative_to(
+                    theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+                ).as_posix(),
+                "provenance": theme_asset_owner.manifest_provenance(asset),
+                "sha256": asset.output_sha256,
+                "status": "FINAL",
+                "usage": "Anonymous lifestyle editorial image; not an actual product photograph",
+            }
+            for asset in editorial_assets
+        ],
+        key=lambda record: record["path"],
+    )
     assets["source_files"] = list(SOURCE_FILES)
     assets["theme_runtime_revision"] = revision
     assets["theme_source_fingerprint"] = revision
@@ -728,7 +838,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except (OSError, ThemeBuildFailure):
+    except (OSError, ThemeBuildFailure):  # fmt: skip
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -851,14 +961,22 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 16:
+    if (
+        type(records) is not list
+        or len(records)
+        != len(theme_asset_owner.ASSETS) + len(theme_icon_owner.ICONS) + 1
+    ):
         _fail()
     generated_assets = {
-        asset.output.relative_to(THEME_ROOT).as_posix(): asset
+        asset.output.relative_to(
+            theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix(): asset
         for asset in theme_asset_owner.ASSETS
     }
     generated_icons = {
-        icon.output.relative_to(THEME_ROOT).as_posix(): icon
+        icon.output.relative_to(
+            theme_icon_owner.ROOT / THEME_REPOSITORY_ROOT
+        ).as_posix(): icon
         for icon in theme_icon_owner.ICONS
     }
     seen_paths: set[str] = set()
@@ -960,6 +1078,15 @@ def _validate_asset_manifest(
         "assets/images/favicon-32.png",
         "assets/images/favicon.ico",
         "assets/images/home-hero.webp",
+        "assets/images/home-lifestyle-20260913.webp",
+        *(
+            path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
+            for path in (
+                *HOME_RECENT_IMAGE_ALTS,
+                *KITCHEN_CAPACITY_IMAGE_ALTS,
+                *CATEGORY_IMAGE_ALTS,
+            )
+        ),
     }:
         _fail()
 
@@ -1355,11 +1482,20 @@ def validate_sources() -> dict[str, str]:
     _validate_asset_manifest(_json("raos-assets.v1.json"), sources)
 
     for asset in theme_asset_owner.ASSETS:
-        _validate_webp(asset.output.relative_to(THEME_ROOT).as_posix())
+        _validate_webp(
+            asset.output.relative_to(
+                theme_asset_owner.ROOT / THEME_REPOSITORY_ROOT
+            ).as_posix()
+        )
     for icon in theme_icon_owner.ICONS:
         try:
             theme_icon_owner.validate_output(
-                icon, _read_source(icon.output.relative_to(THEME_ROOT).as_posix())
+                icon,
+                _read_source(
+                    icon.output.relative_to(
+                        theme_icon_owner.ROOT / THEME_REPOSITORY_ROOT
+                    ).as_posix()
+                ),
             )
         except theme_icon_owner.IconGenerationFailure:
             _fail()
@@ -1413,7 +1549,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except (OSError, ThemeBuildFailure):
+    except (OSError, ThemeBuildFailure):  # fmt: skip
         _fail()
 
 

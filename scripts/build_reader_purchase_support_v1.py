@@ -26,6 +26,9 @@ DOMAIN_INPUT_PATH: Final = ROOT / "python/raos/domain/editorial/purchase_support
 RENDERER_INPUT_PATH: Final = (
     ROOT / "python/raos/application/editorial/purchase_support.py"
 )
+GUIDE_IMPROVEMENTS_INPUT_PATH: Final = (
+    ROOT / "python/raos/application/editorial/site_guide_improvements.py"
+)
 COST_INPUT_PATH: Final = (
     ROOT / "python/raos/application/editorial/reader_running_cost.py"
 )
@@ -41,6 +44,16 @@ MEDIA_EVIDENCE_INPUT_PATH: Final = (
     ROOT / "changes/wordpress-direct-publish-v1/official-media-sources.md"
 )
 TEMPLATE_INPUT_PATHS: Final = (
+    *(
+        ROOT / "changes/reader-purchase-support-v1/articles" / (slug + ".html")
+        for slug in (
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+            "small-carry-on-suitcase-comparison",
+        )
+    ),
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
     ROOT
     / "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
     ROOT
@@ -61,8 +74,29 @@ TEMPLATE_INPUT_PATHS: Final = (
     ROOT / "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
     ROOT / "changes/reader-purchase-support-v1/articles/comparison-policy.html",
     ROOT / "changes/reader-purchase-support-v1/articles/privacy-policy.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/carry-on-suitcase-under-100-seats.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+    ROOT / "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
 )
 ARTICLE_OUTPUT_PATHS: Final = (
+    *(
+        ROOT / "changes/wordpress-direct-publish-v1/articles" / (slug + ".html")
+        for slug in (
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+            "small-carry-on-suitcase-comparison",
+        )
+    ),
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html",
     ROOT
     / "changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
     ROOT
@@ -84,6 +118,18 @@ ARTICLE_OUTPUT_PATHS: Final = (
     ROOT / "changes/wordpress-direct-publish-v1/articles/about-ad-policy.html",
     ROOT / "changes/wordpress-direct-publish-v1/articles/comparison-policy.html",
     ROOT / "changes/wordpress-direct-publish-v1/articles/privacy-policy.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html",
 )
 RUNTIME_OUTPUT_PATH: Final = (
     ROOT

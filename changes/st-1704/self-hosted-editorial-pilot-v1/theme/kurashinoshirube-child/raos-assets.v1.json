@@ -400,6 +400,161 @@
       "usage": "Theme-owned SVG favicon when no WordPress Site Icon is configured"
     },
     {
+      "alt": "ロボット掃除機とドックのある部屋のAIイメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/cleaning-dust-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_CLEANING",
+        "original_sha256": "516a7422623790972488fb026c57401517ebc4e6d40c86918280246dc5be5e73",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-dust-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "55e9e83b55eca1e692e7d0dd066ed5e541ce528f42e9ce1d3c81f40e177b4559",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "ダストボックスを手入れする手元のAIイメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/cleaning-manual-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_CLEANING",
+        "original_sha256": "fba7dc299566d9bc0345650f65a8a3ebe5e4b688c9ba22f0774f1b120d431438",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-manual-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "58419320671c7ee81c3242afaeab6b3b3d56f53d34022ee5c5c85ed52cde34f1",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "光が差す床とロボット掃除機のAIイメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/cleaning-mop-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_CLEANING",
+        "original_sha256": "a09a17eb85e64c475129ede959518dcb9de16381d60e566d14dccdaa4d2b5941",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-mop-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "f6478cefb6d8dc7578bbfa00e644ef37e5868bf5f506d4e068b56f85ec05b9a4",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "木の床を掃除するロボット掃除機のAIイメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/cleaning-vacuum-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_CLEANING",
+        "original_sha256": "c371a7bae3b27a7ee1ce25e9708dfa012950566783d108f7387e23ee8992e45d",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-vacuum-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "8f0e97f57a588482e954f2ffc66f6b91e8bf9fd721be32ba09b347d04519abcf",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "給水タンクと柔らかな布を並べたAIイメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/cleaning-wash-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_CLEANING",
+        "original_sha256": "86440371bb8826370884b9027b7c1d33248879210a1a0f7a838a89af49ea5aa0",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/cleaning-wash-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "94a95c0c3697ed8e985a73721cd8126e1d97cdfd4281824f7fa1bc0f3dd70f1c",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
       "alt": "",
       "canvas_height": 32,
       "canvas_width": 32,
@@ -488,11 +643,545 @@
       "sha256": "9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493",
       "status": "FINAL",
       "usage": "Homepage hero and neutral social fallback"
+    },
+    {
+      "alt": "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
+      "canvas_height": 941,
+      "canvas_width": 1672,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-lifestyle-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_HERO"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_QUIET_LIVING_EDITORIAL",
+        "original_sha256": "8b272be7c7e1a9be6b113d68f4afd1d3874bbced08e4d839b2d032ff680ec38e",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-lifestyle-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "8e8a39c5d34f41a889968de911fb8659b36ebc4e9c95bd2541797affa59943fe",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "フィルターと柔らかな布を並べたお手入れの編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-cleaning-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_CLEANING_STILL_LIFE",
+        "original_sha256": "985571c9781f21c5deac335b082883c75896f058c7c14f002c7930aad9fb4e79",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cleaning-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "4c8c76f65516d70838ce5db860606f351ab56fc6e7f0f9515748eeb5fae1c678",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "電卓と家計ノートで食洗機の費用を考える編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-cost-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_COST_STILL_LIFE",
+        "original_sha256": "2ca25edb8d70962bddfd27eb82ef152a44bdf580de329a01d90a03149a06a714",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "ca474cabf712dab358947cdb2682c2acf41b514c0d9a9a999899f16adff4a1a7",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "洗剤容器と計量スプーンを並べた編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-detergent-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_DETERGENT_STILL_LIFE",
+        "original_sha256": "9daa39068a9e65eb4f952f900ed4aea2e93b20f8ce66d1e759b2302c4f95cb7e",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-detergent-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "9f8162b99854100fe09846e91aab4ef80978afdb80efdd96c41e9c3e339c53f1",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "給水容器と未接続のホースを並べた編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-water-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_WATER_STILL_LIFE",
+        "original_sha256": "8828c8cb7b26cd30c86e8d07ccf45f6d3687650e2d8e5d5d33e3cac372c2027d",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-water-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "少量の皿・茶碗・カップを並べた食器量の編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-compact-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+          "ARTICLE_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_COMPACT",
+        "original_sha256": "5644f9c3e8a018ea155896e9458f996f54a0fa86e17b4bb20a813d372bf11ff5",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-compact-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "f46216dccb204f7791fd30ef30f6be619d63810088c13c8d892aaecbdcdddabe",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "重ねた食器と大皿・鍋を並べたまとめ洗いの編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-large-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+          "ARTICLE_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_LARGE",
+        "original_sha256": "4e2282644d880712f2b8f493c5fc2cd668ee1e1caf20b8978ca0ac3f8404d0cf",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-large-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "aa69f7b790fe7e595789d7ed79e23089bea15b3aadde17089bffae684c92a3a8",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "皿・鉢・カップをまとめた一食分の食器量の編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-standard-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
+          "ARTICLE_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_STANDARD",
+        "original_sha256": "12a8b050904326f7e70a3536ae7c21b126b9560c8990db84b322251f2b9a7e28",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-standard-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "6c1c766e69b7e39634f0363e087f255ed21ede528ce3d505a3c0eb5b03027a37",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "炊飯器と冷蔵庫のある自宅のキッチン。AI生成の利用シーンイメージ。",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/power-capacity-large-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_PREPAREDNESS",
+        "original_sha256": "d9388ee5fb15800c30b88aa1a838192569ab42376d5ef9a6af8d4e6072b86c2f",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-large-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "3e0431641a002ece5c09e032446e61b5e227daa9d88e6ca4237e2e6a051c7b69",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "キャンプのテーブルに置いた扇風機とランタン。AI生成の利用シーンイメージ。",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/power-capacity-medium-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_PREPAREDNESS",
+        "original_sha256": "9dee1908f21d836e4f070416a16be9025edcbb56d52e93252fd8f3cc02655202",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-medium-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "6ac70394c787d699df91a6e4d18978864ccda763a9c3ba0598a37e349fd7bcf5",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "窓辺のテーブルに置いたノートPCとスマートフォン。AI生成の利用シーンイメージ。",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/power-capacity-small-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_PREPAREDNESS",
+        "original_sha256": "f1ced6fc365023a1c7dbb2077249189b033f9dd6e13c274b4dd27b245e1e2458",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/power-capacity-small-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "f7602b7505592df2d42f765bbdf1c2d3d0d7a9436ba5cb04feaec18be6de24ce",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "前面収納を開き、小物を収めたスーツケースのイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-access-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "d3ced595c8656fb43b446174173077370bef950d33a7dede08b0e7893531152b",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-access-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "de0bdb2aaea722ca58640df54a3815c89263bdf1020ff6c1910fb4a7772d30fd",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "大きなスーツケースと衣類や靴を揃えた旅支度のイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-large-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "99966c44b8a17ab13f3de7038ff4effe33cc17761d6e4d38b68823b0606d37c4",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-large-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "b04dfaba611c040064441e2c0d8206486d8c85fe7ad3fad74783766aba028983",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "スーツケースの持ち手を握る旅支度のイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-light-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "a8abda6b7a0d5d309088063eab30ef955fe515c01441369db73188130107a88c",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-light-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "798f9e48dfaa30e2bb890750f5d3463ce54deeca5f0b3fbc98f33150e8c9d814",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "スーツケースの横に着替えを揃えた旅支度のイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-medium-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "16013a3b0f83c2224afe5243995c63a4d1e6811bfb3904cd2ddd09844ac1842d",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-medium-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "153359cc150bd780c7cd4cbac128047b429b97420cb29cb5e07bc5a6239f7161",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "駅の通路でスーツケースを転がして歩くイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-move-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "09efe511375cc9490eca06244b1cca90c8e0b0f8d6e3512757f37ecfed7023e7",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-move-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "da8d443ec76385aec82ecab4554c0357b67f27a13f7bd54f90ec236d0817df8f",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ",
+      "canvas_height": 675,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/travel-small-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_CATEGORY_TRAVEL",
+        "original_sha256": "777915758f42a2471fc9b95f58b45399451bc55ec94ef38693b50c18fd96304b",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/travel-small-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "db5b597e3d7b58683f1ca7172e35d45a3e500d7f6e5b969d7b97199d1038cbed",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
     }
   ],
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2",
   "source_files": [
     "assets/analytics-consent-gate.js",
+    "assets/consent-controls.js",
     "assets/editorial-navigation.js",
     "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
@@ -510,16 +1199,38 @@
     "assets/images/article-suitcase-under-3kg.webp",
     "assets/images/brand-mark-512.png",
     "assets/images/brand-mark.svg",
+    "assets/images/cleaning-dust-20260913.webp",
+    "assets/images/cleaning-manual-20260913.webp",
+    "assets/images/cleaning-mop-20260913.webp",
+    "assets/images/cleaning-vacuum-20260913.webp",
+    "assets/images/cleaning-wash-20260913.webp",
     "assets/images/favicon-32.png",
     "assets/images/favicon.ico",
     "assets/images/home-hero.webp",
+    "assets/images/home-lifestyle-20260913.webp",
+    "assets/images/home-recent-cleaning-20260913.webp",
+    "assets/images/home-recent-cost-20260913.webp",
+    "assets/images/home-recent-detergent-20260913.webp",
+    "assets/images/home-recent-water-20260913.webp",
+    "assets/images/kitchen-capacity-compact-20260913.webp",
+    "assets/images/kitchen-capacity-large-20260913.webp",
+    "assets/images/kitchen-capacity-standard-20260913.webp",
     "assets/images/magazine-hero.webp",
     "assets/images/magazine-kitchen.webp",
     "assets/images/magazine-room.webp",
     "assets/images/magazine-tools.webp",
     "assets/images/magazine-travel.webp",
+    "assets/images/power-capacity-large-20260913.webp",
+    "assets/images/power-capacity-medium-20260913.webp",
+    "assets/images/power-capacity-small-20260913.webp",
     "assets/images/roomba-mini-official.jpg",
     "assets/images/roomba-mini-slim-official.jpg",
+    "assets/images/travel-access-20260913.webp",
+    "assets/images/travel-large-20260913.webp",
+    "assets/images/travel-light-20260913.webp",
+    "assets/images/travel-medium-20260913.webp",
+    "assets/images/travel-move-20260913.webp",
+    "assets/images/travel-small-20260913.webp",
     "assets/legacy-media-display-projection.v1.json",
     "assets/local-running-cost.js",
     "assets/measurement.js",
@@ -529,6 +1240,7 @@
     "assets/purchase-support.v1.json",
     "assets/rakuten-product-media.json",
     "assets/reader-measurement-runtime.v1.json",
+    "assets/site-editorial-metadata.v1.json",
     "assets/theme.css",
     "functions.php",
     "inc/purchase-analytics.php",
@@ -547,8 +1259,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51",
+  "theme_runtime_revision": "82bc43878cbab7ffff456f2656e3513acf4c692b544cf174dc10da9c182d7746",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51",
+  "theme_source_fingerprint": "82bc43878cbab7ffff456f2656e3513acf4c692b544cf174dc10da9c182d7746",
   "theme_version": "1.6.0"
 }

@@ -25,7 +25,7 @@ IFS=${IFS%_}
 umask 0077
 
 expected_root=/home/minami/rakuten
-affiliate_request_root=$expected_root/.secrets/rakuten-owner-local/requests
+affiliate_request_root=$expected_root/.secrets/rakuten-owner-requests
 ace_cresta_request=$affiliate_request_root/keyword-ace-cresta-06316.json
 ace_difference_request=$affiliate_request_root/keyword-ace-difference-05721.json
 proteca_maxpass4_request=$affiliate_request_root/keyword-proteca-maxpass4-01471.json

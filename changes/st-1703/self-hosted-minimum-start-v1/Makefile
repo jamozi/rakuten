@@ -82,8 +82,8 @@ theme-check:
 affiliate-verify:
 	"$(OWNER_LAUNCHER)" affiliate-verify \
 		--ace-cresta-06316-request \
-		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-cresta-06316.json" \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-requests/keyword-ace-cresta-06316.json" \
 		--ace-difference-05721-request \
-		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-ace-difference-05721.json" \
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-requests/keyword-ace-difference-05721.json" \
 		--proteca-maxpass4-01471-request \
-		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-local/requests/keyword-proteca-maxpass4-01471.json"
+		"$(OWNER_REPOSITORY_ROOT)/.secrets/rakuten-owner-requests/keyword-proteca-maxpass4-01471.json"

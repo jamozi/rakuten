@@ -1,0 +1,86 @@
+[
+  {
+    "post_id": 19,
+    "article_id": "carry-on-suitcase-comparison",
+    "body_source": "changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
+    "source_revision_id": 535,
+    "source_content_sha256": "2134d20e5a97288191445af4ab861ccdc18ae3bb6bb8d51bf205cc86d2c5d002",
+    "purchase_support_article_id": "carry-on-suitcase-comparison",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "エース3機種内の軽さを明示し、クレスタの隠しポケットとマックスパス4のPC収納寸法を公式で再確認。"
+  },
+  {
+    "post_id": 82,
+    "article_id": "carry-on-suitcase-under-100-seats",
+    "body_source": "changes/reader-purchase-support-v1/articles/carry-on-suitcase-under-100-seats.html",
+    "source_revision_id": 548,
+    "source_content_sha256": "5a06aa6721aef94590f4e82381b40170b6b9ef9ce438d19685845c271bdb06b4",
+    "purchase_support_article_id": "carry-on-suitcase-under-100-seats",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "通常時と拡張時を区別し、60524新仕様を公式で再確認。未照合画像を非掲載。"
+  },
+  {
+    "post_id": 84,
+    "article_id": "front-open-carry-on-suitcase-with-stopper",
+    "body_source": "changes/reader-purchase-support-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+    "source_revision_id": 539,
+    "source_content_sha256": "edb8369304b0f961a7e5c0291145da3c9fa165854971cfdb47eeb887a017b46b",
+    "purchase_support_article_id": "front-open-carry-on-suitcase-with-stopper",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "4構造のアクセス経路図と、ストッパー操作・PC収納実寸の確認状態を追加。"
+  },
+  {
+    "post_id": 85,
+    "article_id": "roomba-mini-vs-switchbot-k11-pro",
+    "body_source": "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+    "source_revision_id": 540,
+    "source_content_sha256": "56e9f49b65794caeb7c9d333340fda83d90330e25266a33e668f3c5519441d1a",
+    "purchase_support_article_id": "roomba-mini-vs-switchbot-k11-pro",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "自動収集付き2機種とSlimを分離。K11の説明書で軸名なしと部品交換目安を確認。"
+  },
+  {
+    "post_id": 86,
+    "article_id": "solota-vs-rakua-mini-plus",
+    "body_source": "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
+    "source_revision_id": 543,
+    "source_content_sha256": "a34aabddd5541165d26774eeb933943daf990c9454fb86a7bc9777c732869320",
+    "purchase_support_article_id": "solota-vs-rakua-mini-plus",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "mini Plusを別型番として共通化。公式の再入荷通知表示と代替候補への案内を整理。"
+  },
+  {
+    "post_id": 29,
+    "article_id": "anker-solix-c300-c800-c1000-differences",
+    "body_source": "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+    "source_revision_id": 542,
+    "source_content_sha256": "913c7cf78d2011e235e0afc221ad770ab374bb8f7f891a154d53362d9c4be84b",
+    "purchase_support_article_id": "anker-solix-c300-c800-c1000-differences",
+    "remove_fields": [
+      "patch_source",
+      "baseline_source"
+    ],
+    "updated_on": "2026-09-13",
+    "update_summary": "Gen2日本語説明書で単口1500W・合計1550Wを確認。全4機種のAC/USB-Cと同時制約を追加。"
+  }
+]

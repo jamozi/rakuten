@@ -50,7 +50,7 @@ def test_published_controls_are_inert_before_browser_enhancement():
             / "changes/wordpress-direct-publish-v1/articles"
             / (article["slug"] + ".html")
         ).read_text()
-        if article["kind"] == "comparison":
+        if article["kind"] == "comparison" and not article.get("authored_comparison"):
             template = (
                 root
                 / "changes/reader-purchase-support-v1/articles"
@@ -71,7 +71,9 @@ def test_published_controls_are_inert_before_browser_enhancement():
                 if "data-ps-purpose-options" in n.attrs
             ]
             root_node = next(n for n in nodes if "data-raos-article-id" in n.attrs)
-            if article["slug"] == "countertop-dishwasher-for-small-households":
+            if article.get("authored_comparison") and not configs:
+                assert configs == []
+            elif article["slug"] == "countertop-dishwasher-for-small-households":
                 # The main comparison links the four conditions instead of inputs.
                 assert configs == []
                 assert root_node.attrs["data-ps-purpose-mode"] == "links"

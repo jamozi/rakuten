@@ -1,0 +1,197 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/countertop-dishwasher-for-small-households.html",
+  "runtime_article": {
+    "article_id": "countertop-dishwasher-for-small-households",
+    "slug": "countertop-dishwasher-for-small-households",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+    "body_sha256": "f2e966f437fafb54dd95395e79d8c8f8fd4bff2dfa113503af4200185b277cca",
+    "bindings": [
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "image-PRD-PANASONIC-NP-TMLK1-300",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TMLK1-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "image-PRD-PANASONIC-NP-TMLK1-240",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TMLK1-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "rakuten-ui-solota-20260913",
+        "cta_id": "purchase-41-rakuten-ui-solota-20260913-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "image-PRD-THANKO-RAKUA-MINI-COLOR-300",
+        "cta_id": "purchase-image-PRD-THANKO-RAKUA-MINI-COLOR-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "image-PRD-THANKO-RAKUA-MINI-COLOR-240",
+        "cta_id": "purchase-image-PRD-THANKO-RAKUA-MINI-COLOR-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "rakuten-ui-mini-color-20260913",
+        "cta_id": "purchase-41-rakuten-ui-mini-color-20260913-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-SIROCA-SS-MA251",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "image-PRD-SIROCA-SS-MA251-300",
+        "cta_id": "purchase-image-PRD-SIROCA-SS-MA251-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-SIROCA-SS-MA251",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "image-PRD-SIROCA-SS-MA251-240",
+        "cta_id": "purchase-image-PRD-SIROCA-SS-MA251-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-SIROCA-SS-MA251",
+        "seller_id": "rakuten-siroca",
+        "offer_id": "rakuten-observed-siroca-ss-ma251-siroca",
+        "cta_id": "purchase-41-rakuten-observed-siroca-ss-ma251-siroca-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TSP1",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-PANASONIC-NP-TSP1-300",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TSP1-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TSP1",
+        "seller_id": "rakuten-edion",
+        "offer_id": "image-PRD-PANASONIC-NP-TSP1-240",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TSP1-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "product_id": "PRD-PANASONIC-NP-TSP1",
+        "seller_id": "rakuten-edion",
+        "offer_id": "rakuten-observed-panasonic-np-tsp1-edion",
+        "cta_id": "purchase-41-rakuten-observed-panasonic-np-tsp1-edion-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-116c5cccf12f8700fef76760080dcb01",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-PANASONIC-NP-TMLK1": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-PANASONIC-NP-TMLK1\" data-raos-seller-id=\"rakuten-emedama\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TMLK1-300\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TMLK1-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-PANASONIC-NP-TMLK1\" data-raos-seller-id=\"rakuten-emedama\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TMLK1-240\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TMLK1-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TMLK1-K／ブラック・本体（広告）</figcaption></figure>",
+      "PRD-THANKO-RAKUA-MINI-COLOR": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-THANKO-RAKUA-MINI-COLOR\" data-raos-seller-id=\"rakuten-thanko\" data-raos-offer-id=\"image-PRD-THANKO-RAKUA-MINI-COLOR-300\" data-raos-cta-id=\"purchase-image-PRD-THANKO-RAKUA-MINI-COLOR-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother22%2Ftdws25sbl-1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-THANKO-RAKUA-MINI-COLOR\" data-raos-seller-id=\"rakuten-thanko\" data-raos-offer-id=\"image-PRD-THANKO-RAKUA-MINI-COLOR-240\" data-raos-cta-id=\"purchase-image-PRD-THANKO-RAKUA-MINI-COLOR-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother22%2Ftdws25sbl-1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>TDWS25SBL／ミスティーブルー・本体（広告）</figcaption></figure>",
+      "PRD-SIROCA-SS-MA251": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-SIROCA-SS-MA251\" data-raos-seller-id=\"rakuten-siroca\" data-raos-offer-id=\"image-PRD-SIROCA-SS-MA251-300\" data-raos-cta-id=\"purchase-image-PRD-SIROCA-SS-MA251-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-SIROCA-SS-MA251\" data-raos-seller-id=\"rakuten-siroca\" data-raos-offer-id=\"image-PRD-SIROCA-SS-MA251-240\" data-raos-cta-id=\"purchase-image-PRD-SIROCA-SS-MA251-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>SS-MA251／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-PANASONIC-NP-TSP1": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-PANASONIC-NP-TSP1\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TSP1-300\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TSP1-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10748437&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fpana_img_001%2F4549980451250_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"countertop-dishwasher-for-small-households\" data-raos-product-id=\"PRD-PANASONIC-NP-TSP1\" data-raos-seller-id=\"rakuten-edion\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TSP1-240\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TSP1-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-116c5cccf12f8700fef76760080dcb01\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4549980451250%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10748437&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fpana_img_001%2F4549980451250_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TSP1-W／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-PANASONIC-NP-TMLK1",
+    "PRD-THANKO-RAKUA-MINI-COLOR",
+    "PRD-SIROCA-SS-MA251",
+    "PRD-PANASONIC-NP-TSP1"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/countertop-dishwasher-for-small-households/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

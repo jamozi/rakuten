@@ -27,6 +27,11 @@ from raos.ports import (
 from raos.shared import ContractRepository
 
 
+# The loader checks metadata on every ancestor, including pytest's shared temp
+# parents. Concurrent tmp_path creation can correctly trip its race detector
+# before an individual corruption fixture reaches the assertion under test.
+pytestmark = pytest.mark.serial
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_ROOT = REPOSITORY_ROOT / "contracts" / "raos-v0.4"
 GENERATED_REGISTRY = (

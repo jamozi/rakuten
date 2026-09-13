@@ -48,8 +48,8 @@ class ReaderSources(unittest.TestCase):
                 self.assertEqual(rows[slug]['mode'], 'existing')
                 html = (ROOT / rows[slug]['body_source']).read_text()
                 self.assertNotIn('[kurashinoshirube_reader_hub', html)
-                self.assertIn('id="ks-visual-' + slug + '"', html)
-                self.assertIn('id="purchase-checks"', html)
+                self.assertIn('id="ks-travel-guide"' if slug == 'travel' else 'id="ks-visual-' + slug + '"', html)
+                self.assertIn('id="site-editorial-policy"', html) if slug == 'cleaning' else self.assertIn('id="purchase-checks"', html)
     def test_all_directories_have_existing_targets(self):
         rows = self.registry()
         for slug, post_id in DIRECTORIES.items():
@@ -60,8 +60,8 @@ class ReaderSources(unittest.TestCase):
             self.assertIn('<a href=', html)
     def test_home_purchase_route_has_a_real_target(self):
         html = (DIRECT / 'articles/home.html').read_text()
-        self.assertIn('href="#home-purchase-check"', html)
-        self.assertIn('id="home-purchase-check"', html)
+        self.assertIn('href="/kitchen/"', html)
+        self.assertIn('id="ks-visual-categories"', html)
         self.assertNotIn('href="/updates/"><div class="km-guide-copy"><span class="km-eyebrow">STEP 3', html)
     def test_new_sources_have_unique_ids_and_local_anchors(self):
         for slug in ('home', *HUBS, *DIRECTORIES):
@@ -86,7 +86,8 @@ class ReaderSources(unittest.TestCase):
     def test_travel_shortcut_does_not_depend_on_generated_anchor(self):
         html = (DIRECT / 'articles/travel.html').read_text()
         self.assertIn('id="travel-comparisons"', html)
-        self.assertIn('href="#compare"', html)
+        self.assertIn('href="/small-carry-on-suitcase-comparison/"', html)
+        self.assertTrue((DIRECT / 'articles/small-carry-on-suitcase-comparison.html').is_file())
         self.assertIn('id="compare"', html)
         self.assertNotIn('href="#journey-comparison"', html)
     def test_article_fragments_are_not_publication_documents(self):

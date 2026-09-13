@@ -81,6 +81,30 @@ def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tm
     )
 
 
+@pytest.mark.parametrize("count", [128, 129])
+def test_expanded_article_image_mirror_has_a_finite_limit(tmp_path, count):
+    candidate = fixture(tmp_path)
+    candidate["articles"][0]["document"]["block_markup"] = "".join(
+        f'<img src="https://thumbnail.image.rakuten.co.jp/synthetic-{i}.jpg" '
+        'data-raos-product-image-state="verified">'
+        for i in range(count)
+    )
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return b"synthetic-image", "image/jpeg"
+
+    if count == 129:
+        with pytest.raises(ValueError, match="IMAGE_LIMIT"):
+            owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+        assert calls == []
+    else:
+        result = owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+        assert len(result) == len(calls) == count
+        assert owner().product_image_mirror(candidate, tmp_path) == result
+
+
 def test_registered_editorial_image_is_pinned_without_changing_public_url(
     tmp_path, monkeypatch
 ):
