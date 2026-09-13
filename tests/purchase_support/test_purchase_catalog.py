@@ -338,9 +338,14 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
     for article in catalog["articles"]:
         if article["kind"] == "guide":
             assert 'class="ps-research"' not in html[article["slug"]]
-    # Drainage conditions live in the installation guide; the water guide links to them.
+    # The water comparison now includes drainage and must propagate withdrawn facts.
     assert "排水条件は未確認です。" in html["dishwasher-installation-measurement"]
-    assert "排水条件は未確認です。" not in html["dishwasher-water-supply-methods"]
+    water = fragment(html["dishwasher-water-supply-methods"])
+    row = next(
+        n for n in water.find(tag="tr") if n.attrs.get("id") == product["anchor"]
+    )
+    assert "排水条件は未確認です。" in row.text()
+    assert "20cm" not in row.text()
     assert "必要余白は追加確認中" in html["dishwasher-installation-measurement"]
     assert "コース別の消費電力量は未確認" in html["dishwasher-running-cost"]
     assert 'class="ps-research"' in html["countertop-dishwasher-for-small-households"]
@@ -516,10 +521,7 @@ def test_historical_product_bookmarks_do_not_become_current_purchase_links(catal
         assert not alias.attrs.get("data-raos-product-id")
         assert not alias.attrs.get("href")
     rows = root.find(tag="tr")
-    assert not any(
-        "82353171" in n.text() or "134679-1549" in n.text()
-        for n in rows
-    )
+    assert not any("82353171" in n.text() or "134679-1549" in n.text() for n in rows)
     caution = next(
         n for n in root.walk() if n.attrs.get("id") == "under-3kg-caution-title"
     )

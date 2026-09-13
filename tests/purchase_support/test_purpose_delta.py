@@ -332,20 +332,36 @@ def test_route_links_skip_only_the_current_guide(catalog):
     assert ps.route_links(product, current_slug="unrelated-slug") == comparison
 
 
-def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
+def test_guides_offer_direct_model_navigation_and_no_self_links(catalog):
     html, _ = compile(catalog)
     for _, slug in ps.STAGES.values():
         root = fragment(html[slug])
-        index = next(
-            n for n in root.find(tag="nav") if n.attrs.get("class") == "ps-model-index"
-        )
-        anchors = [a.attrs["href"].lstrip("#") for a in index.find(tag="a")]
-        assert anchors == [p["anchor"] for p in dishwashers(catalog)]
-        sections = {
-            n.attrs.get("id") for n in root.find(tag="section", cls="ps-guide-model")
-        }
-        assert set(anchors) <= sections
-        assert "を確認する機種を選ぶ" in index.text()
+        if slug == "dishwasher-water-supply-methods":
+            rows = [
+                n
+                for n in root.find(tag="tr")
+                if n.attrs.get("data-product-id")
+                and not n.attrs.get("data-ps-supplementary")
+            ]
+            anchors = [n.attrs["id"] for n in rows]
+            assert anchors == [p["anchor"] for p in dishwashers(catalog)]
+            assert {"#" + a for a in anchors} <= {
+                n.attrs.get("href") for n in root.find(tag="a")
+            }
+        else:
+            index = next(
+                n
+                for n in root.find(tag="nav")
+                if n.attrs.get("class") == "ps-model-index"
+            )
+            anchors = [a.attrs["href"].lstrip("#") for a in index.find(tag="a")]
+            assert anchors == [p["anchor"] for p in dishwashers(catalog)]
+            sections = {
+                n.attrs.get("id")
+                for n in root.find(tag="section", cls="ps-guide-model")
+            }
+            assert set(anchors) <= sections
+            assert "を確認する機種を選ぶ" in index.text()
         assert not root.find(tag="nav", cls="ps-model-routes")
         for route in root.find(tag="ul", cls="ps-model-routes"):
             assert not any(
@@ -358,7 +374,7 @@ def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
         # One comparison link per model plus the next-read link keeps the guide at <= 5.
         assert html[slug].count(f'href="/{ps.MAIN_SLUG}/') <= 5
     body = html["dishwasher-water-supply-methods"]
-    assert body.index('class="ps-model-index"') < body.index('class="ps-guide-model"')
+    assert body.index('id="guide-water-steps"') < body.index('id="guide-evidence"')
 
 
 # --- FD-05 / R-M: sale routes are described without asserting current totals ---

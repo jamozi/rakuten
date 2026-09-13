@@ -2262,11 +2262,35 @@ def bind_water_table_facts(
             for f in product.get("guide_facts", [])
             if f["field"] in {"water_supply", "drainage"}
         ]
-        if not facts:
-            raise ValueError("PURCHASE_WATER_MODEL_FACTS_REQUIRED")
+        # An instruction withdrawn from the catalog must also disappear from
+        # the authored quick comparison, rather than leaving an old value visible.
+        for group in row.walk():
+            field = group.attrs.get("data-ps-guide-field")
+            if field not in {"water_supply", "drainage"}:
+                continue
+            selected = [f for f in facts if f["field"] == field]
+            unknown = [f for f in selected if f.get("state") == "UNKNOWN"]
+            if selected and not unknown:
+                continue
+            values = group.find(tag="dd")
+            if len(values) != 1:
+                raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+            values[0].children = [
+                escape(" ".join(tidy(f["text"]) for f in unknown))
+                if unknown
+                else "この型番の条件は未確認です。"
+            ]
         details = slots[0]
         details.children.clear()
         details.append(Element("summary", children=["給排水の手順・出典"]))
+        if not facts:
+            details.append(
+                block(
+                    '<p>この型番の給排水条件は未確認です。<a href="'
+                    + escape(product["official_url"], quote=True)
+                    + '">公式資料を確認する</a></p>'
+                )
+            )
         for fact in facts:
             details.append(block("<p>" + escape(tidy(fact["text"])) + "</p>"))
             details.append(
