@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 361960,
-          "sha256": "21004726e16a5bef5c2a05dcc457c313b173982322986f662e38c4234b24a202",
+          "sha256": "8a802e7fc3dcad20f6d58975e295a0785db4f5f252251b7e818d77e8c25cab3b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -30300,7 +30300,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "7eb07ed48583e82ef0baee194797ff7b47f9f3a64b8c2c73a2e20e250df063e8",
+          "sha256": "e1b79f2ee670fe996e5d76ddc61b1cff3b78cf390ececbc0a829c8a5776f093d",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31157,7 +31157,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "cec4542326ac6cc43b41c5e9089b42d426d195fe2a92a50d4e8e0b81ca9c8679",
+          "sha256": "90e4f6d2c9efbd9ff33b2bc6c41cd47757fe0e8f2b8bccd7625e837927bcf67e",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
