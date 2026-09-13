@@ -197,11 +197,11 @@ def build(
     if validation:
         apply_validation(items, validation)
     for item in items.values():
-        item["publication_version"] = (
-            f"候補 {candidate}／未公開・本番反映照合未実施"
-            if candidate
-            else "候補未固定／未公開・本番反映照合未実施"
-        )
+        if candidate:
+            # A newly selected candidate has no publication evidence yet.
+            item["publication_version"] = f"候補 {candidate}／未公開・本番反映照合未実施"
+        elif not item.get("publication_version"):
+            item["publication_version"] = "候補未固定／未公開・本番反映照合未実施"
     output_dir.mkdir(parents=True, exist_ok=True)
     destination = (
         output_dir / "kurashinoshirube_all_pages_improvements_20260913_progress.xlsx"

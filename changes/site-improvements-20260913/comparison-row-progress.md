@@ -1,5 +1,7 @@
 # 比較14記事の商品表示
 
+現在：39本文＋テーマを本番公開・本文照合済み。公開HTML検査は大容量記事のH1重複1件を残件として記録。[公開結果](publication-result.v1.json)。以下はローカル確認時の記録を含みます。
+
 最終統合候補 `ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b`、source `d98087d2`。39本文＋テーマのlocal preview PASS。比較14記事・全42画面の表示確認は80fd2d0e、給水記事の最終確認はab318343で記録。各検証は候補別に保持。本番未公開。
 
 結論は写真と理由・注意点を縦に配置し、比較は列を揃えた実表に統一。軽量スーツケースは了承済みの専用表示を保持しています。
@@ -36,3 +38,5 @@
 [新規記事ひな型](../reader-purchase-support-v1/comparison-rows.md)。
 
 最終統合候補 `ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b`、source `d98087d2`：39本文＋テーマのlocal preview PASS。進捗Excel：`/mnt/c/Users/naoki/Downloads/kurashinoshirube_all_pages_improvements_20260913_table_update_progress_ab318343.xlsx`。136 IDの一致と元Excelの不変を確認。
+
+2026-09-13追記：39本文＋テーマを候補4d0a0dbc／83b8ea07で本番公開・本文照合済み。上記の「未公開」は当時のローカル検証記録。大容量H1重複1件を残件に追加し、会話レビュー・外部確認の未完了は保持。[公開結果](publication-result.v1.json)。

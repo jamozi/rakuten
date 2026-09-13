@@ -1,7 +1,7 @@
 {
   "schema": "RAOS_COMMON_LAYOUT_APPLICATION_V1",
   "updated_at": "2026-09-13T09:51:28.991407+00:00",
-  "production_published": false,
+  "production_published": true,
   "shared_candidate": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
   "previous_shared_robot_structure_verified": true,
   "new_headings_shared": true,
@@ -984,5 +984,15 @@
     "preview_status": "PASS",
     "production_published": false,
     "verified_at": "2026-09-13T10:05:44.533525+00:00"
+  },
+  "production_publication": {
+    "record": "changes/site-improvements-20260913/publication-result.v1.json",
+    "status": "PUBLISHED_AND_READBACK_VERIFIED",
+    "candidate_ids": [
+      "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426"
+    ],
+    "published_documents": 39,
+    "public_html_findings": 1
   }
 }

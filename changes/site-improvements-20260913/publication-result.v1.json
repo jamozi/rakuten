@@ -1,0 +1,454 @@
+{
+  "schema": "RAOSSiteImprovementPublicationResultV1",
+  "checked_at": "2026-09-13T11:08:45.307639+00:00",
+  "status": "PUBLISHED_AND_READBACK_VERIFIED",
+  "authorized_candidate": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
+  "publication_instruction": "Origin task relayed the explicit user instruction: 本番公開してください. Scope: the reviewed 39 documents and theme.",
+  "source_commit": "8c5c383ae1d20635a3da0a05ccf2c6b69f273f28",
+  "format_only_repair": [
+    "Removed unsupported fetchpriority attribute from the home, standard, and large dishwasher hero images",
+    "Regenerated snapshot and theme integrity bindings"
+  ],
+  "new_post_registration": "Reused publisher-owned drafts and their actual default taxonomies. No duplicate posts were created.",
+  "published_documents": 39,
+  "updated_documents": 34,
+  "new_documents": 5,
+  "theme_published": true,
+  "theme_tree_sha256": "8f9e15ff7589f46e790414a720b6eb482d035396e7f37f8cda7d20ef227e5200",
+  "batches": [
+    {
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "documents": 19,
+      "theme": true,
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "status": "PASS"
+      },
+      "batch_finalized": true,
+      "git_checkpoint": {
+        "branch": "codex/publish-8a9f583fe6c624c4df8955cd64c6808d2bc075cdb712f63c4f2d1779ff9e4de8",
+        "commit": "8c5c383ae1d20635a3da0a05ccf2c6b69f273f28",
+        "phase": "complete",
+        "publication": "ALREADY_COMPLETED_NO_REPUBLISH",
+        "schema": "RAOS_WORDPRESS_PUBLISH_GIT_SYNC_V1",
+        "snapshot_id": "8a9f583fe6c624c4df8955cd64c6808d2bc075cdb712f63c4f2d1779ff9e4de8",
+        "status": "noop",
+        "tree": "b076d185c495d0eda119d29804f59b083de69175"
+      }
+    },
+    {
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "documents": 20,
+      "theme": false,
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "status": "PASS"
+      },
+      "batch_finalized": true,
+      "git_checkpoint": {
+        "branch": "codex/publish-389eb8b3f1f62d9f86679d9424bff1774165b7948a70aef7edc46e0ae2032409",
+        "commit": "8c5c383ae1d20635a3da0a05ccf2c6b69f273f28",
+        "phase": "complete",
+        "publication": "ALREADY_COMPLETED_NO_REPUBLISH",
+        "schema": "RAOS_WORDPRESS_PUBLISH_GIT_SYNC_V1",
+        "snapshot_id": "389eb8b3f1f62d9f86679d9424bff1774165b7948a70aef7edc46e0ae2032409",
+        "status": "noop",
+        "tree": "b076d185c495d0eda119d29804f59b083de69175"
+      }
+    }
+  ],
+  "documents": [
+    {
+      "article_key": "carry-on-suitcase-comparison",
+      "post_id": 19,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/carry-on-suitcase-comparison/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "ba8af69fcb57d70f85c9565b4a37003093fbcf51b819affb7e053a8b796bd618"
+    },
+    {
+      "article_key": "carry-on-suitcase-under-100-seats",
+      "post_id": 82,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/carry-on-suitcase-under-100-seats/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "5021239523d875aa63065db00e550b879df8964c0fae0f8d0fe679db81ae0f90"
+    },
+    {
+      "article_key": "lightweight-carry-on-suitcase-under-3kg",
+      "post_id": 83,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/lightweight-carry-on-suitcase-under-3kg/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "c8778e037f8ddc5313a2b87397caa48b8deb584ee0f55aa3352db3c432cbcc02"
+    },
+    {
+      "article_key": "front-open-carry-on-suitcase-with-stopper",
+      "post_id": 84,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/front-open-carry-on-suitcase-with-stopper/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "89866f3f857aacac8907165e55654366f2e0ee9053ab7c4ade34ca495ee667b7"
+    },
+    {
+      "article_key": "countertop-dishwasher-for-small-households",
+      "post_id": 41,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/countertop-dishwasher-for-small-households/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "0552cbb4848c9433df731aed22e3dc47762a287f91df8f51d57f25368f185ef0"
+    },
+    {
+      "article_key": "solota-vs-rakua-mini-plus",
+      "post_id": 86,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/solota-vs-rakua-mini-plus/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "762e488037a0252ce16679ec07cacb033e332fff7c5bc77d7fc6a1ba90b5448a"
+    },
+    {
+      "article_key": "dishwasher-installation-measurement",
+      "post_id": 262,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/dishwasher-installation-measurement/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "e0d81b36829219af44e65cca2ba3561fb8380be9a1b7394a38f46f1a21739e3e"
+    },
+    {
+      "article_key": "dishwasher-water-supply-methods",
+      "post_id": 263,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/dishwasher-water-supply-methods/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "958a7b2cb96766b723b74a86fb50f34b962c67bfbe95fa1951261d3a81e5518f"
+    },
+    {
+      "article_key": "dishwasher-detergent-guide",
+      "post_id": 264,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/dishwasher-detergent-guide/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "7af16a7768eaf5f5b04747671cbde9313880c7c423820869e96b2db99ca8ceae"
+    },
+    {
+      "article_key": "dishwasher-running-cost",
+      "post_id": 266,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/dishwasher-running-cost/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "2213d81dafa67640827b3bdd0659383757a5fdf0c5d69c1a1b623540f9d2b788"
+    },
+    {
+      "article_key": "compact-robot-vacuum-shortlist",
+      "post_id": 30,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/compact-robot-vacuum-shortlist/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "1abcbca96563c550b4b9cbd13ea615f6c1f278ab36c2fe6311afa02e01a2e303"
+    },
+    {
+      "article_key": "roomba-mini-vs-switchbot-k11-pro",
+      "post_id": 85,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/roomba-mini-vs-switchbot-k11-pro/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "d153769ac11c278446a2da300ad7b0157bd1bda2f6b00636023c8412631bd4d9"
+    },
+    {
+      "article_key": "portable-power-station-guide",
+      "post_id": 28,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/portable-power-station-guide/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "bc4842c823af09a670a948881a01412454ad8a7d3033d7a2014cfa450cd35d8f"
+    },
+    {
+      "article_key": "anker-solix-c300-c800-c1000-differences",
+      "post_id": 29,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/anker-solix-c300-c800-c1000-differences/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "6b3ef8bdae868dacfcc2104bbba0b4382402a1c96a129ece34a5be5d981fbbe3"
+    },
+    {
+      "article_key": "compact-dishwasher-comparison",
+      "post_id": 549,
+      "post_type": "post",
+      "new": true,
+      "url": "https://kurashinoshirube.com/compact-dishwasher-comparison/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "583554a996d775ff67887e7c27385e378c7e206ee9a3f766c833c07150c283a8"
+    },
+    {
+      "article_key": "standard-dishwasher-comparison",
+      "post_id": 550,
+      "post_type": "post",
+      "new": true,
+      "url": "https://kurashinoshirube.com/standard-dishwasher-comparison/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "16d0ffa72b5fe4a9602c1b1f4cc4f467f7dcb0f1070bb01912dfbd51d9367481"
+    },
+    {
+      "article_key": "large-dishwasher-comparison",
+      "post_id": 551,
+      "post_type": "post",
+      "new": true,
+      "url": "https://kurashinoshirube.com/large-dishwasher-comparison/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "b9ffcf7cad6e8cbd531f58f60f6bba5197da6727f07c8d9302416aef2bcf17c8"
+    },
+    {
+      "article_key": "dishwasher-branch-faucet-guide",
+      "post_id": 552,
+      "post_type": "post",
+      "new": true,
+      "url": "https://kurashinoshirube.com/dishwasher-branch-faucet-guide/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "511de826cbe3fb3591a7d2c628fe5133aeae6452e14a3281c4295b86ef2a3ec7"
+    },
+    {
+      "article_key": "small-carry-on-suitcase-comparison",
+      "post_id": 553,
+      "post_type": "post",
+      "new": true,
+      "url": "https://kurashinoshirube.com/small-carry-on-suitcase-comparison/",
+      "candidate_id": "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "body_sha256": "9bdbb1da6cf0da65c3172097b0620e306cbbe00a2a3a2e88cfe31991d76fee0c"
+    },
+    {
+      "article_key": "home",
+      "post_id": 15,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "74993d3063866350e7bd247e5d096b434ab7649bd286ed68bbcc6dbe870bf127"
+    },
+    {
+      "article_key": "travel",
+      "post_id": 142,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/travel/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "1a7e636609f1956a9bb4e692bd1228c8197259cf073545e58b24580d36290f5b"
+    },
+    {
+      "article_key": "kitchen",
+      "post_id": 136,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/kitchen/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "1bc0ffbf4a5e9ad5d7e8a554fa7260e64a2591e23232ae95407fb17158ebb6b4"
+    },
+    {
+      "article_key": "cleaning",
+      "post_id": 131,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/cleaning/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "da7983e594cbeabbaa1f80537f216eaef5be72a03cf2f8139ac485115edbacda"
+    },
+    {
+      "article_key": "preparedness",
+      "post_id": 138,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/preparedness/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "29877a8e2df5b1ce958006e57c88efb6230797ccdcfb3152355e6f72aac197cd"
+    },
+    {
+      "article_key": "categories",
+      "post_id": 130,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/categories/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "bed9860ef3167ae483952a0c427c704633d880456fb541d54d10cf370c7aa765"
+    },
+    {
+      "article_key": "small-space",
+      "post_id": 141,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/small-space/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "dd7c4e2af0ee284e87567c012ab17f5a6d7cc9e2da89f03c4c45a5e07d01fd08"
+    },
+    {
+      "article_key": "save-housework",
+      "post_id": 140,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/save-housework/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "287f65dd96b4aab07df547ac5e109480ae457ee7ac505cb69a46067a4cefea5d"
+    },
+    {
+      "article_key": "without-installation",
+      "post_id": 144,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/without-installation/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "d14f2b7ce4cba43984675ba3bfdce1d472c7230976a8c658356075969b41004b"
+    },
+    {
+      "article_key": "easy-maintenance",
+      "post_id": 134,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/easy-maintenance/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "aa4162230af7e6cb333a258ff9e9cac1e4eb8ed50082a300c0aa4f8f4cccd7c4"
+    },
+    {
+      "article_key": "comfortable-travel",
+      "post_id": 132,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/comfortable-travel/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "cc7bcb01e7cb989448e9add7d2bed629e8cd141d4fd7b331f1935757dc6725c0"
+    },
+    {
+      "article_key": "prepare-outage",
+      "post_id": 137,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/prepare-outage/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "5bb80a75657a2cf37bd19de16bad2c5eb6e0af6337a7fb261c4d463da17cc48c"
+    },
+    {
+      "article_key": "purposes",
+      "post_id": 139,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/purposes/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "e056d5fc677b17b779fb8dcbf50298ec71aa49dddb7f5319fa6d3b10d976911a"
+    },
+    {
+      "article_key": "guides",
+      "post_id": 135,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/guides/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "5e57a40ed456180d42426a72b0f2d2a2f6097e5b48538923b9752d66a343bece"
+    },
+    {
+      "article_key": "comparisons",
+      "post_id": 133,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/comparisons/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "ca5bdab3f819e88198ada7ccb7c3e1342e51ab4a5acdfbbf948d6b6783dc9fd8"
+    },
+    {
+      "article_key": "updates",
+      "post_id": 143,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/updates/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "c9e93202559b5de5ef6144ebd2701d25a9147f09806b4e0ee03572724a2902e6"
+    },
+    {
+      "article_key": "dishwasher-cleaning-guide",
+      "post_id": 265,
+      "post_type": "post",
+      "new": false,
+      "url": "https://kurashinoshirube.com/dishwasher-cleaning-guide/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "4d092c4ee5c63cda9431832f99d188196a406f7c4a57d567932d88afd0e50740"
+    },
+    {
+      "article_key": "about-ad-policy",
+      "post_id": 10,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/about-ad-policy/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "9fb8074b284ed63f8da61c4dbad6c5e0cb83c6a17d0f3343474b96f9710021eb"
+    },
+    {
+      "article_key": "comparison-policy",
+      "post_id": 120,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/comparison-policy/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "3314218fab9216fb487021fde6ed297178add458466ce63ab808d48f3f2e9c6b"
+    },
+    {
+      "article_key": "privacy-policy",
+      "post_id": 3,
+      "post_type": "page",
+      "new": false,
+      "url": "https://kurashinoshirube.com/privacy-policy/",
+      "candidate_id": "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426",
+      "body_sha256": "64790b043b742866b935f6740d36eb6628ed1d42662a3f34d3cdf16cb271083b"
+    }
+  ],
+  "public_checks": {
+    "fetched": 39,
+    "http_200": 39,
+    "source_ids_links_images_and_snapshots_preserved": 39,
+    "canonical_and_index": 39,
+    "all_conditions_pass": 38,
+    "finding": {
+      "article_key": "large-dishwasher-comparison",
+      "code": "H1_COUNT",
+      "observed": 2,
+      "also_present_in_reviewed_local_version": true,
+      "status": "UNRESOLVED"
+    },
+    "report": "output/site-improvements-20260913/publication-20260913/public-readback.json"
+  },
+  "public_browser": {
+    "status": "PASS",
+    "pages": 4,
+    "widths": [
+      390,
+      1440
+    ],
+    "checks": 8,
+    "report": "output/site-improvements-20260913/publication-20260913/public-browser.json"
+  },
+  "user_review": {
+    "complete": 10,
+    "total": 42,
+    "unchanged_by_publication": true
+  },
+  "remaining": [
+    "H1 duplication in the large dishwasher article",
+    "Product-commerce integration for six previously recorded guides/entry articles",
+    "GSC/GA4/ASP owner-private verification and unsent manufacturer/email checks",
+    "Unfinished user review and audit conditions remain unfinished"
+  ],
+  "git_remote_sync": {
+    "status": "PENDING",
+    "branch": "codex/all-pages-improvements-20260913"
+  },
+  "progress_workbook": "/mnt/c/Users/naoki/Downloads/kurashinoshirube_all_pages_improvements_20260913_published_progress_83b8ea07.xlsx"
+}
