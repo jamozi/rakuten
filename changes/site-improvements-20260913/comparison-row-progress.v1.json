@@ -1,9 +1,10 @@
 {
   "schema": "RAOS_COMMON_COMPARISON_ROWS_PROGRESS_V1",
-  "checked_at": "2026-09-13T06:16:57.409693+00:00",
-  "immutable_snapshot": "acbef952bdefa03a2d2e",
+  "checked_at": "2026-09-13T06:57:15.879754+00:00",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538",
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
   "publication_authorized": false,
-  "candidate_id": null,
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
   "pages": [
     {
       "slug": "countertop-dishwasher-for-small-households",
@@ -21,9 +22,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/countertop-dishwasher-for-small-households/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/countertop-dishwasher-for-small-households.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/countertop-dishwasher-for-small-households.json"
     },
     {
       "slug": "lightweight-carry-on-suitcase-under-3kg",
@@ -41,9 +42,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/lightweight-carry-on-suitcase-under-3kg/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/lightweight-carry-on-suitcase-under-3kg.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/lightweight-carry-on-suitcase-under-3kg.json"
     },
     {
       "slug": "compact-robot-vacuum-shortlist",
@@ -61,9 +62,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/compact-robot-vacuum-shortlist/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/compact-robot-vacuum-shortlist.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/compact-robot-vacuum-shortlist.json"
     },
     {
       "slug": "portable-power-station-guide",
@@ -81,9 +82,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/portable-power-station-guide/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/portable-power-station-guide.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/portable-power-station-guide.json"
     },
     {
       "slug": "carry-on-suitcase-comparison",
@@ -101,9 +102,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/carry-on-suitcase-comparison/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/carry-on-suitcase-comparison.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/carry-on-suitcase-comparison.json"
     },
     {
       "slug": "carry-on-suitcase-under-100-seats",
@@ -122,14 +123,15 @@
         {
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "model": "60524（新仕様・USBポートなし）",
-          "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。"
+          "reason": "旧仕様とUSBなし仕様の同一性を解消できず。確認済み公式リンクを保持。",
+          "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
         }
       ],
       "implementation_status": "READY_WITH_MEDIA_GAPS",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/carry-on-suitcase-under-100-seats/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/carry-on-suitcase-under-100-seats.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/carry-on-suitcase-under-100-seats.json"
     },
     {
       "slug": "front-open-carry-on-suitcase-with-stopper",
@@ -153,9 +155,9 @@
       ],
       "implementation_status": "READY_WITH_MEDIA_GAPS",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/front-open-carry-on-suitcase-with-stopper/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/front-open-carry-on-suitcase-with-stopper.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/front-open-carry-on-suitcase-with-stopper.json"
     },
     {
       "slug": "roomba-mini-vs-switchbot-k11-pro",
@@ -173,9 +175,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/roomba-mini-vs-switchbot-k11-pro/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/roomba-mini-vs-switchbot-k11-pro.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/roomba-mini-vs-switchbot-k11-pro.json"
     },
     {
       "slug": "solota-vs-rakua-mini-plus",
@@ -193,9 +195,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/solota-vs-rakua-mini-plus/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/solota-vs-rakua-mini-plus.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/solota-vs-rakua-mini-plus.json"
     },
     {
       "slug": "anker-solix-c300-c800-c1000-differences",
@@ -213,9 +215,9 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/anker-solix-c300-c800-c1000-differences/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/anker-solix-c300-c800-c1000-differences.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/anker-solix-c300-c800-c1000-differences.json"
     },
     {
       "slug": "compact-dishwasher-comparison",
@@ -233,16 +235,16 @@
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/compact-dishwasher-comparison/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/compact-dishwasher-comparison.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/compact-dishwasher-comparison.json"
     },
     {
       "slug": "standard-dishwasher-comparison",
       "post_id": null,
       "title": "標準容量の食洗機比較｜16〜28点の選び方",
-      "body_sha256": "a3ed854a21df3dd45dbc7fb349400235ecc95796bd766d09d2e26c1da2d22933",
-      "snapshot_id": "ps-10eacd69850a66f8e395d193a2dbe8c7",
+      "body_sha256": "8158c11d80ad304e2e975a97c6ccad8c5c681108d424878e9e104eb2f1fd88a2",
+      "snapshot_id": "ps-11bf60a5fc6f1d29880cbfbb1022c1bb",
       "format": "comparison_rows",
       "main_rows": 13,
       "separate_rows": 0,
@@ -254,14 +256,15 @@
         {
           "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
           "model": "STTDWADW",
-          "reason": "発行画像がNO IMAGEのため掲載しない。別売場の対象ページも404。確認済みの販売リンクと参考価格は保持。"
+          "reason": "白STTDWADWの発行画像はNO IMAGE、別売場は404。取得済み販売リンクと参考価格を保持。",
+          "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
         }
       ],
       "implementation_status": "READY_WITH_MEDIA_GAPS",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/standard-dishwasher-comparison/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/standard-dishwasher-comparison.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/standard-dishwasher-comparison.json"
     },
     {
       "slug": "large-dishwasher-comparison",
@@ -270,18 +273,18 @@
       "body_sha256": "4c95c875d6e4d98b365443f96e6a80c7a2608f66b9f9ac09bb88d9d2bb6ba2f8",
       "snapshot_id": "ps-a4cca1608ebc1d2c2cd5c40a2f0c01c0",
       "format": "comparison_rows",
-      "main_rows": 6,
-      "separate_rows": 0,
-      "scope_note": "大容量は同じ表の中で主4・補足2を明示",
+      "main_rows": 4,
+      "separate_rows": 2,
+      "scope_note": "同じ表の中で主4・補足2を明示",
       "media_rows": 6,
       "media_bindings": 12,
       "row_ctas": 6,
       "missing_media": [],
       "implementation_status": "READY",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/large-dishwasher-comparison/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/large-dishwasher-comparison.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/large-dishwasher-comparison.json"
     },
     {
       "slug": "small-carry-on-suitcase-comparison",
@@ -300,27 +303,128 @@
         {
           "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
           "model": "82353704",
-          "reason": "同一型番・構成の利用できる画像を確認中。"
+          "reason": "82353704・アイボリー・EAN4003743040278の利用可能な実写真と発行購入リンクが未取得。公式リンクを保持。",
+          "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
         },
         {
           "product_id": "PRD-INNOVATOR-INV50",
           "model": "INV50",
-          "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。"
+          "reason": "INV50とINV50Gの販売素材が混在。対象INV50の公式リンクを保持。",
+          "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
         }
       ],
       "implementation_status": "READY_WITH_MEDIA_GAPS",
       "publication_status": "NOT_PUBLISHED",
-      "shared_preview_status": "PREPARE_PENDING",
+      "shared_preview_status": "PASS",
       "local_url": "http://127.0.0.1:41398/small-carry-on-suitcase-comparison/",
-      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/small-carry-on-suitcase-comparison.json"
+      "fixed_handoff": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/small-carry-on-suitcase-comparison.json"
+    }
+  ],
+  "counts": {
+    "comparison_pages": 14,
+    "catalog_products": 54,
+    "product_row_occurrences": 71,
+    "photo_rows": 66,
+    "issued_purchase_row_links": 67,
+    "missing_media_models": 4
+  },
+  "remaining_media": [
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "model": "60524（新仕様・USBポートなし）",
+      "reason": "旧仕様とUSBなし仕様の同一性を解消できず。確認済み公式リンクを保持。",
+      "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "model": "INV50",
+      "reason": "INV50とINV50Gの販売素材が混在。対象INV50の公式リンクを保持。",
+      "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+      "model": "STTDWADW",
+      "reason": "白STTDWADWの発行画像はNO IMAGE、別売場は404。取得済み販売リンクと参考価格を保持。",
+      "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+      "model": "82353704",
+      "reason": "82353704・アイボリー・EAN4003743040278の利用可能な実写真と発行購入リンクが未取得。公式リンクを保持。",
+      "needed_from_owner": "同一型番・色・構成を確認できる発行済み画像HTML、または掲載許可のある実写真。別型番への差し替えは行わない。"
     }
   ],
   "shared_template": "changes/reader-purchase-support-v1/comparison-rows.md",
   "validation": {
-    "contract_tests": "12 passed",
-    "purchase_tests_previous": "201 passed; supplemental row UI expectation subsequently fixed and relevant 12 tests passed",
-    "make_fast": "RUNNING",
-    "shared_wordpress": "PENDING"
+    "make_fast": {
+      "status": "PASS",
+      "base": "3fdfe3e3",
+      "source_commit": "10a7241e",
+      "parallel_passed": 4651,
+      "serial_passed": 298,
+      "subtests_passed": 30,
+      "data_storage": "no applicable tests",
+      "log": "output/site-improvements-20260913/shared-comparison-rows/make-fast.log"
+    },
+    "earlier_full_run": {
+      "parallel_passed": 21965,
+      "failed": 3,
+      "skipped": 7,
+      "failures_resolved": "travel new URL expectation; travel relative media paths; directory disclosure metadata expectation",
+      "focused_retest": "28 passed, 25 subtests; subsequent affected make fast PASS"
+    },
+    "preview_image_limit_tests": "18 passed; accept128/reject129 before fetching",
+    "final_hero_delta": {
+      "change": "standard hero relative URL -> existing theme asset, 900x600",
+      "generate": "PASS, 8 owners",
+      "row_contract_tests": "12 passed",
+      "shared_preview": "PASS",
+      "theme_hash_regeneration": "owner theme generator then dependent generators; exact runtime hash matched; theme/media 103 tests passed"
+    },
+    "shared_wordpress": {
+      "status": "PASS",
+      "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+      "comparison_pages": 14,
+      "width_checks": 70,
+      "widths": [
+        320,
+        375,
+        390,
+        768,
+        1440
+      ],
+      "artifact": "output/site-improvements-20260913/shared-comparison-rows/verification.json",
+      "numeric_prices_without_javascript": 0,
+      "keyboard_and_text_200_percent": [
+        {
+          "slug": "standard-dishwasher-comparison",
+          "keyboardScroll": 40,
+          "nextFocus": "A",
+          "text200PercentOverflow": false
+        },
+        {
+          "slug": "small-carry-on-suitcase-comparison",
+          "keyboardScroll": 40,
+          "nextFocus": "A",
+          "text200PercentOverflow": false
+        }
+      ],
+      "binding_note": "All displayed CTA IDs, product IDs, snapshot IDs and issued URLs matched actual shared HTML; existing renderer removes duplicate 240px image wrappers, whose registered bindings are not required in DOM; all article-local anchors checked."
+    },
+    "compact_lock": {
+      "body_sha256": "a8788ae876dcc34b3d86660f91db03476683926b6b7db48438bfa85856b589ad",
+      "status": "PRESERVED"
+    },
+    "price_js_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+    "production": "NOT_PUBLISHED",
+    "representative_sticky_hit_tests": {
+      "status": "PASS",
+      "articles": 4,
+      "width": 390,
+      "evidence": "output/site-improvements-20260913/shared-comparison-rows/settled-screenshot-hit-tests.log",
+      "capture_note": "Screenshots wait for images and suppress smooth scrolling during capture; no product CSS or source changed."
+    }
   },
-  "non_scope": "ホーム・カテゴリの追加デザイン変更、計測有効化、本番公開なし。7手順/給水記事の共通情報追加の旧残件は、この14比較形式の完了へ混ぜない。"
+  "non_scope": "本番公開と計測有効化は未実施。7手順・給水記事の共通購入情報の旧残件と、元136項目の外部確認待ちはこの14比較形式の完了へ混ぜない。",
+  "progress_workbook": "/mnt/c/Users/naoki/Downloads/kurashinoshirube_all_pages_improvements_20260913_comparison_rows_progress.xlsx"
 }

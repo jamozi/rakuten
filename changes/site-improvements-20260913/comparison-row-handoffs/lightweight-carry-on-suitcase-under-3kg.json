@@ -1,9 +1,9 @@
 {
   "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
   "publication_authorized": false,
-  "root_candidate_pending": true,
-  "immutable_snapshot": "acbef952bdefa03a2d2e",
-  "body_source": "changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/lightweight-carry-on-suitcase-under-3kg.html",
   "runtime_article": {
     "article_id": "lightweight-carry-on-suitcase-under-3kg",
     "slug": "lightweight-carry-on-suitcase-under-3kg",
@@ -165,19 +165,19 @@
     }
   },
   "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
-  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
   "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
   "style_sources": [
     {
-      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "6df19139692f2440e251dfa2288dc29f676c6f24cc6fe828c99085ba08165a36"
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
     },
     {
-      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "27f2a8d61f50f399c6c9f268391d4d9cefaae3edab354ae96a2ecec04033fd89"
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
     },
     {
-      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
       "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
     }
   ],
@@ -191,6 +191,7 @@
   "row_products": null,
   "missing_media": [],
   "local_url": "http://127.0.0.1:41398/lightweight-carry-on-suitcase-under-3kg/",
-  "shared_local_status": "PENDING_NEW_CANDIDATE",
-  "immutable_handoff": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/lightweight-carry-on-suitcase-under-3kg.json"
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
 }

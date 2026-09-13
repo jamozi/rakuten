@@ -6,7 +6,7 @@
       "title": "記事テンプレート",
       "priority": "P1",
       "wp_id": "全体",
-      "implementation": "ローカル実装済：比較10記事を結論→主要比較表→違いと注意→販売条件→出典の共通描画へ移行",
+      "implementation": "ローカル実装済：比較14記事を写真・仕様・確認日時付き参考価格・販売先を同じ商品行で読む共通形式へ統合し、新規記事ひな型と生成手順を追加",
       "evidence": [
         "changes/site-improvements-20260913/README.md",
         "changes/site-improvements-20260913/entry-pages-report.md",
@@ -16,22 +16,27 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G02": {
       "title": "商品・画像・販売先",
       "priority": "P1",
       "wp_id": "全体",
-      "implementation": "ローカル実装済：31商品の型番・仕様・画像確認状態・販売先を共通カタログに統合し、主比較と補足構成を分離",
+      "implementation": "ローカル実装済・画像4機種保留：54商品の型番・仕様・画像状態・販売先を共通カタログに統合。主比較と補足を保持",
       "evidence": [
         "changes/site-improvements-20260913/README.md",
         "changes/site-improvements-20260913/entry-pages-report.md",
@@ -41,16 +46,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
-      "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "residual": "画像未確認4機種：BERMAS60524、INV50、RIMOWA82353704、THANKO STTDWADW。同一型番・色・構成の発行済み画像HTMLまたは掲載許可写真が必要。未公開・本番照合未実施。",
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G03": {
       "title": "販売価格の期限",
@@ -66,16 +76,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G04": {
       "title": "購入総額の表現",
@@ -91,16 +106,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G05": {
       "title": "広告・通常リンク",
@@ -120,16 +140,21 @@
         "output/site-improvements-20260913/home-idfix-actual-verification.json",
         "output/site-improvements-20260913/home-idfix-generated-delta.json",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G06": {
       "title": "未確認の種類",
@@ -188,7 +213,7 @@
       "title": "画像の用途と権利",
       "priority": "P1",
       "wp_id": "全体",
-      "implementation": "ローカル実装済・画像再掲載保留：未照合画像停止、型番別の説明図",
+      "implementation": "ローカル実装・表示確認済・画像4機種保留：50商品の確認済み写真を14比較記事の66行へ結合。未確認画像は再掲載しない",
       "evidence": [
         "changes/site-improvements-20260913/README.md",
         "changes/site-improvements-20260913/entry-pages-report.md",
@@ -201,16 +226,21 @@
         "output/site-improvements-20260913/home-idfix-actual-verification.json",
         "output/site-improvements-20260913/home-idfix-generated-delta.json",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
-      "residual": "最終候補の通常幅では画像ロード/画像拡大/横はみ出しの検出なし。未照合画像の同一性と転用権は未確認のため再掲載しない。未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "residual": "画像未確認4機種：BERMAS60524、INV50、RIMOWA82353704、THANKO STTDWADW。同一型番・色・構成の発行済み画像HTMLまたは掲載許可写真が必要。未公開・本番照合未実施。",
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G09": {
       "title": "言い切りと読者への丸投げ",
@@ -276,16 +306,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G12": {
       "title": "文字組み",
@@ -304,16 +339,21 @@
         "output/site-improvements-20260913/integrated-keyboard-nav.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G13": {
       "title": "比較表とスマホ",
@@ -332,16 +372,21 @@
         "output/site-improvements-20260913/integrated-keyboard-nav.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G14": {
       "title": "画像・広告・入力の遅延表示",
@@ -382,16 +427,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G16": {
       "title": "計測と収益",
@@ -433,16 +483,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "136項目の候補ID・最終回帰結果・表示/意味照合を記録済み。公開指示後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "G18": {
       "title": "拡張の判断",
@@ -1731,16 +1786,21 @@
         "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "同用途で今買える代替の色/構成別注文可否は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG041-02": {
       "title": "一食分・毎回の作業",
@@ -1754,16 +1814,21 @@
         "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "食器量・給水・残さい処理は型番別に具体化。実機収納写真/収納実績は未作成。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG041-03": {
       "title": "購入総額と関連記事",
@@ -1778,16 +1843,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG086-01": {
       "title": "mini Plusの販売状況",
@@ -1801,16 +1871,21 @@
         "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "mini Plus公式再入荷通知は確認。色別注文可否・全店舗在庫・再入荷日は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG086-02": {
       "title": "Plusと4機種ガイドの接続",
@@ -1824,16 +1899,21 @@
         "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "mini Plusとmini colorを独立型番で案内し旧根拠アンカー維持。mini Plusは日付付き型番別原典を保持し今回全手順再調査ではない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG086-03": {
       "title": "価格・比較表・購入ボタン",
@@ -1848,16 +1928,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG262-01": {
       "title": "NP-TSP1の上方余白",
@@ -2206,16 +2291,21 @@
         "changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG083-02": {
       "title": "通常時・拡張時と便の規定",
@@ -2229,16 +2319,21 @@
         "changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG083-03": {
       "title": "販売確認と旧アンカー",
@@ -2253,16 +2348,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG082-01": {
       "title": "BERMAS 60524の商品画像",
@@ -2276,16 +2376,21 @@
         "changes/reader-purchase-support-v1/articles/carry-on-suitcase-under-100-seats.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "60524新仕様を確認し未照合画像を候補から除外。販売店画像の同一性・転用範囲は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG082-02": {
       "title": "比較表までの前置き",
@@ -2300,16 +2405,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG082-03": {
       "title": "拡張の扱い・更新日",
@@ -2324,16 +2434,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG084-01": {
       "title": "4種類の前開き",
@@ -2349,16 +2464,21 @@
         "output/site-improvements-20260913/inv50-residual-consistency.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "INV50公式本文を再取得し、通常外寸・容量・重量・前室と中室の開放・ワンタッチブレーキを確認。収納部実寸・操作位置・停止輪数や必要床面積は未確認。公開後の反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG084-02": {
       "title": "ストッパーとPC収納",
@@ -2372,16 +2492,21 @@
         "changes/reader-purchase-support-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "確認済み操作は反映。全4機種PC内寸・停止車輪数/位置は揃っていない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG084-03": {
       "title": "比較表の位置・写真",
@@ -2396,16 +2521,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG019-01": {
       "title": "軽さという結論",
@@ -2419,16 +2549,21 @@
         "changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG019-02": {
       "title": "開き方と拡張の未確認",
@@ -2442,16 +2577,21 @@
         "changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "06316メイン収納開閉形式・01471拡張の明記は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG019-03": {
       "title": "バッジ・商品カード・保証",
@@ -2466,16 +2606,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "販売先ごとの保証最終適用は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG030-01": {
       "title": "省スペースの比較範囲",
@@ -2489,16 +2634,21 @@
         "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG030-02": {
       "title": "K11の寸法軸と底面判定",
@@ -2512,16 +2662,21 @@
         "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "K11+ Pro240×180×250mmの軸名は公式説明書にもなく未解決。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG030-03": {
       "title": "購入状態と詳しい比較への導線",
@@ -2536,16 +2691,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG085-01": {
       "title": "台の外寸と周囲の余白",
@@ -2559,16 +2719,21 @@
         "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "外寸と周囲余白を分離。K11+ Pro軸付き寸法・同縮尺の設置図は公式根拠がなく未完。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG085-02": {
       "title": "手入れの具体性",
@@ -2582,16 +2747,21 @@
         "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "K11清掃/交換目安を具体化。Miniの頻度・対応品番・消耗品費用と両社の条件統一は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG085-03": {
       "title": "Miniの2構成と画像",
@@ -2606,16 +2776,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "主比較2とMini Slim補足を分離。補足の未照合画像は非掲載。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG028-01": {
       "title": "計算説明の順序",
@@ -2630,16 +2805,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG028-02": {
       "title": "販売価格の状態",
@@ -2654,16 +2834,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG028-03": {
       "title": "安全上の境界",
@@ -2677,16 +2862,21 @@
         "changes/reader-purchase-support-v1/articles/portable-power-station-guide.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "AC70公式更新案内を再確認。手元個体・版への適用は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG029-01": {
       "title": "商品画像リンクの説明と方針",
@@ -2701,16 +2891,21 @@
         "python/raos/application/editorial/purchase_support.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "Anker4製品の未照合画像は非掲載。再掲載に必要な画像同一性/権利は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG029-02": {
       "title": "決め手と比較表",
@@ -2724,16 +2919,21 @@
         "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG029-03": {
       "title": "Gen 2の1500W/1550W",
@@ -2747,16 +2947,21 @@
         "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "単口1500W/複数口合計1550Wを説明書で確認。特設表の説明不足についてメーカー回答未取得。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "PG120-01": {
       "title": "画像の同一性と価格期限",
@@ -3094,16 +3299,21 @@
         "output/site-improvements-20260913/integrated-article-semantics.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "全34ページ間の内部URL・旧アンカー・重複IDを検査し不具合なし。cluster系はカテゴリ、購入確認系は販売条件への実リンクに到達。4ページ種別でヘッダーからガイドへキーボード移動PASS。",
         "public_baseline": "34URL間の内部アンカー切れなし。追加about200",
         "external": "本番baselineと候補の反映確認は別",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "公開反映後の読者経路の照合は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "Q07": {
       "title": "購入リンクの最終到達",
@@ -3135,7 +3345,7 @@
       "title": "画像・広告の描画",
       "priority": "P1",
       "wp_id": "全体",
-      "implementation": "ローカル検証済・画像再掲載保留：停止状態/ロード/サイズ",
+      "implementation": "ローカル実装・表示確認済・画像4機種保留：50商品の確認済み写真を14比較記事の66行へ結合。未確認画像は再掲載しない",
       "evidence": [
         "output/site-improvements-20260913/public-baseline-summary.md",
         "output/site-improvements-20260913/public-baseline.json",
@@ -3150,16 +3360,21 @@
         "output/site-improvements-20260913/home-idfix-actual-verification.json",
         "output/site-improvements-20260913/home-idfix-generated-delta.json",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "最終候補170画面で画像未ロード/拡大/横はみ出し検出なし。未照合画像を非掲載。",
         "public_baseline": "全画像ロード完了。WP84画像266px→300px拡大を検出",
         "external": "本番baselineと候補の反映確認は別",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
-      "residual": "画像の存在・到達を転用許諾や全販売構成一致としない。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "residual": "画像未確認4機種：BERMAS60524、INV50、RIMOWA82353704、THANKO STTDWADW。同一型番・色・構成の発行済み画像HTMLまたは掲載許可写真が必要。未公開・本番照合未実施。",
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "Q09": {
       "title": "価格期限・キャッシュ",
@@ -3176,16 +3391,21 @@
         "tests/purchase_support/test_purchase_ui.py",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "最終make fast BASE=2184e576で価格/catalog/UIの関連回帰を通過。静的価格、期限境界、欠損費目、再訪/タブ復帰、noJSを検証。15記事の実画面noJS確認は候補ddd32380で実施し、最終候補の本文/既存JSが一致することを照合。",
         "public_baseline": "期限境界のbaseline実行なし",
         "external": "本番baselineと候補の反映確認は別",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "本番への公開・公開後の再取得、および実CDN/サーバーページキャッシュ条件での期限前後の表示は未検証。ローカルの古い本文・時間境界・再訪試験と区別する。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "Q10": {
       "title": "同意と外部通信",
@@ -3255,16 +3475,21 @@
         "output/site-improvements-20260913/home-idfix-actual-verification.json",
         "output/site-improvements-20260913/home-idfix-generated-delta.json",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "34PC+代表9×5幅では本文の横はみ出しなし。CookieYes旧フッター不具合検出",
         "external": "本番baselineと候補の反映確認は別",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "Q13": {
       "title": "読み込み速度・レイアウトずれ",
@@ -3327,16 +3552,21 @@
         "output/site-improvements-20260913/local-integrated-audit.json",
         "changes/site-improvements-20260913/verification.md",
         "output/site-improvements-20260913/integration-verification.v1.json",
-        "changes/site-improvements-20260913/home-editorial-verification.md"
+        "changes/site-improvements-20260913/home-editorial-verification.md",
+        "changes/site-improvements-20260913/comparison-row-progress.md",
+        "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+        "changes/reader-purchase-support-v1/comparison-rows.md",
+        "output/site-improvements-20260913/shared-comparison-rows/verification.json"
       ],
       "validation": {
         "local": "候補bf5d76b770ef02a0675ef2727f930346f9e72b405a22bf5aaba325d9fe2786f5：35URL preview PASS。ホームの3カテゴリ編集画像/リンクを5幅・文字200%・noJS・キーボード実遷移で確認。ほか33本文・記事metadata・既存JSの一致を照合し、以前の全34表示/意味/操作検証を候補別に保持。",
         "public_baseline": "既存本番baselineのみ",
         "external": "本番baselineと候補の反映確認は別",
-        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
+        "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。",
+        "comparison_rows_20260913": "候補498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3：比較14記事を商品行形式へ統合。54商品／71行／写真66行／発行購入リンク67行、残る4行は公式リンク。共有14×5幅＝70表示、全本文内アンカー・内部リンク・表示CTA binding・noJS価格非表示を確認。標準と小型スーツケースはキーボード・文字200%も確認。make fast（4,651+298）と最終テーマ・媒体103 tests PASS。各Qの外部条件全完了を意味しない。"
       },
       "residual": "公開前のため新HTML/CSSの本番配信・キャッシュ混在解消は未検証。",
-      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
+      "publication_version": "候補 498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3／source fface1a6／ローカル39本文＋テーマ反映済み・未公開。本番照合未実施。以前の検証は候補別に保持。"
     },
     "Q16": {
       "title": "安全な公開と復元",
@@ -3366,5 +3596,13 @@
   "final_test_status": "PASS_FOCUSED_KITCHEN_CHECKS",
   "candidate_state": "LOCAL_VERIFIED_UNPUBLISHED",
   "candidate_home_verification": "changes/site-improvements-20260913/home-recent-preview.md",
-  "candidate_kitchen_verification": "changes/site-improvements-20260913/kitchen-footer-preview.md"
+  "candidate_kitchen_verification": "changes/site-improvements-20260913/kitchen-footer-preview.md",
+  "comparison_rows_followup": {
+    "checked_at": "2026-09-13T06:59:45.898754+00:00",
+    "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+    "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538",
+    "record": "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+    "not_all_136_complete": true,
+    "pending_external_evidence_unchanged": true
+  }
 }
