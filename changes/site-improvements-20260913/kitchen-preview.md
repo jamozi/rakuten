@@ -1,5 +1,7 @@
 # 食洗機カテゴリ：洗う量と給水方法の入口
 
+> 最新の候補は [末尾3リンク削除](kitchen-footer-preview.md)。以下は削除前の構成確認の記録。容量・給水・画像の内容はそのまま保持している。
+
 候補 `861c8ca1f4031e4b1d1106699ca41690a7c3cf6d2ba86cdd7389955204bb23c7`（source commit `e9739173`）、本番未公開。ローカルプレビュー: http://127.0.0.1:41398/kitchen/ 。owner-direct preview既定処理もPASS（34ページ＋投稿一覧）。
 
 - Source: `bfc5d14cf0e18f62ab2dfeaa6a9e5b39b322432254a49334a97a213f761f819b`
