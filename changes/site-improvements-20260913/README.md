@@ -28,4 +28,4 @@ GSC/GA4/ASPやメール到達の外部証拠が未取得なら、その状態と
 
 - 基点: `4daadd611`。作業場所: `.worktrees/all-pages-20260913`、branch `codex/all-pages-improvements-20260913`。
 - 初期確認: owner-directの34対象とテーマ1.6.0をread-only確認。既存purchase policy/catalogテスト32件PASS。
-- 保存本文・商品データ・手順・入口を統合し、実際のWordPress描画経路で確認。最終候補と検証範囲は `verification.md`、項目別の実装と未解決条件は `progress-evidence.v1.json` を参照。
+- 保存本文・商品データ・手順・入口を統合し、実際のWordPress描画経路で確認。最新の食洗機カテゴリ候補は `kitchen-preview.md`、以前の全体検証範囲は `verification.md`、項目別の実装と未解決条件は `progress-evidence.v1.json` を参照。

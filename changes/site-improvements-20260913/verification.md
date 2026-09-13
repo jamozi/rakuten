@@ -1,5 +1,7 @@
 # 全34ページ改善の実装・検証
 
+> 最新候補と食洗機カテゴリの限定変更は [kitchen-preview.md](kitchen-preview.md)。ホームは [home-recent-preview.md](home-recent-preview.md) の完成形を保持。以下の全体確認は以前の候補別記録。
+
 > 最新のホーム構成と公開候補は [home-layout-preview.md](home-layout-preview.md) を参照。以下は前候補の記録。
 
 
