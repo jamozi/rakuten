@@ -691,7 +691,12 @@
       "post_id": 263,
       "slug": "dishwasher-water-supply-methods",
       "kind": "guide",
-      "product_ids": [],
+      "product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
       "title": "食洗機の給水方法｜タンク・ポンプ・分岐水栓の違い",
       "excerpt": "タンク、外部容器からのポンプ給水、分岐水栓の違いを比較。水栓の工事、毎回の水くみ、容器と排水先の置き場から、続けやすい給水方法を考えます。",
       "post_type": "post",
@@ -752,9 +757,41 @@
         {
           "date": "2026-09-13",
           "text": "タンク・外部容器のポンプ給水・分岐水栓の3方式を図で整理。従来4機種の詳細は共通データから表示し、SS-LH451を外部容器方式の補足例として追加"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "掲載4機種と外部容器式の補足例を給排水条件の比較表へ整理。共通カタログから商品写真・参考価格・販売先と詳しい給排水手順を結合。冒頭の3方式の図解と旧アンカーを保持"
         }
       ],
-      "reader_unknowns_note": "水を運ぶ動線や排水先を確保する手間、給水中の音は実機で確認していません。SOLOTAは1回の給水量の公表値がなく、タンクをFULLの線まで入れる方式であることだけを確認しています。"
+      "reader_unknowns_note": "水を運ぶ動線や排水先を確保する手間、給水中の音は実機で確認していません。SOLOTAは1回の給水量の公表値がなく、タンクをFULLの線まで入れる方式であることだけを確認しています。",
+      "supplementary_product_ids": [
+        "PRD-LARGE-DISHWASHER-SS-LH451"
+      ],
+      "commerce_presentation": "comparison_rows",
+      "commerce_anchor": "guide-evidence",
+      "responsive_layout": "matrix",
+      "row_products": [
+        {
+          "key": "solota",
+          "product_id": "PRD-PANASONIC-NP-TMLK1"
+        },
+        {
+          "key": "mini-color",
+          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
+        },
+        {
+          "key": "ss-ma251",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        },
+        {
+          "key": "np-tsp1",
+          "product_id": "PRD-PANASONIC-NP-TSP1"
+        },
+        {
+          "key": "ss-lh451",
+          "product_id": "PRD-LARGE-DISHWASHER-SS-LH451"
+        }
+      ]
     },
     {
       "article_id": "dishwasher-detergent-guide",
@@ -2791,7 +2828,7 @@
           "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
           "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
         },
-        "record_sha256": "9d8dddb1450afc155ca99867893429dc802d23aa83e868b7eaf8089f75535339",
+        "record_sha256": "e9e76d283c66b8e3a42e2f0ccdfba47447107d56c94cdbeb576e1d95596aba3a",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/siroca/ss-ma251/",
         "visual_identity_verified": true,
@@ -3135,7 +3172,7 @@
           "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
           "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
         },
-        "record_sha256": "4fed23630d64278311776e50d17c3fd7024f5b61eb5a76aa68a3509aec8363e6",
+        "record_sha256": "8e25c62a4050e252f1e32d4f413929b46908b935a259e6cbd00de3d40f29b58b",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/edion/4549980451250/",
         "visual_identity_verified": true,
@@ -6532,7 +6569,7 @@
           "240": "fde30382ed0c0a1262872d5a7e5b5b2687d4e067defa76e0e08eac83ba1f66ce",
           "300": "818f08adaa251b49bc918f92c89c8b222844085cb22572d569077a2767e039c9"
         },
-        "record_sha256": "b76be4fcc5502c4fedda4bd3fc2ae5a10cc4a2b3d8556d142f8d44a255f68bf9",
+        "record_sha256": "b39ad337f07245d42c25b1b967a2187cca91eafd67c630477af1a5b0e15377f1",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/siroca/ss-lh451/",
         "visual_identity_verified": true,

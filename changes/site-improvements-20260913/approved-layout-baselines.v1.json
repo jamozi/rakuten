@@ -7,7 +7,18 @@
       "path": "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html",
       "body_sha256": "a8788ae876dcc34b3d86660f91db03476683926b6b7db48438bfa85856b589ad",
       "snapshot_id": "ps-8d00cc73210b7f0cf9fd28bed19631af",
-      "new_layout_review": "PENDING_USER_REVIEW"
+      "new_layout_review": "USER_REVIEW_COMPLETE",
+      "latest_accepted": {
+        "body_sha256": "583554a996d775ff67887e7c27385e378c7e206ee9a3f766c833c07150c283a8",
+        "snapshot_id": "ps-b60d676cf7db4cbc68d3b48e12fec0a5",
+        "source_commit": "c4876162",
+        "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+        "user_statement": "うん、オッケー",
+        "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+        "accepted_scope": "旧了承版から共通の結論1列・実表に変わった現行共有版を再確認して了承",
+        "recorded_at": "2026-09-13T09:31:08.523623+00:00",
+        "publication_authorized": false
+      }
     },
     "lightweight-carry-on-suitcase-under-3kg": {
       "body_sha256": "1c4f1d2497a4b3b4da87d7f4b076718fdba3f1ea3dc000dc3737a4abc311df04",
@@ -21,8 +32,49 @@
       "user_statement": "軽量スーツケースはこれで完了でOK",
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "preview_html_sha256": "eef06b7938a38153acc61855c5acbbc572a013cd0cc3e7b33142d0f7f7f65aaf",
-      "shared_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
-      "shared_validation": "PASS_320_375_390_600_768_1440"
+      "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+      "shared_validation": "PASS_320_375_390_600_768_1440",
+      "shared_parity": "PASS_320_390_768_1440_ALL_CELL_WIDTHS_IDENTICAL",
+      "narrow_layout": "Approved dedicated layout retained"
+    },
+    "compact-robot-vacuum-shortlist": {
+      "body_sha256": "1abcbca96563c550b4b9cbd13ea615f6c1f278ab36c2fe6311afa02e01a2e303",
+      "snapshot_id": "ps-2a83f5503bf55bd97002ad4bed055748",
+      "source_commit": "c4876162",
+      "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+      "title": "省スペースのロボット掃除機を条件で絞る",
+      "user_review": "FINAL_LAYOUT_ACCEPTED",
+      "new_layout_review": "USER_REVIEW_COMPLETE",
+      "user_statement": "これでオッケーかな／うん、オッケー",
+      "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+      "recorded_at": "2026-09-13T09:19:55.345122+00:00",
+      "publication_authorized": false
+    },
+    "standard-dishwasher-comparison": {
+      "body_sha256": "2b3888d532a9ceb3174442476a20644061861e9ec8e24f2829fe995d7883aed0",
+      "snapshot_id": "ps-79da063146c53662a3821633687c66e5",
+      "source_commit": "c4876162",
+      "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+      "title": "標準容量の食洗機比較｜16〜28点の選び方",
+      "user_review": "FINAL_LAYOUT_ACCEPTED",
+      "new_layout_review": "USER_REVIEW_COMPLETE",
+      "user_statement": "標準食洗機の記事もオッケー",
+      "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+      "recorded_at": "2026-09-13T09:19:55.345147+00:00",
+      "publication_authorized": false
+    },
+    "large-dishwasher-comparison": {
+      "body_sha256": "3a42ba10de33ce014f4711a267701bad7e6d97e9a62c3af25d725391a068e1b3",
+      "snapshot_id": "ps-bc06433450f4c1a9380d0584babba615",
+      "source_commit": "c4876162",
+      "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+      "title": "大容量の卓上食洗機比較｜40点モデルの給水・置き場",
+      "user_review": "FINAL_LAYOUT_ACCEPTED",
+      "new_layout_review": "USER_REVIEW_COMPLETE",
+      "user_statement": "うん、これもオッケ",
+      "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+      "recorded_at": "2026-09-13T09:19:55.345151+00:00",
+      "publication_authorized": false
     }
   }
 }

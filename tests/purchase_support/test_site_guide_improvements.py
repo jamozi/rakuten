@@ -80,9 +80,16 @@ def test_authored_water_layout_tracks_shared_catalog_and_preserves_legacy_links(
     tree = fragment(rendered)
     model = next(n for n in tree.walk() if n.attrs.get("id") == product["anchor"])
     assert "shared catalog instruction changed" in model.find(tag="details")[0].text()
-    assert (
-        len(tree.find(cls="ps-guide-model")) == 5
-    )  # Four catalog models plus one explicitly supplemental example.
+    rows = [n for n in tree.find(tag="tr") if n.attrs.get("data-product-id")]
+    assert len(rows) == 5  # Four main models and one explicitly supplemental example.
+    assert [r.attrs.get("data-ps-supplementary") for r in rows] == [
+        None,
+        None,
+        None,
+        None,
+        "true",
+    ]
+    assert all(r.tag == "tr" for r in rows)
     assert {n.attrs["id"] for n in fragment(template).walk() if n.attrs.get("id")} <= {
         n.attrs["id"] for n in tree.walk() if n.attrs.get("id")
     }
@@ -99,3 +106,59 @@ def test_authored_water_layout_rejects_missing_catalog_model_slot():
             '<div><section class="ps-guide-model" id="model"><h3>Model</h3><p>Exact</p><p>Fact</p></section></div>',
             {},
         )
+
+
+def test_water_table_keeps_pump_instructions_outside_catalog_replacement():
+    import json
+    from scripts import build_reader_purchase_support_v1 as builder
+
+    outputs = builder.build()
+    body = next(
+        text
+        for path, text in outputs.items()
+        if path.name == "dishwasher-water-supply-methods.html"
+    )
+    assert "本体のチャイムより遅れて停止" in body
+    assert "https://www.thanko.jp/smartphone/page262.html" in body
+    assert "約10L" in body and "約9L" in body and "約8.5L" in body
+    runtime = json.loads(outputs[builder.RUNTIME_OUTPUT_PATH])
+    entry = next(
+        a for a in runtime["articles"] if a["slug"] == "dishwasher-water-supply-methods"
+    )
+    assert entry["kind"] == "guide"
+    assert len(entry["media"]) == 5
+    sellers = [
+        b
+        for b in entry["bindings"]
+        if b["placement"] == "comparison_table"
+        and not b["cta_id"].startswith("purchase-image-")
+    ]
+    assert len(sellers) == 5 and all(b["affiliate"] == "true" for b in sellers)
+
+
+def test_water_table_rejects_main_and_supplemental_scope_drift():
+    import json
+    import pytest
+    from copy import deepcopy
+    from scripts import build_reader_purchase_support_v1 as builder
+    from raos.application.editorial.purchase_support import render_guide
+
+    catalog = json.loads(builder.CATALOG_INPUT_PATH.read_text())
+    article = next(
+        a for a in catalog["articles"] if a["slug"] == "dishwasher-water-supply-methods"
+    )
+    template = (
+        builder.CATALOG_INPUT_PATH.parent / "articles" / (article["slug"] + ".html")
+    ).read_text()
+    guides = json.loads(builder.GUIDES_INPUT_PATH.read_text())
+    for mutation in ("unmarked_extra", "wrong_main", "duplicate_product"):
+        changed = deepcopy(article)
+        source = template
+        if mutation == "unmarked_extra":
+            source = source.replace(' data-ps-supplementary="true"', "")
+        elif mutation == "wrong_main":
+            changed["product_ids"] = list(reversed(changed["product_ids"]))
+        else:
+            changed["supplementary_product_ids"] = [changed["product_ids"][0]]
+        with pytest.raises(ValueError, match="PURCHASE_WATER_TABLE_SCOPE_INVALID"):
+            render_guide(changed, catalog, guides, source)

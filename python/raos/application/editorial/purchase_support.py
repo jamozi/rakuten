@@ -2151,12 +2151,16 @@ def render_guide(
     out.append("</div>")
     rendered = "".join(out)
     if stage == "water" and fragment(template).find(cls="sm-page"):
-        return bind_water_guide_layout(template, rendered, article)
+        return bind_water_guide_layout(template, rendered, article, catalog=catalog)
     return rendered
 
 
 def bind_water_guide_layout(
-    template: str, rendered: str, article: Mapping[str, Any]
+    template: str,
+    rendered: str,
+    article: Mapping[str, Any],
+    *,
+    catalog: Mapping[str, Any] | None = None,
 ) -> str:
     """Keep the authored route diagram while sourcing model details from the catalog."""
     authored, canonical = fragment(template), fragment(rendered)
@@ -2167,17 +2171,23 @@ def bind_water_guide_layout(
     ids = [node.attrs["id"] for node in root.walk() if node.attrs.get("id")]
     if len(ids) != len(set(ids)):
         raise ValueError("PURCHASE_WATER_LAYOUT_INVALID")
-    first_model = next(iter(root.find(cls="ps-guide-model")), None)
-    model_indexes = canonical.find(cls="ps-model-index")
-    if first_model is None or len(model_indexes) != 1:
-        raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
-    first_model.insert_before(model_indexes[0])
+    table_layout = article.get("commerce_presentation") == "comparison_rows"
+    if table_layout:
+        if catalog is None:
+            raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+        bind_water_table_facts(root, canonical, article, catalog)
+    else:
+        first_model = next(iter(root.find(cls="ps-guide-model")), None)
+        model_indexes = canonical.find(cls="ps-model-index")
+        if first_model is None or len(model_indexes) != 1:
+            raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+        first_model.insert_before(model_indexes[0])
 
     def replace(original: Element, replacement: Element) -> None:
         original.insert_before(replacement)
         original.remove()
 
-    for model in canonical.find(cls="ps-guide-model"):
+    for model in [] if table_layout else canonical.find(cls="ps-guide-model"):
         targets = [
             node
             for node in root.find(cls="ps-guide-model")
@@ -2210,6 +2220,64 @@ def bind_water_guide_layout(
         if node.attrs.get("id") in article.get("legacy_anchor_targets", {}):
             node.remove()
     return root.html()
+
+
+def bind_water_table_facts(
+    root: Element,
+    canonical: Element,
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+) -> None:
+    """Keep the main guide scope and refresh detailed instructions inside its rows."""
+    products = {p["product_id"]: p for p in catalog["products"]}
+    main = article.get("product_ids", [])
+    extras = article.get("supplementary_product_ids", [])
+    scope = main + extras
+    rows = [r for r in root.find(tag="tr") if r.attrs.get("data-product-id")]
+    if (
+        not scope
+        or len(scope) != len(set(scope))
+        or not set(scope) <= products.keys()
+        or [products[pid]["anchor"] for pid in main]
+        != [m.attrs.get("id") for m in canonical.find(cls="ps-guide-model")]
+        or [r.attrs["data-product-id"] for r in rows] != scope
+        or any(
+            (r.attrs.get("data-ps-supplementary") == "true") != (pid in extras)
+            for r, pid in zip(rows, scope, strict=True)
+        )
+    ):
+        raise ValueError("PURCHASE_WATER_TABLE_SCOPE_INVALID")
+    for row, pid in zip(rows, scope, strict=True):
+        product = products[pid]
+        if pid in extras:
+            # Supplemental example instructions remain ordinary authored source.
+            continue
+        slots = row.find(tag="details", cls="ps-guide-facts")
+        if row.attrs.get("id") != product["anchor"] or len(slots) != 1:
+            raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+        facts = [
+            f
+            for f in product.get("guide_facts", [])
+            if f["field"] in {"water_supply", "drainage"}
+        ]
+        if not facts:
+            raise ValueError("PURCHASE_WATER_MODEL_FACTS_REQUIRED")
+        details = slots[0]
+        details.children.clear()
+        details.append(Element("summary", children=["給排水の手順・出典"]))
+        for fact in facts:
+            details.append(block("<p>" + escape(tidy(fact["text"])) + "</p>"))
+            details.append(
+                block(
+                    '<p class="ps-source"><a href="'
+                    + escape(fact["source_url"], quote=True)
+                    + '">'
+                    + escape(locator_label(fact["locator"]))
+                    + "</a> ／ 仕様確認 "
+                    + escape(jp_date(fact["checked_at"]))
+                    + "</p>"
+                )
+            )
 
 
 def add_compatibility_anchors(
@@ -3464,9 +3532,30 @@ def compile_articles(
             )
         elif a["kind"] == "guide":
             html = render_guide(a, catalog, guide_registry, template, now=now)
-            html, bindings, display_media = bind_guide_purchase_slots(
-                html, a, catalog, snapshot, product_media, now
-            )
+            if a.get("commerce_presentation") == "comparison_rows":
+                root = fragment(html)
+                targets = [
+                    node
+                    for node in root.find(tag="section")
+                    if node.attrs.get("id") == a.get("commerce_anchor")
+                ]
+                notices = root.find(cls="ps-disclosure")
+                if len(targets) != 1 or len(notices) != 1 or a.get("purchase_slots"):
+                    raise ValueError("PURCHASE_GUIDE_TABLE_TARGET_INVALID")
+                # Bind commerce to both scopes without reclassifying the guide or
+                # counting the supplemental example as one of its main models.
+                row_article = {
+                    **a,
+                    "product_ids": a["product_ids"]
+                    + a.get("supplementary_product_ids", []),
+                }
+                html, bindings, display_media = bind_comparison_rows(
+                    root, targets[0], row_article, catalog, snapshot, product_media, now
+                )
+            else:
+                html, bindings, display_media = bind_guide_purchase_slots(
+                    html, a, catalog, snapshot, product_media, now
+                )
         elif a["kind"] == "hub":
             html = render_hub(a, catalog, template, now=now)
         else:

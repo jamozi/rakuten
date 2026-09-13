@@ -244,7 +244,17 @@ def test_compact_approved_version_is_preserved_for_reconfirmation():
         baseline["body_sha256"]
         == "a8788ae876dcc34b3d86660f91db03476683926b6b7db48438bfa85856b589ad"
     )
-    assert baseline["new_layout_review"] == "PENDING_USER_REVIEW"
+    assert baseline["new_layout_review"] in {
+        "PENDING_USER_REVIEW",
+        "USER_REVIEW_COMPLETE",
+    }
+    if baseline["new_layout_review"] == "USER_REVIEW_COMPLETE":
+        accepted = baseline["latest_accepted"]
+        assert accepted["body_sha256"] != baseline["body_sha256"]
+        assert accepted["snapshot_id"] != baseline["snapshot_id"]
+        assert accepted["user_statement"] and accepted["confirmation_source_thread"]
+        assert accepted["shared_candidate"] and accepted["source_commit"]
+        assert accepted["publication_authorized"] is False
 
 
 def test_new_article_template_uses_shared_rows_and_reviewed_media_scope(rendered):

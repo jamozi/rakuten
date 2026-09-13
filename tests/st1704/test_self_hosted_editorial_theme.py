@@ -1815,7 +1815,11 @@ def test_single_article_titles_are_wide_balanced_and_responsive() -> None:
         assert "line-height: 1.22;" in desktop
         assert "text-wrap: balance;" in desktop
         assert "word-break: auto-phrase;" in desktop
-        mobile = stylesheet.rsplit(f"{selector} {{", 1)[1].split("}", 1)[0]
+        # Match this selector itself, not a later prefixed alignment override.
+        rules = re.findall(
+            rf"(?m)^\s*{re.escape(selector)}\s*\{{([^}}]+)\}}", stylesheet
+        )
+        mobile = rules[-1]
         assert "font-size: clamp(" in mobile
         assert "line-height:" in mobile
     assert "--rx-prose: 54rem" in editorial_css
@@ -2288,13 +2292,18 @@ def test_content_is_visible_without_javascript() -> None:
         )
         if re.search(r"\bdisplay\s*:\s*none\b", declarations)
     }
-    # Additional hidden selectors affect only a responsive line break, a desktop
-    # scroll hint, and print-only navigation; article content remains visible.
+    # Hidden scroll hints and duplicate pseudo-labels do not hide table content.
     assert "@media print{.compact-draft .ps-table-scroll" in css
     assert hidden_selectors == {
         ".ks-power-category .ks-power-devices br",
         ".compact-scroll-hint",
         ".compact-nav",
+        ".ks-large-guide .lg-integrated-comparison .lg-scroll-hint",
+        ".std-capacity #std-comparison .std-scroll-hint",
+        ".std-capacity #std-comparison td.std-spec-cell::before,\n"
+        ".std-capacity #std-comparison td.std-use-cell::before,\n"
+        ".std-capacity #std-comparison td.std-reference-cell::before",
+        "table.ks-readable-table td::before",
         "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-comparison__cards",
         ".raos-comparison__table-view",

@@ -410,7 +410,8 @@
     "name": "シロカ 食器洗い乾燥機 SS-MA251",
     "slugs": [
       "countertop-dishwasher-for-small-households",
-      "standard-dishwasher-comparison"
+      "standard-dishwasher-comparison",
+      "dishwasher-water-supply-methods"
     ],
     "shop_name": "シロカ公式ストア 楽天市場店",
     "item_url": "https://item.rakuten.co.jp/siroca/ss-ma251/",
@@ -425,7 +426,8 @@
     "name": "パナソニック 食器洗い乾燥機 NP-TSP1-W",
     "slugs": [
       "countertop-dishwasher-for-small-households",
-      "standard-dishwasher-comparison"
+      "standard-dishwasher-comparison",
+      "dishwasher-water-supply-methods"
     ],
     "shop_name": "エディオン 楽天市場店",
     "item_url": "https://item.rakuten.co.jp/edion/4549980451250/",
@@ -579,7 +581,8 @@
     "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
     "name": "シロカ 食器洗い乾燥機（大人数向け） SS-LH451",
     "slugs": [
-      "large-dishwasher-comparison"
+      "large-dishwasher-comparison",
+      "dishwasher-water-supply-methods"
     ],
     "shop_name": "シロカ公式ストア　楽天市場店",
     "item_url": "https://item.rakuten.co.jp/siroca/ss-lh451/",

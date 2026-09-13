@@ -247,3 +247,12 @@
 .ps-matrix-spec-group + .ps-matrix-spec-group { margin-top:18px; }
 .ps-matrix-spec-group :is(p,ul,ol,dl) { max-width:100%; }
 .ps-matrix-scroll { overflow:visible!important; }
+
+/* Water guide: keep the shared native table and readable instructions in each row. */
+.sm-page .sm-supply-facts { margin: 0; }
+.sm-page .sm-supply-facts > div { margin-block-end: 1em; }
+.sm-page .sm-supply-facts dt { font-weight: 700; color: #52735c; }
+.sm-page .sm-supply-facts dd { margin: 0; }
+.sm-page .sm-table-routes { font-size: 13px; font-weight: 400; }
+.sm-page .sm-supply-cautions { margin-block-start: 1em; }
+.sm-page .sm-supply-supplement { margin-block-start: 2rem; }
