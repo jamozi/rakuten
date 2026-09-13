@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c"
+    "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -80,6 +80,9 @@ SOLOTA_RAKUA_ASSET_INPUT_PATH: Final = (
 HOME_HERO_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/home-hero.webp"
 )
+HOME_LIFESTYLE_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp"
+)
 SUITCASE_GUIDE_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp"
 )
@@ -92,7 +95,9 @@ SUITCASE_UNDER_100_ASSET_INPUT_PATH: Final = (
 SUITCASE_UNDER_3KG_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-under-3kg.webp"
 )
-BRAND_LOGO_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/images/brand-mark-512.png"
+BRAND_LOGO_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/brand-mark-512.png"
+)
 APPLE_TOUCH_ICON_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/apple-touch-icon.png"
 )
@@ -146,6 +151,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     FAVICON_ICO_INPUT_PATH,
     HOME_HERO_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-hero.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
@@ -364,6 +370,7 @@ def _validate_owner_bindings() -> None:
             ANKER_GENERATIONS_ASSET_INPUT_PATH,
             DISHWASHER_ASSET_INPUT_PATH,
             HOME_HERO_ASSET_INPUT_PATH,
+            HOME_LIFESTYLE_ASSET_INPUT_PATH,
             PORTABLE_POWER_ASSET_INPUT_PATH,
             ROBOT_VACUUM_ASSET_INPUT_PATH,
             ROOMBA_K11_ASSET_INPUT_PATH,
@@ -516,7 +523,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except (TypeError, ValueError, UnicodeError, RecursionError):
+    except TypeError, ValueError, UnicodeError, RecursionError:
         _fail()
 
 
@@ -576,7 +583,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except (UnicodeError, json.JSONDecodeError):
+    except UnicodeError, json.JSONDecodeError:
         _fail()
     if type(document) is not dict:
         _fail()
@@ -662,6 +669,33 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     rendered[THEME_ROOT / "theme-contract.v1.json"] = _canonical_json(contract)
 
     assets = _load_json_payload(sources["raos-assets.v1.json"])
+    lifestyle = next(
+        asset
+        for asset in theme_asset_owner.ASSETS
+        if asset.output.relative_to(ROOT) == HOME_LIFESTYLE_ASSET_INPUT_PATH
+    )
+    lifestyle_path = lifestyle.output.relative_to(THEME_ROOT).as_posix()
+    assets["required_images"] = sorted(
+        [
+            record
+            for record in assets["required_images"]
+            if record["path"] != lifestyle_path
+        ]
+        + [
+            {
+                "alt": "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
+                "canvas_height": lifestyle.output_height,
+                "canvas_width": lifestyle.output_width,
+                "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+                "path": lifestyle_path,
+                "provenance": theme_asset_owner.manifest_provenance(lifestyle),
+                "sha256": lifestyle.output_sha256,
+                "status": "FINAL",
+                "usage": "Anonymous lifestyle editorial image; not an actual product photograph",
+            }
+        ],
+        key=lambda record: record["path"],
+    )
     assets["source_files"] = list(SOURCE_FILES)
     assets["theme_runtime_revision"] = revision
     assets["theme_source_fingerprint"] = revision
@@ -732,7 +766,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except (OSError, ThemeBuildFailure):
+    except OSError, ThemeBuildFailure:
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -855,7 +889,7 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 16:
+    if type(records) is not list or len(records) != 17:
         _fail()
     generated_assets = {
         asset.output.relative_to(THEME_ROOT).as_posix(): asset
@@ -964,6 +998,7 @@ def _validate_asset_manifest(
         "assets/images/favicon-32.png",
         "assets/images/favicon.ico",
         "assets/images/home-hero.webp",
+        "assets/images/home-lifestyle-20260913.webp",
     }:
         _fail()
 
@@ -1417,7 +1452,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except (OSError, ThemeBuildFailure):
+    except OSError, ThemeBuildFailure:
         _fail()
 
 

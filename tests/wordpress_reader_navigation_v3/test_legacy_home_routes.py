@@ -33,11 +33,11 @@ class LegacyHomeRoutes(unittest.TestCase):
             self.assertTrue(self.text[n.open_end : n.close_start].strip())
             self.assertNotIn("hidden", n.attrs)
 
-    def test_home_purchase_hash_offers_article_specific_conditions_without_steps(self):
+    def test_old_purchase_hash_links_to_purchase_checks_without_extra_section(self):
         n = self.doc.ids["home-purchase-check"]
         content = self.text[n.open_end : n.close_start]
-        self.assertIn("#ps-offers", content)
-        self.assertIn("各記事の購入条件", content)
+        self.assertIn("/comparisons/#purchase-checks", content)
+        self.assertNotIn("各記事の購入条件", self.text)
         self.assertNotIn("選び方の3ステップ", self.text)
 
     def test_four_image_cards_use_category_destinations(self):
@@ -57,15 +57,15 @@ class LegacyHomeRoutes(unittest.TestCase):
             ],
         )
 
-    def test_categories_and_purposes_are_separate_four_and_six_choices(self):
+    def test_four_categories_and_four_recent_articles_keep_secondary_links(self):
         for ident, count in [
             ("km-categories-title", 4),
-            ("km-purposes-title", 6),
-            ("km-updates-title", 6),
+            ("km-updates-title", 4),
         ]:
             n = self.doc.ids[ident]
             self.assertEqual(self.text[n.start : n.end].count("<article "), count)
         self.assertIn('href="/updates/"', self.text)
+        self.assertEqual(self.doc.ids["km-purposes-title"].attrs["href"], "/purposes/")
         # Entire inventory remains reachable through category/list pages, not repeated on home.
         self.assertNotIn("掲載 15記事", self.text)
 
@@ -83,9 +83,12 @@ class LegacyHomeRoutes(unittest.TestCase):
 
     def test_hero_and_editorial_feature_images_preserve_media_boundaries(self):
         images = [n.attrs for n in self.doc.nodes if n.tag == "img"]
-        self.assertEqual(len(images), 5)
-        self.assertTrue(images[0]["src"].endswith("/assets/images/magazine-hero.webp"))
-        self.assertEqual((images[0]["width"], images[0]["height"]), ("842", "495"))
+        self.assertEqual(len(images), 9)
+        self.assertTrue(
+            images[0]["src"].endswith("/assets/images/home-lifestyle-20260913.webp")
+        )
+        self.assertEqual((images[0]["width"], images[0]["height"]), ("1672", "941"))
+        self.assertNotIn("<figcaption", self.text)
         data = json.loads(
             (
                 ROOT / "changes/site-improvements-20260913/entry-pages.v1.json"
@@ -93,7 +96,7 @@ class LegacyHomeRoutes(unittest.TestCase):
         )
         self.assertEqual(data["home_image_style"], "editorial")
         for image, category in zip(
-            images[1:], ("kitchen", "travel", "cleaning", "preparedness")
+            images[1:5], ("kitchen", "travel", "cleaning", "preparedness")
         ):
             self.assertTrue(
                 image["src"].endswith(f"/ks-{category}-editorial-ai-20260910.webp")

@@ -73,8 +73,8 @@ class ProjectionTest(unittest.TestCase):
         ]
         positions = [home.index("/" + s + "/") for s in slugs]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn("旅行の荷物を楽に", home)
-        self.assertIn("停電に備える", home)
+        self.assertIn('href="/purposes/"', home)
+        self.assertNotIn("悩み・目的から探す", home)
 
     def test_home_uses_short_links_without_card_metadata(self):
         result = builder.build()
@@ -89,7 +89,7 @@ class ProjectionTest(unittest.TestCase):
             self.assertNotIn(text, home)
         self.assertNotIn('data-ks-home-product="', home)
         self.assertEqual(home.count('class="ks-feature-image"'), 4)
-        self.assertEqual(home.count("商品カテゴリから探す"), 1)
+        self.assertEqual(home.count("商品カテゴリー"), 1)
         self.assertNotIn("暮らしに合う道具を比較する", home)
         self.assertNotIn("AI編集イメージ・実物写真ではありません", home)
         self.assertNotIn("hb.afl.rakuten.co.jp", home)

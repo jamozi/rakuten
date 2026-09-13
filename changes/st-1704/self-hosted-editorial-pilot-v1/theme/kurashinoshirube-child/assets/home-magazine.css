@@ -122,13 +122,18 @@ body #ks-magazine.ks-editorial-page {
   background: transparent;
 }
 body #ks-magazine .ks-home-masthead {
-  display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: clamp(24px, 4vw, 56px);
-  padding-block: 12px 32px;
-  border-bottom: 1px solid #d7d3cb;
+  min-height: 470px;
+  isolation: isolate;
+  overflow: hidden;
+  margin-bottom: 44px;
+  padding: 48px;
+  background: #efebe2;
 }
+body #ks-magazine .ks-home-intro { position: relative; z-index: 2; }
+body #ks-magazine .ks-home-intro .km-tag { padding: 0; background: none; color: #4d483f; font: inherit; font-size: .85rem; letter-spacing: .1em; }
 body #ks-magazine .ks-home-intro h1 {
   font-size: clamp(2rem, 3.3vw, 3rem);
   line-height: 1.45;
@@ -136,8 +141,9 @@ body #ks-magazine .ks-home-intro h1 {
   letter-spacing: .06em;
 }
 body #ks-magazine .ks-home-intro>p:last-child { line-height: 1.9; color: #5c5953; }
-body #ks-magazine .ks-home-mood { margin: 0; width: 100%; max-width: none; }
-body #ks-magazine .ks-home-mood img { display: block; width: 100%; height: auto; }
+body #ks-magazine .ks-home-mood { position: absolute; inset: 0; z-index: 0; margin: 0; width: 100%; max-width: none; }
+body #ks-magazine .ks-home-mood img { display: block; width: 100%; height: 100%; object-fit: cover; }
+body #ks-magazine .ks-home-masthead::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg,rgba(246,241,231,.7),rgba(246,241,231,.25) 42%,transparent 65%); pointer-events: none; }
 body #ks-magazine figcaption { font-size: .7rem; line-height: 1.6; color: #716d65; padding-top: 6px; }
 body #ks-magazine .ks-home-feature-grid {
   display: grid;
@@ -162,15 +168,25 @@ body #ks-magazine .ks-pr-badge { display: inline-block; width: auto; font-size: 
 body #ks-magazine section>h2 { font-size: clamp(1.4rem, 2.2vw, 2rem); margin-bottom: 20px; }
 body #ks-magazine section { margin-block: 0 40px; }
 body #ks-magazine #km-categories-title .ks-route-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-body #ks-magazine .ks-home-updates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-body #ks-magazine .ks-home-updates h3 { margin-block: 10px; }
+body #ks-magazine .ks-home-updates { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+body #ks-magazine .ks-home-updates .ks-editorial-card { padding: 0; background: transparent; border: 0; }
+body #ks-magazine .ks-home-updates h3 { margin-block: 12px; font-size: 1rem; line-height: 1.65; }
+body #ks-magazine .ks-recent-image { display: block; }
+body #ks-magazine .ks-recent-image img { display: block; width: 100%; height: auto; aspect-ratio: 762/506; object-fit: cover; }
+body #ks-magazine .ks-home-more { text-align: right; margin-top: 18px; font-size: .85rem; }
+body #ks-magazine #site-editorial-policy { border-top: 1px solid #d7d3cb; padding-top: 28px; }
+body #ks-magazine #site-editorial-policy p,body #ks-magazine #site-editorial-policy nav { font-size: .9rem; }
 @media (max-width: 900px) {
   body #ks-magazine #km-categories-title .ks-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body #ks-magazine .ks-home-feature-grid { gap: 16px; }
 }
 @media (max-width: 650px) {
   body #ks-magazine.ks-editorial-page { width: calc(100% - 32px); margin-top: 20px !important; padding: 0; }
-  body #ks-magazine .ks-home-masthead { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 0; }
+  body #ks-magazine .ks-home-masthead { min-height: 460px; align-items: flex-start; padding: 26px 22px; margin-bottom: 32px; }
+  body #ks-magazine .ks-home-mood img { object-position: 72% center; }
+  body #ks-magazine .ks-home-masthead::after { background: linear-gradient(180deg,#f3eee4 4%,rgba(243,238,228,.96) 37%,rgba(243,238,228,.18) 67%,transparent 80%); }
+  body #ks-magazine .ks-home-intro .km-tag { font-size: .72rem; letter-spacing: .04em; }
+  body #ks-magazine .ks-home-intro>p:last-child { font-size: .83rem; }
   body #ks-magazine .ks-home-intro h1 { font-size: clamp(1.75rem, 7vw, 2.35rem); margin-block: 12px; }
   body #ks-magazine .ks-home-intro>p:last-child br { display: none; }
   body #ks-magazine .ks-home-feature-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; }
@@ -178,7 +194,7 @@ body #ks-magazine .ks-home-updates h3 { margin-block: 10px; }
   body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-feature-image { float: left; width: 38%; margin: 0 16px 8px 0; }
   body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child)::after { content: ''; display: block; clear: both; }
   body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-card-meta { clear: both; }
-  body #ks-magazine .ks-home-updates { grid-template-columns: minmax(0, 1fr); }
+  body #ks-magazine .ks-home-updates { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; }
   body #ks-magazine #km-categories-title .ks-route-grid { gap: 12px; }
   body #ks-magazine .ks-editorial-card { padding: 16px; }
 }
@@ -203,6 +219,13 @@ body #ks-magazine .ks-home-feature-grid .ks-feature-image { max-width:762px; mar
 body #ks-magazine .ks-home-feature-grid .ks-feature-image img { height:auto; }
 body #ks-magazine .ks-home-category-grid>.ks-editorial-card:first-child { grid-column:auto; }
 body #ks-magazine .ks-home-category-grid>.ks-editorial-card:first-child h3 { font-size:1.2rem; }
+body #ks-magazine .ks-home-category-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; margin-top:24px; }
+body #ks-magazine .ks-home-category-grid h3 a { text-decoration:none; }
+body #ks-magazine .ks-home-category-grid a:hover { text-decoration:underline; }
+@media(max-width:900px) {
+  body #ks-magazine .ks-home-category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px 14px; }
+  body #ks-magazine .ks-home-category-grid>.ks-editorial-card h3,body #ks-magazine .ks-home-category-grid>.ks-editorial-card:first-child h3 { font-size:1rem; }
+}
 @media(max-width:700px) {
   body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-feature-image { float:none; width:100%; margin:0 auto 16px; }
 }

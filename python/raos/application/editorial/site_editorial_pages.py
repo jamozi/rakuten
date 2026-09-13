@@ -303,7 +303,7 @@ def render_pages(
                 )
 
             body = (
-                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリから探す</h2><div class="ks-home-feature-grid ks-home-category-grid">'
+                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp" width="1672" height="941" fetchpriority="high" alt="朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ"></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリー</h2><div class="ks-home-feature-grid ks-home-category-grid">'
                 + feature(41, "kitchen", "食器と食洗機のあるキッチンのイメージ")
                 + feature(83, "travel", "スーツケースと衣類を揃えた旅支度のイメージ")
                 + feature(30, "cleaning", "ロボット掃除機を置いた部屋のイメージ")
@@ -312,19 +312,23 @@ def render_pages(
                 )
                 + "</div></section></section>"
             )
-            body += section(
-                "悩み・目的から探す", purpose_cards(home=True), "km-purposes-title"
-            )
             recent = sorted(
-                (a for a in meta.values() if a.get("updated_on")),
-                key=lambda a: (a["updated_on"], a["post_id"]),
+                (a for a in meta.values() if a.get("published_on")),
+                key=lambda a: (a["published_on"], a["post_id"]),
                 reverse=True,
-            )[:6]
+            )[:4]
             body += section(
-                "新着・内容を更新した記事",
+                "新着記事",
                 '<div class="ks-home-updates">'
                 + "".join(
-                    '<article class="ks-editorial-card"><h3>'
+                    '<article class="ks-editorial-card">'
+                    + '<a class="ks-recent-image" href="'
+                    + article_url(a["post_id"])
+                    + '"><img src="https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-'
+                    + a["category"]
+                    + '-editorial-ai-20260910.webp" width="762" height="506" alt="'
+                    + escape(data["categories"][a["category"]]["name"], quote=True)
+                    + 'のある暮らしの編集イメージ" loading="lazy"></a><h3>'
                     + link(
                         article_url(a["post_id"]),
                         data["home_short_titles"].get(str(a["post_id"]), a["title"]),
@@ -334,10 +338,12 @@ def render_pages(
                 )
                 + "</div>"
                 if recent
-                else "<p>実質的な本文更新の記録を照合中です。</p>",
+                else "<p>公開日の記録を照合中です。</p>",
                 "km-updates-title",
             )
-            body += "<p>" + link("/updates/", "更新内容と記事一覧を見る") + "</p>"
+            body += (
+                '<p class="ks-home-more">' + link("/updates/", "記事一覧へ") + "</p>"
+            )
         elif slug == "categories":
             body = (
                 "<p>商品名が決まっていれば代表比較へ。置き場所や条件が不安なら採寸・条件整理へ進めます。</p>"
@@ -689,28 +695,19 @@ def render_pages(
         if slug == "home":
             policy = section(
                 "編集方針",
-                '<nav aria-label="編集方針">'
+                '<p>公式情報をもとに、置き場所・使い方・手入れを比べます。</p><nav aria-label="編集方針">'
                 + link("/comparison-policy/", "比較方針")
                 + " ／ "
                 + link("/about-ad-policy/", "運営・広告方針")
                 + "</nav>",
                 "site-editorial-policy",
             )
+            # Keep old URLs useful without restoring removed homepage sections.
             body = body.replace(
-                '<section id="km-categories-title"><h2>',
-                '<section id="km-categories-title"><h2 id="ks-visual-categories">',
+                "</div></section></section>",
+                '</div><nav class="ks-home-more" aria-label="ほかの探し方"><a id="km-purposes-title" href="/purposes/">目的から探す</a><span id="home-purchase-check"> ／ <a id="home-purchase-check-title" href="/comparisons/#purchase-checks">購入前の確認</a></span></nav></section></section>',
                 1,
             )
-            # The old purchase URL now offers the actual article-specific conditions.
-            purchase = (
-                '<h3 id="home-purchase-check-title">各記事の購入条件</h3><p>'
-                + " ／ ".join(
-                    al(i, data["home_short_titles"][str(i)], "ps-offers")
-                    for i in [41, 83, 30]
-                )
-                + "</p>"
-            )
-            policy += wrap(purchase, "home-purchase-check")
             policy = wrap(policy, "km-editorial-title")
         elif slug in data["categories"] and slug != "kitchen":
             # Category-specific explanations remain first; compare hashes land on cards.

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "5aa120e96bb4db661cbaa81d6c1da9839e0f6c8c33b20348a38491621634a1b9",
+          "sha256": "a3f8f0429b3ea829e2f86189b34787bb91487ab564625f8e3077650c6fc9b7e2",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -2297,8 +2297,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/guides.html"
         },
         {
-          "bytes": 4882,
-          "sha256": "6364627d08b04bb96e0224f0f5c5d31776e422c4c3da2b5af9cc9bf06c1ceb0b",
+          "bytes": 4807,
+          "sha256": "e21b6abdd4e3fadb0315099f91eff77f24241e399fd9b578ce2dccc9f426b42c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/home.html"
         },
         {
@@ -27094,7 +27094,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "f0c313abfc40c4204d5ce5a735a56a98c129bed707543445895293e19901b89a",
+          "sha256": "fb0601e663f57e800b3d8be9b1e5ca0d3bd10abbfd4b4af11a482a4a60e9b5f4",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27325,7 +27325,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "0ba67593ca13a8b9c1550a06bf755b2f4f57b6144d202ffeee10744cbb6bf3a5",
+          "sha256": "4e97211e04c7db1c26ad56e675f6fc42797bf319d032e05b88d8944ab807f828",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -28115,6 +28115,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
           "version": 2
         },
         {
@@ -30175,7 +30181,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "30e978addb3e54ee35f83a32ef55df45951cbcac11efcb78ccc5fb8e98a2d149",
+          "sha256": "34f8df4558d7879be1b34eac7b4e68b8aa5fc7864235bcbac8a8112a0a9b7d28",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31032,7 +31038,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "1b38b0be7f2f6166d1986ed487e46296690188f7e5b11643efdca1a9339e3ef9",
+          "sha256": "f1c7ab2672e775e979825445b6c336f40359b95c1377636482a281f02724e090",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

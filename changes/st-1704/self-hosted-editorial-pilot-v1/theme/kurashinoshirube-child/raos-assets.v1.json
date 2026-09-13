@@ -488,6 +488,37 @@
       "sha256": "9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493",
       "status": "FINAL",
       "usage": "Homepage hero and neutral social fallback"
+    },
+    {
+      "alt": "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
+      "canvas_height": 941,
+      "canvas_width": 1672,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-lifestyle-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_HERO"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_QUIET_LIVING_EDITORIAL",
+        "original_sha256": "8b272be7c7e1a9be6b113d68f4afd1d3874bbced08e4d839b2d032ff680ec38e",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-lifestyle-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "8e8a39c5d34f41a889968de911fb8659b36ebc4e9c95bd2541797affa59943fe",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
     }
   ],
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2",
@@ -514,6 +545,7 @@
     "assets/images/favicon-32.png",
     "assets/images/favicon.ico",
     "assets/images/home-hero.webp",
+    "assets/images/home-lifestyle-20260913.webp",
     "assets/images/magazine-hero.webp",
     "assets/images/magazine-kitchen.webp",
     "assets/images/magazine-room.webp",
@@ -549,8 +581,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c",
+  "theme_runtime_revision": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c",
+  "theme_source_fingerprint": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
   "theme_version": "1.6.0"
 }

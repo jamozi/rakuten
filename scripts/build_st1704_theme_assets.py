@@ -128,6 +128,21 @@ class AssetSpec:
 
 ASSETS: Final = (
     AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-lifestyle-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
+        source_sha256="8b272be7c7e1a9be6b113d68f4afd1d3874bbced08e4d839b2d032ff680ec38e",
+        output_sha256="8e8a39c5d34f41a889968de911fb8659b36ebc4e9c95bd2541797affa59943fe",
+        source_width=1672,
+        source_height=941,
+        output_width=1672,
+        output_height=941,
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_QUIET_LIVING_EDITORIAL",
+        allowed_uses=("HOMEPAGE_HERO",),
+    ),
+    AssetSpec(
         source=HOME_HERO_SOURCE,
         output=HOME_HERO_OUTPUT,
         source_sha256=(

@@ -554,8 +554,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c",
-    "source_fingerprint": "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c",
+    "revision": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
+    "source_fingerprint": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/consent-controls.js",
@@ -579,6 +579,7 @@
       "assets/images/favicon-32.png",
       "assets/images/favicon.ico",
       "assets/images/home-hero.webp",
+      "assets/images/home-lifestyle-20260913.webp",
       "assets/images/magazine-hero.webp",
       "assets/images/magazine-kitchen.webp",
       "assets/images/magazine-room.webp",

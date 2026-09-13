@@ -451,7 +451,7 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
         theme_builder.theme_source_fingerprint()
     )
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 16
+    assert isinstance(records, list) and len(records) == 17
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])
@@ -2330,7 +2330,7 @@ def test_navigation_script_integrity_constant_matches_asset() -> None:
 
 def test_navigation_script_keeps_the_home_hero_static() -> None:
     script = (THEME_ROOT / "assets/editorial-navigation.js").read_text(encoding="utf-8")
-    # FD-07: the saved H1 and the three feature links stay readable at 0/6/12 seconds;
+    # FD-07: the saved H1 and category links stay readable at 0/6/12 seconds;
     # no carousel, timer, inert or aria-hidden state is added to the site description.
     for forbidden in (
         "km-carousel",
@@ -2361,6 +2361,8 @@ def test_navigation_script_keeps_the_home_hero_static() -> None:
         "/cleaning/",
         "/preparedness/",
         "/preparedness/",
+        "/purposes/",
+        "/comparisons/#purchase-checks",
     ]
     assert 'aria-hidden="true"' not in feature
     assert " inert" not in feature
