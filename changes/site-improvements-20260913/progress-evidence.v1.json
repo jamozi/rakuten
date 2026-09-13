@@ -25,7 +25,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G02": {
       "title": "商品・画像・販売先",
@@ -50,7 +50,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G03": {
       "title": "販売価格の期限",
@@ -75,7 +75,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G04": {
       "title": "購入総額の表現",
@@ -100,7 +100,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G05": {
       "title": "広告・通常リンク",
@@ -129,7 +129,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G06": {
       "title": "未確認の種類",
@@ -153,7 +153,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "メーカー未公表・実機・個体・選択構成の事実は未確認。問い合わせ下書き未送信。未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G07": {
       "title": "更新日・件数",
@@ -182,7 +182,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G08": {
       "title": "画像の用途と権利",
@@ -210,7 +210,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "最終候補の通常幅では画像ロード/画像拡大/横はみ出しの検出なし。未照合画像の同一性と転用権は未確認のため再掲載しない。未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G09": {
       "title": "言い切りと読者への丸投げ",
@@ -235,7 +235,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G10": {
       "title": "入口の役割",
@@ -260,7 +260,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G11": {
       "title": "購入導線",
@@ -285,7 +285,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G12": {
       "title": "文字組み",
@@ -313,7 +313,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G13": {
       "title": "比較表とスマホ",
@@ -341,7 +341,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G14": {
       "title": "画像・広告・入力の遅延表示",
@@ -366,7 +366,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G15": {
       "title": "確認根拠",
@@ -391,7 +391,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G16": {
       "title": "計測と収益",
@@ -417,7 +417,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "GSC/GA4アカウント設定・実クリック/注文/ASP確定報酬はUNAVAILABLE。送信観測やリンク到達を確定収益にしない。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G17": {
       "title": "変更管理",
@@ -442,7 +442,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "136項目の候補ID・最終回帰結果・表示/意味照合を記録済み。公開指示後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "G18": {
       "title": "拡張の判断",
@@ -465,7 +465,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "今後追加する場合に独自検索意図・既存との差・流入先・購入/非購入分岐・更新担当と一次情報を用意する。GSC取得をこの項目固有の必須条件へ追加しない。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG015-01": {
       "title": "掲載記事の一覧・更新日",
@@ -498,7 +498,7 @@
         "home_recent_images": "候補e5bf33d2441ca8cb0813feb1f86c8c780dc56537cb321bffe2938252a5f14742：新着4枚を1440/390pxで目視・読込確認。配信画像4ハッシュ一致、4画像リンクのキーボード実遷移HTTP200。関連25件＋16subtests。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG015-02": {
       "title": "ファーストビューと記事配置",
@@ -529,7 +529,7 @@
         "regression": "関連25件＋16subtests。画像パス修正後16件＋16subtests。owner生成とsource/binding確認通過。追加の全サイト監査なし。広い旧make fastは中止・非PASS。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG015-03": {
       "title": "画像と購入前確認",
@@ -562,7 +562,7 @@
         "home_recent_images": "候補e5bf33d2441ca8cb0813feb1f86c8c780dc56537cb321bffe2938252a5f14742：新着4枚を1440/390pxで目視・読込確認。配信画像4ハッシュ一致、4画像リンクのキーボード実遷移HTTP200。関連25件＋16subtests。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG130-01": {
       "title": "4つのカテゴリカード",
@@ -587,7 +587,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG130-02": {
       "title": "記事数・広告有無の説明",
@@ -612,7 +612,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG130-03": {
       "title": "入口の案内文",
@@ -637,7 +637,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG139-01": {
       "title": "6つの目的の切り分け",
@@ -662,7 +662,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG139-02": {
       "title": "目的名と範囲",
@@ -687,7 +687,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG139-03": {
       "title": "カードの情報量",
@@ -712,7 +712,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG135-01": {
       "title": "独立記事と記事内の節",
@@ -738,7 +738,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG135-02": {
       "title": "深いリンク",
@@ -764,7 +764,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG135-03": {
       "title": "カード見出しと断定",
@@ -790,7 +790,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG133-01": {
       "title": "ページ名と比較カード",
@@ -815,7 +815,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG133-02": {
       "title": "購入確認の戻り導線",
@@ -840,7 +840,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG133-03": {
       "title": "候補数・型番・広告ラベル",
@@ -865,7 +865,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG143-01": {
       "title": "日付別の7本/8本のグループ",
@@ -890,7 +890,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG143-02": {
       "title": "変更点の説明",
@@ -915,7 +915,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG143-03": {
       "title": "新着と更新の区別",
@@ -940,7 +940,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG142-01": {
       "title": "利用便の入口",
@@ -965,7 +965,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG142-02": {
       "title": "条件から候補を見る",
@@ -991,7 +991,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG142-03": {
       "title": "旅の目的別ページとの分担",
@@ -1016,13 +1016,13 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG136-01": {
       "title": "買う前と購入後",
       "priority": "P1",
       "wp_id": "136",
-      "implementation": "ユーザー追加指示を適用：購入前は洗う量（コンパクト・標準・大容量）と給水方法の入口へ再構成。購入後は下部の洗剤・お手入れ2枚へ整理。匿名の編集写真と短いリンクで案内し、既存11アンカーを保持。 追加指示で本文末尾の他カテゴリ3リンクだけを削除し、方針・共通ナビを保持。",
+      "implementation": "ユーザー追加指示を適用：カテゴリは洗う量と給水方法を主役にする。本文末尾の他カテゴリ3リンクに続き、「使っている方へ」2画像案内と冒頭の対応リンクを削除。購入後の洗剤・お手入れ記事とデータは保持し、今後の容量別比較への再利用に備える。容量別包括記事の作成・改訂は未着手。",
       "evidence": [
         "changes/site-improvements-20260913/entry-pages-report.md",
         "changes/site-improvements-20260913/entry-pages.v1.json",
@@ -1042,16 +1042,18 @@
         "output/site-improvements-20260913/kitchen-delta.json",
         "changes/site-improvements-20260913/kitchen-footer-preview.md",
         "output/site-improvements-20260913/kitchen-footer-verification.json",
-        "output/site-improvements-20260913/kitchen-footer-delta.json"
+        "output/site-improvements-20260913/kitchen-footer-delta.json",
+        "output/site-improvements-20260913/kitchen-care-removal-verification.json",
+        "output/site-improvements-20260913/kitchen-care-removal-delta.json"
       ],
       "validation": {
-        "local": "候補861c8ca1f4031e4b1d1106699ca41690a7c3cf6d2ba86cdd7389955204bb23c7：食洗機カテゴリのみ1440/390/320px、画像7枚、内部リンク・アンカー21件、キーボード5遷移・details操作PASS。本文文字数2118→726、他33本文・既存11アンカー保持。source commit e9739173。 後継候補84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3で末尾3リンクの不在、2方針リンク・7画像・周辺表示を1440/390pxで追加確認。列以外の本文は同一。",
+        "local": "候補861c8ca1f4031e4b1d1106699ca41690a7c3cf6d2ba86cdd7389955204bb23c7：食洗機カテゴリのみ1440/390/320px、画像7枚、内部リンク・アンカー21件、キーボード5遷移・details操作PASS。本文文字数2118→726、他33本文・既存11アンカー保持。source commit e9739173。 後継候補84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3で末尾3リンクの不在、2方針リンク・7画像・周辺表示を1440/390pxで追加確認。列以外の本文は同一。 後継候補ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7deでは購入後案内と冒頭リンクも除去し、1440/390px、残った内部リンク・アンカー、5画像、洗剤/お手入れ記事の存続を確認。その他の本文は同一。",
         "public_baseline": "個別受入条件の証明には使用していない",
         "external": "未実施／該当範囲のみ別途確認",
         "regression": "関連16テスト、ruff、画像・本文・テーマ・計測bindingのgenerator照合、PHP構文PASS。owner-direct preview既定処理もPASS。今回の変更で新規の全サイト監査・全件テストは実施していない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG136-02": {
       "title": "候補の販売状況と対象",
@@ -1083,7 +1085,7 @@
         "regression": "関連16テスト、ruff、画像・本文・テーマ・計測bindingのgenerator照合、PHP構文PASS。owner-direct preview既定処理もPASS。今回の変更で新規の全サイト監査・全件テストは実施していない。"
       },
       "residual": "大容量・分岐水栓専用機の横断比較は未掲載。現在の色・構成別在庫や市場全体の終売は未確認。未公開・本番反映照合未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG136-03": {
       "title": "ガイドの紹介文",
@@ -1114,7 +1116,7 @@
         "regression": "関連16テスト、ruff、画像・本文・テーマ・計測bindingのgenerator照合、PHP構文PASS。owner-direct preview既定処理もPASS。今回の変更で新規の全サイト監査・全件テストは実施していない。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG131-01": {
       "title": "任せたい作業の説明",
@@ -1139,7 +1141,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG131-02": {
       "title": "必要な空間",
@@ -1164,7 +1166,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG131-03": {
       "title": "5構成の案内",
@@ -1189,7 +1191,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG138-01": {
       "title": "出力別の候補",
@@ -1214,7 +1216,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG138-02": {
       "title": "容量を選ぶ入口",
@@ -1240,7 +1242,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG138-03": {
       "title": "prepare-outageとの分担",
@@ -1265,7 +1267,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG141-01": {
       "title": "SOLOTA/Plusの紹介文",
@@ -1290,7 +1292,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG141-02": {
       "title": "設置可否の断定",
@@ -1315,7 +1317,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG141-03": {
       "title": "最初に読む1本",
@@ -1340,7 +1342,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG140-01": {
       "title": "時短の判断材料",
@@ -1365,7 +1367,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG140-02": {
       "title": "洗い物と床掃除の入口",
@@ -1390,7 +1392,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG140-03": {
       "title": "清掃頻度の紹介文",
@@ -1415,7 +1417,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG144-01": {
       "title": "ページタイトル",
@@ -1440,7 +1442,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG144-02": {
       "title": "購入前チェック",
@@ -1465,7 +1467,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG144-03": {
       "title": "工事なしで置けるという紹介",
@@ -1490,7 +1492,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG134-01": {
       "title": "商品別の読み始め",
@@ -1515,7 +1517,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG134-02": {
       "title": "継続費用と部品",
@@ -1540,7 +1542,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG134-03": {
       "title": "頻度の共通化",
@@ -1565,7 +1567,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG132-01": {
       "title": "カテゴリとの差別化",
@@ -1590,7 +1592,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG132-02": {
       "title": "最初に読む軽量記事",
@@ -1615,7 +1617,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG132-03": {
       "title": "選定の言い切り",
@@ -1640,7 +1642,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG137-01": {
       "title": "防災という対象範囲",
@@ -1665,7 +1667,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG137-02": {
       "title": "商品を買う前",
@@ -1690,7 +1692,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG137-03": {
       "title": "起動電力の案内",
@@ -1715,7 +1717,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG041-01": {
       "title": "4機種の結論と販売状況",
@@ -1738,7 +1740,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "同用途で今買える代替の色/構成別注文可否は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG041-02": {
       "title": "一食分・毎回の作業",
@@ -1761,7 +1763,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "食器量・給水・残さい処理は型番別に具体化。実機収納写真/収納実績は未作成。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG041-03": {
       "title": "購入総額と関連記事",
@@ -1785,7 +1787,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG086-01": {
       "title": "mini Plusの販売状況",
@@ -1808,7 +1810,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "mini Plus公式再入荷通知は確認。色別注文可否・全店舗在庫・再入荷日は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG086-02": {
       "title": "Plusと4機種ガイドの接続",
@@ -1831,7 +1833,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "mini Plusとmini colorを独立型番で案内し旧根拠アンカー維持。mini Plusは日付付き型番別原典を保持し今回全手順再調査ではない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG086-03": {
       "title": "価格・比較表・購入ボタン",
@@ -1855,7 +1857,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG262-01": {
       "title": "NP-TSP1の上方余白",
@@ -1877,7 +1879,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG262-02": {
       "title": "採寸図",
@@ -1899,7 +1901,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG262-03": {
       "title": "設置照合の入力",
@@ -1922,7 +1924,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG263-01": {
       "title": "給水と排水の図解",
@@ -1944,7 +1946,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG263-02": {
       "title": "2WAYの分岐水栓利用",
@@ -1966,7 +1968,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG263-03": {
       "title": "通常給水と清掃の例外",
@@ -1988,7 +1990,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG264-01": {
       "title": "最初の答え",
@@ -2010,7 +2012,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG264-02": {
       "title": "mini colorの対応洗剤",
@@ -2032,7 +2034,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "mini colorの粉末/液体/ジェル/タブレット・標準3〜5gを公式p14で確認。タブレット個数/サイズは原典未記載でUNKNOWN。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG264-03": {
       "title": "投入位置・洗えない物",
@@ -2055,7 +2057,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG265-01": {
       "title": "清掃頻度の見出し",
@@ -2077,7 +2079,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG265-02": {
       "title": "機種ごとの具体的手順",
@@ -2100,7 +2102,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG265-03": {
       "title": "所有者向けの使いやすさ",
@@ -2122,7 +2124,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG266-01": {
       "title": "1回・月額の例",
@@ -2144,7 +2146,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG266-02": {
       "title": "電気代未確認の機種",
@@ -2167,7 +2169,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG266-03": {
       "title": "入力と現行・旧機種",
@@ -2190,7 +2192,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG083-01": {
       "title": "軽量のメリット",
@@ -2213,7 +2215,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG083-02": {
       "title": "通常時・拡張時と便の規定",
@@ -2236,7 +2238,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG083-03": {
       "title": "販売確認と旧アンカー",
@@ -2260,7 +2262,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG082-01": {
       "title": "BERMAS 60524の商品画像",
@@ -2283,7 +2285,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "60524新仕様を確認し未照合画像を候補から除外。販売店画像の同一性・転用範囲は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG082-02": {
       "title": "比較表までの前置き",
@@ -2307,7 +2309,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG082-03": {
       "title": "拡張の扱い・更新日",
@@ -2331,7 +2333,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG084-01": {
       "title": "4種類の前開き",
@@ -2356,7 +2358,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "INV50公式本文を再取得し、通常外寸・容量・重量・前室と中室の開放・ワンタッチブレーキを確認。収納部実寸・操作位置・停止輪数や必要床面積は未確認。公開後の反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG084-02": {
       "title": "ストッパーとPC収納",
@@ -2379,7 +2381,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "確認済み操作は反映。全4機種PC内寸・停止車輪数/位置は揃っていない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG084-03": {
       "title": "比較表の位置・写真",
@@ -2403,7 +2405,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG019-01": {
       "title": "軽さという結論",
@@ -2426,7 +2428,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG019-02": {
       "title": "開き方と拡張の未確認",
@@ -2449,7 +2451,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "06316メイン収納開閉形式・01471拡張の明記は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG019-03": {
       "title": "バッジ・商品カード・保証",
@@ -2473,7 +2475,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "販売先ごとの保証最終適用は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG030-01": {
       "title": "省スペースの比較範囲",
@@ -2496,7 +2498,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG030-02": {
       "title": "K11の寸法軸と底面判定",
@@ -2519,7 +2521,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "K11+ Pro240×180×250mmの軸名は公式説明書にもなく未解決。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG030-03": {
       "title": "購入状態と詳しい比較への導線",
@@ -2543,7 +2545,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG085-01": {
       "title": "台の外寸と周囲の余白",
@@ -2566,7 +2568,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "外寸と周囲余白を分離。K11+ Pro軸付き寸法・同縮尺の設置図は公式根拠がなく未完。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG085-02": {
       "title": "手入れの具体性",
@@ -2589,7 +2591,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "K11清掃/交換目安を具体化。Miniの頻度・対応品番・消耗品費用と両社の条件統一は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG085-03": {
       "title": "Miniの2構成と画像",
@@ -2613,7 +2615,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "主比較2とMini Slim補足を分離。補足の未照合画像は非掲載。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG028-01": {
       "title": "計算説明の順序",
@@ -2637,7 +2639,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG028-02": {
       "title": "販売価格の状態",
@@ -2661,7 +2663,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG028-03": {
       "title": "安全上の境界",
@@ -2684,7 +2686,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "AC70公式更新案内を再確認。手元個体・版への適用は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG029-01": {
       "title": "商品画像リンクの説明と方針",
@@ -2708,7 +2710,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "Anker4製品の未照合画像は非掲載。再掲載に必要な画像同一性/権利は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG029-02": {
       "title": "決め手と比較表",
@@ -2731,7 +2733,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG029-03": {
       "title": "Gen 2の1500W/1550W",
@@ -2754,7 +2756,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "単口1500W/複数口合計1550Wを説明書で確認。特設表の説明不足についてメーカー回答未取得。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG120-01": {
       "title": "画像の同一性と価格期限",
@@ -2777,7 +2779,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG120-02": {
       "title": "根拠の区分",
@@ -2799,7 +2801,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG120-03": {
       "title": "読者用の概要",
@@ -2821,7 +2823,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG010-01": {
       "title": "広告の対象",
@@ -2843,7 +2845,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG010-02": {
       "title": "運営者・編集者の実態",
@@ -2865,7 +2867,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "公開済み責任者・筆名のみ保持。公開可能な追加人数/経験/資格は未提供で、創作しない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG010-03": {
       "title": "問い合わせ・訂正",
@@ -2887,7 +2889,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "訂正依頼のURL/該当箇所/原典を案内。メール受信/返信/送信元認証は未実施、下書き未送信。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG003-01": {
       "title": "同意前・拒否・撤回後のGA4",
@@ -2909,7 +2911,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "旧本番の初回/拒否/許可/撤回/再訪passive通信観測済み。2500ms窓の観測で全将来挙動やGA4実設定の証明ではない。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG003-02": {
       "title": "外部送信一覧",
@@ -2931,7 +2933,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "画像配信と成果計測を分離。全配信ホストの実送信項目・サービス実設定は未確認。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "PG003-03": {
       "title": "保存期間と利用者の操作",
@@ -2955,7 +2957,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "CookieYesフッター/枠内操作はローカル修正・320/390px注入試験済み。実ログ/問い合わせ/GA4保持期間はUNKNOWN。 未公開。公開承認後の本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q01": {
       "title": "HTTP・サイトマップ・robots",
@@ -2981,7 +2983,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "公開後の意図した公開URL・robots・sitemap・404再確認は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q02": {
       "title": "タイトル・H1・canonical",
@@ -3005,7 +3007,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "公開反映後の照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q03": {
       "title": "検索意図と登録状態",
@@ -3027,7 +3029,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "GSC owner-private実データが必要。順位/需要を推定しない",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q04": {
       "title": "分類・自動生成ページ",
@@ -3053,7 +3055,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "4ハブは4WPカテゴリではない。著者の実在URLは401で未取得。Google登録/被リンク状態は未取得。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q05": {
       "title": "構造化データ",
@@ -3077,7 +3079,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "Googleによる構造化データの採用は未確認。公開反映後の照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q06": {
       "title": "内部リンク・アンカー",
@@ -3101,7 +3103,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "公開反映後の読者経路の照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q07": {
       "title": "購入リンクの最終到達",
@@ -3127,7 +3129,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "広告16件は全到達200、通常10件中9到達・Samsonite406。色/variant/在庫/保証適用/成果帰属は未確認。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q08": {
       "title": "画像・広告の描画",
@@ -3157,7 +3159,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "画像の存在・到達を転用許諾や全販売構成一致としない。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q09": {
       "title": "価格期限・キャッシュ",
@@ -3183,7 +3185,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "本番への公開・公開後の再取得、および実CDN/サーバーページキャッシュ条件での期限前後の表示は未検証。ローカルの古い本文・時間境界・再訪試験と区別する。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q10": {
       "title": "同意と外部通信",
@@ -3206,7 +3208,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "旧本番2500ms窓で初回/拒否/撤回後Google送信なし。全将来挙動・実保持設定は未確認。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q11": {
       "title": "費用・採寸計算機",
@@ -3234,7 +3236,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "実家庭の料金・設置条件・機種固有の未確認寸法は入力者またはメーカーの確認が必要。本番反映照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q12": {
       "title": "スマホ・拡大・キーボード",
@@ -3262,7 +3264,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "未公開。本番反映後の確認は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q13": {
       "title": "読み込み速度・レイアウトずれ",
@@ -3285,7 +3287,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "INP/fieldデータUNAVAILABLE。実機ネットワーク速度保証やCWV合格ではない",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q14": {
       "title": "クリック計測と実成果",
@@ -3311,7 +3313,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "GSC/GA4アカウントの実クリック・実注文・ASP確定報酬はUNAVAILABLE。全購入CTAで本番の1操作1イベントと記事/商品/販売先/配置/版の実対応は未検証。ホームのVM境界試験やクリック操作を実配信・成果の証拠にしない。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q15": {
       "title": "デザイン反映とキャッシュ",
@@ -3334,7 +3336,7 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "公開前のため新HTML/CSSの本番配信・キャッシュ混在解消は未検証。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     },
     "Q16": {
       "title": "安全な公開と復元",
@@ -3356,10 +3358,10 @@
         "regression": "以前の全体改善とホーム変更は各候補に対応するmake fastで通過。今回の編集イメージへの変更もmake fast BASE=6dfd0b24で選択範囲PASS。範囲と実結果はhome-editorial-verification.mdを参照。"
       },
       "residual": "確認済み候補への具体的な公開指示待ち。実際の本番公開・復元・反映後フォーム/同意/リンク照合は未実施。",
-      "publication_version": "候補 84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3／未公開・本番反映照合未実施。既存検証と末尾3リンク削除の限定確認は候補別に記録。"
+      "publication_version": "候補 ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de／未公開・本番反映照合未実施。既存検証と購入後案内除去の限定確認は候補別に記録。"
     }
   },
-  "candidate_id": "84512fa944fcd18eae70b9f13313cd9f19688150a95fd72f89e4b6496d0044f3",
+  "candidate_id": "ae4dff663a809c8648aa46f874fba610c4a091242b60b4609d6fe3360622c7de",
   "candidate_origin": "http://127.0.0.1:41398/",
   "final_test_status": "PASS_FOCUSED_KITCHEN_CHECKS",
   "candidate_state": "LOCAL_VERIFIED_UNPUBLISHED",
