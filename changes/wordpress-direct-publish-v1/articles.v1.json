@@ -49,7 +49,7 @@
       "post_type": "page",
       "slug": "cleaning",
       "title": "ロボット掃除機の選び方・比較",
-      "excerpt": "吸引・水拭き・自動収集・モップ洗浄乾燥を分け、本体と台の寸法、帰還経路、部品交換の空間を比べます。",
+      "excerpt": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html"
     },
     {
@@ -98,8 +98,8 @@
       "post_id": 144,
       "post_type": "page",
       "slug": "without-installation",
-      "title": "食洗機の分岐水栓工事を避けたい人へ",
-      "excerpt": "給水と、電源・接地・排水・台の条件を分けます。",
+      "title": "工事なしの食洗機",
+      "excerpt": "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/without-installation.html"
     },
     {
@@ -699,6 +699,46 @@
         "revision_id": 128,
         "modified_gmt": "2026-09-05T19:51:15Z"
       }
+    },
+    {
+      "article_key": "compact-dishwasher-comparison",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "title": "小型の食洗機比較｜容量・寸法と使い方",
+      "slug": "compact-dishwasher-comparison",
+      "excerpt": "小型の食洗機を容量、設置寸法、給水方法と手入れで比較します。比較対象の範囲はレビュー中です。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
+    },
+    {
+      "article_key": "standard-dishwasher-comparison",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "title": "標準容量の食洗機比較｜16〜28点の選び方",
+      "slug": "standard-dishwasher-comparison",
+      "excerpt": "公称16〜28点の卓上食洗機を、食器量・本体寸法・給水方法で比較。開いた扉と周囲の余白、毎日の手入れ、購入後の費用まで確認します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/standard-dishwasher-comparison.html"
+    },
+    {
+      "article_key": "large-dishwasher-comparison",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "title": "大容量の卓上食洗機比較｜40点モデルの給水・置き場",
+      "slug": "large-dishwasher-comparison",
+      "excerpt": "大容量の卓上食洗機を給水方式と置き場から比較。今回確認した公称40点モデルの寸法、開扉時の奥行、必要な余白、付属品と残る手間を整理します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/large-dishwasher-comparison.html"
+    },
+    {
+      "article_key": "dishwasher-branch-faucet-guide",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "title": "分岐水栓式の食洗機｜蛇口・置き場・費用の確認",
+      "slug": "dishwasher-branch-faucet-guide",
+      "excerpt": "毎回の注水を省きたい方へ。卓上食洗機を分岐水栓で使う前に、蛇口の適合、住まいと置き場所、部品・工事費を確認します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html"
     }
   ]
 }

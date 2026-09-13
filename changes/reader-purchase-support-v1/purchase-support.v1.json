@@ -137,6 +137,10 @@
         {
           "date": "2026-09-13",
           "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "SOLOTA説明書の離隔距離を反映。NP-TSP1の開扉奥行は個別仕様と比較表の表記差を記録し、数値による設置判定を保留"
         }
       ],
       "preserved_editorial_sections": [
@@ -565,6 +569,10 @@
         {
           "date": "2026-09-12",
           "text": "4機種を横断する寸法・余白の表を先頭に追加。給水・排水ガイドと重複していた排水ホース・アースの記述をこのガイドに集約し、SOLOTAの上・左右の余白は公式資料で未確認と明記"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "SOLOTA説明書の離隔距離を反映。NP-TSP1の開扉奥行は個別仕様と比較表の表記差を記録し、数値による設置判定を保留"
         }
       ],
       "reader_unknowns_note": "SOLOTAの上・左右の必要余白は公式資料に数値がなく未確認です。SOLOTA・ラクアmini color・SS-MA251の開扉時の高さも未確認です。設置後の使い勝手は実機で確認していません。"
@@ -575,8 +583,8 @@
       "slug": "dishwasher-water-supply-methods",
       "kind": "guide",
       "product_ids": [],
-      "title": "卓上食洗機の給水・排水方法｜毎回の作業から選ぶ",
-      "excerpt": "SOLOTA、ラクアmini color、SS-MA251、NP-TSP1の給水方式と排水ホースの条件を整理します。タンクへの給水、排水先、毎回残る作業を型番ごとに確認できます。",
+      "title": "食洗機の給水方法｜タンク・ポンプ・分岐水栓の違い",
+      "excerpt": "タンク、外部容器からのポンプ給水、分岐水栓の違いを比較。水栓の工事、毎回の水くみ、容器と排水先の置き場から、続けやすい給水方法を考えます。",
       "post_type": "post",
       "legacy_anchor_targets": {
         "guide-evidence-ss-ma251-water-drainage": "product-dish-ss-ma251",
@@ -631,6 +639,10 @@
         {
           "date": "2026-09-12",
           "text": "4機種を横断する給水方式・給水量・排水ホースの表を先頭に追加し、排水ホース・アースの詳細は設置ガイドへ集約。SS-MA251の使用水量約6Lの扱いを維持費ガイドと同じ方針（一運転分の前提として試算）に統一"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "タンク・外部容器のポンプ給水・分岐水栓の3方式を図で整理。従来4機種の詳細は共通データから表示し、SS-LH451を外部容器方式の補足例として追加"
         }
       ],
       "reader_unknowns_note": "水を運ぶ動線や排水先を確保する手間、給水中の音は実機で確認していません。SOLOTAは1回の給水量の公表値がなく、タンクをFULLの線まで入れる方式であることだけを確認しています。"
@@ -1383,11 +1395,11 @@
         },
         {
           "label": "必要な余白",
-          "text": "背面：ホース外径17mm分。上：できるだけ空ける（数値の記載なし）。左右：数値の記載なし。熱源から150mm以上",
+          "text": "可燃物から上方50mm、左右・後方各5mm以上。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。後方は別にホース外径17mm分を確保。上部はできるだけ空け、熱源から150mm以上離します。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA の設置例・熱源との距離（上方・左右の数値は記載なし）",
-          "checked_at": "2026-09-12",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
+          "locator": "取扱説明書P9901-20V10 p.8 設置場所の図・可燃物からの離隔距離。背面17mmは公式設置案内のホース外径",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1437,11 +1449,11 @@
         },
         {
           "field": "clearance",
-          "text": "背面にはホース外径17mm分の空間が必要です。上部の蒸気を遮らないよう、本体上方はできるだけ空けます（公式資料に上・左右の数値の記載はなく、必要余白は未確認です）。熱源から150mm以上離し、設置例の総高さと本体上の余白を混同しないでください。",
+          "text": "可燃物から上方50mm、左右・後方各5mm以上。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。後方は別にホース外径17mm分を確保。上部はできるだけ空け、熱源から150mm以上離します。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA の設置例・熱源との距離（上方・左右の数値は記載なし）",
-          "checked_at": "2026-09-12",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
+          "locator": "取扱説明書P9901-20V10 p.8 設置場所の図・可燃物からの離隔距離。背面17mmは公式設置案内のホース外径",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1604,9 +1616,9 @@
         "height_mm": 435,
         "door_depth_mm": 485,
         "door_height_mm": null,
-        "above_mm": null,
-        "left_mm": null,
-        "right_mm": null,
+        "above_mm": 55,
+        "left_mm": 5,
+        "right_mm": 5,
         "rear_mm": 17
       },
       "image_review": {
@@ -2161,6 +2173,15 @@
           "locator": "取扱説明書 p.20 本体・庫内洗浄コース",
           "checked_at": "2026-09-13",
           "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "付属の排水ホースは長さ1.5mです。排水先までの経路と固定位置を確認してください。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "取扱説明書 p.6 付属品：排水ホース（1.5m）",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         }
       ],
       "installation": {
@@ -2193,7 +2214,7 @@
         "water": {
           "給水方式": "タンク給水／分岐水栓（適合確認が別途必要）",
           "1回の給水量と止める合図": "約6L・カップ4〜5杯。ブザーが鳴り給水アイコンが消えたら止める",
-          "排水ホース": "先端を設置面より低く吸盤で固定（付属長は未確認）"
+          "排水ホース": "付属長1.5m。先端を設置面より低く吸盤で固定"
         },
         "detergent": {
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
@@ -2260,12 +2281,12 @@
         },
         {
           "label": "開扉時の寸法",
-          "text": "開扉時の奥行386mm・高さ712mm（扉の途中の軌跡も確認）",
+          "text": "公式の個別仕様は開扉奥行が上386mm・下362mm、公式比較表は開閉時最大433mmと表記。高さは712mm。奥行の基準・条件の差が未解決のため、設置可否の数値判定は保留し、メーカーへ確認してください。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
-          "locator": "ドア開放時寸法",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
+          "locator": "個別仕様の本体外形寸法と https://panasonic.jp/dish/comparison.html の開閉時最大寸法の表記を照合。条件差は未解決",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN"
         },
         {
           "label": "必要な余白",
@@ -2313,12 +2334,12 @@
         },
         {
           "field": "door",
-          "text": "開扉時の奥行は386mm、高さは712mm。扉の途中の軌跡や必要な空間も確認します。",
+          "text": "公式の個別仕様は開扉奥行が上386mm・下362mm、公式比較表は開閉時最大433mmと表記。高さは712mm。奥行の基準・条件の差が未解決のため、設置可否の数値判定は保留し、メーカーへ確認してください。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
-          "locator": "ドア開放時寸法",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
+          "locator": "個別仕様の本体外形寸法と https://panasonic.jp/dish/comparison.html の開閉時最大寸法の表記を照合。条件差は未解決",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN"
         },
         {
           "field": "clearance",
@@ -2505,7 +2526,7 @@
         "width_mm": 550,
         "depth_mm": 341,
         "height_mm": 600,
-        "door_depth_mm": 386,
+        "door_depth_mm": null,
         "door_height_mm": 712,
         "above_mm": 120,
         "left_mm": 5,

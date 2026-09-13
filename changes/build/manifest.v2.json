@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "0e4fb5c5ef70b516461e63d2bb54ce304717efb91a20121ef43efb8c39326160",
+          "sha256": "c369841b5d6a6e2b886b6753d7e2fa1cd0e5c9eeb46146579952cf53e2ade1ad",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 65446,
-          "sha256": "70f5d0dadde19ad75921e56e79ea7b824231add01dd6cd977ea4a67045ddc47f",
+          "sha256": "8436bc555357205e344ed10f1f73e62392f8d4b60bec46786463ef0f506605df",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1996,8 +1996,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 59684,
-          "sha256": "3b7d9c181dd0fdba24838ae141affffda2ed7e04a9afadd5ff02d0c41441841e",
+          "bytes": 60750,
+          "sha256": "d1a4334fc10b822dbc15f50415eb5cf2c931860bf86d63a3511c9f26bbdff8c2",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
@@ -2011,8 +2011,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 29060,
-          "sha256": "ae300ec394b231c7bbb5d7ddd0efca9ca11e31f3c7e6e3cfded51da950401c75",
+          "bytes": 30222,
+          "sha256": "7687ceea19a6ae85d7d4bc19543d18b2be1ee91bf703b187b443c9c282dc0125",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
@@ -2021,8 +2021,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html"
         },
         {
-          "bytes": 22445,
-          "sha256": "f93147071bc0ef94c13c59920498d745db2050a1b3e6e4180177042bd6bb13ca",
+          "bytes": 26210,
+          "sha256": "597ef40884b3f7155ec714619413a54cb64a69a4b13e8246570ba8d6570d6c0c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
@@ -2031,8 +2031,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
         },
         {
-          "bytes": 6616,
-          "sha256": "cf1db232913756bac8b633ba29e4184f718cb3430169a95e5d1223479d620a4d",
+          "bytes": 5656,
+          "sha256": "1bc0ffbf4a5e9ad5d7e8a554fa7260e64a2591e23232ae95407fb17158ebb6b4",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
@@ -2056,8 +2056,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
         },
         {
-          "bytes": 26275,
-          "sha256": "7b40822e17cc8ac60fac9fb89de0d4947b95e84a98d41c8fac0731e38a7fdcc5",
+          "bytes": 26403,
+          "sha256": "5cc0d3dd87eeb11cadf065cb6acd804d0907f30fd512459910907318303149f9",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
         }
       ],
@@ -2257,8 +2257,8 @@
           "uri": "repo://changes/site-improvements-20260913/kitchen-template.html"
         },
         {
-          "bytes": 3749,
-          "sha256": "cb52935ef837806f9e914e72e3a5d044a8b048c04e566b0e24f4cbee164f718c",
+          "bytes": 3815,
+          "sha256": "cb2e60d601b69b7bb6edb16f3cca22e926c0b2c1fa1b1b82f56605c87baa5ce5",
           "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
         },
         {
@@ -2272,8 +2272,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/categories.html"
         },
         {
-          "bytes": 4567,
-          "sha256": "4165e255a82df97eb40723d89828d9ee0834a86df1663ee28cf4aaaec763687d",
+          "bytes": 4814,
+          "sha256": "da7983e594cbeabbaa1f80537f216eaef5be72a03cf2f8139ac485115edbacda",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/cleaning.html"
         },
         {
@@ -2307,13 +2307,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
         },
         {
-          "bytes": 4864,
-          "sha256": "d2a1b9412f0b86626147a3b01390809c9fff2dfb73d6ad072e9f201368dea99b",
+          "bytes": 7801,
+          "sha256": "29877a8e2df5b1ce958006e57c88efb6230797ccdcfb3152355e6f72aac197cd",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/preparedness.html"
         },
         {
-          "bytes": 2754,
-          "sha256": "dc3f04c6c30ece9c7a0d8a1bd94eac1a22cc0f8426252c771e0009c21b9042a8",
+          "bytes": 2784,
+          "sha256": "e056d5fc677b17b779fb8dcbf50298ec71aa49dddb7f5319fa6d3b10d976911a",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/purposes.html"
         },
         {
@@ -2327,8 +2327,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
         },
         {
-          "bytes": 6656,
-          "sha256": "79d6e289eb83716bbb352ce2dfecd267c1b8c811f512110059ff0f4ef9e878a5",
+          "bytes": 7931,
+          "sha256": "70de05a6f8c0a58a20367b00d2b96c5f598514d8d591268d06488e0ecbf6c20c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
@@ -2337,8 +2337,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/updates.html"
         },
         {
-          "bytes": 4334,
-          "sha256": "565afb27fcce076a83f07e1ee8938909baf8fa7c0052adb453f81b19be68d852",
+          "bytes": 10760,
+          "sha256": "342d0c1fc02aa19b45c675340a1de4750ff424750b87c3f1d5cb82efdf04ee0a",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/without-installation.html"
         }
       ],
@@ -2356,6 +2356,30 @@
           "kind": "tracked",
           "semantic_id": "changes/site-improvements-20260913/entry-pages.v1.json",
           "uri": "repo://changes/site-improvements-20260913/entry-pages.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/cleaning.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/cleaning.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/preparedness.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/preparedness.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/travel.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/travel.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/without-installation.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/without-installation.html",
           "version": 2
         },
         {
@@ -27094,7 +27118,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "c0f5108a341cd51262daec8deebccab6c1c3d445ddbb84473e0b49f35a603146",
+          "sha256": "ee9de6c8183b1c86729eef84815be7e16cb3e9ef773753b101ba4560d6179019",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27325,7 +27349,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "f2f0381878ebf3e74b99e7695ddc31c109ae7ccd009e5811ad36ad851ba8af67",
+          "sha256": "f3b28c9250c378a6a59f62dcc5bb0dbc77378d2a25ab3b042a6064d01c151a84",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -28101,6 +28125,36 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-dust-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-dust-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-manual-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-manual-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-mop-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-mop-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-vacuum-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-vacuum-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-wash-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-wash-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
           "version": 2
@@ -28155,6 +28209,24 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-large-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-large-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-medium-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-medium-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-small-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-small-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
           "version": 2
@@ -28163,6 +28235,42 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-access-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-access-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-large-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-large-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-light-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-light-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-medium-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-medium-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-move-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-move-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
           "version": 2
         },
         {
@@ -30181,7 +30289,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "2359c8485b647442943ca09b8803d54c564a15280dba958208401e5f194f40e3",
+          "sha256": "cbcdfcea94e492768413bb5f89e55d913753772812f0b691629228039bd7cd91",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31038,7 +31146,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "8c8b5a440df77e52601ac2f07935114fd00c4794d7e4cdc987a70f395841cc20",
+          "sha256": "9d8412aabcfaa705f7500f0dc54d0f4a0c71b6b815148bf631dbeab79b90a328",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

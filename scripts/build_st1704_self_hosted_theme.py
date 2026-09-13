@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "3489ccc1801464cb079219aa8dc9d65d5a4a1c495cca6330834464823d7c3b78"
+    "cb9d896879668209b69efbc6ccf720ae2eff230dbda86d224a4ba5b52ebf3e3d"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -91,6 +91,36 @@ HOME_RECENT_IMAGE_ALTS: Final = {
         ("detergent", "洗剤容器と計量スプーンを並べた編集イメージ"),
         ("water", "給水容器と未接続のホースを並べた編集イメージ"),
     )
+}
+CATEGORY_IMAGE_ALTS: Final = {
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-vacuum-20260913.webp": "木の床を掃除するロボット掃除機のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-mop-20260913.webp": "光が差す床とロボット掃除機のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-manual-20260913.webp": "ダストボックスを手入れする手元のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-dust-20260913.webp": "ロボット掃除機とドックのある部屋のAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/cleaning-wash-20260913.webp": "給水タンクと柔らかな布を並べたAIイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-small-20260913.webp": "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-medium-20260913.webp": "スーツケースの横に着替えを揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-large-20260913.webp": "大きなスーツケースと衣類や靴を揃えた旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-light-20260913.webp": "スーツケースの持ち手を握る旅支度のイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-access-20260913.webp": "前面収納を開き、小物を収めたスーツケースのイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/travel-move-20260913.webp": "駅の通路でスーツケースを転がして歩くイメージ",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-small-20260913.webp": "窓辺のテーブルに置いたノートPCとスマートフォン。AI生成の利用シーンイメージ。",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-medium-20260913.webp": "キャンプのテーブルに置いた扇風機とランタン。AI生成の利用シーンイメージ。",
+    THEME_REPOSITORY_ROOT
+    / "assets/images/power-capacity-large-20260913.webp": "炊飯器と冷蔵庫のある自宅のキッチン。AI生成の利用シーンイメージ。",
 }
 KITCHEN_CAPACITY_IMAGE_ALTS: Final = {
     THEME_REPOSITORY_ROOT / f"assets/images/kitchen-capacity-{name}-20260913.webp": alt
@@ -171,6 +201,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp",
     *HOME_RECENT_IMAGE_ALTS,
     *KITCHEN_CAPACITY_IMAGE_ALTS,
+    *CATEGORY_IMAGE_ALTS,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
@@ -392,6 +423,7 @@ def _validate_owner_bindings() -> None:
             HOME_LIFESTYLE_ASSET_INPUT_PATH,
             *HOME_RECENT_IMAGE_ALTS,
             *KITCHEN_CAPACITY_IMAGE_ALTS,
+            *CATEGORY_IMAGE_ALTS,
             PORTABLE_POWER_ASSET_INPUT_PATH,
             ROBOT_VACUUM_ASSET_INPUT_PATH,
             ROOMBA_K11_ASSET_INPUT_PATH,
@@ -694,6 +726,7 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
         HOME_LIFESTYLE_ASSET_INPUT_PATH: "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
         **HOME_RECENT_IMAGE_ALTS,
         **KITCHEN_CAPACITY_IMAGE_ALTS,
+        **CATEGORY_IMAGE_ALTS,
     }
     editorial_assets = [
         asset
@@ -719,7 +752,8 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
                 "canvas_width": asset.output_width,
                 "delivery": (
                     "CATEGORY_SAVED_BODY_IMAGE"
-                    if asset.output.relative_to(ROOT) in KITCHEN_CAPACITY_IMAGE_ALTS
+                    if asset.output.relative_to(ROOT)
+                    in {*KITCHEN_CAPACITY_IMAGE_ALTS, *CATEGORY_IMAGE_ALTS}
                     else "HOMEPAGE_SAVED_BODY_IMAGE"
                 ),
                 "path": asset.output.relative_to(
@@ -927,7 +961,11 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 24:
+    if (
+        type(records) is not list
+        or len(records)
+        != len(theme_asset_owner.ASSETS) + len(theme_icon_owner.ICONS) + 1
+    ):
         _fail()
     generated_assets = {
         asset.output.relative_to(
@@ -1043,7 +1081,11 @@ def _validate_asset_manifest(
         "assets/images/home-lifestyle-20260913.webp",
         *(
             path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
-            for path in (*HOME_RECENT_IMAGE_ALTS, *KITCHEN_CAPACITY_IMAGE_ALTS)
+            for path in (
+                *HOME_RECENT_IMAGE_ALTS,
+                *KITCHEN_CAPACITY_IMAGE_ALTS,
+                *CATEGORY_IMAGE_ALTS,
+            )
         ),
     }:
         _fail()

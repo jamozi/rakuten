@@ -451,7 +451,7 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
         theme_builder.theme_source_fingerprint()
     )
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 24
+    assert isinstance(records, list) and len(records) == 38
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])
@@ -2288,7 +2288,13 @@ def test_content_is_visible_without_javascript() -> None:
         )
         if re.search(r"\bdisplay\s*:\s*none\b", declarations)
     }
+    # Additional hidden selectors affect only a responsive line break, a desktop
+    # scroll hint, and print-only navigation; article content remains visible.
+    assert "@media print{.compact-draft .ps-table-scroll" in css
     assert hidden_selectors == {
+        ".ks-power-category .ks-power-devices br",
+        ".compact-scroll-hint",
+        ".compact-nav",
         "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-comparison__cards",
         ".raos-comparison__table-view",

@@ -201,7 +201,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
         assert.ok(await page.locator('.ps-installation-field').count() > known, 'unknown references are listed as site-side gaps');
         await page.locator('#ps-install-0-width_mm').fill('1');
         assert.match(await page.locator('.ps-installation-result').first().textContent(), /不足 1項目/);
-        assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 4項目/);
+        assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 1項目/);
       }
     }
     await noScript.close();

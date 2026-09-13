@@ -132,3 +132,31 @@ class ProjectionTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_authored_entry_sources_keep_the_selected_layout_and_required_anchors(self):
+        import json
+        from raos.application.editorial.site_editorial_pages import render_pages
+
+        data, registry, catalog = [
+            json.loads((ROOT / p).read_text()) for p in builder.INPUT_PATHS[:3]
+        ]
+        source = (ROOT / builder.PAGE_SOURCE_PATHS["cleaning"]).read_text()
+        pages, _, _ = render_pages(
+            registry, catalog, data, {}, page_sources={"cleaning": source}
+        )
+        self.assertEqual(pages["cleaning"], source)
+        self.assertNotIn('id="purchase-checks"', source)
+        self.assertNotIn("機種を比べる", source)
+        self.assertNotIn("写真はAI生成の編集イメージ", source)
+        with self.assertRaisesRegex(ValueError, "EDITORIAL_PAGE_SOURCE_INVALID"):
+            render_pages(
+                registry,
+                catalog,
+                data,
+                {},
+                page_sources={
+                    "cleaning": source.replace(
+                        'id="site-editorial-policy"', 'id="missing"'
+                    )
+                },
+            )

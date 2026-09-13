@@ -16,6 +16,17 @@ from raos.application.editorial.home_product_media import (  # noqa: E402
     bind_home_product_media,
 )
 
+PAGE_SOURCE_PATHS = {
+    "travel": Path("changes/site-improvements-20260913/entry-pages/travel.html"),
+    "preparedness": Path(
+        "changes/site-improvements-20260913/entry-pages/preparedness.html"
+    ),
+    "cleaning": Path("changes/site-improvements-20260913/entry-pages/cleaning.html"),
+    "without-installation": Path(
+        "changes/site-improvements-20260913/entry-pages/without-installation.html"
+    ),
+}
+
 INPUT_PATHS = (
     Path("changes/site-improvements-20260913/entry-pages.v1.json"),
     Path("changes/wordpress-direct-publish-v1/articles.v1.json"),
@@ -28,6 +39,7 @@ INPUT_PATHS = (
     Path(
         "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
     ),
+    *PAGE_SOURCE_PATHS.values(),
 )
 SOURCE_ARTICLE_PATHS = (
     Path(
@@ -164,6 +176,9 @@ def build() -> dict[Path, str]:
         data,
         bodies,
         home_media=home_projection["slots"] if home_projection else None,
+        page_sources={
+            slug: (ROOT / path).read_text() for slug, path in PAGE_SOURCE_PATHS.items()
+        },
     )
     home_payload = (
         bind_home_product_media(home_projection, pages["home"])

@@ -538,7 +538,7 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     for identity, phrase in [
         ("kitchen-start", "洗う量と、給水方法から。"),
         ("kitchen-axes", "普段の食器の量と形"),
-        ("kitchen-comparisons", "大容量比較は未掲載"),
+        ("kitchen-comparisons", "大容量を比べる"),
         ("purchase-checks", "送料・必要品を含む総額"),
     ]:
         node = next(n for n in root.walk() if n.attrs.get("id") == identity)
@@ -546,7 +546,7 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     assert all(not n.children for n in root.walk() if n.has("ps-compat-anchors"))
     assert len(root.find(tag="figure", cls="ks-category-visual")) == 1
     assert "SS-MA251" not in root.text()
-    assert "外部容器からの自動給水" in root.text()
+    assert "工事なし（タンク式など）" in root.text()
     assert len(root.find(tag="img")) == 5
 
 

@@ -179,9 +179,6 @@
       "anchors": [
         "travel-start",
         "travel-start-title",
-        "ks-visual-travel",
-        "travel-axes",
-        "travel-axes-title",
         "choose",
         "compare",
         "travel-comparisons",
@@ -220,15 +217,12 @@
         "ks-visual-cleaning",
         "cleaning-axes",
         "cleaning-axes-title",
-        "choose",
-        "compare",
-        "cleaning-comparisons",
-        "purchase-checks"
+        "choose"
       ],
       "images": [
         "<figure class=\"ks-category-visual\" id=\"ks-visual-cleaning\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-cleaning-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"木の床と家具の間にロボット掃除機を配置した暮らしのイメージ\"><figcaption>AI生成の編集イメージ。実物写真や清掃性能の検証ではありません。</figcaption></figure>"
       ],
-      "description": "吸引・水拭き・自動収集・モップ洗浄乾燥を分け、本体と台の寸法、帰還経路、部品交換の空間を比べます。"
+      "description": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。"
     },
     "preparedness": {
       "title": "ポータブル電源の選び方・比較",
@@ -282,7 +276,7 @@
       "description": "洗い物と床掃除で、準備・片づけ・手入れを比べます。"
     },
     "without-installation": {
-      "title": "設置工事を避けたい",
+      "title": "工事なしの食洗機",
       "post_id": 144,
       "anchors": [
         "first-read",
@@ -290,7 +284,7 @@
         "next-step"
       ],
       "images": [],
-      "description": "給水と、電源・接地・排水・台の条件を分けます。"
+      "description": "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。"
     },
     "easy-maintenance": {
       "title": "手入れを続けやすいものを選びたい",

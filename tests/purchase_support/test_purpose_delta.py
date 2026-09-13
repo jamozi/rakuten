@@ -52,26 +52,19 @@ def dishwashers(catalog):
 # --- FD-08 / R-BRIDGE: category 136 promises only what the comparison offers ---
 
 
-def test_hub_links_each_condition_product_to_its_own_anchor(catalog):
+def test_hub_routes_water_choices_to_their_dedicated_articles(catalog):
     html, _ = compile(catalog)
     hub = fragment(html["kitchen"])
     choose = next(n for n in hub.find(tag="section") if n.attrs.get("id") == "choose")
-    anchors = {p["anchor"]: p["name"] for p in dishwashers(catalog)}
-    links = [
-        a
-        for a in choose.find(tag="a")
-        if a.attrs.get("href", "").startswith(f"/{ps.MAIN_SLUG}/#")
-    ]
-    product_links = [a for a in links if a.attrs["href"].split("#", 1)[1] in anchors]
-    assert len(product_links) == 4
-    assert {a.attrs["href"].split("#", 1)[1] for a in product_links} == set(anchors)
-    for a in product_links:
-        assert a.text() == anchors[a.attrs["href"].split("#", 1)[1]]
-    assert not [a for a in links if a.attrs["href"].endswith("#ps-choose")]
-    # AC31: the anchors already exist in the published comparison, so the neutral
-    # category text can go first without waiting for the new comparison layout.
+    destinations = {a.attrs["href"] for a in choose.find(tag="a")}
+    assert destinations == {
+        "/without-installation/",
+        "/dishwasher-branch-faucet-guide/",
+        "/dishwasher-water-supply-methods/",
+    }
+    # Existing detailed comparisons retain their product bookmarks.
     published = ids_of((PUBLISHED / f"{ps.MAIN_SLUG}.html").read_text())
-    assert set(anchors) <= published
+    assert {p["anchor"] for p in dishwashers(catalog)} <= published
     assert "ps-specs" in published
 
 
@@ -79,27 +72,11 @@ def test_hub_lead_and_cta_do_not_promise_budget_filtering(catalog):
     html, _ = compile(catalog)
     hub = html["kitchen"]
     assert "予算" not in hub
-    assert (
-        "設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。"
-        in hub
-    )
-    # The category hub keeps the shared hub skeleton (CH-06): entry breadcrumb, note, policy links.
-    for label in (
-        "このサイトの入口",
-        "このページの読み方",
-        "ほかの商品カテゴリ",
-        "編集方針",
-    ):
-        assert f'<nav aria-label="{label}"' in hub
-    assert '<span aria-current="page">食洗機の選び方・比較</span>' in hub
-    assert 'class="ks-reader-note"' in hub
-    assert (
-        "広告リンク" in hub
-    )  # Generated labels reflect the target article projection.
-    assert f'<a href="/{ps.MAIN_SLUG}/#ps-specs">決め手になる比較表（4機種）</a>' in hub
-    for _, slug in ps.STAGES.values():
-        assert f'href="/{slug}/"' in hub
-    assert 'href="/solota-vs-rakua-mini-plus/"' in hub
+    assert "洗う量と、給水方法から。" in hub
+    for destination in ("/comparison-policy/", "/about-ad-policy/"):
+        assert destination in hub
+    assert "kitchen-after-buying" not in hub
+    assert "ks-kitchen-other" not in hub
 
 
 @pytest.mark.parametrize("mutation", ["missing_product", "missing_anchor"])
@@ -313,7 +290,9 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
     assert len(notes) == 4
     for p, note in zip(dishwashers(catalog), notes):
         text = note.text()
-        assert text.startswith(p["exact_model"] + "の照合基準（公表値）：")
+        assert text.startswith(
+            p["exact_model"] + "の照合基準（公表値・条件を満たす計算値）："
+        )
         missing = [
             label
             for key, label in ps.INSTALLATION_LABELS.items()

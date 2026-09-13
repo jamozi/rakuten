@@ -1,0 +1,163 @@
+# コンパクト食洗機の比較記事 — 根拠と取り込みメモ
+
+- 調査日：2026-09-13（日本時間）。状態・価格・仕様の恒久保証ではない。
+- 提案URL：`/compact-dishwasher-comparison/`。新規記事。WordPress ID は **UNKNOWN / null**。
+- 本文：`article.html`。独立表示：`preview.html`。ページ限定スタイル：`page.css`。
+- 作業場所：`/home/minami/rakuten/changes/site-improvements-20260913/page-drafts/compact/`。
+- 読み取り参照：`/home/minami/rakuten/.worktrees/all-pages-20260913`。統合担当から受領した参照HEADは `86c3e775`。
+- 編集した範囲は上記compact専用ディレクトリのみ。Git branch/index、共有catalog、registry、generator、テーマ、WP/DB、本番は変更していない。commitは統合担当へ集約。
+
+## 容量帯と記事の役割
+
+統合担当 `01a096f8-80d4-7152-ad39-a6b798d8b733` と会話で調整済み：
+**コンパクト12点以下／標準13〜29点／大容量30点以上**。
+これはサイトの入口整理で、業界共通規格・本体寸法の大小・一律の人数保証ではない。
+メーカーの食器構成と点数条件を同一条件の実測として扱わない。
+
+`/kitchen/` の「洗う量から選ぶ → コンパクト」の新しい包括入口を想定。
+既存 `/solota-vs-rakua-mini-plus/` は下位の2機種詳細比較として本文末で参照。
+標準・大容量は統合担当から指定された同名slugへリンク。共有WPでの新規作成前はリンク先未成立。
+`/without-installation/` と `/dishwasher-water-supply-methods/` は給水方式を変えて探す補足。
+ホーム、カテゴリ、レビュー台帳の変更提案を本文へ混ぜていない。
+
+## 主比較の型番と根拠
+
+|モデル|国内の単体型番・色|公称容量|本体 幅×奥行×高さ|公式ページの観測状態|
+|---|---|---|---|---|
+|Panasonic SOLOTA 白|NP-TML1-W|6点、約1人分|310×225×435mm|現在の公式比較表に掲載。生産終了とする表示は確認していない。販売店在庫・納期はUNKNOWN|
+|Panasonic SOLOTA 黒|NP-TMLK1-K|6点、約1人分|310×225×435mm|現在の公式比較表に掲載。販売店在庫・納期はUNKNOWN|
+|THANKO ラクアmini|TK-MDW22W|11〜12点、1〜2人分目安|308×315×415mm|商品ページは再入荷通知。生産終了とは判定しない|
+|THANKO ラクアmini Plus|TK-MDW22B（黒）／TK-STTDPSWH（白）|11〜12点、1〜2人分目安|308×315×415mm|商品ページは再入荷通知。色別の注文可否・再入荷予定はUNKNOWN|
+|THANKO ラクアmini color|TDWS25SBL（青）／TDWS25SRD（ローズ）|11〜12点、1〜2人分目安|308×315×415mm|単体の2色とも再入荷通知。生産終了とは判定しない|
+
+4比較枠／単体の色別型番7件。SOLOTA白・黒は1比較枠。ポンプ・ラックのセット品を別の容量モデルとして数えない。
+白SOLOTAを旧型・終売として除外しない。黒と白は別品番であり、両方の仕様を直接確認した。
+Plusの説明書表紙は `TK-MDW22B/TK-STTDPSWH` を明記。color専用説明書をPlusへ流用していない。
+mini商品ページ上部の省略表記 `TK-MDW22` ではなく、仕様表の単体型番 `TK-MDW22W` を使用。
+
+### S1：Panasonic
+
+- [公式比較表](https://panasonic.jp/dish/comparison.html)：NP-TML1、NP-TMLK1の掲載、NP-TCR5の18点、容量帯の境界。
+- [NP-TML1 概要](https://panasonic.jp/dish/products/NP-TML1.html)／[NP-TML1 仕様](https://panasonic.jp/dish/products/NP-TML1/spec.html)。
+- [NP-TMLK1 概要](https://panasonic.jp/dish/products/NP-TMLK1.html)／[NP-TMLK1 仕様](https://panasonic.jp/dish/products/NP-TMLK1/spec.html)。
+- locator：容量、乾燥機能、ノズル数、標準使用水量、消費電力量、本体外形寸法と脚注。両機種とも6点、送風乾燥、ノズル1基、約2.5L、標準約230Wh、開扉時最大奥行485mm。庫内色は白モデルがライトグレー、黒モデルがダークグレー。
+- [食器セット例](https://panasonic.jp/dish/feature/SOLOTA/set.html)：食器例の確認先。写真は転載しない。
+- [共通取扱説明書](https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf)：**冊子4・6ページ**に洗剤、6ページに着脱タンク・FULL線への給水、7ページに毎回のフィルター掃除。PDFは見開きの6ページファイルなのでPDFインデックスと冊子ページが異なる。表紙領域で両型番を確認。
+- [活用ガイド](https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf)：**冊子16〜18ページ**に毎回の残さいフィルター、月1回のノズル・タンク等。PDFは見開き。主張は短い手間の要約に限定し、薬剤を使った清掃手順は本文で再構成していない。
+- 仕様ページはwebツールの再openがInternal Errorを返したため、公開URLをPython標準HTTPクライアントでも取得し、同じ可視仕様を確認した。認証・本番CMS APIは使用していない。
+
+### S2：THANKO
+
+- [mini 商品ページ](https://www.thanko.jp/view/item/000000003922)：仕様、再入荷通知、型番、12か月保証、ジェル洗剤推奨。
+- [mini 説明書](https://data.thanko.jp/download/manual/tk-mdw22w_man_web_01.pdf)：表紙TK-MDW22W。11ページ洗剤、12ページ給水、13〜14ページ配置、17〜19ページ手入れ。
+- [Plus 商品ページ](https://www.thanko.jp/view/item/000000004055)：仕様、再入荷通知、色別型番、12か月保証、ジェル洗剤推奨。
+- [Plus 説明書](https://data.thanko.jp/download/manual/tk-mdw22b_man_web_01.pdf)：表紙に黒・白の両型番。12ページに約3.2L・満水チャイム、13〜14ページ食器構成と配置、16ページに乾燥後の水滴が残る場合、17〜19ページ手入れ。
+- [color 商品ページ](https://www.thanko.jp/view/item/000000004715)：2色の単体型番、2色とも再入荷通知、仕様、24か月保証。「温風乾燥モード」「フィルターを取り外して洗浄できる」が乾燥だけの運転・給水口フィルターの根拠。
+- [color 専用説明書](https://data.thanko.jp/download/manual/tdws25s_man_web_01.pdf)：32ページ。本文が画像中心のため、冊子14ページを画像で読み、専用洗剤約3〜5g・投入位置・手洗い用洗剤と重曹禁止を確認。画像へ本文や型番を追加していない。
+- mini系の共通数値は各商品ページの個別仕様で照合：308×315×415mm、開扉時594mm、食器11〜12点、使用水量3.2L、専用洗剤約3〜5g。商品構成は大皿2、中皿またはコップ2、小皿2〜3、小鉢3、茶わん2と小物。
+- 乾燥の表記は各仕様に従いmini・Plus＝熱風、color＝温風。mini＝下ノズル、Plus・color＝上下ノズル。ノズル数を実測洗浄性能へ変換していない。
+- メーカー表示の「1時間約○円」は1サイクルWhではないため合計維持費の計算に採用していない。
+
+## 容量帯から外した具体的な候補
+
+|機種|点数・寸法（確認できたもの）|状態・除外理由|一次情報|
+|---|---|---|---|
+|エスケイジャパン SDW-J5L(W)|食器12点＋小物12点、412×378×422mm|生産終了と明示。容量帯内の旧機種として本文の折りたたみに残す。旧在庫・販売店保証はUNKNOWN|[生産終了一覧](https://www.skj-felicis.com/view/category/dis-dishwasher)、[公式カタログ](https://skj-felicis.com/images/uploads/747fcf8f60dcae1384b90f90d3fcc0d0.pdf)|
+|シロカ SS-M171／PDW-M151|16点|公式ラインナップ・公式ストアに掲載。標準帯|[一覧](https://www.siroca.co.jp/product/dishwasher/)、[公式ストア](https://store.siroca.jp/collections/dishwasher)|
+|東芝 DWS-33B|18点、420×435×465mm|公式商品一覧掲載。標準帯|[仕様](https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/)、[一覧](https://www.toshiba-lifestyle.com/jp/dish-drye/)|
+|Panasonic NP-TCR5|18点|公式比較表掲載。標準帯|[比較表](https://panasonic.jp/dish/comparison.html)|
+|AINX AX-S3W|16点、428×425×458mm|公式仕様あり、現行生産・販売可否UNKNOWN。標準帯|[公式仕様](https://ainx.info/dishwasher)|
+|アイリスオーヤマ ISHT-5000-W／KISHT-5000-W|15点、420×445×435mm|両型番とも生産終了表示。標準帯|[公式仕様](https://www.irisohyama.co.jp/products/electrical-appliances/cooking-appliances/other-cooking-appliances/dishwasher/dishwasher)|
+|MAXZEN JDW03BS01|15点、水タンクを含み454×413×491mm|生産完了表示。標準帯。色違い別品番の寸法と混ぜない|[公式仕様](https://maxzen.jp/product/jdw03bs01/)|
+|Comfee WQP6-3608 W/T|30点、550×515×438mm|外部容器から自動給水する国内向け候補として調査。大容量帯。公式に掲載はあるが現行生産・現在の注文可否UNKNOWN|[国内向け製品ページ](https://www.feelcomfee.com/jp/products/dishwasher/3608-table-dishwasher)|
+|シロカ SS-LH451／SS-LA451|40点|公式現行ラインナップ掲載。外部容器からの自動給水・分岐水栓の候補だが大容量帯|[公式仕様](https://www.siroca.co.jp/product/dishwasher_largecapacity/)|
+
+Comfee製品ページには8.7Lを「庫内容量」とする欄もあるが、別欄では使用水量となっている。庫内容量とみなさず、この本文では容量帯30点だけを使用した。
+初回9メーカーに追加調査のDaan Tech・SAMKYO・SOUYIを加えた12社の、確認できた日本向け製品に限定。「日本で買える全機種」「完全網羅」「現行生産が確定した全候補」とは表現していない。
+12点以下の外部容器から直接自動給水する現行機種はこの調査で確定していない。ないと断定せず、別方式を探す既存記事へつなげた。
+
+## 費用・写真・評価方針
+
+- SOLOTAの計算例：0.230kWh×31円＋0.0025m³×300円＋2g×0.8円＝9.48円。単価は明示した仮定。標準6点の条件。月額・節約額・miniとの価格順位を作らない。
+- mini系の1回WhはUNKNOWN。最大／定格Wと運転時間の積を1回の電力量として採用していない。
+- 送料・設置用品・工事・販売店保証を含む購入総額はUNKNOWN。本体価格の安さや広告契約で評価しない。
+- `assets/compact-tableware.webp` は最新統合テーマの `assets/images/kitchen-capacity-compact-20260913.webp` の同一バイトコピー。既存の生成暮らしイメージで、特定機種の外観・設置例・実際に入る食器数を表さない。本文にもその旨を明記。
+- メーカーの一般製品写真は利用許諾未確認のため転載していない。既存画像registryのラクアmini Plusは2026-09-13時点でUNVERIFIEDだった。SOLOTAのみを大きな写真で特別扱いする構成も避け、比較は同じ形式の表にした。
+- 寸法図はHTML/CSSによる編集部作成の矩形。PCはmm×0.7、スマートフォンはmm×0.45で両機種に同一倍率。320px帯は同じくmm×0.38。図は外形の平面寸法のみ、余白・扉の形・設置可否を含まない。
+- 本文中の既存確認済み広告表示を置換したものではない。新記事には広告リンクを追加せず「アフィリエイトリンクなし」を表示。
+
+## 検証と残る作業
+
+- 各国内向け公式商品ページ、仕様、主比較の専用取扱説明書を直接取得・照合。PDFのバイトhash・取得日・ページ数は `evidence/manual-checks.json`。
+- `evidence/` の説明書ページ画像は内部の根拠確認用。**記事用画像ではなく、テーマへ配布しない。** 公開用素材は `assets/compact-tableware.webp` のみ。
+- `output/playwright/validation.json` と390px・1440px画像は独立HTML候補の表示検査。WP theme / `wp_kses_post` / owner生成後の表示検査ではない。
+- 静的本文のみなので全体テスト・生成物更新・公開機構操作は実行していない。ユーザーによる内容・見た目のレビューは未完了。
+- 統合後に必要な項目：正規catalog/記事registryへの新規登録、正規owner generatorから本文生成、生成後の対象基本チェック、共有ローカルWPで390px/1440pxの表示、標準・大容量リンクの実在確認。
+- 新規記事のライフサイクル・画像・商品別安全/サポート根拠を公開可能と認定していない。今回の担当範囲はレビュー可能な本文候補と根拠の作成。公開には別の具体的な指示が必要。
+
+## 統合方法
+
+1. `metadata.json` のtitle/slug、既存カテゴリ `/kitchen/` との関係、容量帯と4比較枠7単体型番を、統合担当が正規の記事ownerへ登録する。IDは作成時の実値を使う。
+2. `article.html` を提案本文として取り込み、`scripts/build_reader_purchase_support_v1.py` → `python/raos/application/editorial/purchase_support.py` と `site_guide_improvements.py` の現行owner経路へ適合させる。共有catalogは `changes/reader-purchase-support-v1/purchase-support.v1.json`。新規ガイド/比較としての最終render owner選択は統合担当が行う。生成HTMLだけを直接上書きして完了にしない。
+3. `page.css` の `.compact-draft` 配下だけをページ限定提案として取り込む。全体CSSは本担当から編集していない。既存共通スタイルへ吸収する場合も表・図の読みやすさを保持する。
+4. ヒーローは既存テーマの同名画像を参照しており、共有テーマへ画像を重複登録する必要はない。単独previewだけ専用コピーを使用。
+5. 正規のlocal prepare/preview、Git保存は統合担当で実施。本担当からcommit/refを作成せず、ファイル絶対パスで引き渡す。
+
+### 最終リンク確認の補記
+
+- 外部出典リンク24件の初回HEADは22件200、SKJ旧カタログ404、アイリス仕様403。GETでも同じ結果だった。アイリス仕様本文はwebツールから閲覧でき、生産終了・15点の記載を確認済み。403を200として扱っていない。
+- SKJ旧カタログの12点・412×378×422mmは検索側に残る公式PDFの情報だった。現在の直接取得は404のため、本文から旧PDFリンクと旧機種の容量・寸法を外した。上の調査表の旧数値は歴史資料の調査メモで、現在のURLから再確認済みという意味ではない。生産終了自体は現行の公式生産終了一覧で直接確認できる。最終本文では容量を未確認と明記。
+- 色統合前の本文の出典リンクは23件だった。追加調査後の件数と表示検査は `output/playwright/validation.json` に記録する。SKJは生産終了一覧へ集約。
+
+### ユーザーレビュー反映：色の数え方
+
+SOLOTA白黒を1枠に統合し、見出しの5モデル表現を削除。mini Plusの白黒、mini colorの青・ローズもそれぞれ1枠。mini・Plus・colorはノズル構成と乾燥のみ運転の機能差があるため別枠を維持する。保証期間差は販売条件であり洗浄性能差へ加点しない。追加調査の結果は下記。主表は2メーカー4機能別比較枠のまま、隣接候補を別に見える位置へ加えた。
+
+
+## 追加調査：漏れ候補と給水ポンプ（2026-09-13）
+
+「5商品だけで十分か」「色・品番違いの重複ではないか」というレビューを受け、SOLOTAの白黒をまとめ、件数を強調しない見出し・導入へ変更した。mini Plusとcolorも色ごとに別件扱いしていない。mini・Plus・colorは下ノズル／上下ノズル／上下ノズル＋乾燥のみ運転の差を読者へ示し、保証期間の違いは販売条件として別に記載した。
+
+### 別売ポンプは本体の外部直接給水とは異なる
+
+[THANKO公式ポンプFAQ](https://www.thanko.jp/smartphone/page262.html) を確認。本文の給水表に対応条件を追加。
+
+- TK-MDW22W：現在販売する別売ポンプは非対応。
+- TK-MDW22B／TK-STTDPSWH：**現行販売品のみ**対応。FAQの給水口の図で確認が必要。色別型番が同じでも旧本体まで一律に対応とはしない。
+- TDWS25SBL／TDWS25SRD：対応。
+- 以前のmini・Plusとポンプのセット購入品は使用できるというFAQの別記がある。過去のセットを非対応・危険と再分類しない。
+- 補助ポンプは内部タンクへ水を入れる別売品。本体内蔵ポンプが外部容器から直接取り込む方式と区別する。
+- 手注水の満水チャイムと、補助ポンプの満水検知・停止タイミングは別。FAQではチャイム後にポンプが遅れて停止すると説明している。本文では操作手順を一律に再構成していない。
+
+### A1：Daan Tech Japan Bobル・プチ — 点数未分類の隣接候補
+
+- [日本向け商品案内](https://www.daantech.jp/pages/bob-compact-dishwasher)：3.9Lタンク、1〜4人分またはグラス16個という訴求。これを日本の標準食器16点とみなさない。
+- [公式FAQ](https://www.daantech.jp/pages/%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E8%B3%AA%E5%95%8F) からリンクされる [日本向け説明書](https://cdn.shopify.com/s/files/1/0740/7622/5857/files/Notice_Bob_JP_31-03-2025__compressed.pdf?v=1751298120)：PDF24ページ目の製品情報シートでBob／Bob le mini lave-vaisselle 2020、100V 50/60Hz、幅34cm、高さ49cm、接続口込み奥行49cmを確認。
+- 同シートの「標準カトラリー数2」はEU条件の表記であり、日本の食器2点や12点へ変換していない。少人数向けで幅が比較的狭い隣接候補として本文に表示し、12点以下の主表へ数えない。
+- 日本向け基礎モデルまで確認。色別の国内単体SKUは一次情報で確定できずUNKNOWN。小売側の型番を推測で補っていない。
+- 公式の商品案内は閲覧可能だが、リンク先 `/products/bob` は直接HTTP取得で404。現在の注文可否・販売店の在庫・納期はUNKNOWN。生産終了とは断定していない。
+- [日本法人トップの重要なお知らせ](https://www.daantech.jp/) は2023年6月〜2024年11月の販売品の銘板ラベル交換を案内している。メーカーは製品自体に問題はないと説明しているが、本調査を安全基準への適合認定と扱わない。本文から当該案内へ直接リンクした。
+
+### A2：SAMKYO T40 — 標準容量の隣接候補
+
+- [公式仕様](https://support.samkyo.com/%E8%A3%BD%E5%93%81%E6%83%85%E5%A0%B1_content/%E9%A3%9F%E5%99%A8%E6%B4%97%E3%81%84%E4%B9%BE%E7%87%A5%E6%A9%9F/t40/t40-parameter)：18点、440×413×424mm、730W、12.6kg。
+- [公式概要](https://support.samkyo.com/%E8%A3%BD%E5%93%81%E6%83%85%E5%A0%B1_content/%E9%A3%9F%E5%99%A8%E6%B4%97%E3%81%84%E4%B9%BE%E7%87%A5%E6%A9%9F/t40/t40-summary) と [公式商品一覧](https://samkyo.com/collections/%E9%A3%9F%E6%B4%97%E6%A9%9F) から遷移したT40商品ページ：外部容器からの自動給水、分岐水栓に対応。上から手注水する手間を減らす別の選び方として本文に追加。
+- 高さ42.4cmだけを見れば小さいが、横幅・奥行はSOLOTAとmini系より大きい。18点なのでサイトの標準帯。主表の機種数には含めない。
+- 公式概要は「3D熱風送風乾燥」、仕様は「3D送風乾燥」と表記。乾燥機構の詳細をこの追加調査では断定せず本文の乾燥比較へ含めない。1年間保証の機種案内と24か月の共通案内を合成しない。現行の在庫・納期はUNKNOWN。
+
+### A3：SOUYI SY-118-UV — 標準容量
+
+- [メーカー取扱説明書](https://souyi-japan.com/wp-content/uploads/2022/04/de337b7d23393b8598539a4651e9a732.pdf)：公称16点、428×425×458mm。標準容量帯のため本文の調査範囲欄に追加。
+- [メーカー発表](https://prtimes.jp/main/html/rd/p/000000074.000035692.html)（2023-11-30）は上部から給水する専用トレイの追加。専用トレイを外部自動給水ポンプとみなしていない。
+- 取扱説明書が取得できることは現在の販売可能性を保証しない。現時点の在庫・販売可否はUNKNOWN。
+
+追加のPDF確認は `evidence/additional-manual-checks.json`。説明書ページ画像は内部確認専用で記事用配布素材に含めない。12点以下の新たな国内向け現行モデルを確定できたという結果ではない。少量と設置寸法の区分の限界を本文に示し、容量が不明なBobを無言で落とさず候補として残した。
+
+
+## 改訂候補の最終確認
+
+- `http://127.0.0.1:41428/preview.html` を継続提供。390px・1440pxともHTTP 200、ページ幅のはみ出しなし、画像読込・本文内アンカー正常、見出しh1は1つ。
+- 主比較4行、SOLOTAは1行、色別単体型番7件、旧「5モデル」表現なし。折りたたみ6件を開いた状態でもページ幅正常。
+- 最新の先頭画面、追加候補部分、寸法部分、全長の画像を `output/playwright/` へ更新。先頭スマートフォン画面と追加候補のPC・スマートフォン画像を目視確認した。
+- 本文の外部出典リンクは30件。追加7件のHEADはすべて200。以前のアイリス仕様403という観測は解消確認しておらず、全外部リンク200とは報告しない。本文内の標準・大容量リンクは統合後のWPでの実在確認が残る。
+- 上記は独立HTML候補の確認。共有WPへの統合、本番反映、ユーザーによる最終レビューは未実行。

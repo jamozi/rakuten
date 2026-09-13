@@ -27,28 +27,36 @@ class EntryCompletion(unittest.TestCase):
         capacity = doc.ids["kitchen-comparisons"]
         capacity_html = doc.text[capacity.start : capacity.end]
         for label, destination in (
-            ("コンパクト", "/solota-vs-rakua-mini-plus/#ps-specs"),
-            ("標準", "/countertop-dishwasher-for-small-households/#ps-specs"),
-            ("大容量", "https://panasonic.jp/dish/comparison.html"),
+            ("コンパクト", "/compact-dishwasher-comparison/"),
+            ("標準", "/standard-dishwasher-comparison/"),
+            ("大容量", "/large-dishwasher-comparison/"),
         ):
             self.assertIn(label, capacity_html)
             self.assertIn(destination, capacity_html)
         self.assertEqual(capacity_html.count("<img "), 3)
-        self.assertIn("大容量比較は未掲載", capacity_html)
+        self.assertNotIn("大容量比較は未掲載", capacity_html)
         choose = doc.ids["choose"]
         supply_html = doc.text[choose.start : choose.end]
-        for label in (
-            "水栓工事を避けたい",
-            "水栓につないで給水したい",
-            "まだ分からない",
-            "タンク式／外部容器からの自動給水",
-            "分岐水栓専用機の横断比較は未掲載",
+        for destination in (
+            "/without-installation/",
+            "/dishwasher-branch-faucet-guide/",
+            "/dishwasher-water-supply-methods/",
         ):
+            self.assertIn(destination, supply_html)
+        for label in ("工事なし（タンク式など）", "工事あり", "違いを知りたい"):
             self.assertIn(label, supply_html)
-        self.assertIn('data-raos-link-purpose="official_verify"', supply_html)
-        self.assertIn(
-            "/dishwasher-water-supply-methods/#guide-water-route", supply_html
+        registry = json.loads(
+            (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
         )
+        for slug in (
+            "compact-dishwasher-comparison",
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+            "dishwasher-branch-faucet-guide",
+        ):
+            row = next(row for row in registry["articles"] if row["slug"] == slug)
+            self.assertTrue((ROOT / row["body_source"]).is_file())
+            self.assertIsNone(row["post_id"])
         self.assertLess(capacity.start, choose.start)
         self.assertLess(choose.start, doc.ids["compare"].start)
         self.assertNotIn("kitchen-after-buying", doc.ids)

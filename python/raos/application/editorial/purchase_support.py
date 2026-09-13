@@ -893,7 +893,7 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     note = (
         '<p class="ps-installation-reference">'
         + escape(p["exact_model"])
-        + "の照合基準（公表値）："
+        + "の照合基準（公表値・条件を満たす計算値）："
         + ("／".join(known) if known else "未確認")
         + "。"
     )
@@ -2004,7 +2004,67 @@ def render_guide(
         if section.attrs.get("id") == "ks-next-read":
             out.append(section.html())
     out.append("</div>")
-    return "".join(out)
+    rendered = "".join(out)
+    if stage == "water" and fragment(template).find(cls="sm-page"):
+        return bind_water_guide_layout(template, rendered, article)
+    return rendered
+
+
+def bind_water_guide_layout(
+    template: str, rendered: str, article: Mapping[str, Any]
+) -> str:
+    """Keep the authored route diagram while sourcing model details from the catalog."""
+    authored, canonical = fragment(template), fragment(rendered)
+    roots = authored.find(cls="sm-page")
+    if len(roots) != 1:
+        raise ValueError("PURCHASE_WATER_LAYOUT_INVALID")
+    root = roots[0]
+    ids = [node.attrs["id"] for node in root.walk() if node.attrs.get("id")]
+    if len(ids) != len(set(ids)):
+        raise ValueError("PURCHASE_WATER_LAYOUT_INVALID")
+    first_model = next(iter(root.find(cls="ps-guide-model")), None)
+    model_indexes = canonical.find(cls="ps-model-index")
+    if first_model is None or len(model_indexes) != 1:
+        raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+    first_model.insert_before(model_indexes[0])
+
+    def replace(original: Element, replacement: Element) -> None:
+        original.insert_before(replacement)
+        original.remove()
+
+    for model in canonical.find(cls="ps-guide-model"):
+        targets = [
+            node
+            for node in root.find(cls="ps-guide-model")
+            if node.attrs.get("id") == model.attrs.get("id")
+        ]
+        if len(targets) != 1:
+            raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
+        details = Element("details", {"class": "sm-model-detail"})
+        details.append(Element("summary", children=["給水・排水の条件を見る"]))
+        # The heading and exact model remain visible; all verified instructions
+        # and their source links stay together inside the disclosure.
+        for child in list(model.children)[2:]:
+            details.append(child)
+        model.append(details)
+        replace(targets[0], model)
+    for identity in ("reader-unknowns", "guide-previous-models"):
+        old = [node for node in root.walk() if node.attrs.get("id") == identity]
+        new = [node for node in canonical.walk() if node.attrs.get("id") == identity]
+        if len(old) != 1 or len(new) != 1:
+            raise ValueError("PURCHASE_WATER_LAYOUT_INVALID")
+        replace(old[0], new[0])
+    for cls in ("ps-history", "ps-editor"):
+        old, new = root.find(cls=cls), canonical.find(cls=cls)
+        if len(old) != 1 or len(new) != 1:
+            raise ValueError("PURCHASE_WATER_LAYOUT_INVALID")
+        replace(old[0], new[0])
+    # Reinstall aliases at their canonical targets in add_compatibility_anchors.
+    # The source retains them so old incoming URLs remain part of the contract.
+    for node in list(root.walk()):
+        if node.attrs.get("id") in article.get("legacy_anchor_targets", {}):
+            node.remove()
+    return root.html()
 
 
 def add_compatibility_anchors(

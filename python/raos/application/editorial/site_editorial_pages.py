@@ -9,6 +9,8 @@ from html import escape
 import re
 from typing import Any, cast
 
+from raos.application.editorial.reader_html import Element, fragment
+
 PURPOSES = {
     "small-space": (
         "一人暮らし・省スペース",
@@ -23,9 +25,9 @@ PURPOSES = {
         [41, 263, 265, 266, 30, 85],
     ),
     "without-installation": (
-        "食洗機の分岐水栓工事を避けたい人へ",
-        "分岐水栓を使わずに設置する条件は？",
-        "給水と、電源・接地・排水・台の条件を分けます。",
+        "工事なしの食洗機",
+        "タンクとポンプ給水、続けやすいのは？",
+        "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。",
         [262, 263, 41, 86],
     ),
     "easy-maintenance": (
@@ -138,6 +140,7 @@ def render_pages(
     data: dict[str, Any],
     bodies: dict[str, str],
     home_media: dict[int, str] | None = None,
+    page_sources: dict[str, str] | None = None,
 ) -> tuple[dict[str, str], dict[str, Any], list[dict[str, str]]]:
     meta = metadata(registry, catalog, data, bodies)
     by_id = {a["post_id"]: a for a in meta.values()}
@@ -842,6 +845,21 @@ def render_pages(
             + policy
             + "</div>\n<!-- /wp:html -->\n"
         )
+        if slug in (page_sources or {}):
+            source = (page_sources or {})[slug]
+            tree = fragment(source)
+            roots = [node for node in tree.children if isinstance(node, Element)]
+            ids = [node.attrs["id"] for node in tree.walk() if node.attrs.get("id")]
+            required = {*page["anchors"], "site-editorial-policy"}
+            if (
+                len(roots) != 1
+                or len(ids) != len(set(ids))
+                or not required.issubset(ids)
+                or tree.find(tag="h1")
+                or tree.find(tag="script")
+            ):
+                raise ValueError("EDITORIAL_PAGE_SOURCE_INVALID: " + slug)
+            pages[slug] = source
         updates.append(
             {
                 "article_key": slug,
