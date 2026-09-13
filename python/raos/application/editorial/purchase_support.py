@@ -2207,7 +2207,6 @@ def render_hub(
     for label in (
         "このサイトの入口",
         "このページの読み方",
-        "ほかの商品カテゴリ",
         "編集方針",
     ):
         if label not in navs:
