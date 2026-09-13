@@ -221,23 +221,7 @@
       ],
       "intro": "軽さに加えて残したい機能を選び、購入総額を確認します。航空会社ごとの持ち込み条件は別に照合してください。",
       "post_type": "post",
-      "legacy_anchor_targets": {
-        "under-3kg-start": "ps-choose",
-        "under-3kg-start-title": "ps-choose",
-        "under-3kg-decision-title": "ps-choose",
-        "under-3kg-reader-title": "ps-choose",
-        "under-3kg-comparison-title": "ps-specs",
-        "under-3kg-same-weight-title": "ps-specs",
-        "under-3kg-products-title": "ps-products",
-        "under-3kg-fits-title": "ps-products",
-        "under-3kg-not-fits-title": "ps-products",
-        "purchase-check": "ps-flight-purchase-check",
-        "under-3kg-introduction-title": "ps-choose",
-        "under-3kg-cta-01-note": "ps-seller-aeroflex-dx2-01521",
-        "under-3kg-cta-03-note": "ps-seller-american-tourister-applite-qj6-68002",
-        "under-3kg-cta-02-note": "ps-previous-cabin-reference",
-        "under-3kg-cta-04-note": "ps-previous-clite-reference"
-      },
+      "legacy_anchor_targets": {},
       "historical_link_notes": [
         {
           "id": "ps-previous-cabin-reference",
@@ -294,7 +278,28 @@
             "3辺合計"
           ]
         }
-      ]
+      ],
+      "authored_comparison": true,
+      "row_products": [
+        {
+          "key": "aeroflex-dx2-01521",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
+        },
+        {
+          "key": "samsonite-c-lite-cs2-09007",
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007"
+        },
+        {
+          "key": "american-tourister-applite-qj6-68002",
+          "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+        },
+        {
+          "key": "frequenter-lieve-1-250",
+          "product_id": "PRD-FREQUENTER-LIEVE-1-250"
+        }
+      ],
+      "commerce_anchor": "ps-specs",
+      "responsive_layout": "authored"
     },
     {
       "article_id": "compact-robot-vacuum-shortlist",
@@ -1732,7 +1737,25 @@
           "product_id": "PRD-STANDARD-DISHWASHER-ADW-M28B"
         }
       ],
-      "editorial_updated_on": "2026-09-13"
+      "editorial_updated_on": "2026-09-13",
+      "condition_slots": [
+        {
+          "key": "dailyreserve",
+          "product_id": "PRD-STANDARD-DISHWASHER-SS-M171"
+        },
+        {
+          "key": "shallowcounter",
+          "product_id": "PRD-STANDARD-DISHWASHER-NP-TSK2"
+        },
+        {
+          "key": "narrowcounter",
+          "product_id": "PRD-STANDARD-DISHWASHER-ADW-M28B"
+        },
+        {
+          "key": "autodoor",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        }
+      ]
     },
     {
       "article_id": "large-dishwasher-comparison",
@@ -1870,7 +1893,25 @@
           "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
         }
       ],
-      "editorial_updated_on": "2026-09-13"
+      "editorial_updated_on": "2026-09-13",
+      "condition_slots": [
+        {
+          "key": "light",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
+        },
+        {
+          "key": "expand",
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007"
+        },
+        {
+          "key": "organize",
+          "product_id": "PRD-INNOVATOR-INV50"
+        },
+        {
+          "key": "front-main",
+          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX"
+        }
+      ]
     }
   ],
   "products": [

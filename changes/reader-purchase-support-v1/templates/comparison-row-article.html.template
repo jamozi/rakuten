@@ -1,6 +1,9 @@
 <article class="ps-article">
   <p class="ps-disclosure">広告表示は生成時にリンクと一致させます。</p>
-  <p>確認済みの用途別の結論。</p>
+  <section id="comparison-conditions"><h2>条件別の結論</h2><div class="ps-condition-grid">
+    <div><h3>条件A</h3><div class="ps-condition-item"><div class="ps-condition-product-media" data-ps-media-product="REGISTERED_PRODUCT_ID_A" data-ps-condition="condition-a"></div><div class="ps-condition-copy"><p class="ps-condition-product">登録した商品名・型番A</p><p>向く理由と、確認済みの不得意な条件。</p><div class="ps-condition-product-purchase" data-ps-purchase-product="REGISTERED_PRODUCT_ID_A" data-ps-condition="condition-a"></div></div></div></div>
+    <div><h3>条件B</h3><div class="ps-condition-item"><div class="ps-condition-product-media" data-ps-media-product="REGISTERED_PRODUCT_ID_B" data-ps-condition="condition-b"></div><div class="ps-condition-copy"><p class="ps-condition-product">登録した商品名・型番B</p><p>向く理由と、確認済みの不得意な条件。</p><div class="ps-condition-product-purchase" data-ps-purchase-product="REGISTERED_PRODUCT_ID_B" data-ps-condition="condition-b"></div></div></div></div>
+  </div></section>
   <section id="product-comparison">
     <h2>商品を比べる</h2>
     <div class="ps-table-scroll ps-row-scroll" tabindex="0" role="region" aria-label="商品比較表">

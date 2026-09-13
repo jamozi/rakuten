@@ -40,6 +40,7 @@ INPUT_PATHS = (
         "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
     ),
     *PAGE_SOURCE_PATHS.values(),
+    Path("python/raos/application/editorial/reader_html.py"),
 )
 SOURCE_ARTICLE_PATHS = (
     Path(

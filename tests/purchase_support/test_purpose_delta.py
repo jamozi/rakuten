@@ -153,7 +153,7 @@ def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
         for a in choose.find(tag="a")
         if a.attrs.get("href", "").startswith("#product-")
     ]
-    assert sorted(links) == sorted(anchors)
+    assert set(links) == anchors
     assert "data-ps-pair-options" not in html[ps.MAIN_SLUG]
     for slug in (
         "lightweight-carry-on-suitcase-under-3kg",
@@ -163,7 +163,10 @@ def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
         other = fragment(html[slug])
         other_top = next(n for n in other.walk() if "data-raos-article-id" in n.attrs)
         assert "data-ps-purpose-mode" not in other_top.attrs
-        assert any("data-ps-purpose-options" in n.attrs for n in other.walk())
+        if not next(a for a in catalog["articles"] if a["slug"] == slug).get(
+            "authored_comparison"
+        ):
+            assert any("data-ps-purpose-options" in n.attrs for n in other.walk())
 
 
 def test_main_comparison_section_order_and_single_slots(catalog):
@@ -174,7 +177,6 @@ def test_main_comparison_section_order_and_single_slots(catalog):
         "ps-specs",
         "ps-offers",
         "ps-task-fit",
-        "ps-products",
         "ps-installation-context",
         "ps-hold-reasons",
         "ps-guides",
@@ -200,8 +202,8 @@ def test_main_comparison_section_order_and_single_slots(catalog):
 def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
     html, _ = compile(catalog)
     root = fragment(html[ps.MAIN_SLUG])
-    tables = {t.attrs.get("class"): t for t in root.find(tag="table")}
-    main_table, detail = tables["ps-row-comparison"], tables["ps-installation-details"]
+    main_table = root.find(tag="table", cls="ps-row-comparison")[0]
+    detail = root.find(tag="table", cls="ps-installation-details")[0]
     main_rows = [
         r.attrs["data-product-id"]
         for r in main_table.find(tag="tbody")[0].find(tag="tr")
@@ -239,8 +241,10 @@ def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
                 a.attrs.get("href") for a in cell.find(tag="a")
             ]
             assert ps.jp_date(fact["checked_at"]) in cell.text()
-    # Each caution is stated once, on the product card, with a link to the detail section.
-    cautions = [n for n in root.walk() if n.attrs.get("class") == "ps-product-caution"]
+    # Each caution stays once in the conclusion, linked to the installation detail.
+    cautions = [
+        n for n in root.walk() if n.attrs.get("class") == "ps-condition-caution"
+    ]
     assert len(cautions) == 4
     assert all(
         any(a.attrs.get("href") == "#ps-installation-context" for a in c.find(tag="a"))
@@ -415,8 +419,8 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
     for p in dishwashers(catalog):
         card = next(
             n
-            for n in root.find(tag="article")
-            if n.attrs.get("id") == "ps-reason-" + p["anchor"]
+            for n in root.find(cls="ps-condition-item")
+            if any(a.attrs.get("href") == "#" + p["anchor"] for a in n.find(tag="a"))
         )
         assert p["lead"] in card.text()
         assert all(item in card.text() for item in p["fit"] + p["avoid"])

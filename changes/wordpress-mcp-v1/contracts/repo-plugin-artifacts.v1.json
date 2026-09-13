@@ -16,7 +16,7 @@
     {
       "artifact_id": "raos-reader-measurement-v1",
       "migration_review": null,
-      "package_sha256": "0cb73e0eeb9c866f9b63c6db5fc38e75f6bcac3d96be77f59e09c224dde715aa",
+      "package_sha256": "70e68abd35aa79f6576fa4967da8dc05453b9da46d52932c5f545de1151f3ffb",
       "slug": "raos-reader-measurement",
       "version": "1.0.0"
     }

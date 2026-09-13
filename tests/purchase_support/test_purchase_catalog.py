@@ -102,7 +102,7 @@ def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
             )
         if a["bindings"]:
             placements = {b["placement"] for b in a["bindings"]}
-            assert placements <= {"comparison_table", "final_summary"}
+            assert placements <= {"top_summary", "comparison_table", "final_summary"}
             assert "comparison_table" in placements
             assert placements <= set(PLACEMENTS)
 
@@ -357,10 +357,14 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
                 for n in root.walk()
                 if n.attrs.get("id") == "ps-seller-" + product["anchor"]
             )
-            assert len([n for n in seller.walk() if n.has("ps-research")]) == 1
-        assert len([n for n in root.walk() if n.has("ps-research")]) == len(
-            article["product_ids"]
-        )
+            if not article.get("authored_comparison"):
+                assert len([n for n in seller.walk() if n.has("ps-research")]) == 1
+        if not article.get("authored_comparison"):
+            assert len([n for n in root.walk() if n.has("ps-research")]) == len(
+                article["product_ids"]
+            )
+        else:
+            assert not root.find(cls="ps-research")
 
 
 def test_comparison_decision_details_follow_summary_and_specs_and_escape_text(catalog):
@@ -396,14 +400,17 @@ def test_reviewed_bookmarks_land_in_current_section_and_reject_missing_targets(c
             ancestor = aliases[0].parent
             if ancestor.tag == "th":
                 ancestor = ancestor.parent
-            assert ancestor.attrs.get("id") == target
+            assert ancestor.attrs.get("id") == (
+                "ps-choose" if target == "ps-products" else target
+            )
             assert ancestor.text()
     article = next(
         a
         for a in catalog["articles"]
-        if a["slug"] == "lightweight-carry-on-suitcase-under-3kg"
+        if a.get("legacy_anchor_targets") and not a.get("authored_comparison")
     )
-    article["legacy_anchor_targets"]["under-3kg-comparison-title"] = "missing-section"
+    identity = next(iter(article["legacy_anchor_targets"]))
+    article["legacy_anchor_targets"][identity] = "missing-section"
     with pytest.raises(ValueError, match="PURCHASE_LEGACY_ALIAS_TARGET_INVALID"):
         compile(catalog)
 
@@ -500,15 +507,19 @@ def test_decision_steps_follow_the_scope_the_reader_has_selected(catalog):
 def test_historical_product_bookmarks_do_not_become_current_purchase_links(catalog):
     articles, _ = compile(catalog)
     root = fragment(articles["lightweight-carry-on-suitcase-under-3kg"])
-    for identity, previous_model in [
-        ("under-3kg-cta-02-note", "82353171"),
-        ("under-3kg-cta-04-note", "134679-1549"),
-    ]:
+    for identity in ["under-3kg-cta-02-note", "under-3kg-cta-04-note"]:
         alias = next(n for n in root.walk() if n.attrs.get("id") == identity)
-        note = alias.parent
-        assert previous_model in note.text()
-        assert "別の商品" in note.text()
-        assert [n.attrs.get("href") for n in note.find(tag="a")] == ["#ps-specs"]
+        # Historical bookmarks lead to the whole comparison, never to a
+        # different product's identity cell or merchant CTA.
+        assert alias.parent.attrs.get("id") == "ps-specs"
+        assert not alias.children
+        assert not alias.attrs.get("data-raos-product-id")
+        assert not alias.attrs.get("href")
+    rows = root.find(tag="tr")
+    assert not any(
+        "82353171" in n.text() or "134679-1549" in n.text()
+        for n in rows
+    )
     caution = next(
         n for n in root.walk() if n.attrs.get("id") == "under-3kg-caution-title"
     )
@@ -545,12 +556,19 @@ def test_luggage_bookmarks_reach_weight_formula_and_flight_checks(catalog):
     method = next(
         n for n in root.walk() if n.attrs.get("id") == "under-3kg-method-title"
     )
-    assert method.tag == "h2"
-    assert "総重量上限 − スーツケース本体 − 身の回り品" in method.parent.parent.text()
+    assert method.parent.attrs["id"] == "carry-on-rules"
+    assert "航空会社" in method.parent.text()
+    calculation = next(
+        n for n in root.walk() if n.attrs.get("id") == "suitcase-weight-example-title"
+    )
+    assert "総重量上限から身の回り品とケース本体を引いた計算例" in calculation.text()
+    assert "7−1−2.1＝3.9kg" in calculation.text()
+    assert "7−1−2.7＝3.3kg" in calculation.text()
     assert (
-        html.index('id="ps-specs"')
-        < html.index('id="ps-offers"')
-        < html.index('id="under-3kg-method-title"')
+        html.index('id="carry-on-rules"')
+        < html.index('id="ps-choose"')
+        < html.index('id="ps-specs"')
+        < html.index('id="suitcase-weight-example-title"')
         < html.index('id="ps-evidence"')
     )
 
@@ -567,15 +585,23 @@ def test_comparison_method_bookmarks_explain_scope_in_details_after_sellers(cata
         method = next(
             n for n in root.walk() if n.attrs.get("id") == f"blk-{key}-005-title"
         )
-        assert method.tag == "h2"
-        assert limitation in method.parent.text()
-        assert "広告報酬を加点せず" in method.parent.text()
-        assert (
-            html.index('id="ps-specs"')
-            < html.index('id="ps-offers"')
-            < html.index(f'id="blk-{key}-005-title"')
-            < html.index('id="ps-evidence"')
-        )
+        article = next(a for a in catalog["articles"] if a["slug"] == slug)
+        if article.get("authored_comparison"):
+            assert method.tag == "span"
+            assert limitation.replace(
+                "軸名が未確認", "軸名未確認"
+            ) in root.text().replace("軸名が未確認", "軸名未確認")
+            assert not root.find(cls="ps-comparison-method")
+            assert len(root.find(tag="section", cls="ps-source-product")) == 0
+        else:
+            assert method.tag == "h2"
+            assert limitation in method.parent.text()
+            assert "広告報酬を加点せず" in method.parent.text()
+            assert (
+                html.index('id="ps-offers"')
+                < html.index(f'id="blk-{key}-005-title"')
+                < html.index('id="ps-evidence"')
+            )
 
 
 def test_ten_comparisons_share_exact_identities_and_keep_slim_supplementary(catalog):

@@ -9,7 +9,7 @@ from html import escape
 import re
 from typing import Any, cast
 
-from raos.application.editorial.reader_html import Element, fragment
+from raos.application.editorial.reader_html import Element, fragment, readable_tables
 
 PURPOSES = {
     "small-space": (
@@ -871,4 +871,11 @@ def render_pages(
                 else page["description"],
             }
         )
-    return pages, meta, updates
+    return (
+        {
+            slug: readable_tables(body) if slug != "home" else body
+            for slug, body in pages.items()
+        },
+        meta,
+        updates,
+    )

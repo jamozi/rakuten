@@ -104,3 +104,54 @@ def fragment(markup: str) -> Element:
 def block(markup: str) -> Element:
     return next(c for c in fragment(markup).children if isinstance(c, Element))
 
+
+
+def readable_tables(html: str) -> str:
+    """Label existing cells so narrow layouts need no duplicate table or script."""
+    root = fragment(html)
+    changed = False
+    for table in root.find(tag="table"):
+        if table.has("ps-row-comparison"):
+            continue
+        rows = table.find(tag="tr")
+        if not rows or table.parent is None:
+            continue
+        first = [
+            n
+            for n in rows[0].children
+            if isinstance(n, Element) and n.tag in {"th", "td"}
+        ]
+        if not 2 <= len(first) <= 16 or any(
+            n.tag != "th" or n.attrs.get("colspan") or n.attrs.get("rowspan")
+            for n in first
+        ):
+            continue
+        labels = [n.text() for n in first]
+        body_rows = [
+            [
+                n
+                for n in row.children
+                if isinstance(n, Element) and n.tag in {"th", "td"}
+            ]
+            for row in rows[1:]
+        ]
+        if any(
+            len(cells) != len(labels)
+            or any(n.attrs.get("colspan") or n.attrs.get("rowspan") for n in cells)
+            for cells in body_rows
+        ):
+            continue
+        for cells in body_rows:
+            for cell, label in zip(cells, labels, strict=True):
+                cell.attrs["data-ks-column-label"] = label
+        for node, name in [
+            (table, "ks-readable-table"),
+            (table.parent, "ks-readable-scroll"),
+            (rows[0], "ks-readable-head"),
+        ]:
+            if not node.has(name):
+                node.attrs["class"] = (
+                    (node.attrs.get("class") or "") + " " + name
+                ).strip()
+        changed = True
+    return root.html() if changed else html

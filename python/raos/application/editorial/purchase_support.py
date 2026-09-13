@@ -24,7 +24,12 @@ from raos.domain.editorial.purchase_support import (
     offer_states,
     reference_price,
 )
-from raos.application.editorial.reader_html import Element, block, fragment
+from raos.application.editorial.reader_html import (
+    Element,
+    block,
+    fragment,
+    readable_tables,
+)
 from raos.application.editorial.local_reader_guides import build_local_guides
 from raos.application.editorial.reader_running_cost import render_cost_profiles
 
@@ -1250,6 +1255,11 @@ def condition_summary(
         + escape(" ".join(tidy(x) for x in p["avoid"]))
         + '</p><p class="ps-condition-caution">'
         + escape(tidy(p["caution"]))
+        + (
+            '<a href="#ps-installation-context">設置条件の詳細へ</a>'
+            if article["slug"] == MAIN_SLUG
+            else ""
+        )
         + '</p><p class="ps-condition-links">'
         + str(action)
         + "</p>"
@@ -2439,6 +2449,12 @@ def render_curated_commerce(
         if len(containers) != 1:
             raise ValueError("PURCHASE_CURATED_ROOT_REQUIRED")
         container = containers[0]
+        container.attrs.update(
+            {
+                "data-raos-article-id": article["article_id"],
+                "data-raos-snapshot-id": snapshot,
+            }
+        )
         if not container.has("ps-article"):
             container.attrs["class"] = (
                 container.attrs.get("class") or ""
@@ -3243,6 +3259,11 @@ def responsive_comparison_markup(html: str) -> str:
     """Keep the real table and its headings when cells stack into product cards."""
     root = fragment(html)
     for table in root.find(tag="table"):
+        if table.has("compact-integrated-table"):
+            table.attrs["class"] += " ps-row-comparison"
+            table.attrs["data-ps-spec-columns"] = "2"
+            if table.parent and not table.parent.has("ps-row-scroll"):
+                table.parent.attrs["class"] += " ps-row-scroll"
         if not table.has("ps-row-comparison"):
             continue
         headers = table.find(tag="thead")
@@ -3364,7 +3385,10 @@ def compile_articles(
         if a.get("commerce_presentation") == "comparison_rows":
             if a["kind"] == "comparison" and a.get("authored_comparison") is not True:
                 html = consolidate_comparison_details(html)
-            html = responsive_comparison_markup(html)
+            if a.get("responsive_layout") != "authored":
+                html = responsive_comparison_markup(html)
+        if a.get("responsive_layout") != "authored":
+            html = readable_tables(html)
         rendered = "<!-- wp:html -->\n" + html + "\n<!-- /wp:html -->\n"
         final_snapshot = (
             "ps-"

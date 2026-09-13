@@ -14,11 +14,11 @@ const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '99792b3bb440af2ca5816629822f21674299647ea79398df7b23abd543ee5204';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'fdd2cb437352386b18c3451cabf1742d4c5dee0ffb4faf2e29a3aef7daab8b78';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '78de8b09bb384e0cbf5287e3b48de4f9abb5c6244972ed01beb7845799023782';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '18586a5860b75819e16c9a940b7a27e06de8115361c1eae8a7fec1d43e07a9db';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '18586a5860b75819e16c9a940b7a27e06de8115361c1eae8a7fec1d43e07a9db';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '6aa304accbb0424b1fc1b684fb379c37d4a8c50f152f50c56ff09f9e19dbc2ab';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '6aa304accbb0424b1fc1b684fb379c37d4a8c50f152f50c56ff09f9e19dbc2ab';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -6024,7 +6024,18 @@ function kurashinoshirube_render_article_disclosure($attributes, $content, $tag)
     ) {
         return '';
     }
-    $affiliate = kurashinoshirube_article_has_affiliate_links((int) get_queried_object_id());
+    // A verified article already carries its own single, link-matched notice.
+    // Keep the title notice as the fallback when the public snapshot is invalid.
+    $post_id = (int) get_queried_object_id();
+    $context = function_exists('kurashinoshirube_purchase_support_context')
+        ? kurashinoshirube_purchase_support_context() : null;
+    $body = get_post_field('post_content', $post_id, 'raw');
+    if (is_array($context) && is_string($body)
+        && preg_match('/<p\b[^>]*class="[^"]*\bps-disclosure\b[^"]*"[^>]*>([^<]+)<\/p>/u', $body, $notice) === 1
+        && str_contains($notice[1], 'アフィリエイト')) {
+        return '';
+    }
+    $affiliate = kurashinoshirube_article_has_affiliate_links($post_id);
     $text = $affiliate
         ? 'この記事には広告（楽天アフィリエイトの購入・商品画像リンク）が含まれます。成果報酬は評価や掲載順に影響しません。'
         : 'この記事にアフィリエイトリンクはありません。';

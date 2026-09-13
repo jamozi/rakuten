@@ -152,17 +152,17 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
       assert.equal(await noScript.locator('input, select, button, noscript').count(), 0, `${article.slug}: inert published content`);
       if (article.kind === 'comparison') {
         assert.equal(await noScript.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), article.product_ids.length);
-        assert.equal(await noScript.locator('.ps-product').count(), article.product_ids.length);
-        assert.equal(await noScript.locator('.ps-product-offers').count(), article.product_ids.length + (article.supplementary_product_ids || []).length);
+        assert.equal(await noScript.locator('.ps-condition-product-purchase').count(), article.conditions.reduce((n,c)=>n+c.product_ids.length,0));
+        if (!article.authored_comparison) assert.equal(await noScript.locator('.ps-product-offers').count(), article.product_ids.length + (article.supplementary_product_ids || []).length);
         await page.setContent(body);
         await page.addScriptTag({ content: source });
         assert.equal(await page.locator('.ps-pair-controls').count(), 0, 'column-only controls are not attached to product rows');
         if (article.slug === 'countertop-dishwasher-for-small-households') {
           assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0);
-          assert.equal(await page.locator('#ps-choose a[href^="#product-"]').count(), 4);
+          assert.equal(await page.locator('#ps-choose .ps-condition-product a[href^="#product-"]').count(), 4);
           assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), 4);
           assert.equal(await page.locator('.ps-installation-details thead [data-ps-product]:visible').count(), 4);
-          assert.equal(await page.locator('.ps-product-caution').count(), 4);
+          assert.equal(await page.locator('.ps-condition-caution').count(), 4);
           // Same-document hash: product anchors are revealed and focused on hashchange, back/forward and same-hash clicks.
           await page.addScriptTag({ content: navigationSource });
           const anchor = 'product-dish-ss-ma251';
@@ -173,9 +173,11 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
           await page.evaluate(() => history.forward());
           await page.waitForFunction(id => location.hash === '#' + id && document.activeElement && document.activeElement.id === id, anchor);
           await page.locator('h1, .ps-lead').first().focus();
-          await page.locator(`#ps-choose a[href="#${anchor}"]`).click();
+          await page.locator(`#ps-choose .ps-condition-product a[href="#${anchor}"]`).click();
           await page.waitForFunction(id => document.activeElement && document.activeElement.id === id, anchor);
           assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), 4, 'hash navigation does not hide candidates');
+        } else if (article.responsive_layout === "authored") {
+          assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'authored comparisons use direct condition links');
         } else {
           assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);
           await page.locator('[data-ps-budget]').fill('1');

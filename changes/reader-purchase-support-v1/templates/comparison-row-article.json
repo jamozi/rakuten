@@ -7,9 +7,28 @@
   "commerce_presentation": "comparison_rows",
   "commerce_anchor": "product-comparison",
   "title": "対象と比較軸を明示した記事名",
-  "product_ids": ["REGISTERED_PRODUCT_ID_A", "REGISTERED_PRODUCT_ID_B"],
+  "product_ids": [
+    "REGISTERED_PRODUCT_ID_A",
+    "REGISTERED_PRODUCT_ID_B"
+  ],
   "row_products": [
-    {"key": "model-a", "product_id": "REGISTERED_PRODUCT_ID_A"},
-    {"key": "model-b", "product_id": "REGISTERED_PRODUCT_ID_B"}
+    {
+      "key": "model-a",
+      "product_id": "REGISTERED_PRODUCT_ID_A"
+    },
+    {
+      "key": "model-b",
+      "product_id": "REGISTERED_PRODUCT_ID_B"
+    }
+  ],
+  "condition_slots": [
+    {
+      "key": "condition-a",
+      "product_id": "REGISTERED_PRODUCT_ID_A"
+    },
+    {
+      "key": "condition-b",
+      "product_id": "REGISTERED_PRODUCT_ID_B"
+    }
   ]
 }

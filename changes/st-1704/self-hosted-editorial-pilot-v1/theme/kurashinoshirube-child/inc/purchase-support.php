@@ -142,7 +142,9 @@ function kurashinoshirube_purchase_support_media($content)
             || !str_ends_with($html, '</figure>')) { return $content; }
         $placeholder = '<div class="ps-condition-product-media" data-ps-media-product="' . $product_id . '" data-ps-condition="' . $condition_id . '"></div>';
         if (substr_count($content, $placeholder) > 1) { return $content; }
-        if (substr_count($content, $placeholder) === 1) { $replacements[$placeholder] = $html; }
+        if (substr_count($content, $placeholder) === 1) {
+            $replacements[$placeholder] = substr($placeholder, 0, -6) . $html . '</div>';
+        }
     }
     // strtr replaces exact known placeholders once; it never re-parses source snippets.
     return strtr($content, $replacements);

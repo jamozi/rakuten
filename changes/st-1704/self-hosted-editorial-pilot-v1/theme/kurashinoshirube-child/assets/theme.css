@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 18586a5860b75819e16c9a940b7a27e06de8115361c1eae8a7fec1d43e07a9db;
+  --raos-theme-runtime-revision-base: 6aa304accbb0424b1fc1b684fb379c37d4a8c50f152f50c56ff09f9e19dbc2ab;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -5150,3 +5150,140 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ps-article .ps-condition-grid { gap:28px; }
 .ps-article .ps-condition-grid h3 { margin-top:0; }
 .ps-article .ps-comparison-constraints { margin-block:24px; }
+.std-capacity #std-scope .ps-table-scroll { overflow:visible; }
+
+/* Proposed article-only layout. The integration owner owns shared rules. */
+.lw-carry-guide .lw-anchor { display:block; height:0; margin:0; padding:0; }
+.lw-carry-guide .ps-condition-grid { grid-template-columns:minmax(0,1fr); gap:18px; }
+.lw-carry-guide .ps-condition-grid > div { display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,.9fr); gap:8px 28px; align-items:center; }
+.lw-carry-guide .ps-condition-grid > div > h3 { grid-column:1; margin:0; font-size:20px; }
+.lw-carry-guide .ps-condition-product { grid-column:1; margin:0; font-size:17px; }
+.lw-carry-guide .ps-condition-commerce { grid-column:2; grid-row:1 / span 2; display:grid; grid-template-columns:128px minmax(0,1fr); align-items:center; gap:20px; }
+.lw-carry-guide .ps-condition-commerce > * { min-width:0; }
+.lw-carry-guide .ps-condition-product-media .ps-product-image { width:100%; margin:0; padding:0; }
+.lw-carry-guide .ps-condition-product-media .raos-rakuten-image-300 { width:128px; max-width:100%; margin:0; }
+.lw-carry-guide .ps-condition-product-media img { width:100%; height:auto; max-width:100%; max-height:none; object-fit:contain; }
+.lw-carry-guide .ps-condition-product-media figcaption { margin:6px 0 0; font-size:11px; line-height:1.6; text-align:left; }
+.lw-carry-guide .ps-condition-copy .ps-condition-links { margin:10px 0 0; font-size:14px; line-height:1.7; }
+.lw-carry-guide .ps-condition-product-purchase .ps-offer-link { min-height:44px; font-size:15px; text-decoration:none; padding:10px 16px; }
+
+/* Same row-to-card approach as the approved standard/large comparison layouts. */
+.lw-carry-guide .ps-row-scroll { overflow:visible; border:0; max-width:100%; container-type:inline-size; }
+.lw-carry-guide .ps-row-scroll .ps-row-comparison { width:100%; min-width:0; max-width:100%; table-layout:fixed; }
+.lw-carry-guide .ps-row-scroll .ps-row-comparison th,
+.lw-carry-guide .ps-row-scroll .ps-row-comparison td { min-width:0; max-width:none; overflow-wrap:anywhere; font-size:15px; line-height:1.8; padding:16px; }
+.lw-carry-guide .ps-row-scroll .ps-row-comparison th:first-child { width:24%; min-width:0; position:static; box-shadow:none; }
+.lw-carry-guide .ps-row-scroll .ps-row-comparison thead th:nth-child(n+2) { width:auto; }
+.lw-carry-guide .ps-row-scroll .raos-rakuten-image-300 { width:220px; max-width:100%; }
+.lw-carry-guide .ps-row-scroll .ps-product-image figcaption { font-size:12px; line-height:1.65; }
+.lw-carry-guide .ps-row-scroll .ps-reference-price { font-size:14px; line-height:1.7; }
+.lw-carry-guide .ps-row-scroll .ps-reference-price::first-line { font-size:19px; }
+.lw-carry-guide .ps-row-scroll .ps-offer-link { font-size:15px; min-height:44px; margin:12px 0; }
+.lw-carry-guide .ps-row-scroll h4 { font-size:15px; margin:16px 0 5px; }
+.lw-carry-guide .ps-row-scroll .lw-product-decision p { margin:0 0 12px; }
+.lw-carry-guide .ps-row-scroll .lw-extra-fact { margin:15px 0 10px; }
+.lw-carry-guide .ps-row-scroll .lw-extra-fact > span { display:block; color:#59685d; font-size:13px; margin-bottom:4px; }
+.lw-carry-guide .ps-row-scroll .lw-extra-fact a { margin-left:5px; }
+.lw-carry-guide .ps-row-scroll .ps-row-fact small { display:block; }
+.lw-carry-guide .lw-packing { padding-top:10px; border-top:1px solid #d8dfd7; }
+.lw-carry-guide .lw-packing a { display:block; font-size:13px; }
+.lw-carry-guide .lw-purchase-note { padding:10px; font-size:13px; line-height:1.8; }
+.lw-carry-guide .lw-purchase-note summary { min-height:44px; }
+.lw-carry-guide .lw-calculation { padding:16px; background:#f4f6f8; }
+.lw-carry-guide .lw-purchase-sources { font-size:14px; }
+
+/* Airline rules are independent of product dimensions. */
+.lw-carry-guide .lw-airline-table-wrap { width:100%; max-width:100%; overflow:visible; margin:20px 0; }
+.lw-carry-guide .lw-airline-table { width:100%; min-width:0; table-layout:fixed; border-collapse:collapse; }
+.lw-carry-guide .lw-airline-table caption { padding:10px 0; text-align:left; font-size:13px; }
+.lw-carry-guide .lw-airline-table :is(th,td) { padding:12px; border:1px solid #d5ded5; vertical-align:top; text-align:left; overflow-wrap:anywhere; font-size:14px; line-height:1.7; }
+.lw-carry-guide .lw-airline-table th { background:#f0f4ef; }
+.lw-carry-guide .lw-airline-table th:first-child { width:24%; }
+.lw-carry-guide .lw-airline-table small { display:block; font-size:12px; line-height:1.7; font-weight:400; }
+.lw-carry-guide .lw-airline-table .sc-small-aircraft th { background:#fff2df; }
+.lw-carry-guide .lw-airline-rules .sc-note { font-size:14px; line-height:1.8; }
+
+@media (min-width:1180px) {
+  .lw-carry-guide .ps-row-scroll { width:min(1080px,calc(100vw - 64px)); max-width:none; margin-left:50%; transform:translateX(-50%); }
+}
+
+@container (max-width:900px) {
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison { display:block; border:0; background:transparent; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison caption { display:block; width:100%; text-align:left; padding:0 0 14px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody { display:grid; gap:24px; width:100%; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody > tr { display:grid; grid-template-columns:minmax(190px,34%) minmax(0,1fr); grid-template-areas:"product facts" "decision decision" "offer offer"; gap:22px 28px; padding:22px; border:1px solid #d8dfd7; border-radius:8px; width:100%; box-sizing:border-box; background:white; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody > tr > :is(th,td) { display:block; padding:0; margin:0; border:0; width:auto; min-width:0; max-width:100%; font-size:15px; background:transparent; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody > tr > th:first-child { grid-area:product; position:static; box-shadow:none; width:auto; min-width:0; }
+  .lw-carry-guide .ps-row-scroll .lw-spec-cell { grid-area:facts; }
+  .lw-carry-guide .ps-row-scroll .lw-decision-cell { grid-area:decision; border-top:1px solid #e0e5dd; padding-top:16px; }
+  .lw-carry-guide .ps-row-scroll .lw-offer-cell { grid-area:offer; border-top:1px solid #e0e5dd; padding-top:16px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-model { font-size:14px; }
+}
+@container (max-width:540px) {
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody > tr { grid-template-columns:minmax(0,1fr); grid-template-areas:"product" "facts" "decision" "offer"; padding:18px; gap:20px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-comparison tbody > tr > th { display:grid; grid-template-columns:minmax(0,1fr) minmax(140px,46%); gap:8px 14px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-identity > span { grid-column:1; font-size:16px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-identity > .ps-row-model { font-size:12px; }
+  .lw-carry-guide .ps-row-scroll .ps-row-media { grid-column:2; grid-row:1 / span 4; }
+  .lw-carry-guide .ps-row-scroll .ps-row-media .ps-product-image { margin:0; padding:0; }
+  .lw-carry-guide .ps-row-scroll .ps-product-image figcaption { font-size:11px; }
+  .lw-carry-guide .ps-row-scroll .lw-spec-cell { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 16px; }
+  .lw-carry-guide .ps-row-scroll .lw-spec-cell > * { min-width:0; margin:0; }
+  .lw-carry-guide .ps-row-scroll .lw-extra-fact,
+  .lw-carry-guide .ps-row-scroll .lw-packing { grid-column:1 / -1; }
+}
+@media (max-width:900px) {
+  .lw-carry-guide .ps-condition-grid > div { display:block; }
+  .lw-carry-guide .ps-condition-product { margin:8px 0 14px; }
+  .lw-carry-guide .ps-condition-commerce { grid-template-columns:144px minmax(0,1fr); }
+  .lw-carry-guide .ps-condition-product-media .raos-rakuten-image-300 { width:144px; }
+  .lw-carry-guide .lw-airline-table,
+  .lw-carry-guide .lw-airline-table caption,
+  .lw-carry-guide .lw-airline-table tbody { display:block; width:100%; }
+  .lw-carry-guide .lw-airline-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .lw-carry-guide .lw-airline-table tbody { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .lw-carry-guide .lw-airline-table tbody > tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); padding:14px; border:1px solid #d5ded5; gap:12px; }
+  .lw-carry-guide .lw-airline-table tbody > tr > :is(th,td) { display:block; width:auto; padding:0; border:0; min-width:0; }
+  .lw-carry-guide .lw-airline-table tbody th { grid-column:1 / -1; padding:8px !important; font-size:16px; }
+  .lw-carry-guide .lw-airline-table tbody > tr > th:first-child { width:100%; min-width:0; }
+  .lw-carry-guide .lw-airline-table tbody td:last-child { grid-column:1 / -1; }
+  .lw-carry-guide .lw-airline-table td::before { content:attr(data-label); display:block; font-size:12px; font-weight:700; color:#4d6154; margin-bottom:4px; }
+}
+@media (max-width:600px) {
+  .lw-carry-guide .lw-airline-table tbody { grid-template-columns:minmax(0,1fr); }
+  .lw-carry-guide .ps-condition-commerce { grid-template-columns:128px minmax(0,1fr); gap:16px; }
+  .lw-carry-guide .ps-condition-product-media .raos-rakuten-image-300 { width:128px; }
+}
+
+/* 2026-09-13: heading alignment requested after the content/layout approval. */
+body:has(.lw-carry-guide) .raos-article-title-grid,
+.lw-carry-guide #ks-next-read { margin-inline:auto !important; }
+body:has(.lw-carry-guide) .wp-block-post-title,
+.lw-carry-guide h2,
+body:has(.lw-carry-guide) #raos-related-title { text-align:center; text-wrap:balance; }
+.lw-carry-guide .sources-section { display:block; }
+/* Balance the existing left padding (1.6rem) and 3px border without centering prose. */
+.lw-carry-guide .purchase-caution { padding-inline-end:calc(1.6rem + 3px); }
+
+/* Existing guide and reference tables keep one set of cells at narrow widths. */
+.ks-readable-scroll { container-type:inline-size; max-width:100%; }
+@container (max-width:900px) {
+ .ks-readable-scroll { overflow:visible; }
+ .ks-readable-scroll table.ks-readable-table { display:block; width:100%; min-width:0!important; max-width:100%; }
+ .ks-readable-scroll table.ks-readable-table caption { display:block; width:100%; text-align:left; }
+ .ks-readable-scroll table.ks-readable-table thead,
+ .ks-readable-scroll table.ks-readable-table .ks-readable-head { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+ .ks-readable-scroll table.ks-readable-table tbody { display:block; width:100%; }
+ .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head) { display:block; margin:18px 0; border:1px solid #d8dfd7; padding:16px; }
+ .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>th,
+ .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>td { display:block; width:auto!important; min-width:0!important; max-width:100%; position:static; padding:10px 0; border:0; overflow-wrap:anywhere; white-space:normal; text-align:left; }
+ .ks-readable-scroll table.ks-readable-table tr:not(.ks-readable-head)>td::before { display:block; content:attr(data-ks-column-label); font-weight:700; color:#354d3e; margin-bottom:5px; }
+}
+/* Article titles and section headings share a center line, including guide articles. */
+.single-post .raos-article-title-grid,
+.single-post .wp-block-post-content #ks-next-read { margin-inline:auto!important; }
+.single-post .wp-block-post-title,
+.single-post .wp-block-post-content h2,
+.single-post #raos-related-title { text-align:center; text-wrap:balance; }
+.single-post .wp-block-post-content .sources-section { display:block; }

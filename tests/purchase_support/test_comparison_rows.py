@@ -188,9 +188,10 @@ def test_unknown_condition_does_not_invent_a_sold_out_state(rendered, state, lab
             product, article, catalog, datetime(2026, 9, 13, 7, tzinfo=timezone.utc)
         )
     ).text()
-    assert label in text
-    if state != "SOLD_OUT":
-        assert "売り切れ" not in text
+    assert label not in text
+    assert "売り切れ" not in text
+    assert product["name"] in text
+    assert all(value in text for value in product["fit"] + product["avoid"])
 
 
 def test_standard_detergent_stays_with_its_exact_model(rendered):
@@ -259,6 +260,10 @@ def test_new_article_template_uses_shared_rows_and_reviewed_media_scope(rendered
         entry["product_id"] = pid
         product = next(p for p in catalog["products"] if p["product_id"] == pid)
         body = body.replace("登録した商品名・型番" + suffix, product["name"])
+        body = body.replace("REGISTERED_PRODUCT_ID_" + suffix, pid)
+        for slot in article["condition_slots"]:
+            if slot["product_id"] == "REGISTERED_PRODUCT_ID_" + suffix:
+                slot["product_id"] = pid
     catalog["articles"].append(article)
     templates[slug] = body
     guides = json.loads(builder.GUIDES_INPUT_PATH.read_text())
@@ -276,11 +281,12 @@ def test_new_article_template_uses_shared_rows_and_reviewed_media_scope(rendered
     root = fragment(outputs[slug])
     assert len(root.find(cls="ps-row-comparison")) == 1
     assert [r.attrs["data-product-id"] for r in root.find(tag="tr")[1:]] == ids
-    assert len(root.find(cls="ps-offer-link")) == 2
+    assert len(root.find(cls="ps-offer-link")) == 4
     assert (
         "アフィリエイトリンクが含まれます" in root.find(cls="ps-disclosure")[0].text()
     )
     assert "29,800" not in root.text()
     entry = next(a for a in runtime["articles"] if a["slug"] == slug)
     assert set(entry["media"]) == set(ids)
-    assert len(entry["bindings"]) == 6
+    assert len(entry["bindings"]) == 12
+    assert len(entry["condition_media"]) == 2

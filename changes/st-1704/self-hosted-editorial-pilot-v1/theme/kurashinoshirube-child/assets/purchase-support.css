@@ -112,3 +112,17 @@
 /* User-approved common direction: simple one-column condition introductions. */
 .ps-article .ps-condition-grid { grid-template-columns:minmax(0,1fr); gap:28px; }
 .ps-article .ps-condition-grid > div { background:transparent; border:0; border-bottom:1px solid #d8dfd7; border-radius:0; box-shadow:none; padding:0 0 28px; }
+
+/* Title and section-heading centers follow the article column. Prose stays left aligned. */
+.raos-editorial-v2-page .raos-article > .raos-article-title-grid { margin-inline:auto; }
+.raos-editorial-v2-page .wp-block-post-title { text-align:center; width:100%; }
+.ps-article > section { width:100%; max-width:100%; box-sizing:border-box; margin-inline:auto; }
+.ps-article h2 { text-align:center; width:100%; max-width:100%; box-sizing:border-box; }
+.ps-article .ps-condition-grid > div > h3 { text-align:center; }
+.raos-editorial-v2-page .raos-article-title-grid,
+.ps-article #ks-next-read { margin-inline:auto!important; }
+.raos-editorial-v2-page .wp-block-post-title,
+.raos-editorial-v2-page #raos-related-title,
+.ps-article h2 { text-align:center; text-wrap:balance; }
+.ps-article .sources-section { display:block; }
+.ps-article .purchase-caution { padding-inline-end:calc(1.6rem + 3px); }

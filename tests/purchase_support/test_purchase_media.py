@@ -149,7 +149,7 @@ def project_conditions(body, article):
             + '"></div>'
         )
         assert body.count(placeholder) == 1
-        body = body.replace(placeholder, entry["html"])
+        body = body.replace(placeholder, placeholder[:-6] + entry["html"] + "</div>")
     return body
 
 
