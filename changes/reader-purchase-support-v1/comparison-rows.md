@@ -11,7 +11,17 @@
 - 新規記事は [入力ひな型](templates/comparison-row-article.json) と [本文ひな型](templates/comparison-row-article.html.template) を使い、`kind: curated_comparison`、`commerce_presentation: comparison_rows` を指定する。通常本文は `articles/<slug>.html`。画像や金額、広告原文を本文へ直書きしない。
 - `row_products` に本文の `data-product-key` と登録商品IDを順番どおり対応させる。主比較と補足は本文の見出し・表グループで分け、主比較の件数へ補足を加算しない。1記事2〜32商品という上限は自動選定を意味しない。
 - 各商品行には空の `.ps-row-media[data-product-key]` と `.ps-row-offer[data-product-key]` を1つずつ置く。共有 `row_commerce` が媒体・参考価格・リンクを結合し、共有CSSが固定列と横スクロールを適用する。旧コンパクトのスロットも同じ商用処理を使う。
-- `scripts/build_reader_purchase_support_v1.py` の入力・出力に新規記事を追加し、通常の記事台帳へ登録する。`make generate` で生成物を更新する。
+- `scripts/build_reader_purchase_support_v1.py` の入力・出力に新規記事を追加し、通常の記事台帳へ登録する。
+
+本文・商品データの更新後は、次の順で生成する。テーマが保持する共通データの照合用ハッシュも更新するため、本文だけの変更でもテーマ生成を行う。最後にテーマ生成だけを再実行すると依存manifestが古くなるので、依存生成まで続ける。
+
+```sh
+.venv/bin/python scripts/build_reader_purchase_support_v1.py
+.venv/bin/python scripts/build_st1704_self_hosted_theme.py --generate
+make generate
+```
+
+プレビューでは本文の表示だけでなく、商品画像・補助CSS・価格JSの読み込みと、共通データのハッシュ一致を確認する。
 
 ## 素材と参考価格
 
