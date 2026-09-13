@@ -23,7 +23,7 @@ from raos.domain.editorial.purchase_support import (
     resolve_offer,
     offer_states,
 )
-from raos.application.editorial.reader_html import Element, block, fragment
+from raos.application.editorial.reader_html import Element, fragment
 from raos.application.editorial.local_reader_guides import build_local_guides
 from raos.application.editorial.reader_running_cost import render_cost_profiles
 
@@ -2187,9 +2187,7 @@ def render_hub(
     *,
     now: datetime | None = None,
 ) -> str:
-    """Keep the hub skeleton and project model-bound conditions and seller history."""
-    now = current_time(now)
-    dish = next(x for x in catalog["articles"] if x["slug"] == MAIN_SLUG)
+    """Validate the source-authored category gateway and preserve its useful routes."""
     hub_template = fragment(template)
     roots = [n for n in hub_template.children if isinstance(n, Element) and n.tag]
     if len(roots) != 1 or not roots[0].has("ks-directory"):
@@ -2222,57 +2220,6 @@ def render_hub(
     for visual_image in visuals[0].find(tag="img"):
         # wp_kses_post removes this hint from normal post content.
         visual_image.attrs.pop("decoding", None)
-    conditions = "".join(
-        "<li>"
-        + escape(c["label"])
-        + "："
-        + condition_product_links(c, catalog["products"], MAIN_SLUG)
-        + "".join(
-            hub_sales_record(
-                next(p for p in catalog["products"] if p["product_id"] == pid),
-                catalog,
-                now,
-            )
-            for pid in c["product_ids"]
-        )
-        + "</li>"
-        for c in dish["conditions"]
-    )
-    main_ids = set(dish["product_ids"])
-    alternative: Mapping[str, Any] = next(
-        (a for a in catalog["articles"] if a.get("post_id") == 86), {"product_ids": []}
-    )
-    alternatives = "".join(
-        "<p>別記事の比較対象："
-        + escape(p["name"])
-        + "（"
-        + escape(p["exact_model"])
-        + "）</p>"
-        + hub_sales_record(p, catalog, now)
-        for p in catalog["products"]
-        if p["product_id"] in alternative["product_ids"]
-        and p["product_id"] not in main_ids
-    )
-    choose = hub_sections["choose"]
-    choose.children = []
-    choose.append(
-        block(
-            "<div><h2>条件から候補を見る</h2><p>条件に合う機種の説明へ直接進めます。リンク先は広告リンクを含む比較記事です。設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。</p><ul>"
-            + conditions
-            + '</ul><p><a href="/'
-            + MAIN_SLUG
-            + '/#ps-specs">決め手になる比較表（4機種）</a></p><p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p>'
-            + alternatives
-            + "</div>"
-        )
-    )
-    inner = choose.children[0]
-    if not isinstance(inner, Element):
-        raise ValueError("PURCHASE_HUB_CHOOSE_INVALID")
-    choose.children = list(inner.children)
-    for child in choose.children:
-        if isinstance(child, Element):
-            child.parent = choose
     return root.html()
 
 

@@ -129,6 +129,48 @@ class AssetSpec:
 ASSETS: Final = (
     AssetSpec(
         source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-compact-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-compact-20260913.webp",
+        source_sha256="5644f9c3e8a018ea155896e9458f996f54a0fa86e17b4bb20a813d372bf11ff5",
+        output_sha256="f46216dccb204f7791fd30ef30f6be619d63810088c13c8d892aaecbdcdddabe",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_COMPACT",
+        allowed_uses=("CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-standard-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-standard-20260913.webp",
+        source_sha256="12a8b050904326f7e70a3536ae7c21b126b9560c8990db84b322251f2b9a7e28",
+        output_sha256="6c1c766e69b7e39634f0363e087f255ed21ede528ce3d505a3c0eb5b03027a37",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_STANDARD",
+        allowed_uses=("CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-large-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-large-20260913.webp",
+        source_sha256="4e2282644d880712f2b8f493c5fc2cd668ee1e1caf20b8978ca0ac3f8404d0cf",
+        output_sha256="aa69f7b790fe7e595789d7ed79e23089bea15b3aadde17089bffae684c92a3a8",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="CONCEPTUAL_DISH_AMOUNT_LARGE",
+        allowed_uses=("CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=ROOT
         / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
         output=ROOT
         / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
@@ -153,7 +195,7 @@ ASSETS: Final = (
         video_filter="scale=900:600:flags=lanczos",
         created_on="2026-09-13",
         generation_intent="ANONYMOUS_DISHWASHER_CLEANING_STILL_LIFE",
-        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
     ),
     AssetSpec(
         source=ROOT
@@ -167,7 +209,7 @@ ASSETS: Final = (
         video_filter="scale=900:600:flags=lanczos",
         created_on="2026-09-13",
         generation_intent="ANONYMOUS_DISHWASHER_DETERGENT_STILL_LIFE",
-        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
     ),
     AssetSpec(
         source=ROOT
@@ -181,7 +223,7 @@ ASSETS: Final = (
         video_filter="scale=900:600:flags=lanczos",
         created_on="2026-09-13",
         generation_intent="ANONYMOUS_DISHWASHER_WATER_STILL_LIFE",
-        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL", "CATEGORY_GUIDE_THUMBNAIL"),
     ),
     AssetSpec(
         source=ROOT

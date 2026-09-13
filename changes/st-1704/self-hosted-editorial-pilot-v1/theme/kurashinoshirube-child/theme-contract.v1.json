@@ -554,8 +554,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
-    "source_fingerprint": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
+    "revision": "fc7df3e40a317309bba8624dcb7894529b4ec0e0643f15faef71315b5d7127bd",
+    "source_fingerprint": "fc7df3e40a317309bba8624dcb7894529b4ec0e0643f15faef71315b5d7127bd",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/consent-controls.js",
@@ -584,6 +584,9 @@
       "assets/images/home-recent-cost-20260913.webp",
       "assets/images/home-recent-detergent-20260913.webp",
       "assets/images/home-recent-water-20260913.webp",
+      "assets/images/kitchen-capacity-compact-20260913.webp",
+      "assets/images/kitchen-capacity-large-20260913.webp",
+      "assets/images/kitchen-capacity-standard-20260913.webp",
       "assets/images/magazine-hero.webp",
       "assets/images/magazine-kitchen.webp",
       "assets/images/magazine-room.webp",

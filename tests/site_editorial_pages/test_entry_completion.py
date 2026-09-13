@@ -19,29 +19,50 @@ class EntryCompletion(unittest.TestCase):
         self.catalog = json.loads(CATALOG.read_text())
         self.now = datetime(2026, 9, 13, 15, tzinfo=timezone.utc)
 
-    def test_kitchen_two_entrances_precede_purchase_explanations(self):
+    def test_kitchen_routes_by_capacity_and_water_without_seller_inventory(self):
         template = (
             ROOT / "changes/reader-purchase-support-v1/articles/kitchen.html"
         ).read_text()
         doc = Document(render_hub({}, self.catalog, template, now=self.now))
-        for ident in ("kitchen-before-buying", "kitchen-after-buying"):
-            links = [
-                n
-                for n in doc.nodes
-                if n.tag == "a" and n.attrs.get("href") == "#" + ident
-            ]
-            self.assertEqual(len(links), 1)
-            self.assertLess(links[0].start, doc.ids["kitchen-start"].start)
-            target = doc.ids[ident]
-            self.assertIn('<a href="/', doc.text[target.start : target.end])
-        self.assertIn(
-            "専用洗剤の種類", doc.text[doc.ids["kitchen-after-buying"].start :]
-        )
-        self.assertIn("確認期限切れ", doc.text)
-        self.assertIn("mini Plus", doc.text)
-        self.assertIn("確認日時は未確認", doc.text)
+        capacity = doc.ids["kitchen-comparisons"]
+        capacity_html = doc.text[capacity.start : capacity.end]
+        for label, destination in (
+            ("コンパクト", "/solota-vs-rakua-mini-plus/#ps-specs"),
+            ("標準", "/countertop-dishwasher-for-small-households/#ps-specs"),
+            ("大容量", "https://panasonic.jp/dish/comparison.html"),
+        ):
+            self.assertIn(label, capacity_html)
+            self.assertIn(destination, capacity_html)
+        self.assertEqual(capacity_html.count("<img "), 3)
+        self.assertIn("大容量比較は未掲載", capacity_html)
         choose = doc.ids["choose"]
-        self.assertNotRegex(doc.text[choose.start : choose.end], r"[0-9,]+円")
+        supply_html = doc.text[choose.start : choose.end]
+        for label in (
+            "水栓工事を避けたい",
+            "水栓につないで給水したい",
+            "まだ分からない",
+            "タンク式／外部容器からの自動給水",
+            "分岐水栓専用機の横断比較は未掲載",
+        ):
+            self.assertIn(label, supply_html)
+        self.assertIn('data-raos-link-purpose="official_verify"', supply_html)
+        self.assertIn(
+            "/dishwasher-water-supply-methods/#guide-water-route", supply_html
+        )
+        self.assertLess(capacity.start, choose.start)
+        self.assertLess(choose.start, doc.ids["compare"].start)
+        self.assertLess(doc.ids["compare"].start, doc.ids["kitchen-after-buying"].start)
+        self.assertIn(
+            "洗剤の種類と量", doc.text[doc.ids["kitchen-after-buying"].start :]
+        )
+        for stale_inventory in (
+            "確認期限切れ",
+            "確認日時は未確認",
+            "mini Plus",
+            "SS-MA251",
+        ):
+            self.assertNotIn(stale_inventory, doc.text)
+        self.assertNotRegex(doc.text, r"[0-9,]+円")
 
     def test_seller_record_is_model_bound_historical_and_keeps_unknown(self):
         product = self.catalog["products"][0]

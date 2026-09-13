@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e;
+  --raos-theme-runtime-revision-base: fc7df3e40a317309bba8624dcb7894529b4ec0e0643f15faef71315b5d7127bd;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4241,4 +4241,87 @@ body .raos-footer :where(a, p) {
 body .raos-footer__grid > *,
 body .raos-footer :where(.raos-footer__policy, .raos-footer__nav, .wp-block-navigation__container, .wp-block-navigation-item) {
   min-width: 0;
+}
+
+/* Kitchen gateway: dish amount and water supply lead to existing advice. */
+body .ks-kitchen-guide {
+  box-sizing: border-box;
+  width: calc(100% - 48px);
+  max-width: 76rem;
+  margin: 24px auto 64px;
+  padding: 0;
+  color: #263b46;
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.ks-kitchen-guide :where(article, section, div) { min-width: 0; }
+.ks-kitchen-guide :where(h2, h3, p, figure) { margin: 0; }
+.ks-kitchen-guide h2 { font-size: clamp(1.4rem, 1.2rem + .65vw, 1.8rem); line-height: 1.5; }
+.ks-kitchen-guide h3 { font-size: 1.15rem; line-height: 1.55; }
+.ks-kitchen-guide a { color: #315c56; text-underline-offset: .22em; }
+.ks-kitchen-guide a:hover { color: #8b3f2b; }
+.ks-kitchen-guide :focus-visible { outline: 3px solid #8b3f2b; outline-offset: 5px; }
+.ks-kitchen-guide .ks-kitchen-breadcrumb { font-size: .85rem; color: #5c645e; }
+.ks-kitchen-guide .ks-kitchen-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  margin: 28px 0 56px;
+}
+.ks-kitchen-guide .ks-kitchen-intro p { margin-top: 12px; }
+.ks-kitchen-guide .ks-category-visual { margin: 0; }
+.ks-kitchen-guide .ks-category-visual img { width: 100%; height: 250px; object-fit: cover; }
+.ks-kitchen-guide .ks-kitchen-jump { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 24px; font-size: .9rem; }
+.ks-kitchen-guide > section:not(.ks-kitchen-intro),
+.ks-kitchen-guide #kitchen-before-buying { margin-bottom: 56px; }
+.ks-kitchen-guide .ks-kitchen-section-lead { margin: 10px 0 24px; color: #545e58; }
+.ks-kitchen-guide .ks-kitchen-capacity-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.ks-kitchen-guide .ks-kitchen-photo { display: block; }
+.ks-kitchen-guide .ks-kitchen-photo img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.ks-kitchen-guide .ks-kitchen-capacity-grid h3 { margin-top: 16px; }
+.ks-kitchen-guide .ks-kitchen-capacity-grid article > p { margin: 5px 0 10px; }
+.ks-kitchen-guide .ks-kitchen-capacity-grid article > a:not(.ks-kitchen-photo) { font-size: .95rem; }
+.ks-kitchen-guide .ks-kitchen-small { font-size: .8rem; color: #5c645e; line-height: 1.7; }
+.ks-kitchen-guide #kitchen-axes > .ks-kitchen-small { margin-top: 20px; }
+.ks-kitchen-guide .ks-kitchen-supply-layout { display: grid; grid-template-columns: .85fr 1fr; gap: 40px; align-items: start; margin-top: 24px; }
+.ks-kitchen-guide .ks-kitchen-supply-choices { display: grid; gap: 24px; }
+.ks-kitchen-guide .ks-kitchen-supply-choices article + article { padding-top: 20px; border-top: 1px solid #d7dcd2; }
+.ks-kitchen-guide .ks-kitchen-supply-choices p { margin: 6px 0; }
+.ks-kitchen-guide .ks-kitchen-supply-choices a { font-size: .95rem; }
+.ks-kitchen-guide .ks-kitchen-supply > .ks-kitchen-small { margin-top: 20px; }
+.ks-kitchen-guide .ks-kitchen-support-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 24px; }
+.ks-kitchen-guide .ks-kitchen-support-grid > * { border-top: 1px solid #aebdaf; padding-top: 16px; }
+.ks-kitchen-guide .ks-kitchen-support-grid p { margin: 8px 0; }
+.ks-kitchen-guide .ks-kitchen-support-grid a { display: block; font-size: .95rem; margin-top: 5px; }
+.ks-kitchen-guide .ks-kitchen-care-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 24px; }
+.ks-kitchen-guide .ks-kitchen-care-grid article { display: grid; grid-template-columns: 48% 1fr; gap: 20px; align-items: center; }
+.ks-kitchen-guide .ks-kitchen-sources { border-top: 1px solid #d7dcd2; padding-top: 20px; font-size: .9rem; }
+.ks-kitchen-guide .ks-kitchen-sources summary { cursor: pointer; }
+.ks-kitchen-guide .ks-kitchen-sources nav { display: grid; gap: 8px; margin-top: 16px; }
+.ks-kitchen-guide .ks-reader-note { font-size: .8rem; color: #5c645e; margin: 24px 0 8px; }
+.ks-kitchen-guide .ks-kitchen-policy { font-size: .85rem; }
+.ks-kitchen-guide .ks-kitchen-other { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: .9rem; margin-top: 28px; }
+@media (max-width: 767px) {
+  body .ks-kitchen-guide { width: calc(100% - 32px); margin-top: 12px; }
+  .ks-kitchen-guide .ks-kitchen-intro { grid-template-columns: 1fr; gap: 24px; margin: 24px 0 40px; }
+  .ks-kitchen-guide .ks-category-visual img { height: 190px; }
+  .ks-kitchen-guide .ks-kitchen-jump { margin-top: 16px; gap: 8px 16px; }
+  .ks-kitchen-guide .ks-kitchen-section-lead { font-size: .9rem; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid { grid-template-columns: 1fr; gap: 28px; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid article { display: grid; grid-template-columns: 42% 1fr; column-gap: 16px; align-content: start; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid .ks-kitchen-photo { grid-column: 1; grid-row: 1 / 5; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid article > :not(.ks-kitchen-photo) { grid-column: 2; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid h3 { margin-top: 0; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid article > p { margin: 4px 0; }
+  .ks-kitchen-guide .ks-kitchen-capacity-grid article > a:not(.ks-kitchen-photo) { font-size: .85rem; }
+  .ks-kitchen-guide > section:not(.ks-kitchen-intro),
+  .ks-kitchen-guide #kitchen-before-buying { margin-bottom: 40px; }
+  .ks-kitchen-guide .ks-kitchen-supply-layout { grid-template-columns: 1fr; gap: 24px; }
+  .ks-kitchen-guide .ks-kitchen-supply-layout > .ks-kitchen-photo img { max-height: 220px; }
+  .ks-kitchen-guide .ks-kitchen-support-grid { grid-template-columns: 1fr; gap: 24px; }
+  .ks-kitchen-guide .ks-kitchen-care-grid { gap: 20px; }
+  .ks-kitchen-guide .ks-kitchen-care-grid article { display: block; }
+  .ks-kitchen-guide .ks-kitchen-care-grid h3 { font-size: 1rem; margin-top: 12px; }
 }

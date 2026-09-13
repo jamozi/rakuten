@@ -534,7 +534,8 @@
           "WEB_OPTIMIZATION"
         ],
         "allowed_uses": [
-          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
         ],
         "created_on": "2026-09-13",
         "creation_method": "OPENAI_IMAGE_GENERATION",
@@ -596,7 +597,8 @@
           "WEB_OPTIMIZATION"
         ],
         "allowed_uses": [
-          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
         ],
         "created_on": "2026-09-13",
         "creation_method": "OPENAI_IMAGE_GENERATION",
@@ -627,7 +629,8 @@
           "WEB_OPTIMIZATION"
         ],
         "allowed_uses": [
-          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+          "CATEGORY_GUIDE_THUMBNAIL"
         ],
         "created_on": "2026-09-13",
         "creation_method": "OPENAI_IMAGE_GENERATION",
@@ -641,6 +644,99 @@
         "rights_status": "RECORDED_FOR_SITE_USE"
       },
       "sha256": "7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "少量の皿・茶碗・カップを並べた食器量の編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-compact-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_COMPACT",
+        "original_sha256": "5644f9c3e8a018ea155896e9458f996f54a0fa86e17b4bb20a813d372bf11ff5",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-compact-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "f46216dccb204f7791fd30ef30f6be619d63810088c13c8d892aaecbdcdddabe",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "重ねた食器と大皿・鍋を並べたまとめ洗いの編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-large-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_LARGE",
+        "original_sha256": "4e2282644d880712f2b8f493c5fc2cd668ee1e1caf20b8978ca0ac3f8404d0cf",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-large-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "aa69f7b790fe7e595789d7ed79e23089bea15b3aadde17089bffae684c92a3a8",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "皿・鉢・カップをまとめた一食分の食器量の編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "CATEGORY_SAVED_BODY_IMAGE",
+      "path": "assets/images/kitchen-capacity-standard-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "CONCEPTUAL_DISH_AMOUNT_STANDARD",
+        "original_sha256": "12a8b050904326f7e70a3536ae7c21b126b9560c8990db84b322251f2b9a7e28",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-standard-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "6c1c766e69b7e39634f0363e087f255ed21ede528ce3d505a3c0eb5b03027a37",
       "status": "FINAL",
       "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
     }
@@ -674,6 +770,9 @@
     "assets/images/home-recent-cost-20260913.webp",
     "assets/images/home-recent-detergent-20260913.webp",
     "assets/images/home-recent-water-20260913.webp",
+    "assets/images/kitchen-capacity-compact-20260913.webp",
+    "assets/images/kitchen-capacity-large-20260913.webp",
+    "assets/images/kitchen-capacity-standard-20260913.webp",
     "assets/images/magazine-hero.webp",
     "assets/images/magazine-kitchen.webp",
     "assets/images/magazine-room.webp",
@@ -709,8 +808,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
+  "theme_runtime_revision": "fc7df3e40a317309bba8624dcb7894529b4ec0e0643f15faef71315b5d7127bd",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
+  "theme_source_fingerprint": "fc7df3e40a317309bba8624dcb7894529b4ec0e0643f15faef71315b5d7127bd",
   "theme_version": "1.6.0"
 }

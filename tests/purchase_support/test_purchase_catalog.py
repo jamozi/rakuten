@@ -536,16 +536,18 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     articles, _ = compile(catalog)
     root = fragment(articles["kitchen"])
     for identity, phrase in [
-        ("kitchen-start", "いつもの一食分"),
-        ("kitchen-axes", "電源条件"),
-        ("kitchen-comparisons", "未確認の機種は水道・洗剤だけ"),
-        ("purchase-checks", "送料込み"),
+        ("kitchen-start", "洗う量と、給水方法から。"),
+        ("kitchen-axes", "普段の食器の量と形"),
+        ("kitchen-comparisons", "大容量比較は未掲載"),
+        ("purchase-checks", "送料・必要品を含む総額"),
     ]:
         node = next(n for n in root.walk() if n.attrs.get("id") == identity)
         assert phrase in node.text()
     assert all(not n.children for n in root.walk() if n.has("ps-compat-anchors"))
     assert len(root.find(tag="figure", cls="ks-category-visual")) == 1
-    assert "SS-MA251" in root.text()
+    assert "SS-MA251" not in root.text()
+    assert "外部容器からの自動給水" in root.text()
+    assert len(root.find(tag="img")) == 7
 
 
 def test_luggage_bookmarks_reach_weight_formula_and_flight_checks(catalog):

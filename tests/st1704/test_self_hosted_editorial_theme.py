@@ -451,7 +451,7 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
         theme_builder.theme_source_fingerprint()
     )
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 21
+    assert isinstance(records, list) and len(records) == 24
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])
