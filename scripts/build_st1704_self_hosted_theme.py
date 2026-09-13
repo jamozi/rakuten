@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071"
+    "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -83,6 +83,15 @@ HOME_HERO_ASSET_INPUT_PATH: Final = (
 HOME_LIFESTYLE_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp"
 )
+HOME_RECENT_IMAGE_ALTS: Final = {
+    THEME_REPOSITORY_ROOT / f"assets/images/home-recent-{name}-20260913.webp": alt
+    for name, alt in (
+        ("cost", "電卓と家計ノートで食洗機の費用を考える編集イメージ"),
+        ("cleaning", "フィルターと柔らかな布を並べたお手入れの編集イメージ"),
+        ("detergent", "洗剤容器と計量スプーンを並べた編集イメージ"),
+        ("water", "給水容器と未接続のホースを並べた編集イメージ"),
+    )
+}
 SUITCASE_GUIDE_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp"
 )
@@ -152,6 +161,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     HOME_HERO_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-hero.webp",
     THEME_REPOSITORY_ROOT / "assets/images/home-lifestyle-20260913.webp",
+    *HOME_RECENT_IMAGE_ALTS,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
@@ -371,6 +381,7 @@ def _validate_owner_bindings() -> None:
             DISHWASHER_ASSET_INPUT_PATH,
             HOME_HERO_ASSET_INPUT_PATH,
             HOME_LIFESTYLE_ASSET_INPUT_PATH,
+            *HOME_RECENT_IMAGE_ALTS,
             PORTABLE_POWER_ASSET_INPUT_PATH,
             ROBOT_VACUUM_ASSET_INPUT_PATH,
             ROOMBA_K11_ASSET_INPUT_PATH,
@@ -669,30 +680,37 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     rendered[THEME_ROOT / "theme-contract.v1.json"] = _canonical_json(contract)
 
     assets = _load_json_payload(sources["raos-assets.v1.json"])
-    lifestyle = next(
+    home_alts = {
+        HOME_LIFESTYLE_ASSET_INPUT_PATH: "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
+        **HOME_RECENT_IMAGE_ALTS,
+    }
+    home_assets = [
         asset
         for asset in theme_asset_owner.ASSETS
-        if asset.output.relative_to(ROOT) == HOME_LIFESTYLE_ASSET_INPUT_PATH
-    )
-    lifestyle_path = lifestyle.output.relative_to(THEME_ROOT).as_posix()
+        if asset.output.relative_to(ROOT) in home_alts
+    ]
+    home_paths = {
+        asset.output.relative_to(THEME_ROOT).as_posix() for asset in home_assets
+    }
     assets["required_images"] = sorted(
         [
             record
             for record in assets["required_images"]
-            if record["path"] != lifestyle_path
+            if record["path"] not in home_paths
         ]
         + [
             {
-                "alt": "朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ",
-                "canvas_height": lifestyle.output_height,
-                "canvas_width": lifestyle.output_width,
+                "alt": home_alts[asset.output.relative_to(ROOT)],
+                "canvas_height": asset.output_height,
+                "canvas_width": asset.output_width,
                 "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
-                "path": lifestyle_path,
-                "provenance": theme_asset_owner.manifest_provenance(lifestyle),
-                "sha256": lifestyle.output_sha256,
+                "path": asset.output.relative_to(THEME_ROOT).as_posix(),
+                "provenance": theme_asset_owner.manifest_provenance(asset),
+                "sha256": asset.output_sha256,
                 "status": "FINAL",
                 "usage": "Anonymous lifestyle editorial image; not an actual product photograph",
             }
+            for asset in home_assets
         ],
         key=lambda record: record["path"],
     )
@@ -889,7 +907,7 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 17:
+    if type(records) is not list or len(records) != 21:
         _fail()
     generated_assets = {
         asset.output.relative_to(THEME_ROOT).as_posix(): asset
@@ -999,6 +1017,10 @@ def _validate_asset_manifest(
         "assets/images/favicon.ico",
         "assets/images/home-hero.webp",
         "assets/images/home-lifestyle-20260913.webp",
+        *(
+            path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
+            for path in HOME_RECENT_IMAGE_ALTS
+        ),
     }:
         _fail()
 

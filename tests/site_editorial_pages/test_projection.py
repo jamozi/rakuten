@@ -94,6 +94,14 @@ class ProjectionTest(unittest.TestCase):
         self.assertNotIn("AI編集イメージ・実物写真ではありません", home)
         self.assertNotIn("hb.afl.rakuten.co.jp", home)
         self.assertIn("/comparison-policy/", home)
+        recent_images = re.findall(
+            r'<a class="ks-recent-image" href="[^"]+"><img src="([^"]+)"', home
+        )
+        self.assertEqual(len(recent_images), 4)
+        self.assertEqual(len(set(recent_images)), 4)
+        self.assertTrue(
+            all(src.startswith("/wp-content/themes/") for src in recent_images)
+        )
 
 
 if __name__ == "__main__":

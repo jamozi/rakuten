@@ -554,8 +554,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
-    "source_fingerprint": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
+    "revision": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
+    "source_fingerprint": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/consent-controls.js",
@@ -580,6 +580,10 @@
       "assets/images/favicon.ico",
       "assets/images/home-hero.webp",
       "assets/images/home-lifestyle-20260913.webp",
+      "assets/images/home-recent-cleaning-20260913.webp",
+      "assets/images/home-recent-cost-20260913.webp",
+      "assets/images/home-recent-detergent-20260913.webp",
+      "assets/images/home-recent-water-20260913.webp",
       "assets/images/magazine-hero.webp",
       "assets/images/magazine-kitchen.webp",
       "assets/images/magazine-room.webp",

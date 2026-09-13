@@ -129,6 +129,62 @@ class AssetSpec:
 ASSETS: Final = (
     AssetSpec(
         source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
+        source_sha256="2ca25edb8d70962bddfd27eb82ef152a44bdf580de329a01d90a03149a06a714",
+        output_sha256="ca474cabf712dab358947cdb2682c2acf41b514c0d9a9a999899f16adff4a1a7",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_COST_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cleaning-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-cleaning-20260913.webp",
+        source_sha256="985571c9781f21c5deac335b082883c75896f058c7c14f002c7930aad9fb4e79",
+        output_sha256="4c8c76f65516d70838ce5db860606f351ab56fc6e7f0f9515748eeb5fae1c678",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_CLEANING_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-detergent-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-detergent-20260913.webp",
+        source_sha256="9daa39068a9e65eb4f952f900ed4aea2e93b20f8ce66d1e759b2302c4f95cb7e",
+        output_sha256="9f8162b99854100fe09846e91aab4ef80978afdb80efdd96c41e9c3e339c53f1",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_DETERGENT_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+    ),
+    AssetSpec(
+        source=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-water-20260913.png",
+        output=ROOT
+        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-recent-water-20260913.webp",
+        source_sha256="8828c8cb7b26cd30c86e8d07ccf45f6d3687650e2d8e5d5d33e3cac372c2027d",
+        output_sha256="7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+        output_width=900,
+        output_height=600,
+        video_filter="scale=900:600:flags=lanczos",
+        created_on="2026-09-13",
+        generation_intent="ANONYMOUS_DISHWASHER_WATER_STILL_LIFE",
+        allowed_uses=("HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",),
+    ),
+    AssetSpec(
+        source=ROOT
         / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-lifestyle-20260913.png",
         output=ROOT
         / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",

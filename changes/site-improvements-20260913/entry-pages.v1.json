@@ -711,5 +711,31 @@
         "PRD-SWITCHBOT-K11-PRO"
       ]
     }
+  },
+  "home_article_images": {
+    "266": {
+      "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
+      "width": 900,
+      "height": 600,
+      "alt": "電卓と家計ノートで食洗機の費用を考える編集イメージ"
+    },
+    "265": {
+      "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-cleaning-20260913.webp",
+      "width": 900,
+      "height": 600,
+      "alt": "フィルターと柔らかな布を並べたお手入れの編集イメージ"
+    },
+    "264": {
+      "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-detergent-20260913.webp",
+      "width": 900,
+      "height": 600,
+      "alt": "洗剤容器と計量スプーンを並べた編集イメージ"
+    },
+    "263": {
+      "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-water-20260913.webp",
+      "width": 900,
+      "height": 600,
+      "alt": "給水容器と未接続のホースを並べた編集イメージ"
+    }
   }
 }

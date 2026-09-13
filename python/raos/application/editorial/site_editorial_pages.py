@@ -317,6 +317,25 @@ def render_pages(
                 key=lambda a: (a["published_on"], a["post_id"]),
                 reverse=True,
             )[:4]
+
+            def recent_image(article: dict[str, Any]) -> str:
+                image = data.get("home_article_images", {}).get(str(article["post_id"]))
+                if image is None:
+                    image = {
+                        "src": "https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-"
+                        + article["category"]
+                        + "-editorial-ai-20260910.webp",
+                        "width": 762,
+                        "height": 506,
+                        "alt": data["categories"][article["category"]]["name"]
+                        + "のある暮らしの編集イメージ",
+                    }
+                return (
+                    f'<img src="{escape(image["src"], quote=True)}"'
+                    f' width="{int(image["width"])}" height="{int(image["height"])}"'
+                    f' alt="{escape(image["alt"], quote=True)}" loading="lazy">'
+                )
+
             body += section(
                 "新着記事",
                 '<div class="ks-home-updates">'
@@ -324,11 +343,9 @@ def render_pages(
                     '<article class="ks-editorial-card">'
                     + '<a class="ks-recent-image" href="'
                     + article_url(a["post_id"])
-                    + '"><img src="https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-'
-                    + a["category"]
-                    + '-editorial-ai-20260910.webp" width="762" height="506" alt="'
-                    + escape(data["categories"][a["category"]]["name"], quote=True)
-                    + 'のある暮らしの編集イメージ" loading="lazy"></a><h3>'
+                    + '">'
+                    + recent_image(a)
+                    + "</a><h3>"
                     + link(
                         article_url(a["post_id"]),
                         data["home_short_titles"].get(str(a["post_id"]), a["title"]),

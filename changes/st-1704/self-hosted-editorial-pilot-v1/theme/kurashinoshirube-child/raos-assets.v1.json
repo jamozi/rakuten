@@ -519,6 +519,130 @@
       "sha256": "8e8a39c5d34f41a889968de911fb8659b36ebc4e9c95bd2541797affa59943fe",
       "status": "FINAL",
       "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "フィルターと柔らかな布を並べたお手入れの編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-cleaning-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_CLEANING_STILL_LIFE",
+        "original_sha256": "985571c9781f21c5deac335b082883c75896f058c7c14f002c7930aad9fb4e79",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cleaning-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "4c8c76f65516d70838ce5db860606f351ab56fc6e7f0f9515748eeb5fae1c678",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "電卓と家計ノートで食洗機の費用を考える編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-cost-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_COST_STILL_LIFE",
+        "original_sha256": "2ca25edb8d70962bddfd27eb82ef152a44bdf580de329a01d90a03149a06a714",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-cost-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "ca474cabf712dab358947cdb2682c2acf41b514c0d9a9a999899f16adff4a1a7",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "洗剤容器と計量スプーンを並べた編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-detergent-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_DETERGENT_STILL_LIFE",
+        "original_sha256": "9daa39068a9e65eb4f952f900ed4aea2e93b20f8ce66d1e759b2302c4f95cb7e",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-detergent-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "9f8162b99854100fe09846e91aab4ef80978afdb80efdd96c41e9c3e339c53f1",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
+    },
+    {
+      "alt": "給水容器と未接続のホースを並べた編集イメージ",
+      "canvas_height": 600,
+      "canvas_width": 900,
+      "delivery": "HOMEPAGE_SAVED_BODY_IMAGE",
+      "path": "assets/images/home-recent-water-20260913.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL"
+        ],
+        "created_on": "2026-09-13",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANONYMOUS_DISHWASHER_WATER_STILL_LIFE",
+        "original_sha256": "8828c8cb7b26cd30c86e8d07ccf45f6d3687650e2d8e5d5d33e3cac372c2027d",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-recent-water-20260913.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "7decdb2892a5ea9ac2e488c015060fde18893f578bcf69b56639bed52814c916",
+      "status": "FINAL",
+      "usage": "Anonymous lifestyle editorial image; not an actual product photograph"
     }
   ],
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2",
@@ -546,6 +670,10 @@
     "assets/images/favicon.ico",
     "assets/images/home-hero.webp",
     "assets/images/home-lifestyle-20260913.webp",
+    "assets/images/home-recent-cleaning-20260913.webp",
+    "assets/images/home-recent-cost-20260913.webp",
+    "assets/images/home-recent-detergent-20260913.webp",
+    "assets/images/home-recent-water-20260913.webp",
     "assets/images/magazine-hero.webp",
     "assets/images/magazine-kitchen.webp",
     "assets/images/magazine-room.webp",
@@ -581,8 +709,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
+  "theme_runtime_revision": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "3aab27c1c052d947b43da8e27a656370a7955638c5dc30f520812295f13ef071",
+  "theme_source_fingerprint": "ae22156fbf501a6669bc680f1a18b2710bb57b4fccce459595594ddcae9bf48e",
   "theme_version": "1.6.0"
 }
