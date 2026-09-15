@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T16:35+09:00",
+  "updated_at": "2026-09-15T17:05+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -115,11 +115,43 @@
         "roomba-mini-vs-switchbot-k11-pro"
       ],
       "theme": true,
-      "state": "本番公開済み・匿名照合済み (KS-302 完了)。KS-115 の導入文はバッチ E",
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)。KS-115 の導入文はバッチ E で公開",
       "candidate_id": "db7367e840c0a683cea3301283c8f6c1c1f6dff9a39081d8f20f69c2ef1e2dd5",
       "published_at": "2026-09-15T07:27:43Z〜07:28:13Z",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
       "trigger": "並列監査ワークフロー ks-remaining-audit (67 タスク)"
+    },
+    "E": {
+      "tasks": [
+        "KS-018",
+        "KS-115"
+      ],
+      "articles": [
+        "anker-solix-c300-c800-c1000-differences",
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "comfortable-travel",
+        "compact-dishwasher-comparison",
+        "compact-robot-vacuum-shortlist",
+        "countertop-dishwasher-for-small-households",
+        "dishwasher-water-supply-methods",
+        "front-open-carry-on-suitcase-with-stopper",
+        "large-dishwasher-comparison",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "portable-power-station-guide",
+        "purposes",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "small-carry-on-suitcase-comparison",
+        "solota-vs-rakua-mini-plus",
+        "standard-dishwasher-comparison"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "candidate_id": "c9a8e8aa6934c075a6b755f3c674c24d58b584a0a8d07611beb1e2734184a09a",
+      "published_at": "2026-09-15T07:56:06Z〜07:57:01Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "trigger": "バッチ D 公開後の横断検査 (楽天商品画像 126 枚の一律代替テキスト) と KS-115 の残り",
+      "not_published": "candidate 15725baa… (テスト失敗の commit ad002aa2 から作成、公開せず破棄)"
     }
   },
   "items": {
@@ -246,22 +278,24 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D 完了",
+      "status": "バッチ A / B / C / D / E 完了",
       "batch": "A",
       "evidence": [
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
+        "evidence/KS-301-302-batch-E.md",
         "evidence/KS-301-batch-A.md",
         "evidence/KS-301-batch-B.md"
       ]
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D 完了",
+      "status": "バッチ A / B / C / D / E 完了",
       "batch": "A",
       "evidence": [
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
+        "evidence/KS-301-302-batch-E.md",
         "evidence/KS-302-batch-A.md",
         "evidence/KS-302-batch-B.md"
       ]
@@ -350,11 +384,12 @@
     },
     "KS-115": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "E",
       "evidence": [
-        "evidence/KS-301-302-batch-D.md"
+        "evidence/KS-301-302-batch-D.md",
+        "evidence/KS-301-302-batch-E.md"
       ],
-      "status": "一部完了 (表の行を修正、本番公開)。導入文はバッチ E"
+      "status": "完了 (表の行はバッチ D、導入文・meta・目的カードはバッチ E で本番公開)"
     },
     "KS-129": {
       "priority": "P1",
@@ -363,6 +398,14 @@
         "evidence/KS-301-302-batch-D.md"
       ],
       "status": "一部完了 (articleSection null を解消、本番公開)。単価・計算条件の明示は未実施"
+    },
+    "KS-018": {
+      "priority": "P1",
+      "batch": "E",
+      "evidence": [
+        "evidence/KS-301-302-batch-E.md"
+      ],
+      "status": "一部完了 (楽天商品画像 126 枚の代替テキストに商品名を付与、本番公開)。意思決定用の図の整備は編集判断"
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"
