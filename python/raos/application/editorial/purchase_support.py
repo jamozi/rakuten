@@ -1153,6 +1153,27 @@ def resolve_product_media(
     return resolved
 
 
+def product_image_label(product: Mapping[str, Any]) -> str:
+    """Accessible name for a product photo: the catalog name, plus the model only when absent.
+
+    Most catalog names already carry the model ("… NP-TMLK1-K"). Appending it again would
+    repeat the double-concatenation fixed in KS-132, so the model is added only for names
+    that do not contain it (for example "Anker Solix C1000 Portable Power Station").
+    """
+    name = tidy(product["name"]).strip()
+    model = str(product.get("exact_model") or "").strip()
+    heads = [h for h in re.split(r"\s*/\s*", model) if h]
+
+    def compact(value: str) -> str:
+        return re.sub(r"[\s\-_*（）()]", "", value).upper()
+
+    if not heads or any(
+        compact(h) in compact(name) or compact(h)[:5] in compact(name) for h in heads
+    ):
+        return name
+    return name + " " + model
+
+
 def render_product_media(
     product: Mapping[str, Any],
     article: Mapping[str, Any],
@@ -1182,7 +1203,11 @@ def render_product_media(
     if article["slug"] not in media["slugs"]:
         raise ValueError("PURCHASE_MEDIA_ARTICLE_SCOPE_MISMATCH")
     bindings = []
-    parts = ['<figure class="ps-product-image ps-rakuten-product-photo">']
+    parts = [
+        '<figure class="ps-product-image ps-rakuten-product-photo" aria-label="'
+        + escape(product_image_label(product) + "の商品画像", quote=True)
+        + '">'
+    ]
     for size in ("300", "240"):
         source = media["sizes"][size]
         binding = {
