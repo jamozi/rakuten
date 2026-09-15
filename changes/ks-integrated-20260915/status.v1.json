@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T12:40+09:00",
+  "updated_at": "2026-09-15T14:20+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -79,7 +79,7 @@
       "evidence": [
         "evidence/KS-004.md"
       ],
-      "note": "GA4 page_view は同意後に送信。offer_click は OFF。GSC はオーナー確認"
+      "note": "GA4 page_view は同意後に送信。offer_click は OFF。GSC/GA4 の画面確認は owner-tasks-20260915.md A/B"
     },
     "KS-005": {
       "priority": "P1",
@@ -89,11 +89,12 @@
     },
     "KS-006": {
       "priority": "P0",
-      "status": "承認待ち (オーナー確認表)",
+      "status": "公開規約は確認済み。オーナー確認 3 項目 (登録状態・30日実績・他ASP) 待ち",
       "batch": null,
       "evidence": [
         "evidence/KS-006.md"
-      ]
+      ],
+      "note": "免責文 (RWS FAQ) が未掲載、週1回の再取得が未達 → バッチ B / KS-020 / KS-304"
     },
     "KS-007": {
       "priority": "P0",
@@ -104,7 +105,8 @@
       ],
       "tests": [
         "tests/purchase_support/test_ks_emergency_20260915.py::test_cross_page_numeric_consistency"
-      ]
+      ],
+      "note": "EcoFlow 公式ページを 2026-09-15 14:09 JST に実ブラウザで確認 (20.0×39.8×28.3cm)。オーナー再確認は不要"
     },
     "KS-008": {
       "priority": "P0",
@@ -169,5 +171,6 @@
         "evidence/KS-302-batch-A.md"
       ]
     }
-  }
+  },
+  "owner_tasks": "owner-tasks-20260915.md"
 }
