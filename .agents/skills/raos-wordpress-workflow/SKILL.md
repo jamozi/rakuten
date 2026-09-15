@@ -9,7 +9,9 @@ description: RAOSのWordPress記事・ページ・テーマの編集、表示確
 
 - 通常の記事・ページ・子テーマ更新は [日常更新](references/everyday.md) と
   [簡易公開](../../../changes/wordpress-direct-publish-v1/README.md) の `owner-direct-v1`。
-- 既存の `verified-incremental` 候補の再開を明示された場合だけ [旧候補の再開](references/legacy.md)。
+- 既存候補の準備失敗・承認失効・再開では、まず
+  [準備と再開の正本](../../../docs/runbooks/wordpress-verified-incremental.md) の該当段階を確認する。
+  `verified-incremental` の候補は [旧候補の再開](references/legacy.md) に従う。
 - 記事の選定や根拠のレビューも必要な場合は [編集レビュー](../raos-editorial-review/SKILL.md)。
 
 ユーザーがローカル確認した対象へ「公開して」と指示したら、反映・照合・Git同期へ進む。

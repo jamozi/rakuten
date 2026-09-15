@@ -16,6 +16,24 @@ from scripts import codex_harness as harness
 from scripts.raos_test_plan import create_plan
 
 
+@pytest.mark.parametrize("legacy_capture", [False, True])
+def test_saved_patch_round_trip_preserves_trailing_blank_context(tmp_path, legacy_capture):
+    harness.run(["git", "init", "-q"], tmp_path)
+    path = tmp_path / "example.py"
+    original = "def value():\n    return 1\n\n"
+    expected = original.replace("return 1", "return 2")
+    path.write_text(original)
+    harness.run(["git", "add", "example.py"], tmp_path)
+    path.write_text(expected)
+    patch = harness.run(["git", "diff"], tmp_path, preserve_whitespace=True)
+    assert patch.endswith(" \n")
+    if legacy_capture:
+        patch = patch.strip() + "\n"
+    path.write_text(original)
+    harness.replay_patch(tmp_path, patch)
+    assert path.read_text() == expected
+
+
 def test_navigation_and_scoped_capabilities():
     assert harness.check(harness.ROOT) == {"status": "PASS", "errors": []}
 

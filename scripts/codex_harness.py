@@ -50,16 +50,18 @@ NAVIGATION = (
     "docs/README.md",
     "docs/architecture/README.md",
     "docs/architecture/current-system.md",
+    "docs/development/codex-harness.md",
     "docs/runbooks/README.md",
     "tests/evals/README.md",
 )
 TOKENIZER = None
 
 
-def run(args, root=ROOT, **kwargs):
-    return subprocess.run(
+def run(args, root=ROOT, *, preserve_whitespace=False, **kwargs):
+    output = subprocess.run(
         args, cwd=root, check=True, capture_output=True, text=True, **kwargs
-    ).stdout.strip()
+    ).stdout
+    return output if preserve_whitespace else output.strip()
 
 
 def read_config(path):
@@ -1614,8 +1616,9 @@ def evaluate_one(root, case, repetition, args):
                 "--no-textconv",
             ],
             workspace,
+            preserve_whitespace=True,
         )
-        (artifact_dir / "change.patch").write_text(patch + "\n" if patch else "")
+        (artifact_dir / "change.patch").write_text(patch)
         for name in changed:
             if name in {
                 ".harness-task/design.md",
@@ -1729,6 +1732,13 @@ def score_record(record, case, behavior):
     )
 
 
+def replay_patch(workspace, patch):
+    if patch.strip():
+        # Earlier captures stripped trailing blank context lines. Recount
+        # hunk lengths without inventing or changing patch content.
+        run(["git", "apply", "--recount", "--unidiff-zero", "-"], workspace, input=patch)
+
+
 def regrade(root, args):
     """Replay independent grading against the exact saved synthetic patch."""
     report = json.loads(args.regrade.read_text())
@@ -1758,8 +1768,7 @@ def regrade(root, args):
             if not artifact.is_absolute():
                 artifact = args.regrade.resolve().parent / artifact
             patch = (artifact / "change.patch").read_text()
-            if patch.strip():
-                run(["git", "apply", "-"], workspace, input=patch.rstrip() + "\n")
+            replay_patch(workspace, patch)
             executable = codex_executable()
             policy = isolation(workspace, executable)
             grader = Path(folder) / "grader.py"
