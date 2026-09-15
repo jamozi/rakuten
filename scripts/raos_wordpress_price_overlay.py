@@ -15,6 +15,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 import copy
 from datetime import UTC, datetime
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -78,6 +79,30 @@ def _approval(store, run_id):
     if not path.is_file():
         rpr.fail("APPROVAL_MISSING")
     return path, rpr.validate_approval(store.read_json(path), run_id)
+
+
+@contextmanager
+def _approval_lock(store, run_id):
+    """Serialize read-check-write of one run's approval record across candidates.
+
+    The publisher lock covers one candidate directory only; without this, two candidates
+    of the same run could both reserve and the later record would overwrite the earlier
+    one (its article keys would then carry no purge obligation).
+    """
+    directory = store.run_directory(run_id)
+    if directory.is_symlink() or not directory.is_dir():
+        rpr.fail("PRIVATE_PATH_UNSAFE")
+    descriptor = os.open(
+        directory / "approval.lock",
+        os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC,
+        0o600,
+    )
+    with os.fdopen(descriptor, "ab") as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            rpr.fail("APPROVAL_BUSY")
+        yield
 
 
 def _overlay(store, run_id):
@@ -451,16 +476,18 @@ class Binding:
     def before_writes(self, root, directory, candidate, journal):
         with refusals(self.direct):
             if self.mode == MODE_PUBLISH:
-                self._reserve_publish(root, directory, candidate)
+                with _approval_lock(_store(root), self.run_id):
+                    self._reserve_publish(root, directory, candidate)
             else:
                 self._check_purge(root, directory, candidate)
 
     def after_readback(self, root, directory, candidate, journal, call):
         with refusals(self.direct):
-            if self.mode == MODE_PUBLISH:
-                self._verify_publish(root, candidate, journal, call)
-            else:
-                self._record_purge(root, candidate, journal, call)
+            with _approval_lock(_store(root), self.run_id):
+                if self.mode == MODE_PUBLISH:
+                    self._verify_publish(root, candidate, journal, call)
+                else:
+                    self._record_purge(root, candidate, journal, call)
 
     # -- publish -----------------------------------------------------------
 
@@ -492,7 +519,9 @@ class Binding:
         )
         theme_root = directory / candidate["theme"]["directory"]
         if (
-            [a["document"] for a in expected["articles"]]
+            # The id covers every field (body_sha256, injected flags, stamps, descriptor).
+            expected["candidate_id"] != candidate["candidate_id"]
+            or [a["document"] for a in expected["articles"]]
             != [a["document"] for a in candidate["articles"]]
             or expected["theme"]["descriptor"] != candidate["theme"]["descriptor"]
             or expected["price_overlay"]["runtime_sha256"] != self.bound["runtime_sha256"]

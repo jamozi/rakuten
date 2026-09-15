@@ -813,6 +813,35 @@ def test_purge_publish_restores_price_free_bytes_and_removes_local_copies(owner,
     assert git_hits(owner, injected_needles) == []
 
 
+def test_a_concurrent_reservation_of_the_run_is_refused_before_writes(owner, publisher):
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    with price_overlay._approval_lock(PrivateStore(owner), RUN_ID):
+        with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_APPROVAL_BUSY"):
+            publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert server.writes() == [] and approval_record(owner)["publish"] is None
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert approval_record(owner)["publish"]["readback_verified_at"] is not None
+
+
+def test_a_rehashed_candidate_with_drifted_overlay_metadata_is_refused(owner, publisher):
+    """Preview already binds bodies; the id check also binds the stamps nothing else compares."""
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    tampered = deepcopy(candidate)
+    tampered["price_overlay"]["theme_revision"] = "0" * 64
+    tampered["candidate_id"] = direct.digest(
+        direct.encoded({k: v for k, v in tampered.items() if k != "candidate_id"})
+    )
+    direct.save(directory / "candidate.json", tampered)
+    previewed(directory, tampered)
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_INJECTION_MISMATCH"):
+        publish(owner, directory, tampered, server, price_overlay_run=RUN_ID)
+    assert server.writes() == [] and approval_record(owner)["publish"] is None
+
+
 # ---------------------------------------------------------------------------
 # Theme runtime: tax-excluded label
 # ---------------------------------------------------------------------------
