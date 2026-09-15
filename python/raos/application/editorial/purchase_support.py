@@ -2950,6 +2950,19 @@ def render_curated_commerce(
             notices[0].attrs["class"] = (
                 notices[0].attrs.get("class") or ""
             ) + " ps-disclosure"
+    if article["kind"] == "curated_comparison":
+        # One correction contact (and dated history, when recorded) closes the
+        # single article root, as on the generated comparisons and guides.
+        article_roots = [
+            node
+            for node in root.children
+            if isinstance(node, Element) and node.has("ps-article")
+        ]
+        if len(article_roots) != 1:
+            raise ValueError("PURCHASE_CURATED_ROOT_REQUIRED")
+        for node in list(fragment(history_block(article)).children):
+            if isinstance(node, Element):
+                article_roots[0].append(node)
     targets = [
         n
         for n in root.find(tag="section")

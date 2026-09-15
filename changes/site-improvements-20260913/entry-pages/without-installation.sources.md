@@ -61,7 +61,7 @@ CSSはページ限定の提案であり、共有テーマの正規sourceへの�
 
 ## リンク関係と残る確認
 
-- 上位：`/kitchen/`。
+- 上位：パンくずの親は `/purposes/`（悩み・目的から探す）。2026-09-16 の KS-029-b2 で、見えるパンくずを構造化データ（functions.php が hub_kind=purpose から出す BreadcrumbList）と同じ親に揃えた。以前は `/kitchen/`（食洗機）を親として表示していた。現在ページ名は台帳 title の「工事なしの食洗機」、nav の aria-label は「パンくずリスト」。`/kitchen/` の #choose から本ページへの入口は変えていない。
 - 容量別3記事：`/compact-dishwasher-comparison/`、`/standard-dishwasher-comparison/`、`/large-dishwasher-comparison/`。統合担当から指定されたURLで **同時統合待ち**。このページは人数・食器点数の境界を新たに定義していない。
 - 給水方法：既存 `/dishwasher-water-supply-methods/`。新規 `/dishwasher-branch-faucet-guide/` は **同時統合待ち**。
 - 既存ID41 `/countertop-dishwasher-for-small-households/` は「タンク式4モデル」と表示し、リンク先のPR・広告を明記。工事なし全体の包括比較として扱わない。

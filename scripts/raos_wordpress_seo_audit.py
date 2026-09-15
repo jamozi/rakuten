@@ -732,7 +732,7 @@ def _structured_data_semantics(
         ],
         "fixed_page": [
             expected_page_type,
-            "BreadcrumbList",
+            *([] if policy else ["BreadcrumbList"]),
             "Organization",
             "WebSite",
         ],
@@ -788,27 +788,33 @@ def _structured_data_semantics(
             and article.get("publisher") == {"@id": organization_id}
             and article.get("url") == item.url
         )
-    if not _breadcrumb_semantics(
+    # Policy bodies have no visible breadcrumb, so their graph must not claim one (KS-029-b3).
+    if policy:
+        if breadcrumb is not None:
+            return False
+    elif not _breadcrumb_semantics(
         breadcrumb,
         item,
         contract,
         title,
         minimum=2,
-        maximum=2 if policy else 3,
-        parent_paths=None if policy else ("/categories/", "/purposes/"),
+        maximum=3,
+        parent_paths=("/categories/", "/purposes/"),
     ):
         return False
     page = by_id.get(item.url + "#webpage", {})
-    return page == {
+    expected_page = {
         "@id": item.url + "#webpage",
         "@type": expected_page_type,
-        "breadcrumb": {"@id": item.url + "#breadcrumb"},
         "description": description,
         "inLanguage": "ja-JP",
         "isPartOf": {"@id": website_id},
         "name": title,
         "url": item.url,
     }
+    if not policy:
+        expected_page["breadcrumb"] = {"@id": item.url + "#breadcrumb"}
+    return page == expected_page
 
 
 def _check(
@@ -928,6 +934,9 @@ def _page_checks(
     document, schema_types = _single_graph(parser)
     jsonld_valid = document is not None
     required = contract.required_types[item.role]
+    if item.identifier in POLICY_PAGE_IDENTIFIERS:
+        # Policy pages show no breadcrumb, so BreadcrumbList is not required (KS-029-b3).
+        required = required - {"BreadcrumbList"}
     checks["required_schema"] = _check(
         jsonld_valid and required.issubset(schema_types),
         body_hash,

@@ -1,6 +1,8 @@
 """Synthetic anonymous HTML only; no live access or affiliate identifiers."""
 
 import copy
+from pathlib import Path
+import re
 import unittest
 from scripts.raos_public_acceptance import assess
 
@@ -195,6 +197,49 @@ class AcceptanceTests(unittest.TestCase):
             "</main>", "<p>現在、条件に合う公開記事はありません</p></main>"
         )
         self.assertIn("EMPTY_LISTING", self.codes(observation(html)))
+
+
+ROOT = Path(__file__).resolve().parents[2]
+SEMANTICS_RECORD = ROOT / "changes/site-improvements-20260913/technical-local-semantics.md"
+THEME_FUNCTIONS = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php"
+)
+EXCLUDED_SCHEMA_TYPES = ("Product", "Offer", "Review", "AggregateRating", "FAQPage", "ItemList")
+
+
+class RecordedStructuredDataPolicyTests(unittest.TestCase):
+    """Repository records, not live pages: why the theme leaves some schema types out."""
+
+    def policy_section(self):
+        text = SEMANTICS_RECORD.read_text(encoding="utf-8")
+        self.assertEqual(text.count("\n## 方針\n"), 1)
+        return text.split("\n## 方針\n", 1)[1].split("\n## ", 1)[0]
+
+    def test_excluded_schema_types_have_recorded_rationale(self):
+        policy = self.policy_section()
+        self.assertIn("| 型 | 採用しない理由 | 根拠 |", policy)
+        rows = {}
+        for line in policy.splitlines():
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            if line.startswith("| ") and len(cells) == 3 and cells[0] in EXCLUDED_SCHEMA_TYPES:
+                self.assertNotIn(cells[0], rows)
+                rows[cells[0]] = cells
+        self.assertEqual(sorted(rows), sorted(EXCLUDED_SCHEMA_TYPES))
+        for name, (_, reason, basis) in rows.items():
+            self.assertTrue(reason, name)
+            self.assertTrue(basis, name)
+        self.assertIn("OWNER_DECISION_PENDING", rows["ItemList"][1])
+        # Prices are shown by the clock-checked script; only cached HTML and JSON-LD omit them.
+        self.assertIn("キャッシュ", rows["Offer"][1])
+        emitted = set(re.findall(r"'@type'\s*=>\s*'([A-Za-z]+)'", THEME_FUNCTIONS.read_text(encoding="utf-8")))
+        self.assertIn("BreadcrumbList", emitted)
+        self.assertEqual(emitted & set(EXCLUDED_SCHEMA_TYPES), set())
+
+    def test_policy_page_breadcrumb_choice_is_recorded(self):
+        policy = self.policy_section()
+        self.assertIn("BreadcrumbList", policy)
+        for slug in ("about-ad-policy", "comparison-policy", "privacy-policy"):
+            self.assertIn(slug, policy)
 
 
 if __name__ == "__main__":

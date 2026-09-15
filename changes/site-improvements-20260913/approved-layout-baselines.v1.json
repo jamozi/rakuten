@@ -18,6 +18,25 @@
         "accepted_scope": "旧了承版から共通の結論1列・実表に変わった現行共有版を再確認して了承",
         "recorded_at": "2026-09-13T09:31:08.523623+00:00",
         "publication_authorized": false
+      },
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-16",
+        "branch": "claude/ks-w3-20260916",
+        "tasks": [
+          "KS-120",
+          "KS-129",
+          "KS-015",
+          "KS-017",
+          "KS-026"
+        ],
+        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
+          "python/raos/application/editorial/purchase_support.py",
+          "changes/site-improvements-20260913/article-sources/compact-dishwasher-comparison.md"
+        ],
+        "publication_authorized": false
       }
     },
     "lightweight-carry-on-suitcase-under-3kg": {
@@ -61,7 +80,24 @@
       "user_statement": "標準食洗機の記事もオッケー",
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345147+00:00",
-      "publication_authorized": false
+      "publication_authorized": false,
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-16",
+        "branch": "claude/ks-w3-20260916",
+        "tasks": [
+          "KS-015",
+          "KS-017",
+          "KS-026"
+        ],
+        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
+          "python/raos/application/editorial/purchase_support.py",
+          "changes/site-improvements-20260913/article-sources/standard-dishwasher-comparison.md"
+        ],
+        "publication_authorized": false
+      }
     },
     "large-dishwasher-comparison": {
       "body_sha256": "3a42ba10de33ce014f4711a267701bad7e6d97e9a62c3af25d725391a068e1b3",
@@ -74,7 +110,27 @@
       "user_statement": "うん、これもオッケ",
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345151+00:00",
-      "publication_authorized": false
+      "publication_authorized": false,
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-16",
+        "branch": "claude/ks-w3-20260916",
+        "tasks": [
+          "KS-122",
+          "KS-015",
+          "KS-017",
+          "KS-026"
+        ],
+        "summary": "主表6行に本体寸法（幅×奥行×高さ）と開扉時の奥行（catalog facts と照合）と注記1文、「選ぶ前に」列に列名ラベル、非表示の横スクロール案内と aria-label の文言の削除、theme.css の640px以下の ::before 案内の削除、末尾に訂正依頼の連絡先1行。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
+          "changes/reader-purchase-support-v1/purchase-support.v1.json",
+          "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "python/raos/application/editorial/purchase_support.py",
+          "changes/site-improvements-20260913/article-sources/large-dishwasher-comparison.md"
+        ],
+        "publication_authorized": false
+      }
     }
   }
 }
