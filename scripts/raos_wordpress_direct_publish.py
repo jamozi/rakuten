@@ -1159,6 +1159,10 @@ def execute_cli(args):
             operator.require_sha256(candidate_id)
             directory = ROOT / PRIVATE / candidate_id
             candidate = load_candidate(directory, candidate_id)
+            if "price_overlay" not in candidate:
+                # Contract §8: while values may be live, only run-bound candidates may reach
+                # WordPress, the preview downloads or the git sync. publish() refuses again.
+                refuse_while_price_overlay_live(ROOT)
             if args.command == "preview":
                 from scripts.raos_wordpress_direct_preview import (
                     prepare_candidate_preview,

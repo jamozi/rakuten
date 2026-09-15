@@ -118,7 +118,7 @@
   - price overlay の candidate は handle で名指しします（§8）。
   - 値の配信中（§8。owner checkout か ROOT に、公開の記録があり purge 公開もオーナーの incident 記録も無い run、または承認記録が読めない run がある間）は、`status`（`--candidate` なし）が WordPress を呼ばず `{"price_overlay_live": [<run_id>...], "status": "REDACTED_PRICE_OVERLAY_LIVE"}` だけを出します。
     - フラグ無し candidate の `status --candidate` は、64 桁 hex を含む文字列と `runtime_revision` / `plugin_runtime_revision` を、どの深さでも `REDACTED_PRICE_OVERLAY_LIVE` に置き換えます（`theme` 配下を含む）。
-    - deployment operator の CLI と MCP bridge は、WordPress に届くコマンドをすべて拒否します（§8）。
+    - deployment operator の CLI と MCP bridge、編集用 MCP（`wordpressEditor`）の launcher、公開ページの readback、匿名の監査・ブラウザ計測も、WordPress に届く操作をすべて拒否します（§8 の表）。
   - 同じ間、フラグを付けない `prepare` を拒否します（§8。baseline に配信中の注入本文や注入テーマの tree hash が入り、id とディレクトリを出力するため）。
 - WordPress 側では、owner-direct plugin がテーマ release 行の payload にある注入テーマの hash を伏せます（§10.1-3）。行の `before_sha256` / `after_sha256` 列には残ります。purge 後も残る hash の扱いはオーナー決定待ちです（§1-5）。
 
@@ -332,9 +332,40 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
     - 終了コードが 0 以外なら、そのコード（`WORDPRESS_MCP_PRICE_OVERLAY_LIVE` など）を返します。
     - 終了コードが 0 でも応答が違えば、`WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID` を返します。
     - operator 側の拒否と二重になります。
+  - **編集用 MCP（`wordpressEditor`）**: launcher（`scripts/raos_wordpress_editor_mcp_launcher.mjs`）が、proxy を起動する前と、**client → proxy の各メッセージの前**、および **proxy → client の各応答の前**に、同じ `price-overlay-live-check` を実行します（`scripts/raos_price_overlay_live_check.mjs`）。
+    - 起動時に拒否されると、proxy は起動せず、資格情報も読みません（終了コード 69、stderr に判定コード）。
+    - 配信中に届いたメッセージは proxy に渡さず、`id` を持つ要求には JSON-RPC error（`message` は判定コード）を返します。応答側も同じで、配信中は proxy の応答を client に渡しません。
+    - 理由: `content-get` / `content-list` は配信中の注入本文と `content_sha256` を返し、`site-status` は注入テーマの `runtime_revision` を返します。`content-propose-release` と `publication-batch-register` は、その hash を WordPress の新しい行に保存します（purge の対象外）。
+    - 判定は 1 メッセージずつ順番に行います。proxy は長時間動くので、起動時の 1 回だけでは足りません。
+  - **ほかの経路も同じ判定で拒否します**（共有の実装: `python/raos/adapters/price_overlay_live_guard.py`、Node は `scripts/raos_price_overlay_live_check.mjs`）。判定する場所は同じ 3 つの checkout（呼び出し側の owner checkout、固定の `OWNER_CHECKOUT`、実行中のリポジトリ）です。
+
+| 経路 | 実装 | 配信中の動作 |
+| --- | --- | --- |
+| `wordpressEditor` MCP（launcher → proxy） | `scripts/raos_wordpress_editor_mcp_launcher.mjs` | 起動・各メッセージ・各応答で拒否 |
+| `wordpressDeployment` MCP（bridge → operator） | `packages/wordpress-mcp-bridge/src/index.ts` + operator `main()` | 全 tool・全コマンドを拒否 |
+| publisher のフラグ無し `prepare` / `publish` / `preview` / `sync` / `status --candidate` | `scripts/raos_wordpress_direct_publish.py` | `PRICE_OVERLAY_LIVE`（`status`（`--candidate` なし）は WordPress を呼ばず marker のみ） |
+| 直接の editor MCP クライアント（legacy full-portfolio・verified-incremental・snapshot・reader hubs） | `EditorMcpClient`（`raos_wordpress_publication_request.py`）の生成時と毎要求 | `RAOS_WORDPRESS_REQUEST_PRICE_OVERLAY_LIVE` |
+| 公開ページ・stylesheet の readback（Basic 認証の有無を問わない） | 同上（`_public_page_evidence` / `_fetch_public_stylesheet_sentinels`） | 同上 |
+| deployment bridge の呼び出し側 | 同上（`_deployment_mcp_call`） | 同上（bridge・operator と三重） |
+| SEO 監査の匿名 GET（body hash を証跡に残す） | `scripts/raos_wordpress_seo_audit.py` の `BoundedHttpsTransport.get`（`raos_wordpress_runtime_audit.py` / `raos_wordpress_incremental_seo_audit.py` もこれを使う） | `PRICE_OVERLAY_LIVE` |
+| full redesign の匿名 capture（body 全文と hash を保存） | `scripts/prepare_full_redesign_audit_packet.py` の `_capture_public` | 同上 |
+| RAOS v2 の匿名 capture（body hash を出力・保存） | `scripts/validate_raos_v2_successor.py` の `_fetch` | `RAOS_V2_PRICE_OVERLAY_LIVE` |
+| harness の `inventory --wordpress-status`（実 MCP を起動） | `scripts/codex_harness.py` の `wordpress_status` | server を起動せず `REFUSED` 行 |
+| candidate preview の単体 CLI | `scripts/raos_wordpress_direct_preview.py` の `main`（フラグ無し candidate のみ） | `DIRECT_PREVIEW_PRICE_OVERLAY_LIVE` |
+| ST-1506 / ST-1704v2 / ST-1703 / ST-1704 pilot の CLI（`raos-bounded-operator`・`wp/v2`） | 各 CLI の `_price_overlay_live()`（operator の check を子プロセスで実行） | `<CLI>_PRICE_OVERLAY_LIVE`（終了コード 69） |
+| 匿名のブラウザ計測（`ks_before_capture` / `ks_public_performance_probe` / `ks_viewport_matrix` / `site_improvements_audit` / `site_improvements_consent_lab` / `npm run wordpress:ui:check`） | `scripts/raos_price_overlay_live_check.mjs`（127.0.0.1 の origin は対象外） | 判定コードで終了 69（ブラウザを起動しない） |
+
+- **拒否しない経路**（構造上、値も価格復元可能な hash も扱わないもの）
+  - `--price-overlay-run` / `--price-overlay-purge` を付けた `prepare` / `publish`、およびその candidate の `preview` / `status` / `sync`（run に束縛された正規の経路。§10.1-11 は別）。
+  - ローカルだけの経路: `make wordpress-preview-*`（docker。seed は価格なしの materialized fixture）、`tests/wordpress_mcp_v1/e2e`（使い捨ての docker）、`raos_wordpress_local_restore.py` / `raos_wordpress_scratch_restore.py` / `raos_wordpress_scratch_theme_restore.py`（ローカルのファイル操作と `theme_package()` だけ）、`store_wordpress_mcp_credential.py`（書き込みのみ）。
+  - kurashinoshirube.com に接続しない経路: Google（GSC / GA4）、楽天 API（価格取得そのもの。§5 の保存規則で守る）、ASP の API、WordPress.com（別サイトの下書き）、`raos_wordpress_baseline_media.py`（楽天のサムネイルのみ）、`raos_public_acceptance.py`（入力は既存の匿名 export で、自分では取得しない）。
+  - 127.0.0.1 の origin を指定したブラウザ計測（ローカル preview の観測）。
 - **run の保存場所の固定**: `scripts/raos_rakuten_price_refresh.py` の `--owner-checkout` を取るコマンドは、固定の `OWNER_CHECKOUT`（`/home/minami/rakuten`、publisher・operator と同じ値）以外を `OWNER_CHECKOUT_NOT_PINNED` で拒否します。対象は `fetch` / `apply` / `gate` / `purge-expired` / `resolve-incident` / `confirm-plugin-cleanup` です。
   - worktree の ROOT やほかの clone を指定した場合も、保存を開く前（資格情報の読み込み、承認記録の作成、run ディレクトリの作成より前）に拒否します。
   - これで、publisher と operator が見ない場所に run が作られることはありません。
+- **run 付きコマンドの実行場所の固定**: publisher の run 付き `prepare` / `publish` と、price overlay の handle を使う `preview` / `status` / `sync` は、ROOT が固定の `OWNER_CHECKOUT` でなければ `PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED` で拒否します（承認記録を開く前）。
+  - 理由: 承認記録は owner checkout にしかなく、注入 candidate のローカル複製の走査（§5）も owner checkout の candidate ディレクトリしか見ません。worktree から実行すると、purge が届かない場所に注入バイト列を作ってしまいます。
+- **run ディレクトリの安全性**: `.secrets/rakuten-price-refresh` 直下に symlink やディレクトリでない entry があると、`live_run_ids()` は `PRIVATE_PATH_UNSAFE` で拒否します（operator では `WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID`、publisher では `PRICE_OVERLAY_PRIVATE_PATH_UNSAFE`）。読めない run を「配信していない」と扱わないためです。
 - 出力に candidate id を出しません。注入 candidate の id は注入後本文の hash、purge candidate の id は live の注入後本文を baseline に持つ candidate の hash で、どちらも価格を総当たりで復元できるためです。
   - `prepare` は id を承認記録の `prepared_candidates` にだけ書き、`{"candidate": "price-overlay:<run_id>:<mode>", "candidate_id": "REDACTED_PRICE_OVERLAY", ...}` を出します。candidate ディレクトリのパスも出しません。
   - `preview` / `publish` / `status` / `sync` は price overlay の candidate について、handle、`REDACTED_PRICE_OVERLAY`、mode・run_id、状態（`publication_ready` / `publication_status` / `status` / `result_code`）、`git_sync.status` だけを出します（preview の runtime hash や journal の proposal id・receipt は出さない。`preview.json` と `journal.json` には従来どおり書く）。
@@ -464,7 +495,7 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
    - `apply` の出力には、`status_counts`（SOLD_OUT などの状態別件数）と `purge_publish_due_by` が含まれます。価格は出しません。
    - 対象の offer が 1 件だと、件数から販売可能情報が分かります。
    - 証跡（KS-020.md など）には、run_id と結果コードだけを写します。
-10. **テストの穴（minor、未対応）**: `.secrets/rakuten-price-refresh` 経路の symlink 拒否には専用テストがありません。gate 側の `EXPIRED_RUN_NOT_PURGED` は、CLI の `gate` と publisher の gate の両方でテスト済みです（2026-09-16）。
+10. **テストの穴**: ~~`.secrets/rakuten-price-refresh` 経路の symlink 拒否には専用テストがありません~~ **済（2026-09-16）**: run ディレクトリが symlink・ファイルの場合の `PRIVATE_PATH_UNSAFE` を `test_rakuten_price_refresh.py` と `test_price_overlay_live_paths.py` で確かめます。gate 側の `EXPIRED_RUN_NOT_PURGED` は、CLI の `gate` と publisher の gate の両方でテスト済みです（2026-09-16）。
     - purge 公開の書き込み前検査（`Binding._check_purge()`）の本文側には 2 つの条件があります。
       - 「文書が checkpoint の本文と違う」: フラグ無しで作った candidate では `body_file` が checkpoint のコピー（`sources/…`）そのものなので、先に `load_candidate()` が `SNAPSHOT_DRIFT` で拒否し、この条件には届きません。多重防御として残し、テストは `SNAPSHOT_DRIFT` を確かめます。
       - `price_free_violations()`: 本文・sources・作業ツリーを一貫して注入本文にした candidate を `PURGE_BODY_NOT_PRICE_FREE` で拒否します（テスト済み）。

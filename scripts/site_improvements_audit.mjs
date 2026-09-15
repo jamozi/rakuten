@@ -1,10 +1,14 @@
 /** Read-only public/local audit. Never stores query values, cookie values, or request bodies. */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { chromium } from 'playwright';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 const args = process.argv.slice(2);
 const option = (k, d) => (args.includes(k) ? args[args.indexOf(k) + 1] : d);
 const origin = new URL(option('--origin', 'https://kurashinoshirube.com')).origin;
+// Contract §8: a capture of the live site while Rakuten price overlay values may be
+// published would store rendered prices (screenshots, snippets) and their hashes.
+if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin)) await refuseWhilePriceOverlayLive();
+const { chromium } = await import('playwright');
 const mode = option('--mode', 'public-baseline');
 const output = option('--output', 'output/site-improvements-20260913/public-baseline.json');
 const inventory = JSON.parse(

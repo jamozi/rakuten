@@ -22,9 +22,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 
 const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
 
 const PAGES = ['/', '/standard-dishwasher-comparison/', '/dishwasher-installation-measurement/', '/dishwasher-running-cost/'];
 const WIDTHS = [390, 1280];
@@ -41,6 +41,10 @@ const option = (name, fallback) => {
 };
 const ORIGIN = option('--origin', 'https://kurashinoshirube.com');
 if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(ORIGIN) && ORIGIN !== 'https://kurashinoshirube.com') throw new Error('ORIGIN_NOT_ALLOWED');
+// Contract §8: a capture of the live site while Rakuten price overlay values may be
+// published would store rendered prices (screenshots, snippets) and their hashes.
+if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(ORIGIN)) await refuseWhilePriceOverlayLive();
+const { chromium } = require('playwright');
 const OUT = option('--out', 'output/ks-20260915/w2-measure/ks-030');
 const RUNS = Number(option('--runs', '3'));
 const ONLY = option('--only', '');

@@ -88,6 +88,15 @@ def refusals(direct):
 
 
 def _store(root):
+    """The run store of the fixed owner checkout (contract §8).
+
+    The price refresh CLI creates runs only in ``OWNER_CHECKOUT``, and the purge scan for
+    local copies of injected bytes looks at that checkout's candidate directories only, so a
+    run-bound prepare/preview/publish/status from another checkout is refused rather than
+    quietly reading (or writing injected candidates into) a place no purge reaches.
+    """
+    if Path(root) != Path(operator.OWNER_CHECKOUT):
+        rpr.fail("OWNER_CHECKOUT_REQUIRED")
     return PrivateStore(Path(root))
 
 

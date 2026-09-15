@@ -622,8 +622,25 @@ def valid_wordpress_status(server, value):
     )
 
 
+def price_overlay_refusal():
+    """Contract §8: the probe starts the real MCP servers and calls a live read tool."""
+    python_root = str(Path(__file__).resolve().parents[1] / "python")
+    if python_root not in sys.path:
+        sys.path.insert(0, python_root)
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal as refusal
+
+    return refusal()
+
+
 def wordpress_status(root, servers):
     """Use only resolved runtime transports and policy; never declared fallbacks."""
+    refused = price_overlay_refusal()
+    if refused is not None:
+        # Refused before any server starts: the editor server reads live documents.
+        return [
+            {"server": name, "status": "REFUSED", "refusal": refused}
+            for name in ("wordpressEditor", "wordpressDeployment")
+        ]
     rows = []
     for name, tool in (
         ("wordpressEditor", "raos-codex-site-status"),

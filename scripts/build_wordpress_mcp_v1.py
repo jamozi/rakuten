@@ -254,6 +254,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/raos_wordpress_publication_request.py"),
     Path("scripts/raos_wordpress_seo_audit.py"),
     Path("scripts/raos_wordpress_editor_mcp_launcher.mjs"),
+    Path("scripts/raos_price_overlay_live_check.mjs"),
     Path("scripts/store_wordpress_mcp_credential.py"),
     Path("scripts/wordpress_public_ui_audit.function.js"),
     Path("scripts/wordpress_quality_audit_v1.py"),

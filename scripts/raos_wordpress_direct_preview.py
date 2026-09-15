@@ -651,6 +651,17 @@ def main() -> int:
     args = parser.parse_args()
     try:
         candidate = json.loads(args.candidate.read_bytes())
+        if "price_overlay" not in candidate:
+            # Contract §8: only a run-bound candidate may be previewed while values are live
+            # (the publisher refuses the same way; this CLI takes any candidate file).
+            root = str(Path(__file__).resolve().parents[1] / "python")
+            if root not in sys.path:
+                sys.path.insert(0, root)
+            from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+            code = price_overlay_refusal()
+            if code is not None:
+                raise ValueError("DIRECT_PREVIEW_" + code)
         result = prepare_candidate_preview(candidate, args.candidate.parent)
         print(json.dumps(result, ensure_ascii=False))
         return 0 if result["status"] == "PASS" else 1

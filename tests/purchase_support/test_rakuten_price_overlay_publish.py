@@ -26,6 +26,7 @@ import zipfile
 
 import pytest
 
+from raos.adapters import price_overlay_live_guard as guard
 from raos.adapters.rakuten_price_refresh_client import (
     PrivateStore,
     scan_repository_for_overlay,
@@ -79,11 +80,17 @@ def no_network(monkeypatch):
 
 @pytest.fixture(autouse=True)
 def isolated_owner_checkout(monkeypatch, tmp_path):
-    """Flag-free commands check the fixed owner checkout for live runs (contract §8): point it
-    at an empty location so no test reads the real one."""
-    monkeypatch.setattr(operator, "OWNER_CHECKOUT", tmp_path / "fixed-owner-checkout")
-    # The refresh CLI accepts only the fixed owner checkout: the temporary owner here.
-    monkeypatch.setattr(refresh_cli, "OWNER_CHECKOUT", (tmp_path / "owner").resolve())
+    """Every fixed owner checkout is the temporary one, so no test reads the real one.
+
+    The refresh CLI creates runs only in ``OWNER_CHECKOUT`` and run-bound publisher commands
+    run only there (contract §8), so the tests' owner checkout takes its place. Tests that
+    need an owner checkout without runs point it somewhere else themselves.
+    """
+    owner = (tmp_path / "owner").resolve()
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(refresh_cli, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", (tmp_path / "worktree-root").resolve())
 
 
 def git(root, *args, check=True):
@@ -469,6 +476,7 @@ def test_prepare_and_publish_without_the_flag_are_byte_identical(
 
     # The overlay path freezes the same price-free candidate before injecting.
     write_run(overlay_root)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", overlay_root)
     overlay_candidate, _ = direct.prepare_price_overlay(
         overlay_root, KEYS, True, FakeWordPress(overlay_root), run=RUN_ID
     )
@@ -623,7 +631,9 @@ def test_preview_accepts_injected_bodies_only_through_their_own_hash(owner, publ
 # ---------------------------------------------------------------------------
 
 
-def test_readback_compares_the_injected_body_and_theme_hashes(owner, publisher, template, tmp_path):
+def test_readback_compares_the_injected_body_and_theme_hashes(
+    owner, publisher, template, tmp_path, monkeypatch
+):
     write_run(owner)
     stale_body = FakeWordPress(
         owner, store_body=lambda post_id, document: (owner / BODY_SOURCE.format(document["slug"])).read_text()
@@ -643,6 +653,7 @@ def test_readback_compares_the_injected_body_and_theme_hashes(owner, publisher, 
     shutil.copytree(source, other, symlinks=True)
     (other / ".secrets").mkdir(mode=0o700)
     write_run(other)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", other)
     base_tree = {}
     price_free_theme = FakeWordPress(other, store_tree=lambda tree: base_tree["tree"])
     candidate, directory = prepare_overlay(other, price_free_theme)
@@ -1451,9 +1462,10 @@ def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree
             "price_overlay_live": [RUN_ID],
             "status": "REDACTED_PRICE_OVERLAY_LIVE",
         }
-        # A flag-free candidate's status: no hash of any kind on stdout.
-        code, out, _err = cli(*option, "status", "--candidate", earlier["candidate_id"])
-        assert code == 0 and re.findall(r"[0-9a-f]{64}", out) == [], out
+        # A flag-free candidate's status reaches WordPress only after the purge.
+        assert cli(*option, "status", "--candidate", earlier["candidate_id"]) == (
+            69, "", "RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_LIVE\n"
+        )
     assert len(server.calls) == calls, "refused before any WordPress call"
     assert listings() == before, "and before any checkpoint commit or candidate directory"
     assert not (earlier_directory / "journal.json").exists()
@@ -1512,6 +1524,104 @@ def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree
         direct.prepare(worktree, ["synthetic-guide"], False, server)
     with pytest.raises(operator.OperatorFailure, match="WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"):
         operator.refuse_while_price_overlay_live(None)
+
+def test_while_live_no_flag_free_candidate_command_reaches_wordpress_or_the_network(
+    owner, publisher, template, tmp_path, monkeypatch, capsys
+):
+    """preview / sync / status --candidate of a price-free candidate are refused too: they
+    download from the site, write a git sync record or read operation rows (contract §8)."""
+    write_run(owner)
+    server = FakeWordPress(owner)
+    monkeypatch.setattr(direct, "ROOT", owner)
+    monkeypatch.setattr(
+        operator, "run", lambda name, body: server(name.removeprefix("owner-direct-"), body)
+    )
+    earlier, earlier_directory = direct.prepare(owner, KEYS, True, server)
+    previewed(earlier_directory, earlier)
+    direct.save(
+        earlier_directory / "journal.json",
+        {
+            "candidate_id": earlier["candidate_id"],
+            "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+            "checkpoint": "0" * 40,
+            "proposal_ids": ["b" * 64],
+        },
+    )
+    candidate, directory = prepare_overlay(owner, server)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    calls = len(server.calls)
+    previews = []
+    syncs = []
+    monkeypatch.setattr(
+        direct, "sync_git", lambda *a: syncs.append(a) or {"status": "noop"}
+    )
+    monkeypatch.setattr(
+        "scripts.raos_wordpress_direct_preview.prepare_candidate_preview",
+        lambda *a: previews.append(a) or {"status": "PASS"},
+    )
+    capsys.readouterr()
+    for arguments in (
+        ["preview", "--candidate", earlier["candidate_id"]],
+        ["sync", "--candidate", earlier["candidate_id"]],
+        ["status", "--candidate", earlier["candidate_id"]],
+    ):
+        assert direct.main(arguments) == 69, arguments
+        captured = capsys.readouterr()
+        assert (captured.out, captured.err) == (
+            "",
+            "RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_LIVE\n",
+        ), arguments
+    assert (previews, syncs, len(server.calls)) == ([], [], calls)
+
+    # The run-bound candidate keeps working: its own preview and status are the purge path.
+    assert direct.main(["status", "--candidate", price_overlay.handle(candidate)]) == 0
+    assert re.findall(r"[0-9a-f]{64}", capsys.readouterr().out) == []
+
+    # Once the values are purged, the price-free candidate is usable again.
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    server.finish_redaction = deepcopy(COMPLETE_REDACTION)
+    publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    capsys.readouterr()
+    assert direct.main(["preview", "--candidate", earlier["candidate_id"]]) == 0
+    assert len(previews) == 1
+
+
+def test_run_bound_commands_run_only_in_the_fixed_owner_checkout(
+    owner, publisher, template, tmp_path, monkeypatch, capsys
+):
+    """The approval record and the candidate directories the purge scan sweeps live in the
+    owner checkout, so a run-bound command from a worktree is refused (contract §8)."""
+    write_run(owner)
+    server = FakeWordPress(owner)
+    source, _revision = template
+    worktree = (tmp_path / "worktree").resolve()
+    shutil.copytree(source, worktree, symlinks=True)
+    (worktree / ".secrets").mkdir(mode=0o700)
+    monkeypatch.setattr(direct, "ROOT", worktree)
+    monkeypatch.setattr(
+        operator, "run", lambda name, body: server(name.removeprefix("owner-direct-"), body)
+    )
+    calls = len(server.calls)
+    for arguments in (
+        ["prepare", "--articles", ",".join(KEYS), "--theme", "--price-overlay-run", RUN_ID],
+        ["prepare", "--articles", ",".join(KEYS), "--theme", "--price-overlay-purge", RUN_ID],
+        ["preview", "--candidate", f"price-overlay:{RUN_ID}:publish"],
+        ["status", "--candidate", f"price-overlay:{RUN_ID}:publish"],
+    ):
+        capsys.readouterr()
+        assert direct.main(arguments) == 69, arguments
+        captured = capsys.readouterr()
+        assert (captured.out, captured.err) == (
+            "",
+            "RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED\n",
+        ), arguments
+    assert len(server.calls) == calls
+    assert not (worktree / direct.PRIVATE).exists()
+    # The same command in the fixed owner checkout works.
+    monkeypatch.setattr(direct, "ROOT", owner)
+    candidate, _directory = prepare_overlay(owner, server)
+    assert candidate["price_overlay"]["run_id"] == RUN_ID
+
 
 # ---------------------------------------------------------------------------
 # While values may be live: every operator command and every bridge tool is refused

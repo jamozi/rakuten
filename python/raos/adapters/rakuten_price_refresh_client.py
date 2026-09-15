@@ -692,6 +692,16 @@ def live_run_ids(checkouts: Iterable[Path | None]) -> list[str]:
             continue
         if runs.is_symlink() or not runs.is_dir():
             fail("PRIVATE_PATH_UNSAFE")
+        # A run entry that is a symlink or not a directory is refused instead of skipped
+        # (``run_ids()`` skips it): its approval record cannot be read, so its values would
+        # count as not live (contract §8, §10.1-10).
+        try:
+            entries = sorted(runs.iterdir())
+        except OSError:
+            fail("PRIVATE_PATH_UNSAFE")
+        for entry in entries:
+            if entry.is_symlink() or not entry.is_dir():
+                fail("PRIVATE_PATH_UNSAFE")
         found.update(run_id for run_id, _keys in live_publish_runs(PrivateStore(checkout)))
     return sorted(found)
 

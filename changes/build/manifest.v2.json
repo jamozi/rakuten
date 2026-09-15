@@ -366,7 +366,7 @@
       "outputs": [
         {
           "bytes": 2625,
-          "sha256": "a9c012814683aa89ce4c9734e5a6ae2a5bfce094e7065aeca3ee7b2968f0a14e",
+          "sha256": "04471e6e5956e7bfa7fcdcf21be2e661f0861b9e21f0914ddf7e7c5781dff18d",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "6e5d045202306849ad8de67d5c94d43a08e265d9310350225de40c6bf39097bc",
+          "sha256": "a91d42d454b1e454c34b3e0ae0fcfbee7c8a367dab5a3bee927ad0a8dcc97d94",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30305,8 +30305,8 @@
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 28259,
-          "sha256": "2d7c849838aa5f96eb031078ec3d99191b7895b430bc9e1de9d96a09b0ab12c4",
+          "bytes": 28434,
+          "sha256": "c260022399031e5642ec62ccec561e4023fbd7cd46b48f123caa29526c032a79",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30887,6 +30887,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_price_overlay_live_check.mjs",
+          "uri": "repo://scripts/raos_price_overlay_live_check.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_reader_release_pages.py",
           "uri": "repo://scripts/raos_reader_release_pages.py",
           "version": 2
@@ -31163,7 +31169,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "f034dbdda43b83071052e538329550223a23c61a189d3275bc54fa61e55dc2b7",
+          "sha256": "1a76464b11b5206f0f332d7fc75053e6db7803f888963b7325fd9a5a22f771ff",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
