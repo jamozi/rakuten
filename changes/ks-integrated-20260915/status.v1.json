@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T15:40+09:00",
+  "updated_at": "2026-09-15T16:20+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -41,10 +41,23 @@
         "KS-019",
         "KS-006 (免責文)"
       ],
-      "state": "ローカル修正・検査中 (ユーザーの Before/After 確認と KS-302 公開指示待ち)",
-      "candidate_id": null,
+      "state": "KS-301 検査済み (preview PASS)。ユーザーの Before/After 確認と KS-302 公開指示待ち",
+      "candidate_id": "a181afd8af1a905ab538c45c28e14cea6ed09754c907e79111408eb1d61e8dd8",
       "published_at": null,
-      "note": "楽天 offer の価格再取得はツール未実装 (09-13 は手動取得)。API 実装か手動週次かはオーナー判断 (保留)"
+      "note": "楽天 offer の価格再取得はツール未実装 (09-13 は手動取得)。API 実装か手動週次かはオーナー判断 (保留)",
+      "articles": [
+        "about-ad-policy",
+        "anker-solix-c300-c800-c1000-differences",
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "countertop-dishwasher-for-small-households",
+        "front-open-carry-on-suitcase-with-stopper",
+        "portable-power-station-guide",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "theme": true,
+      "preview_origin": "http://127.0.0.1:42429"
     }
   },
   "items": {
@@ -165,10 +178,11 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A 完了",
+      "status": "バッチ A 完了 / バッチ B 完了",
       "batch": "A",
       "evidence": [
-        "evidence/KS-301-batch-A.md"
+        "evidence/KS-301-batch-A.md",
+        "evidence/KS-301-batch-B.md"
       ]
     },
     "KS-302": {
