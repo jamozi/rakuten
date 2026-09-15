@@ -357,10 +357,17 @@ def test_common_code_grader_checks_zero_empty_and_unchanged_input(tmp_path):
     assert not (tmp_path / "AGENTS.md").exists()
 
 
-def test_common_document_grader_rejects_repository_policy_leaks(tmp_path):
+@pytest.mark.parametrize(
+    "limits",
+    [
+        "読み取り専用。オフライン。公開できません。",
+        "読み取り専用。ネットワーク通信は不要です。公開機能には対応していません。",
+    ],
+)
+def test_common_document_grader_rejects_repository_policy_leaks(tmp_path, limits):
     harness.fixture_module().prepare(tmp_path, "G")
     (tmp_path / "README.md").write_text(
-        "python notes.py notes.txt\n標準45秒、最大180秒。読み取り専用。オフライン。公開できません。\n"
+        "python notes.py notes.txt\n標準45秒、最大180秒。" + limits + "\n"
     )
 
     def grade():
@@ -374,6 +381,10 @@ def test_common_document_grader_rejects_repository_policy_leaks(tmp_path):
     with (tmp_path / "README.md").open("a") as stream:
         stream.write("RAOSのmake fastも実行します。")
     assert grade()["no_raos_leak"] is False
+    (tmp_path / "README.md").write_text("通信が必要です。公開できます。")
+    result = grade()
+    assert result["no_network"] is False
+    assert result["no_publication"] is False
 
 
 def test_buffered_final_events_arrive_before_the_process_exits():
@@ -939,6 +950,8 @@ def test_native_evaluation_persists_failure_instead_of_successful_cli_status(
         }
 
     monkeypatch.setattr(harness, "evaluate_one", execution)
+    monkeypatch.setattr(harness, "codex_executable", lambda: Path("/synthetic/codex"))
+    monkeypatch.setattr(harness, "run", lambda *_args, **_kwargs: "synthetic-version")
     args = SimpleNamespace(
         case=["A"],
         repetitions=3,
