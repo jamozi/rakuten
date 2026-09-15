@@ -10,7 +10,11 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-from raos.application.editorial.site_editorial_pages import render_pages  # noqa: E402
+from raos.application.editorial.site_editorial_pages import (  # noqa: E402
+    render_pages,
+    validate_listing_anchors,
+    validate_reader_roles,
+)
 from raos.application.editorial.home_product_media import (  # noqa: E402
     build_home_product_media,
     bind_home_product_media,
@@ -129,10 +133,11 @@ OUTPUT_PATHS = (
 )
 
 
-def build() -> dict[Path, str]:
-    data, registry, catalog = [
-        json.loads((ROOT / p).read_text()) for p in INPUT_PATHS[:3]
-    ]
+def load_inputs() -> list[dict]:
+    return [json.loads((ROOT / p).read_text()) for p in INPUT_PATHS[:3]]
+
+
+def load_bodies(registry: dict) -> dict[str, str]:
     bodies = {}
     for row in registry["articles"]:
         if row["post_type"] != "post":
@@ -160,6 +165,10 @@ def build() -> dict[Path, str]:
             )
             if body.count(placeholder) == 1:
                 bodies[slug] += markup
+    return bodies
+
+
+def render(data: dict, registry: dict, catalog: dict, bodies: dict[str, str]):
     home_image_style = data.get("home_image_style", "product")
     if home_image_style not in {"editorial", "product"}:
         raise ValueError("HOME_IMAGE_STYLE_INVALID")
@@ -181,6 +190,56 @@ def build() -> dict[Path, str]:
             slug: (ROOT / path).read_text() for slug, path in PAGE_SOURCE_PATHS.items()
         },
     )
+    return pages, metadata, updates, home_projection
+
+
+def reader_documents(
+    registry: dict | None = None,
+    pages: dict[str, str] | None = None,
+    bodies: dict[str, str] | None = None,
+) -> dict[str, str]:
+    """Public body per ledger row: this build's pages, else the tracked source."""
+    data, loaded, catalog = load_inputs()
+    registry = loaded if registry is None else registry
+    bodies = load_bodies(registry) if bodies is None else bodies
+    if pages is None:
+        pages = render(data, registry, catalog, bodies)[0]
+    generated = {
+        str(path): "kitchen" if path.stem == "kitchen-template" else path.stem
+        for path in OUTPUT_PATHS
+        if path.suffix == ".html"
+    }
+    documents = {}
+    for row in registry["articles"]:
+        source = row.get("body_source") or row.get("patch_source")
+        if generated.get(source) == row["slug"]:
+            documents[row["article_key"]] = pages[row["slug"]]
+        elif row["post_type"] == "post" and row["slug"] in bodies:
+            documents[row["article_key"]] = bodies[row["slug"]]
+        else:
+            documents[row["article_key"]] = (
+                (ROOT / source).read_text() if source else ""
+            )
+    return documents
+
+
+def validate_build(registry: dict | None = None):
+    """Render once and refuse projections whose anchors or reader roles do not hold."""
+    data, loaded, catalog = load_inputs()
+    registry = loaded if registry is None else registry
+    bodies = load_bodies(registry)
+    pages, metadata, updates, home_projection = render(data, registry, catalog, bodies)
+    issues = validate_listing_anchors(registry, bodies, pages)
+    issues += validate_reader_roles(
+        registry, reader_documents(registry, pages, bodies), catalog
+    )
+    if issues:
+        raise ValueError("; ".join(issues))
+    return pages, metadata, updates, home_projection
+
+
+def build() -> dict[Path, str]:
+    pages, metadata, updates, home_projection = validate_build()
     home_payload = (
         bind_home_product_media(home_projection, pages["home"])
         if home_projection

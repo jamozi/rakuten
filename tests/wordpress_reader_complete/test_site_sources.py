@@ -23,12 +23,25 @@ class SiteSourceTests(unittest.TestCase):
             for p in self.site["pages"]
         }
 
+    def published_posts(self):
+        return [
+            r
+            for r in self.registry
+            if r["post_type"] == "post"
+            and (r.get("listing") or {}).get("state") == "published"
+        ]
+
     def test_all_existing_targets_have_one_source(self):
-        expected = {
-            p["post_id"] for p in self.site["pages"] + self.site["articles"]
-        } | {15, 3, 10, 120}
+        # site-map.v2.json predates the 2026-09-13 posts (KS-001); the ledger
+        # listing is the published inventory.
+        published = {r["post_id"] for r in self.published_posts()}
+        self.assertLessEqual({a["post_id"] for a in self.site["articles"]}, published)
+        expected = {p["post_id"] for p in self.site["pages"]} | {15, 3, 10, 120} | published
         self.assertEqual({r["post_id"] for r in self.registry if r["mode"] == "existing"}, expected)
         self.assertEqual(len([r for r in self.registry if r["mode"] == "existing"]), len(expected))
+        for row in self.published_posts():
+            self.assertEqual(row["mode"], "existing")
+            self.assertIs(type(row["post_id"]), int)
         for row in self.registry:
             self.assertIn(row["mode"], {"existing", "new"})
             if row["mode"] == "new":
@@ -49,14 +62,19 @@ class SiteSourceTests(unittest.TestCase):
                 self.assertTrue(any((n.tag == "a" for n in doc.nodes)))
 
     def test_each_article_is_reachable_from_category_or_public_index(self):
-        for article in self.site["articles"]:
+        for row in self.published_posts():
+            docs = [
+                self.pages[slug]
+                for slug in (row["listing"]["category"], "comparisons", "guides")
+                if slug in self.pages
+            ]
             hrefs = {
                 urlsplit(n.attrs.get("href") or "").path
-                for doc in (self.pages[article["category"]], self.pages["comparisons"], self.pages["guides"])
+                for doc in docs
                 for n in doc.nodes
                 if n.tag == "a"
             }
-            self.assertIn("/" + article["slug"] + "/", hrefs)
+            self.assertIn("/" + row["slug"] + "/", hrefs)
 
     def test_all_source_routes_and_same_page_fragments_resolve(self):
         routes = {"/", "/comparison-policy/", "/about-ad-policy/"}

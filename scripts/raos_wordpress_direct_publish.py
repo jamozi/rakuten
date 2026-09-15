@@ -281,6 +281,15 @@ def import_existing(root):
     return {"status": "IMPORTED", "article_count": len(registry["articles"])}
 
 
+def taxonomy_keys(value):
+    # PHP JSON-encodes an empty taxonomy map (e.g. a page) as [].
+    if value == []:
+        return frozenset()
+    if type(value) is not dict:
+        fail("TAXONOMIES_SHAPE_MISMATCH")
+    return frozenset(value)
+
+
 def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
     if affiliate_plan is None and (affiliate_config is not None or affiliate_fetch):
         fail("AFFILIATE_PLAN_REQUIRED")
@@ -474,6 +483,12 @@ def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affili
             for field in ("excerpt", "taxonomies", "media_ids"):
                 if field not in row:
                     document[field] = baseline[field]
+            # document() returns every taxonomy of the post type, so readback
+            # can only match a row that names exactly the baseline key set.
+            if "taxonomies" in row and taxonomy_keys(row["taxonomies"]) != (
+                taxonomy_keys(baseline.get("taxonomies"))
+            ):
+                fail("TAXONOMIES_SHAPE_MISMATCH")
         articles.append(
             {
                 **row,

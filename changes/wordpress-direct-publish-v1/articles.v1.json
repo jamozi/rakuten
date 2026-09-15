@@ -10,7 +10,25 @@
       "slug": "home",
       "title": "ホーム",
       "body_source": "changes/wordpress-direct-publish-v1/articles/home.html",
-      "excerpt": "置き場所・使い方・残る手間をもとに、暮らしの道具を比較するメディアです。商品カテゴリと悩みの両方から記事を探せます。"
+      "excerpt": "置き場所・使い方・残る手間をもとに、暮らしの道具を比較するメディアです。商品カテゴリと悩みの両方から記事を探せます。",
+      "reader_role": {
+        "page_kind": "home",
+        "primary_intent": "暮らしの道具を、置き場所・使い方・購入前の条件から選び始めたい",
+        "reader": "買う物の種類は決まり、候補がまだ決まっていない人",
+        "decision_after_reading": "どのカテゴリから読むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "商品カテゴリーから選ぶ"
+        },
+        "next_question": {
+          "question": "商品より先に困りごとがある？",
+          "target": "purposes",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "travel",
@@ -20,7 +38,25 @@
       "slug": "travel",
       "title": "スーツケースの選び方・比較",
       "excerpt": "スーツケースの各辺・総外寸・重量・容量・開口構造を比較します。利用便の制約と拡張時の条件を分けて案内します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/travel.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/travel.html",
+      "reader_role": {
+        "page_kind": "category_hub",
+        "primary_intent": "機内持ち込みサイズのスーツケースを、荷物量・使いやすさ・利用便から選びたい",
+        "reader": "小型スーツケースを検討している人",
+        "decision_after_reading": "広く比べるか、条件別の記事へ進むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "small-carry-on-suitcase-comparison",
+          "anchor": "",
+          "label": "小型スーツケースを比べる"
+        },
+        "next_question": {
+          "question": "旅のどの場面で困る？",
+          "target": "comfortable-travel",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "kitchen",
@@ -40,6 +76,24 @@
         "content_sha256": "237b5f68a3519bbedd0d17530d47ed582eb7c4c9f125cee604ecadbbd3ad7dfc",
         "revision_id": 450,
         "modified_gmt": "2026-09-09T22:51:40Z"
+      },
+      "reader_role": {
+        "page_kind": "category_hub",
+        "primary_intent": "食洗機を、洗う量と給水方法から選びたい",
+        "reader": "容量の区分がまだ決まっていない人",
+        "decision_after_reading": "コンパクト・標準・大容量のどれを読むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "standard-dishwasher-comparison",
+          "anchor": "",
+          "label": "標準容量の食洗機を比べる"
+        },
+        "next_question": {
+          "question": "選んだ機種は置き場所に収まる？",
+          "target": "dishwasher-installation-measurement",
+          "anchor": "guide-measurement-diagram",
+          "status": "live"
+        }
       }
     },
     {
@@ -50,7 +104,25 @@
       "slug": "cleaning",
       "title": "ロボット掃除機の選び方・比較",
       "excerpt": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html",
+      "reader_role": {
+        "page_kind": "category_hub",
+        "primary_intent": "ロボット掃除機を、置き場所と任せる作業から選びたい",
+        "reader": "本体と台の置き場所が気になる人",
+        "decision_after_reading": "4モデルの比較と2製品の比較のどちらを読むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "compact-robot-vacuum-shortlist",
+          "anchor": "",
+          "label": "省スペースの掃除機を比べる"
+        },
+        "next_question": {
+          "question": "2候補まで絞れたら？",
+          "target": "roomba-mini-vs-switchbot-k11-pro",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "preparedness",
@@ -60,7 +132,25 @@
       "slug": "preparedness",
       "title": "ポータブル電源の選び方・比較",
       "excerpt": "必要な容量Wh、同時使用W、起動時の条件、端子を分けて比較します。製品の違いと容量計算例へ直接進めます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/preparedness.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/preparedness.html",
+      "reader_role": {
+        "page_kind": "category_hub",
+        "primary_intent": "停電時に使う機器と時間から、ポータブル電源を選びたい",
+        "reader": "初めてポータブル電源を検討する人",
+        "decision_after_reading": "4モデルの比較とAnker内の違いのどちらを読むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "portable-power-station-guide",
+          "anchor": "",
+          "label": "停電用の電源を比べる"
+        },
+        "next_question": {
+          "question": "そもそも買い足す必要がある？",
+          "target": "prepare-outage",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "categories",
@@ -70,7 +160,25 @@
       "slug": "categories",
       "title": "商品カテゴリから探す",
       "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html",
+      "reader_role": {
+        "page_kind": "directory",
+        "primary_intent": "商品カテゴリごとに、比較記事とガイドを見たい",
+        "reader": "商品の種類は決まり、どこから読むか迷う人",
+        "decision_after_reading": "代表比較へ進むか、採寸・条件整理を先にするか",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "代表比較を読む"
+        },
+        "next_question": {
+          "question": "商品が未定なら？",
+          "target": "purposes",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "small-space",
@@ -80,7 +188,25 @@
       "slug": "small-space",
       "title": "一人暮らし・省スペース",
       "excerpt": "本体・可動部・周囲空間を分けて採寸します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/small-space.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/small-space.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "狭い部屋で、本体・可動部・周囲の空間を分けて測りたい",
+        "reader": "一人暮らしで置き場所が限られる人",
+        "decision_after_reading": "キッチンと床のどちらを先に測るか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dishwasher-installation-measurement",
+          "anchor": "",
+          "label": "食洗機の置き場所を測る"
+        },
+        "next_question": {
+          "question": "測った寸法で候補になる小型の食洗機は？",
+          "target": "compact-dishwasher-comparison",
+          "anchor": "",
+          "status": "planned:I"
+        }
+      }
     },
     {
       "article_key": "save-housework",
@@ -90,7 +216,25 @@
       "slug": "save-housework",
       "title": "家事を短くしたい",
       "excerpt": "洗い物と床掃除で、準備・片づけ・手入れを比べます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/save-housework.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/save-housework.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "家電に任せても残る作業を知りたい",
+        "reader": "洗い物か床掃除を減らしたい人",
+        "decision_after_reading": "任せる作業と自分に残る作業",
+        "main_cta": {
+          "kind": "internal",
+          "target": "countertop-dishwasher-for-small-households",
+          "anchor": "",
+          "label": "タンク式食洗機を比べる"
+        },
+        "next_question": {
+          "question": "任せた後に残る手入れは？",
+          "target": "dishwasher-cleaning-guide",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "without-installation",
@@ -100,7 +244,25 @@
       "slug": "without-installation",
       "title": "工事なしの食洗機",
       "excerpt": "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/without-installation.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/without-installation.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "分岐水栓の工事なしで食洗機を使う条件を知りたい",
+        "reader": "工事ができない住まいの人",
+        "decision_after_reading": "タンク式と外部容器からのポンプ給水のどちらにするか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "countertop-dishwasher-for-small-households",
+          "anchor": "",
+          "label": "タンク式食洗機を比べる"
+        },
+        "next_question": {
+          "question": "工事ありならどう変わる？",
+          "target": "dishwasher-branch-faucet-guide",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "easy-maintenance",
@@ -110,7 +272,25 @@
       "slug": "easy-maintenance",
       "title": "手入れを続けやすいものを選びたい",
       "excerpt": "食洗機・掃除機・スーツケースごとに確認できます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "手入れの頻度と部品を購入前に知りたい",
+        "reader": "手入れを続けられるか不安な人",
+        "decision_after_reading": "残る手入れを受け入れられるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dishwasher-cleaning-guide",
+          "anchor": "",
+          "label": "食洗機の手入れを確かめる"
+        },
+        "next_question": {
+          "question": "毎月の費用は？",
+          "target": "dishwasher-running-cost",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "comfortable-travel",
@@ -120,7 +300,25 @@
       "slug": "comfortable-travel",
       "title": "旅行の荷物・移動を楽にしたい",
       "excerpt": "階段・車内・小型機の便・宿・帰路の荷物で考えます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/comfortable-travel.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "旅の場面から、荷物と移動の困りごとを減らしたい",
+        "reader": "階段・車内・小型機の便が気になる人",
+        "decision_after_reading": "軽さ・前開き・便の条件のどれを優先するか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "lightweight-carry-on-suitcase-under-3kg",
+          "anchor": "",
+          "label": "軽いスーツケースを比べる"
+        },
+        "next_question": {
+          "question": "予約した便が100席未満なら？",
+          "target": "carry-on-suitcase-under-100-seats",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "prepare-outage",
@@ -130,7 +328,25 @@
       "slug": "prepare-outage",
       "title": "停電に備えたい",
       "excerpt": "使う機器・必要時間・場所から、買い足す必要を考えます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/prepare-outage.html",
+      "reader_role": {
+        "page_kind": "purpose_hub",
+        "primary_intent": "停電時に、手持ちの備えで足りるか判断したい",
+        "reader": "停電への備えを見直している人",
+        "decision_after_reading": "電源を買い足すかどうか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "portable-power-station-guide",
+          "anchor": "",
+          "label": "停電用の電源を比べる"
+        },
+        "next_question": {
+          "question": "Ankerの容量帯の違いは？",
+          "target": "anker-solix-c300-c800-c1000-differences",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "purposes",
@@ -140,7 +356,25 @@
       "slug": "purposes",
       "title": "悩み・目的から探す",
       "excerpt": "省スペース・残る家事・給排水・手入れ・旅行の荷物・停電への備えを、それぞれの問いから整理します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/purposes.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/purposes.html",
+      "reader_role": {
+        "page_kind": "directory",
+        "primary_intent": "悩み・目的から、読むページを探したい",
+        "reader": "商品より先に困りごとがある人",
+        "decision_after_reading": "6つの目的ページのどれを読むか",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "目的ページから選ぶ"
+        },
+        "next_question": {
+          "question": "商品が決まったら、どの比較を読む？",
+          "target": "categories",
+          "anchor": "",
+          "status": "planned:I"
+        }
+      }
     },
     {
       "article_key": "guides",
@@ -150,7 +384,25 @@
       "slug": "guides",
       "title": "選び方ガイド",
       "excerpt": "置き場所を測る、給水作業を比べる、費用を試算するなど、知りたい作業から選べます。ガイド記事と比較記事内の選び方を区別しています。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/guides.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/guides.html",
+      "reader_role": {
+        "page_kind": "directory",
+        "primary_intent": "採寸・給水・費用などを、作業ごとに確かめたい",
+        "reader": "比較の前後で特定の作業を確認したい人",
+        "decision_after_reading": "自分の機種が対象のガイドはどれか",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "ガイド記事を読む"
+        },
+        "next_question": {
+          "question": "対象外の機種はどこで確かめる？",
+          "target": "comparisons",
+          "anchor": "",
+          "status": "planned:I"
+        }
+      }
     },
     {
       "article_key": "comparisons",
@@ -160,7 +412,25 @@
       "slug": "comparisons",
       "title": "商品比較の記事一覧",
       "excerpt": "商品ごとの比較記事を、主な違いと比較対象数つきで案内します。比較表と販売条件へ直接進めます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/comparisons.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/comparisons.html",
+      "reader_role": {
+        "page_kind": "directory",
+        "primary_intent": "公開中の比較記事をまとめて見たい",
+        "reader": "比較表や販売条件へ直接進みたい人",
+        "decision_after_reading": "どの比較表・販売条件を開くか",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "比較表へ進む"
+        },
+        "next_question": {
+          "question": "先に採寸や条件を整理したい？",
+          "target": "guides",
+          "anchor": "",
+          "status": "planned:I"
+        }
+      }
     },
     {
       "article_key": "updates",
@@ -170,7 +440,25 @@
       "slug": "updates",
       "title": "新着・内容を更新した記事",
       "excerpt": "新規公開と実質的な本文変更を区別した記事一覧です。公開日・内容更新日・具体的な変更点を確認できます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/updates.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/updates.html",
+      "reader_role": {
+        "page_kind": "directory",
+        "primary_intent": "新しく公開した記事と、内容を更新した記事を分けて知りたい",
+        "reader": "以前にも記事を読んだことがある人",
+        "decision_after_reading": "新しい記事か更新された記事かを見て、読む記事を決める",
+        "main_cta": {
+          "kind": "internal",
+          "target": null,
+          "anchor": "",
+          "label": "記事を読む"
+        },
+        "next_question": {
+          "question": "日付は何を意味する？",
+          "target": "comparison-policy",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "carry-on-suitcase-comparison",
@@ -198,7 +486,52 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "travel",
+        "short_title": "スーツケースの容量と開き方",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 3,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-23T07:17:15Z",
+        "published_on": "2026-08-23",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "3機種内の軽さを明示し、クレスタのアクセス・マックスパス4のPC寸法を公式確認しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "brand_comparison",
+        "primary_intent": "エースの機内持ち込み3モデルの違いを知りたい",
+        "reader": "エースのスーツケースに絞った人",
+        "decision_after_reading": "3モデルのどれにするか、他ブランドも見るか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "他ブランドも含めて比べる？",
+          "target": "small-carry-on-suitcase-comparison",
+          "anchor": "",
+          "status": "planned:J2"
+        }
+      }
     },
     {
       "article_key": "carry-on-suitcase-under-100-seats",
@@ -226,7 +559,52 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "travel",
+        "short_title": "小型機に持ち込むスーツケース",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-29T09:34:09Z",
+        "published_on": "2026-08-29",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "通常時と拡張時を分け、60524新仕様を再確認。型番未照合の画像を非掲載にしました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "100席未満の国内線の外寸条件に合う候補を知りたい",
+        "reader": "小型機の便に乗る人",
+        "decision_after_reading": "小型機の外寸条件に収まる候補",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "100席以上の便なら、ほかの候補は？",
+          "target": "small-carry-on-suitcase-comparison",
+          "anchor": "",
+          "status": "planned:J2"
+        }
+      }
     },
     {
       "article_key": "lightweight-carry-on-suitcase-under-3kg",
@@ -260,6 +638,51 @@
         "modified_gmt": "2026-09-10T07:59:08Z",
         "content_sha256": "c978323e5461f1c45fa86da71af7e4669c78f48d4cc96136ede4beaab2b16f09",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "travel",
+        "short_title": "軽いスーツケースを比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-29T09:34:12Z",
+        "published_on": "2026-08-29",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "商品台帳を統一し、未確認条件の理由と確認先を記録しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "30L以上・3kg以下で機内持ち込みスーツケースを選びたい",
+        "reader": "持ち上げる負担を減らしたい人",
+        "decision_after_reading": "軽さと容量を両立する候補",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "条件を決める前に広く見る？",
+          "target": "small-carry-on-suitcase-comparison",
+          "anchor": "",
+          "status": "planned:J2"
+        }
       }
     },
     {
@@ -288,7 +711,57 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "travel",
+        "short_title": "前開きスーツケースを比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-29T09:34:07Z",
+        "published_on": "2026-08-29",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "開口部のアクセス経路とストッパー操作、PC寸法の未確認理由を整理しました。"
+          },
+          {
+            "date": "2026-09-15",
+            "kind": "correction",
+            "summary": "注意点の『3モデルで最軽量』を、4モデルを比べたこの記事に合わせて『比較した候補の中で最軽量』に直しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "前開き・ストッパー付きで機内持ち込みスーツケースを選びたい",
+        "reader": "車内や宿で荷物を取り出す人",
+        "decision_after_reading": "前面の構造の違いで選ぶ候補",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "ほかの条件も含めて見る？",
+          "target": "small-carry-on-suitcase-comparison",
+          "anchor": "",
+          "status": "planned:J2"
+        }
+      }
     },
     {
       "article_key": "countertop-dishwasher-for-small-households",
@@ -322,6 +795,51 @@
         "modified_gmt": "2026-09-10T07:59:05Z",
         "content_sha256": "a35010297de6a8c83656010611c2cab64bd9f77f0b4f48810a9431191686d127",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "タンク式食洗機を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-28T09:33:50Z",
+        "published_on": "2026-08-28",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "商品と確認理由を共通台帳に揃え、機種別の洗剤投入先を公式説明書から追記しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "tank_workflow_comparison",
+        "primary_intent": "タンク式食洗機で、毎回の給水と設置条件を比べたい",
+        "reader": "工事なしを前提にタンク式まで絞った人",
+        "decision_after_reading": "給水の手間と設置条件を受け入れられる候補",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "毎月いくらかかる？",
+          "target": "dishwasher-running-cost",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
@@ -350,7 +868,52 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "SOLOTAとmini Plusを比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 2,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-29T09:34:10Z",
+        "published_on": "2026-08-29",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "mini Plusの別型番を共通台帳に加え、公式の再入荷通知表示と代替候補を確認しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "head_to_head",
+        "primary_intent": "SOLOTAとラクアmini Plusの違いを確かめたい",
+        "reader": "2機種で迷っている人",
+        "decision_after_reading": "どちらにするか、または保留するか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "ほかの少量向けも見る？",
+          "target": "compact-dishwasher-comparison",
+          "anchor": "",
+          "status": "planned:J1"
+        }
+      }
     },
     {
       "article_key": "dishwasher-installation-measurement",
@@ -384,6 +947,65 @@
         "modified_gmt": "2026-09-10T04:46:35Z",
         "content_sha256": "03bf9406910b9ec2812498ceac14b4cc9bf9c5fcd771ec12f58b5d3cbe472ba4",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "食洗機の置き場所を測る",
+        "task_label": "置き場所を測る",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": null,
+        "published_at_gmt": "2026-09-08T18:16:01Z",
+        "published_on": "2026-09-09",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "採寸図を追加し、NP-TSP1の上方空間115mmと総高さからの計算値120mmを区別しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "卓上食洗機の置き場所を測る順番を知りたい",
+        "reader": "候補の機種が決まった人",
+        "decision_after_reading": "本体・扉・余白の測定値がそろったか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "countertop-dishwasher-for-small-households",
+          "anchor": "",
+          "label": "タンク式食洗機を比べる"
+        },
+        "next_question": {
+          "question": "給水と排水の方式は？",
+          "target": "dishwasher-water-supply-methods",
+          "anchor": "",
+          "status": "live"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-PANASONIC-NP-TMLK1",
+            "PRD-THANKO-RAKUA-MINI-COLOR",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-PANASONIC-NP-TSP1"
+          ],
+          "reference_product_ids": [
+            "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+            "PRD-STANDARD-DISHWASHER-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-PLUS",
+            "PRD-THANKO-TK-MDW22W"
+          ]
+        }
       }
     },
     {
@@ -418,6 +1040,71 @@
         "modified_gmt": "2026-09-10T04:46:09Z",
         "content_sha256": "7159bcf2bc0d97851c5ae960787c96821f8cef3b45d86915207e1c92259e18fc",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "給水と排水を確認する",
+        "task_label": "給水作業を比べる",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-water-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "給水容器と未接続のホースを並べた編集イメージ"
+        },
+        "published_at_gmt": "2026-09-08T18:16:05Z",
+        "published_on": "2026-09-09",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "型番別の給排水経路と、タンク給水・分岐水栓の条件を区別しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "タンク・ポンプ・分岐水栓の給水方法の違いを知りたい",
+        "reader": "給水方式がまだ決まっていない人",
+        "decision_after_reading": "工事ありと工事なしのどちらにするか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "without-installation",
+          "anchor": "",
+          "label": "工事なしの食洗機を見る"
+        },
+        "next_question": {
+          "question": "工事ありの蛇口確認は？",
+          "target": "dishwasher-branch-faucet-guide",
+          "anchor": "",
+          "status": "live"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-PANASONIC-NP-TMLK1",
+            "PRD-THANKO-RAKUA-MINI-COLOR",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-PANASONIC-NP-TSP1"
+          ],
+          "reference_product_ids": [
+            "PRD-LARGE-DISHWASHER-SS-LH451",
+            "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+            "PRD-STANDARD-DISHWASHER-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-PLUS",
+            "PRD-THANKO-TK-MDW22W"
+          ]
+        }
       }
     },
     {
@@ -452,6 +1139,70 @@
         "modified_gmt": "2026-09-10T04:46:25Z",
         "content_sha256": "f0805cf30afa6f923e7293e7699bc633107a27f0c219cb15ce08ea2440a86f79",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "食洗機の洗剤を選ぶ",
+        "task_label": "専用洗剤と量を確かめる",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-detergent-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "洗剤容器と計量スプーンを並べた編集イメージ"
+        },
+        "published_at_gmt": "2026-09-08T18:16:08Z",
+        "published_on": "2026-09-09",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "専用洗剤の種類・量・投入先を一覧化し、mini colorの公式説明書を確認しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "対象機種の専用洗剤と量を知りたい",
+        "reader": "購入の直前か直後の人",
+        "decision_after_reading": "使える洗剤と量",
+        "main_cta": {
+          "kind": "none",
+          "target": null,
+          "anchor": "",
+          "label": ""
+        },
+        "next_question": {
+          "question": "手入れの頻度は？",
+          "target": "dishwasher-cleaning-guide",
+          "anchor": "",
+          "status": "live"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-PANASONIC-NP-TMLK1",
+            "PRD-THANKO-RAKUA-MINI-COLOR",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-PANASONIC-NP-TSP1"
+          ],
+          "reference_product_ids": [
+            "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+            "PRD-STANDARD-DISHWASHER-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-PLUS",
+            "PRD-THANKO-TK-MDW22W"
+          ]
+        }
       }
     },
     {
@@ -486,6 +1237,69 @@
         "modified_gmt": "2026-09-10T04:46:31Z",
         "content_sha256": "1ae9707cc2eeb9bd8228d3ae70323f37dc20212b1c43b7d4afd8b8dab599410d",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "食洗機を手入れする",
+        "task_label": "型番別の清掃を確かめる",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-cleaning-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "フィルターと柔らかな布を並べたお手入れの編集イメージ"
+        },
+        "published_at_gmt": "2026-09-08T18:16:12Z",
+        "published_on": "2026-09-09",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "型番別の清掃チェック欄を追加し、mini colorの清掃手順を具体化しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "機種ごとの清掃箇所と頻度を知りたい",
+        "reader": "手入れを続けられるか不安な人",
+        "decision_after_reading": "手入れを続けられるか",
+        "main_cta": {
+          "kind": "none",
+          "target": null,
+          "anchor": "",
+          "label": ""
+        },
+        "next_question": {
+          "question": "毎月の費用は？",
+          "target": "dishwasher-running-cost",
+          "anchor": "",
+          "status": "live"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-PANASONIC-NP-TMLK1",
+            "PRD-THANKO-RAKUA-MINI-COLOR",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-PANASONIC-NP-TSP1"
+          ],
+          "reference_product_ids": [
+            "PRD-STANDARD-DISHWASHER-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-PLUS",
+            "PRD-THANKO-TK-MDW22W"
+          ]
+        }
       }
     },
     {
@@ -520,6 +1334,70 @@
         "modified_gmt": "2026-09-10T04:46:22Z",
         "content_sha256": "7e0b0298d2b35966efdc1d297ad9d0379835d4c6deb5d3a36cf64493f89cf8c3",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "食洗機の費用を調べる",
+        "task_label": "1回・月額を試算する",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/home-recent-cost-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "電卓と家計ノートで食洗機の費用を考える編集イメージ"
+        },
+        "published_at_gmt": "2026-09-08T18:16:15Z",
+        "published_on": "2026-09-09",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "入力なしでも読める仮の単価による1回12.65円・月379.5円の計算例を追加しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "食洗機の1回・月額の費用を式で試算したい",
+        "reader": "維持費が気になる人",
+        "decision_after_reading": "月額を許容できるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "countertop-dishwasher-for-small-households",
+          "anchor": "",
+          "label": "タンク式食洗機を比べる"
+        },
+        "next_question": {
+          "question": "洗剤の量は？",
+          "target": "dishwasher-detergent-guide",
+          "anchor": "",
+          "status": "live"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-PANASONIC-NP-TMLK1",
+            "PRD-THANKO-RAKUA-MINI-COLOR",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-PANASONIC-NP-TSP1"
+          ],
+          "reference_product_ids": [
+            "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+            "PRD-STANDARD-DISHWASHER-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-PLUS",
+            "PRD-THANKO-TK-MDW22W"
+          ]
+        }
       }
     },
     {
@@ -554,6 +1432,51 @@
         "modified_gmt": "2026-09-10T07:59:01Z",
         "content_sha256": "3746ca361aaed16d77296e7b3c1a4e6668e3f23db5988073217697e474947abb",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "cleaning",
+        "short_title": "省スペースの掃除機を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-24T09:55:06Z",
+        "published_on": "2026-08-24",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "小型・収納統合・モップ手入れの3用途に分け、K11の台の軸順未確認を統一しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "省スペースのロボット掃除機を条件で比べたい",
+        "reader": "部屋が狭く、台の置き場所が限られる人",
+        "decision_after_reading": "台の寸法と、水拭き・自動収集が必要か",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "2候補まで絞れたら？",
+          "target": "roomba-mini-vs-switchbot-k11-pro",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
@@ -582,7 +1505,52 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "cleaning",
+        "short_title": "小さい自動収集台を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 2,
+        "reference_count": 1,
+        "reference_label": "別構成",
+        "reference_unit": "件",
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-29T09:34:04Z",
+        "published_on": "2026-08-29",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "自動収集付き2機種とSlim別構成を分離し、台の軸順・設置空間を区別しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "head_to_head",
+        "primary_intent": "Roomba MiniとK11+ Proの違いを確かめたい",
+        "reader": "2製品で迷っている人",
+        "decision_after_reading": "どちらにするか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "ほかの構成も比べる？",
+          "target": "compact-robot-vacuum-shortlist",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "portable-power-station-guide",
@@ -616,6 +1584,56 @@
         "modified_gmt": "2026-09-10T04:46:26Z",
         "content_sha256": "551eec0a891e820857e2c8518859322a7d6c028ae324e2b0ee274b0e0b327fef",
         "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "preparedness",
+        "short_title": "停電用の電源を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-24T09:54:57Z",
+        "published_on": "2026-08-24",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "240Whの仮定と70/80%効率・起動負荷の例を整理し、C300の画像同一性未確認を反映しました。"
+          },
+          {
+            "date": "2026-09-15",
+            "kind": "correction",
+            "summary": "DELTA 3 Classicのサイズ表記を公式仕様どおり「幅20.0×奥行39.8×高さ28.3cm」に直しました（幅と奥行が逆でした）。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "停電用に、容量・出力・重さでポータブル電源を比べたい",
+        "reader": "初めてポータブル電源を買う人",
+        "decision_after_reading": "必要なWhと運べる重さに合う候補",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "Anker Solixの型番の違いは？",
+          "target": "anker-solix-c300-c800-c1000-differences",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
@@ -644,7 +1662,52 @@
         "note": "Current saved public document reconciled before migration to shared catalog; no live write.",
         "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.patch.json"
       },
-      "body_source": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "preparedness",
+        "short_title": "Anker電源の違いを調べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "ps-specs",
+        "offers_anchor": "ps-offers",
+        "card_image": null,
+        "published_at_gmt": "2026-08-24T09:55:17Z",
+        "published_on": "2026-08-24",
+        "home_order": null,
+        "change_log": [
+          {
+            "date": "2026-09-13",
+            "kind": "content",
+            "summary": "日本語説明書でGen2単口1500W・合計1550Wを確認し、AC/USB-C口別仕様を比較表へ追加しました。"
+          }
+        ],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "brand_comparison",
+        "primary_intent": "Anker Solixの型番ごとの違いを知りたい",
+        "reader": "Ankerに絞った人",
+        "decision_after_reading": "容量帯と世代のどれにするか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "ps-offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "ほかのメーカーも含めて比べる？",
+          "target": "portable-power-station-guide",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "about-ad-policy",
@@ -662,6 +1725,24 @@
         "content_sha256": "bf4cfa6207a90f89569346ad3024471c6fe7794e976a0037d0afbf61a22eba5c",
         "revision_id": 126,
         "modified_gmt": "2026-09-05T19:51:10Z"
+      },
+      "reader_role": {
+        "page_kind": "policy",
+        "primary_intent": "運営者と広告の扱いを知りたい",
+        "reader": "広告リンクが気になる人",
+        "decision_after_reading": "掲載情報をどう受け止めるか",
+        "main_cta": {
+          "kind": "none",
+          "target": null,
+          "anchor": "",
+          "label": ""
+        },
+        "next_question": {
+          "question": "計測や個人情報の扱いは？",
+          "target": "privacy-policy",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
@@ -680,6 +1761,24 @@
         "content_sha256": "1c31d9563b7a863c2432d6ac0aad4c3fc8206f497efafa4857ebdde0a4ce9673",
         "revision_id": 127,
         "modified_gmt": "2026-09-05T19:51:13Z"
+      },
+      "reader_role": {
+        "page_kind": "policy",
+        "primary_intent": "比較の基準と未確認情報の扱いを知りたい",
+        "reader": "根拠を確かめたい人",
+        "decision_after_reading": "掲載情報を判断材料にどう使うか",
+        "main_cta": {
+          "kind": "none",
+          "target": null,
+          "anchor": "",
+          "label": ""
+        },
+        "next_question": {
+          "question": "広告収入との関係は？",
+          "target": "about-ad-policy",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
@@ -698,57 +1797,332 @@
         "content_sha256": "63ff131523c370b2d79caf8c3bf176c7ad0096479a2cd2356e4f6d97d96c8f22",
         "revision_id": 128,
         "modified_gmt": "2026-09-05T19:51:15Z"
+      },
+      "reader_role": {
+        "page_kind": "policy",
+        "primary_intent": "計測・Cookieと個人情報の扱いを知りたい",
+        "reader": "同意の設定を見直したい人",
+        "decision_after_reading": "同意の設定を変えるか",
+        "main_cta": {
+          "kind": "none",
+          "target": null,
+          "anchor": "",
+          "label": ""
+        },
+        "next_question": {
+          "question": "広告の扱いは？",
+          "target": "about-ad-policy",
+          "anchor": "",
+          "status": "live"
+        }
       }
     },
     {
       "article_key": "compact-dishwasher-comparison",
-      "mode": "new",
-      "post_id": null,
+      "mode": "existing",
+      "post_id": 549,
       "post_type": "post",
       "title": "小型の食洗機比較｜容量・寸法と使い方",
       "slug": "compact-dishwasher-comparison",
       "excerpt": "少量向けの小型食洗機4モデルを、洗える食器の量・扉を開けた奥行・乾燥方式・毎日の手間で比較します。SOLOTAとラクアmini系の違いを整理します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "小型の食洗機を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "compact-compare",
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/kitchen-capacity-compact-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "少量の皿・茶碗・カップを並べた食器量の編集イメージ"
+        },
+        "published_at_gmt": "2026-09-13T10:57:35Z",
+        "published_on": "2026-09-13",
+        "home_order": 2,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "capacity_comparison",
+        "primary_intent": "少量をこまめに洗う小型の食洗機を比べたい",
+        "reader": "1人分の食器が中心で、置き場所が限られる人",
+        "decision_after_reading": "小型から選ぶか、標準容量へ移るか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "compact-compare",
+          "label": "比較表・販売条件へ"
+        },
+        "next_question": {
+          "question": "SOLOTAとmini Plusに絞れたら？",
+          "target": "solota-vs-rakua-mini-plus",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "standard-dishwasher-comparison",
-      "mode": "new",
-      "post_id": null,
+      "mode": "existing",
+      "post_id": 550,
       "post_type": "post",
       "title": "標準容量の食洗機比較｜16〜28点の選び方",
       "slug": "standard-dishwasher-comparison",
       "excerpt": "公称16〜28点の卓上食洗機を、食器量・本体寸法・給水方法で比較。開いた扉と周囲の余白、毎日の手入れ、購入後の費用まで確認します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/standard-dishwasher-comparison.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/standard-dishwasher-comparison.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "標準容量の食洗機を比べる",
+        "task_label": null,
+        "main_label": "掲載",
+        "main_count": 13,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "std-comparison",
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/kitchen-capacity-standard-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "皿・鉢・カップをまとめた一食分の食器量の編集イメージ"
+        },
+        "published_at_gmt": "2026-09-13T10:58:27Z",
+        "published_on": "2026-09-13",
+        "home_order": 3,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "capacity_comparison",
+        "primary_intent": "一食分をまとめて洗う標準容量の食洗機を比べたい",
+        "reader": "調理器具も含めて洗いたい人",
+        "decision_after_reading": "寸法と給水方法で候補を絞る",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "std-comparison",
+          "label": "比較表・販売条件へ"
+        },
+        "next_question": {
+          "question": "絞った機種の置き場所の測り方は？",
+          "target": "dishwasher-installation-measurement",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     },
     {
       "article_key": "large-dishwasher-comparison",
-      "mode": "new",
-      "post_id": null,
+      "mode": "existing",
+      "post_id": 551,
       "post_type": "post",
       "title": "大容量の卓上食洗機比較｜40点モデルの給水・置き場",
       "slug": "large-dishwasher-comparison",
-      "excerpt": "大容量の卓上食洗機を給水方式と置き場から比較。今回確認した公称40点モデルの寸法、開扉時の奥行、必要な余白、付属品と残る手間を整理します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/large-dishwasher-comparison.html"
+      "excerpt": "大容量の卓上食洗機を給水方式と置き場から比較。今回確認した公称40点モデルの寸法、開扉時の奥行、必要な余白、残る手間を整理します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/large-dishwasher-comparison.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "大容量の食洗機を比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 2,
+        "reference_label": "同系列の補足",
+        "reference_unit": "製品",
+        "comparison_anchor": "large-compare",
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/kitchen-capacity-large-20260913.webp",
+          "width": 900,
+          "height": 600,
+          "alt": "重ねた食器と大皿・鍋を並べたまとめ洗いの編集イメージ"
+        },
+        "published_at_gmt": "2026-09-13T10:58:06Z",
+        "published_on": "2026-09-13",
+        "home_order": 4,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "capacity_comparison",
+        "primary_intent": "まとめ洗い向けの大容量の卓上食洗機を比べたい",
+        "reader": "大皿や鍋も一緒に洗いたい人",
+        "decision_after_reading": "給水方式と置き場所から候補を決める",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "large-compare",
+          "label": "比較表・販売条件へ"
+        },
+        "next_question": {
+          "question": "分岐水栓をつけられる蛇口か？",
+          "target": "dishwasher-branch-faucet-guide",
+          "anchor": "",
+          "status": "planned:J1"
+        }
+      }
     },
     {
       "article_key": "dishwasher-branch-faucet-guide",
-      "mode": "new",
-      "post_id": null,
+      "mode": "existing",
+      "post_id": 552,
       "post_type": "post",
       "title": "分岐水栓式の食洗機｜蛇口・置き場・費用の確認",
       "slug": "dishwasher-branch-faucet-guide",
       "excerpt": "毎回の注水を省きたい方へ。卓上食洗機を分岐水栓で使う前に、蛇口の適合、住まいと置き場所、部品・工事費を確認します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "listing": {
+        "state": "published",
+        "role": "guide",
+        "category": "kitchen",
+        "short_title": "分岐水栓で使う条件を確かめる",
+        "task_label": "蛇口の品番と設置費用を確かめる",
+        "main_label": null,
+        "main_count": 0,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": null,
+        "offers_anchor": null,
+        "card_image": null,
+        "published_at_gmt": "2026-09-13T10:58:04Z",
+        "published_on": "2026-09-13",
+        "home_order": 5,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "task_guide",
+        "primary_intent": "分岐水栓式で、蛇口・置き場所・費用を確かめたい",
+        "reader": "工事ありを検討している人",
+        "decision_after_reading": "分岐水栓の取り付けを相談するか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dishwasher-water-supply-methods",
+          "anchor": "",
+          "label": "給水方法の違いを見る"
+        },
+        "next_question": {
+          "question": "分岐水栓で使える大容量の機種は？",
+          "target": "large-dishwasher-comparison",
+          "anchor": "",
+          "status": "planned:J1"
+        },
+        "scope": {
+          "primary_product_ids": [
+            "PRD-SIROCA-SS-MA251",
+            "PRD-LARGE-DISHWASHER-SS-LH451"
+          ],
+          "reference_product_ids": []
+        }
+      }
     },
     {
       "article_key": "small-carry-on-suitcase-comparison",
-      "mode": "new",
-      "post_id": null,
+      "mode": "existing",
+      "post_id": 553,
       "post_type": "post",
       "slug": "small-carry-on-suitcase-comparison",
       "title": "小型・機内持ち込みスーツケース比較｜軽さ・開き方・移動で選ぶ",
       "excerpt": "小型スーツケース12モデルを、軽さ・開き方・移動のしやすさから比較します。便ごとの持ち込み条件と、型番別の仕様・販売先を確認できます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html"
+      "body_source": "changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "travel",
+        "short_title": "小型スーツケースを比べる",
+        "task_label": null,
+        "main_label": "掲載",
+        "main_count": 12,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "specs",
+        "offers_anchor": null,
+        "card_image": {
+          "src": "/wp-content/themes/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
+          "width": 900,
+          "height": 675,
+          "alt": "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ"
+        },
+        "published_at_gmt": "2026-09-13T10:57:43Z",
+        "published_on": "2026-09-13",
+        "home_order": 1,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "broad_comparison",
+        "primary_intent": "小型・機内持ち込みスーツケースを広く比べたい",
+        "reader": "条件がまだ1つに決まっていない人",
+        "decision_after_reading": "軽さ・開き方・移動のどれを優先するか",
+        "main_cta": {
+          "kind": "offer",
+          "target": null,
+          "anchor": "offers",
+          "label": "販売条件へ"
+        },
+        "next_question": {
+          "question": "予約した便が100席未満なら？",
+          "target": "carry-on-suitcase-under-100-seats",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     }
   ]
 }

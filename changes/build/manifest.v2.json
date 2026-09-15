@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "ed625e255deaf6b99214d76440a2e77871a3533b75997ff28525bbaf6cc01dbf",
+          "sha256": "6e43b12d77fdebd8d3bb3b3a27d2f5b8c819d9f8da50ba8aa1b01ade5bdda8a1",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1961,8 +1961,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 715268,
-          "sha256": "2bd97773f93daaf40b0d13c6e925923d91fb7e3a62bfcf31ae47e77d3f71ba79",
+          "bytes": 713880,
+          "sha256": "cda283b821360ed6a91dc7e43daf2def957c9cc1e65dd8e553a467a9eebf08c5",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1986,8 +1986,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
-          "bytes": 39286,
-          "sha256": "39df2325350a1c10b052dfc1ed4b0120e2861c1dc641c545370ac88c81c4d717",
+          "bytes": 39000,
+          "sha256": "2b42a80e9c79aaee6bb5545f1e07212ed5742bc4878842a78934832703358ad1",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
         },
         {
@@ -2273,13 +2273,13 @@
           "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
         },
         {
-          "bytes": 15608,
-          "sha256": "917e6fbad859dde1e806138cff9961561af1769ee87ee4b49a402c6119762c80",
+          "bytes": 33932,
+          "sha256": "68d7176bbbf761da9128db10b5473085e4f77c4dd460a19ab3b12b1dbaea1d4a",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
         },
         {
-          "bytes": 2697,
-          "sha256": "bed9860ef3167ae483952a0c427c704633d880456fb541d54d10cf370c7aa765",
+          "bytes": 5866,
+          "sha256": "604175932d29bf678cb44688c0e1160e95eb80452110fb6ffee0cd1f3df9114d",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/categories.html"
         },
         {
@@ -2293,28 +2293,28 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
         },
         {
-          "bytes": 9250,
-          "sha256": "ca5bdab3f819e88198ada7ccb7c3e1342e51ab4a5acdfbbf948d6b6783dc9fd8",
+          "bytes": 11646,
+          "sha256": "1e1117863c53ef9987dd8cf957af632c255f20cd27689cc4f0fca2d237d8fdf4",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparisons.html"
         },
         {
           "bytes": 7622,
-          "sha256": "aa4162230af7e6cb333a258ff9e9cac1e4eb8ed50082a300c0aa4f8f4cccd7c4",
+          "sha256": "0751ebdbe7127abad50099f1550e4fdde6de9062e9551a89f2ab8d8e47be4871",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
         },
         {
-          "bytes": 5609,
-          "sha256": "5e57a40ed456180d42426a72b0f2d2a2f6097e5b48538923b9752d66a343bece",
+          "bytes": 6046,
+          "sha256": "2c7264f71c2d14f020847e1973358ef0f15f343e8e25945a9646798142d74fda",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/guides.html"
         },
         {
-          "bytes": 4830,
-          "sha256": "74993d3063866350e7bd247e5d096b434ab7649bd286ed68bbcc6dbe870bf127",
+          "bytes": 5715,
+          "sha256": "4f59c204390d710a8c58226e60bb7d3d7da136860b0803976e4bde72f3326a3e",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/home.html"
         },
         {
           "bytes": 3468,
-          "sha256": "5bb80a75657a2cf37bd19de16bad2c5eb6e0af6337a7fb261c4d463da17cc48c",
+          "sha256": "fbe4fbf1e3d55a8c90c8259fb83a0c6af28eabc71d81053af28e9578da03d062",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
         },
         {
@@ -2323,8 +2323,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/preparedness.html"
         },
         {
-          "bytes": 2787,
-          "sha256": "7ba7fb13b8acb90f7402502c6375d5ec265184b70effe1b6095583b1ada7044b",
+          "bytes": 2793,
+          "sha256": "0501c9c686444d109f3fbd0ede3b0cf252d2b5c0594a3061164214a67d0ffc16",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/purposes.html"
         },
         {
@@ -2343,8 +2343,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
-          "bytes": 8444,
-          "sha256": "c9e93202559b5de5ef6144ebd2701d25a9147f09806b4e0ee03572724a2902e6",
+          "bytes": 20190,
+          "sha256": "9d70d3292f6aa6ac01bf906800114743aea2d905b4fdba4a4256c4118d9ea96b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/updates.html"
         },
         {
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "b74de3e9a23b2b0ebb3f5a0abeb9565e2db230734fc38f7425e224590c72dce5",
+          "sha256": "79c0d19bd1c88aa7799e6c519c10354461ee1258ee64a5a0f3e8daab947893a3",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "da17c8572fda9a36e58b238768be179e1e0d342a850136c4d48a0029541d4244",
+          "sha256": "770ebdc8575dca902e2447757e9089a8ecfb3856d23baa4328ff482bddc8a7b8",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "4bdb8081b2f6d965dab07754033f2711239146be00dcf50b05a5c19098ef0f39",
+          "sha256": "ec704d2d001869f1d121ad3130f028d490acb47a31cd83cdd28c2c22bf13d28e",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "c247e313cea4b192de22a0537b2190dbd2ba3eff264b0ea2cfc1125f120f723d",
+          "sha256": "fbc5a836419a31d6a3a087a8fb75241c3500ceff6f9d56cfeef5bafccd7ced23",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

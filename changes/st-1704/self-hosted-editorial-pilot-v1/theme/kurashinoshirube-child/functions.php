@@ -13,12 +13,12 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '917e6fbad859dde1e806138cff9961561af1769ee87ee4b49a402c6119762c80';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '2bd97773f93daaf40b0d13c6e925923d91fb7e3a62bfcf31ae47e77d3f71ba79';
+const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '68d7176bbbf761da9128db10b5473085e4f77c4dd460a19ab3b12b1dbaea1d4a';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'cda283b821360ed6a91dc7e43daf2def957c9cc1e65dd8e553a467a9eebf08c5';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '17607e2228ac8a3b00647a2b5186a97d13e9ba058d4e7d6f690ae5a30d087162';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '17607e2228ac8a3b00647a2b5186a97d13e9ba058d4e7d6f690ae5a30d087162';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '32c32f5423a65cbf49c881696dc412852b4840102644695a9612b8c283b7600e';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '32c32f5423a65cbf49c881696dc412852b4840102644695a9612b8c283b7600e';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -42,6 +42,8 @@ const KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_PATH = 'assets/images/article-solota-r
 const KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_SHA256 = 'a413f3c1a70282eb0d1362959f746421bec4c1fc640f072eb045d9c4009d3374';
 const KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_PATH = 'assets/images/article-roomba-mini-k11-comparison.webp';
 const KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_SHA256 = 'a601dd1913fe0c54551e9e894666dd5dd793b36e193d47bb292e85ed22a2b1d2';
+const KURASHINOSHIRUBE_TRAVEL_SMALL_IMAGE_PATH = 'assets/images/travel-small-20260913.webp';
+const KURASHINOSHIRUBE_TRAVEL_SMALL_IMAGE_SHA256 = 'db5b597e3d7b58683f1ca7172e35d45a3e500d7f6e5b969d7b97199d1038cbed';
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
 const KURASHINOSHIRUBE_BRAND_LOGO_PATH = 'assets/images/brand-mark-512.png';
@@ -1338,6 +1340,17 @@ function kurashinoshirube_social_image_bindings(): array
         'dishwasher-detergent-guide' => $dishwasher,
         'dishwasher-cleaning-guide' => $dishwasher,
         'dishwasher-running-cost' => $dishwasher,
+        'owner-direct-549' => $dishwasher,
+        'owner-direct-550' => $dishwasher,
+        'owner-direct-551' => $dishwasher,
+        'owner-direct-552' => $dishwasher,
+        'owner-direct-553' => array(
+            KURASHINOSHIRUBE_TRAVEL_SMALL_IMAGE_PATH,
+            KURASHINOSHIRUBE_TRAVEL_SMALL_IMAGE_SHA256,
+            900,
+            675,
+            '小さなスーツケースと少量の着替えを揃えた旅支度のイメージ（商品写真ではありません）',
+        ),
     );
 }
 
@@ -3843,14 +3856,33 @@ function kurashinoshirube_reader_article_category(int $post_id): ?array
 {
     $identity = kurashinoshirube_public_article_identity($post_id);
     if ($identity === null) { return null; }
-    foreach (kurashinoshirube_reader_hubs() as $hub) {
+    $hubs = kurashinoshirube_reader_hubs();
+    $match = null;
+    foreach ($hubs as $hub) {
         if ($hub['kind'] === 'category' && in_array($identity['article_id'], $hub['article_ids'], true)) {
-            $url = kurashinoshirube_reader_hub_url($hub['slug']);
-            $label = kurashinoshirube_reader_hub_title($hub['slug']) ?? $hub['label'];
-            return $url === null ? null : array('label' => $label, 'slug' => $hub['slug'], 'url' => $url);
+            $match = $hub;
+            break;
         }
     }
-    return null;
+    if ($match === null) {
+        // Articles outside every hub take the category of their own editorial record,
+        // only when that record names this exact post ID and slug.
+        $record = kurashinoshirube_site_editorial_record($post_id);
+        if (! is_array($record) || ($record['post_id'] ?? null) !== $post_id
+            || ($record['slug'] ?? null) !== $identity['slug'] || ! is_string($record['category'] ?? null)) {
+            return null;
+        }
+        foreach ($hubs as $hub) {
+            if ($hub['kind'] === 'category' && $hub['slug'] === $record['category']) {
+                $match = $hub;
+                break;
+            }
+        }
+        if ($match === null) { return null; }
+    }
+    $url = kurashinoshirube_reader_hub_url($match['slug']);
+    $label = kurashinoshirube_reader_hub_title($match['slug']) ?? $match['label'];
+    return $url === null ? null : array('label' => $label, 'slug' => $match['slug'], 'url' => $url);
 }
 
 function kurashinoshirube_reader_hub_content(string $slug): string
@@ -5596,8 +5628,13 @@ function kurashinoshirube_emit_json_ld(): void
         );
     }
     if ($context['kind'] === 'article' && kurashinoshirube_site_editorial_record($post_id) !== null) {
-        foreach (array('datePublished' => 'published_on', 'dateModified' => 'updated_on') as $schema_key => $record_key) {
-            $date = kurashinoshirube_site_editorial_date($post_id, $record_key);
+        // Without a recorded content update dateModified repeats datePublished; WP modified is never used.
+        $published_on = kurashinoshirube_site_editorial_date($post_id, 'published_on');
+        $record_dates = array(
+            'datePublished' => $published_on,
+            'dateModified' => kurashinoshirube_site_editorial_date($post_id, 'updated_on') ?? $published_on,
+        );
+        foreach ($record_dates as $schema_key => $date) {
             if ($date === null) { unset($nodes[0][$schema_key]); }
             else { $nodes[0][$schema_key] = $date; }
         }
@@ -6529,6 +6566,16 @@ function kurashinoshirube_site_editorial_date_block(string $html, array $block):
     }
     $modified = ($block['attrs']['displayType'] ?? 'date') === 'modified';
     $date = kurashinoshirube_site_editorial_date($id, $modified ? 'updated_on' : 'published_on');
+    if ($modified && $date === null) {
+        $classes = preg_split('/\s+/', (string) ($block['attrs']['className'] ?? ''));
+        if (! in_array('raos-listing-date', $classes, true)) {
+            // No recorded content update: the header shows only the publication date.
+            return '';
+        }
+        // List cards carry only this block, so they show the publication date instead.
+        $modified = false;
+        $date = kurashinoshirube_site_editorial_date($id, 'published_on');
+    }
     $label = $modified ? '内容更新日' : '公開日';
     return '<div class="wp-block-post-date"><span class="raos-date-label">' . $label . '</span> '
         . ($date === null ? '未確認' : '<time datetime="' . esc_attr($date) . '">' . esc_html($date) . '</time>') . '</div>';

@@ -92,7 +92,12 @@ def test_curated_scope_keeps_four_identities_and_rejects_duplicate_or_missing_an
         ).read_text()
     )
     article = next(a for a in catalog["articles"] if a["kind"] == "curated_comparison")
-    assert len(article["product_ids"]) == 4 and article["post_id"] is None
+    ledger = json.loads(
+        (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
+    )["articles"]
+    row = next(r for r in ledger if r["article_key"] == article["slug"])
+    assert row["mode"] == "existing"
+    assert len(article["product_ids"]) == 4 and article["post_id"] == row["post_id"]
     article["product_ids"].append(article["product_ids"][0])
     with pytest.raises(ValueError, match="PURCHASE_CURATED_SCOPE_INVALID"):
         compile_articles(catalog, templates, guides)

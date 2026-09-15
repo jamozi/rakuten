@@ -48,15 +48,16 @@ class EntryCompletion(unittest.TestCase):
         registry = json.loads(
             (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
         )
-        for slug in (
-            "compact-dishwasher-comparison",
-            "standard-dishwasher-comparison",
-            "large-dishwasher-comparison",
-            "dishwasher-branch-faucet-guide",
+        for slug, post_id in (
+            ("compact-dishwasher-comparison", 549),
+            ("standard-dishwasher-comparison", 550),
+            ("large-dishwasher-comparison", 551),
+            ("dishwasher-branch-faucet-guide", 552),
         ):
             row = next(row for row in registry["articles"] if row["slug"] == slug)
             self.assertTrue((ROOT / row["body_source"]).is_file())
-            self.assertIsNone(row["post_id"])
+            # Published on 2026-09-13; owner-direct status delegates these ids.
+            self.assertEqual((row["mode"], row["post_id"]), ("existing", post_id))
         self.assertLess(capacity.start, choose.start)
         self.assertLess(choose.start, doc.ids["compare"].start)
         self.assertNotIn("kitchen-after-buying", doc.ids)
