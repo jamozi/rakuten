@@ -1,0 +1,173 @@
+{
+  "schema": "RAOSKSIntegratedStatusV1",
+  "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
+  "updated_at": "2026-09-15T12:40+09:00",
+  "branch": "claude/ks-emergency-20260915",
+  "base": "codex/all-pages-improvements-20260913@c506e75c",
+  "batches": {
+    "A": {
+      "tasks": [
+        "KS-007",
+        "KS-008",
+        "KS-011",
+        "KS-109"
+      ],
+      "articles": [
+        "anker-solix-c300-c800-c1000-differences",
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "cleaning",
+        "countertop-dishwasher-for-small-households",
+        "dishwasher-running-cost",
+        "front-open-carry-on-suitcase-with-stopper",
+        "large-dishwasher-comparison",
+        "portable-power-station-guide",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "small-carry-on-suitcase-comparison",
+        "solota-vs-rakua-mini-plus",
+        "standard-dishwasher-comparison"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "candidate_id": "6adf45e4c9388370c663cfc5a0765afd096589ecc59750029c6eac04022a4763",
+      "preview_origin": "http://127.0.0.1:42429",
+      "before_origin": "http://127.0.0.1:41398",
+      "published_at": "2026-09-15T03:36:19Z〜03:37:01Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "git_sync": "noop (push/PR なし。main への反映は PR で別途)"
+    },
+    "B": {
+      "tasks": [
+        "KS-019"
+      ],
+      "state": "次に着手 (KS-019。楽天 offer 再取得は実行前に再確認)",
+      "candidate_id": null,
+      "published_at": null
+    }
+  },
+  "items": {
+    "KS-001": {
+      "priority": "P0",
+      "status": "完了",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-001.md"
+      ],
+      "note": "本番 39 件 = 公開記録と一致"
+    },
+    "KS-002": {
+      "priority": "P0",
+      "status": "完了",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-002.md"
+      ]
+    },
+    "KS-003": {
+      "priority": "P0",
+      "status": "完了 (変更不要)",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-003.md"
+      ],
+      "note": "本番 4 状態を実測。説明と一致"
+    },
+    "KS-004": {
+      "priority": "P0",
+      "status": "完了 (コード変更不要) + オーナー作業",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-004.md"
+      ],
+      "note": "GA4 page_view は同意後に送信。offer_click は OFF。GSC はオーナー確認"
+    },
+    "KS-005": {
+      "priority": "P1",
+      "status": "未着手",
+      "batch": null,
+      "evidence": []
+    },
+    "KS-006": {
+      "priority": "P0",
+      "status": "承認待ち (オーナー確認表)",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-006.md"
+      ]
+    },
+    "KS-007": {
+      "priority": "P0",
+      "status": "完了 (本番公開 2026-09-15)",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-007.md"
+      ],
+      "tests": [
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_cross_page_numeric_consistency"
+      ]
+    },
+    "KS-008": {
+      "priority": "P0",
+      "status": "完了 (本番公開 2026-09-15)",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-008.md"
+      ],
+      "tests": [
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_visible_text_has_no_internal_tokens"
+      ]
+    },
+    "KS-011": {
+      "priority": "P0",
+      "status": "完了 (本番公開 2026-09-15)",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-011.md"
+      ],
+      "tests": [
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_fragment_links_resolve_to_content",
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_compat_anchor_blocks_are_empty",
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_single_h1_per_article_body"
+      ]
+    },
+    "KS-019": {
+      "priority": "P0",
+      "status": "未着手 (バッチ B)",
+      "batch": "B",
+      "evidence": []
+    },
+    "KS-027": {
+      "priority": "P1",
+      "status": "完了 (変更不要) + オーナー作業 (GSC)",
+      "batch": null,
+      "evidence": [
+        "evidence/KS-027.md"
+      ]
+    },
+    "KS-109": {
+      "priority": "P0",
+      "status": "完了 (本番公開 2026-09-15)",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-109.md"
+      ],
+      "note": "2026-09-15 ユーザー決定: 上部リンク 2 本のみ"
+    },
+    "KS-301": {
+      "priority": "P0",
+      "status": "バッチ A 完了",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-301-batch-A.md"
+      ]
+    },
+    "KS-302": {
+      "priority": "P0",
+      "status": "バッチ A 完了",
+      "batch": "A",
+      "evidence": [
+        "evidence/KS-302-batch-A.md"
+      ]
+    }
+  }
+}
