@@ -1077,7 +1077,7 @@ def render_pages(
                     "例で見る：起点と、まだ分からない範囲",
                     '<div class="ks-purpose-diagrams">'
                     + "".join(purpose_figure(figure) for figure in figures)
-                    + "</div><p>寸法図の起点を公式資料で確かめられていない型番は、この例に入れていません。</p>",
+                    + "</div><p>公式の図に寸法の矢印や起点の手がかりがない型番は、この例に入れていません。</p>",
                 )
                 + section(
                     "キッチンに置く",

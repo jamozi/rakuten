@@ -120,10 +120,10 @@ class FailsBeforeW4a(PurposeBase):
         for phrase in (
             "NP-TMLK1-K",
             "壁",
-            "図から読み取った起点",
-            "50.2cm以上",
-            "48.5cm＋1.7cm＝50.2cm",
-            "編集部の計算",
+            "図の線から読み取った起点",
+            "必要な奥行（タテ置き）：50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい",
+            "同じ図の代替テキストは「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」",
+            "48.5cmの起点も確認できていないため、この足し算では判断しません（編集部の計算）",
             "1.7cm以上",
             "排水ホース外径分を含む",
             "本体と壁の間に0.5cm以上",
@@ -131,7 +131,8 @@ class FailsBeforeW4a(PurposeBase):
             "上方5cm",
         ):
             self.assertIn(phrase, solota)
-        self.assertNotIn("背面から50.2cm", solota)
+        self.assertNotIn("公式ページはこの内訳を書いていません", solota)
+        self.assertNotIn("検算", solota)
         for phrase in (
             "K11+ Pro",
             "両側に0.5m",
@@ -196,9 +197,9 @@ class FailsBeforeW4a(PurposeBase):
         self.assertEqual(
             labels,
             [
-                "タンク式（手注ぎ）",
-                "タンク式＋別売の給水補助ポンプ",
-                "外部容器から本体が吸い上げる",
+                "①タンク式（手注ぎ）",
+                "②タンク式＋別売の給水補助ポンプ",
+                "③外部容器から本体が吸い上げる",
             ],
         )
         self.assertIn('href="https://www.thanko.jp/smartphone/page262.html"', source)
@@ -345,6 +346,54 @@ class FailsBeforeW4a(PurposeBase):
             css,
             r"body \.ks-editorial-page \.ks-purpose-diagrams\{display:grid;[^}]*minmax\(min\(100%,18rem\),1fr\)",
         )
+
+
+class W4aReviewFixes(PurposeBase):
+    def css_rule(self, css: str, selector: str) -> str:
+        found = re.findall(
+            r"(?:^|[}\n])\s*" + re.escape(selector) + r"\s*\{([^{}]*)\}", css
+        )
+        self.assertTrue(found, selector)
+        return found[0]
+
+    def test_without_installation_methods_are_three_columns_then_one(self):
+        css = THEME_CSS.read_text()
+        self.assertIn(
+            "grid-template-columns:repeat(3,minmax(0,1fr))",
+            self.css_rule(css, ".ks-no-plumbing .np-methods").replace(" ", ""),
+        )
+        third = self.css_rule(css, ".ks-no-plumbing .np-method:nth-child(3)")
+        second = self.css_rule(css, ".ks-no-plumbing .np-method:nth-child(2)")
+        self.assertIn("background", third)
+        self.assertNotEqual(third, second)
+        start = css.index("@media (max-width:600px) {\n  .ks-no-plumbing")
+        narrow = css[start : css.index("\n}\n", start)]
+        self.assertNotIn("repeat(3", narrow)
+        self.assertIn(
+            "grid-template-columns:1fr",
+            self.css_rule(narrow, ".ks-no-plumbing .np-methods").replace(" ", ""),
+        )
+
+    def test_wide_new_tables_scroll_in_their_frame_on_phones(self):
+        css = THEME_CSS.read_text()
+        source = SOURCE.read_text()
+        tables = re.findall(r"<table[^>]*>", source)
+        self.assertEqual(tables[0], '<table id="np-method-table">')
+        self.assertEqual(source.count('id="np-method-table"'), 1)
+        page = self.pages["without-installation"]
+        self.assertRegex(
+            page,
+            r'<div class="[^"]*np-table[^"]*"[^>]*>\s*<table[^>]*id="np-method-table"',
+        )
+        for table in ("#compact-space-table", "#np-method-table"):
+            rules = [
+                body
+                for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+                if table in selector
+            ]
+            joined = " ".join(rules).replace(" ", "")
+            self.assertIn("min-width:44rem!important", joined, table)
+            self.assertIn("position:sticky!important", joined, table)
 
 
 class Regression(PurposeBase):

@@ -201,10 +201,12 @@ STANDARD_HEADS = [
 STANDARD_LABELS = ["食器量", "本体 幅×奥行×高さ", "扉を開いた奥行", "給水", "乾燥"]
 # Values moved from the former details table "扉を開くと、ここまで必要".
 STANDARD_DOOR_DRY = {
-    "ss-m171": ("76cm", "送風"),
-    "pdw-m151": ("76cm", "送風"),
-    "ss-ma251": ("76cm", "送風＋自動開扉"),
-    "ss-mu251": ("76cm", "送風"),
+    # Siroca installation FAQ prints （約） on the SS-MA251/SS-MU251 and
+    # PDW-M151/SS-M171 rows (re-fetched 2026-09-16 06:26 JST).
+    "ss-m171": ("約76cm", "送風"),
+    "pdw-m151": ("約76cm", "送風"),
+    "ss-ma251": ("約76cm", "送風＋自動開扉"),
+    "ss-mu251": ("約76cm", "送風"),
     "sttdwadw": ("未確認", "温風"),
     "ax-s7": ("75cm", "温風"),
     "dws-33b-w": ("未確認", "温風"),
@@ -245,6 +247,7 @@ def test_standard_main_table_groups_door_depth_and_drying_outside_details(
         door, dry = STANDARD_DOOR_DRY[key]
         assert "扉を開いた奥行" + squash(door) in squash(groups[1].text()), key
         assert squash(groups[3].text()).startswith("乾燥" + squash(dry)), key
+    assert not re.search(r"(?<!約)76cm", squash(root.text()))
     tsp1 = next(r for r in rows if r.attrs["data-product-key"] == "np-tsp1-w")
     assert all(token in squash(tsp1.text()) for token in ("43.3cm", "38.6", "36.2"))
     details = by_id(root, "std-reference-details")
@@ -381,7 +384,7 @@ SPACE_HEADS = [
     "説明書の設置余白",
     "可燃物からの離隔（説明書）",
     "設置案内の図の寸法",
-    "必要な奥行（後面の余白＋開扉時の奥行）",
+    "必要な奥行（公式資料の記載）",
 ]
 
 
@@ -413,7 +416,15 @@ def test_compact_space_table_keeps_source_kinds_apart(compiled) -> None:
     name, door, manual, flammable, figure, required, origin = rows[SOLOTA]
     assert "NP-TMLK1-K" in name
     assert cm(solota["door_depth_mm"]) in door and "＜485＞" in door
-    assert cm(solota["rear_mm"]) in figure and "50.2cm" in figure
+    assert cm(solota["rear_mm"]) in figure and "50.2cm" not in figure
+    assert origin == "official"
+    assert required.startswith("50.2cm以上")
+    for phrase in (
+        "「50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい」",
+        "代替テキストは「背面から50.2cm以上」",
+        "図の線から",
+    ):
+        assert phrase in required, phrase
     assert "1.7cm" not in manual and "1.7cm" not in flammable
     assert all(t in flammable for t in ("上方5cm", "側方0.5cm", "後方0.5cm"))
     name, door, manual, flammable, figure, required, origin = rows[COLOR]
@@ -450,8 +461,9 @@ def test_compact_space_table_keeps_source_kinds_apart(compiled) -> None:
             MINI: 594,
             PLUS: 594,
         }[pid]
-        if origin == "confirmed":
-            assert required == cm(rear + depth), pid
+        assert rear and depth
+        if origin == "official":
+            assert pid == SOLOTA
         else:
             assert origin == "unconfirmed", pid
             assert required.startswith("判定保留"), pid
@@ -459,7 +471,103 @@ def test_compact_space_table_keeps_source_kinds_apart(compiled) -> None:
     text = squash(space.text())
     assert not MEASUREMENT_CLAIM.search(text)
     assert "実機で測ったものではありません" in text
-    assert "本体が同じでも置き場に必要な空間が違う" in text
+    assert (
+        squash(
+            "ラクアmini系3製品は本体寸法が同じでも、説明書が指定する設置の余白はmini colorだけ違う"
+        )
+        in text
+    )
+    assert "置き場に必要な空間が違う" not in text
+    assert (
+        "48.5cmの起点も確認できていないため、この足し算では判断しません（編集部の計算）"
+        in text
+    )
+    assert "照合する欄" not in text
+    assert (
+        "置き場所の測り方のガイドでも、扉を開けたときの奥行と本体の後ろの余白は別々に書き込んで確かめます。"
+        in text
+    )
+    note = squash(by_id(root, "compact-space").text())
+    assert "下の表で図から確認できた範囲だけを示します" not in note
+
+
+PUMP_FAQ_WORDING = "別売の給水補助ポンプは使用できません（過去のセット販売品を除く）"
+
+
+def test_compact_mini_pump_wording_follows_the_faq(compiled) -> None:
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[COMPACT])
+    body = squash(root.text())
+    for old in ("現行の別売ポンプは非対応", "現行の別売給水ポンプには対応していません"):
+        assert old not in body, old
+    card = squash(by_id(root, "compact-choice-amount").text())
+    assert PUMP_FAQ_WORDING in card
+    assert body.count(PUMP_FAQ_WORDING) == 4
+
+
+def test_measurement_guide_does_not_fix_the_open_door_origin(compiled) -> None:
+    _, _, outputs, _ = compiled
+    body = outputs[MEASURE]
+    for old in ("背面基準線", "背面から開いた扉の先端まで"):
+        assert old not in body, old
+    assert (
+        "④は各メーカーが示す開扉時の奥行です。どこから測った値かは型番の公式図で確かめ、"
+        "確認できない場合は本体奥行に足しも引きもしません。"
+    ) in body
+
+
+COLOR_CLEARANCE_LOCATOR = "取扱説明書 p.10 設置場所について"
+
+
+def test_mini_color_clearance_follows_the_printed_manual_words(compiled) -> None:
+    catalog, _, outputs, _ = compiled
+    product = product_of(catalog, COLOR)
+    fact = next(f for f in product["facts"] if f["label"] == "必要な余白")
+    guide = next(f for f in product["guide_facts"] if f["field"] == "clearance")
+    assert fact["text"] == "上面500mm・後面50mm・側面50mm以上、熱源から150mm以上"
+    assert guide["text"].startswith("上面500mm、後面50mm、側面50mm以上")
+    for record in (fact, guide):
+        assert record["locator"] == COLOR_CLEARANCE_LOCATOR
+        assert "左右" not in record["text"]
+    assert installation_consistency_mismatches(product) == []
+    countertop = squash(fragment(outputs[COUNTERTOP]).text())
+    measure = squash(fragment(outputs[MEASURE]).text())
+    assert "上500mm／背面50mm／左右各50mm" not in countertop
+    assert "上面500mm・後面50mm・側面50mm以上" in countertop
+    assert "上方500mm、背面50mm、左右それぞれ" not in measure
+    assert "上面500mm、後面50mm、側面50mm以上" in measure
+    assert squash(COLOR_CLEARANCE_LOCATOR) in countertop + measure
+
+
+ALT_50_2 = "「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」"
+
+
+def test_solota_required_depth_quotes_the_official_figure_and_alt_text(
+    compiled,
+) -> None:
+    catalog, _, outputs, _ = compiled
+    product = product_of(catalog, SOLOTA)
+    records = [f for f in product["facts"] if f["label"] == "必要な余白"] + [
+        f for f in product["guide_facts"] if f["field"] == "clearance"
+    ]
+    assert len(records) == 2
+    for record in records:
+        assert "50.2cm以上あればドアが水栓・蛇口に当たりにくい" in record["text"]
+        assert ALT_50_2 in record["locator"]
+        assert "図の線から" in record["text"]
+        assert "48.5" not in record["text"]
+    for key in (COUNTERTOP, MEASURE, PAIR):
+        assert squash(ALT_50_2) in squash(fragment(outputs[key]).text()), key
+
+
+def test_ledger_summary_for_the_compact_space_table_is_exact() -> None:
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    article = next(a for a in ledger["articles"] if a["slug"] == COMPACT)
+    entry = next(
+        c for c in article["listing"]["change_log"] if c["date"] == "2026-09-16"
+    )
+    assert "説明書の設置余白を出典の種類ごとに分けた表を追加" in entry["summary"]
+    assert "置き場所に必要な空間" not in entry["summary"]
 
 
 def test_space_table_leaves_the_measurement_guide_references_unchanged(

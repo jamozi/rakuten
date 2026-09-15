@@ -32,7 +32,7 @@
           "KS-016",
           "KS-201a"
         ],
-        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：冒頭カードを3枚（向く人1行・決め手2つ・注意1つ）にして購入枠を7から4へ、03のカードは内部リンクだけ、#compact-care に41への導線、#compact-space にラクアmini系3製品の必要空間の表（6列、出典の種類を列で分け、必要な奥行は4商品とも判定保留）。",
+        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：冒頭カードを3枚（向く人1行・決め手2つ・注意1つ）にして購入枠を7から4へ、03のカードは内部リンクだけ、#compact-care に41への導線、#compact-space に説明書の設置余白を出典の種類ごとに分けた表（6列。必要な奥行はSOLOTAだけ設置案内の図の50.2cm以上と代替テキストの「背面から」を併記し、mini系3製品は判定保留。スマートフォンでは表の枠内で横に動かす）。mini TK-MDW22W の別売ポンプの記載をFAQの「使用できません」と過去のセット販売品の例外にそろえた。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",

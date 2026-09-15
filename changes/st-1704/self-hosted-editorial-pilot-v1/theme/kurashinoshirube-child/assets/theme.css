@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 590ba85d36dd21ee0dc157edd6b0b127582ab5dbe5c6c2990e2a97a9a8b72c8d;
+  --raos-theme-runtime-revision-base: 190a99f1f4018f79d0663061d83e48f114215c0ec6f1ce639ece42d456f59eae;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4513,9 +4513,10 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-no-plumbing > section { margin-top:3.5rem; }
 .ks-no-plumbing h2 { font-size:clamp(1.4rem,2.3vw,1.8rem); line-height:1.5; }
 .ks-no-plumbing p { line-height:1.85; }
-.ks-no-plumbing .np-methods { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1.5rem 0 1rem; }
+.ks-no-plumbing .np-methods { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin:1.5rem 0 1rem; }
 .ks-no-plumbing .np-method { border-top:3px solid #7d9782; padding:1.15rem 1.35rem; background:var(--np-paper); }
 .ks-no-plumbing .np-method:nth-child(2) { border-color:#8a9eaa; background:#f0f4f6; }
+.ks-no-plumbing .np-method:nth-child(3) { border-color:#a49378; background:#f6f2ea; }
 .ks-no-plumbing .np-method-label { font-size:.75rem; font-weight:700; margin:0; }
 .ks-no-plumbing .np-method h3 { margin:.3rem 0 .9rem; font-size:1.35rem; }
 .ks-no-plumbing .np-method > p:last-child { font-size:.92rem; margin-bottom:0; }
@@ -4530,6 +4531,10 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-no-plumbing .np-table tbody th { background:#f7f8f4; }
 .ks-no-plumbing .np-table tr:last-child > * { border-bottom:0; }
 .ks-no-plumbing .np-model-code { white-space:nowrap; }
+/* The 4-column method table keeps its columns on phones and scrolls inside .np-table, with the sticky first column used by .sc-airline-table. */
+.ks-no-plumbing .np-table > table#np-method-table { min-width:44rem!important; }
+.ks-no-plumbing #np-method-table th:first-child { position:sticky!important; left:0; z-index:2; }
+.ks-no-plumbing #np-method-table thead th:first-child { z-index:5; }
 .ks-no-plumbing .np-examples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; margin:1rem 0; }
 .ks-no-plumbing .np-examples p { margin:0; font-size:.92rem; padding-left:1rem; border-left:2px solid #a9baa8; }
 .ks-no-plumbing .np-checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.4rem 2rem; padding-left:1.5rem; margin-top:1.4rem; }
@@ -4551,10 +4556,10 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 @media (max-width:600px) {
   .ks-no-plumbing .np-hero img { aspect-ratio:3/2; }
   .ks-no-plumbing > section { margin-top:2.5rem; }
-  .ks-no-plumbing .np-methods { gap:.65rem; }
+  .ks-no-plumbing .np-methods { grid-template-columns:1fr; gap:.65rem; }
   .ks-no-plumbing .np-method { padding:.8rem .7rem; }
   .ks-no-plumbing .np-method h3 { font-size:1.14rem; }
-  .ks-no-plumbing .np-method-label { min-height:2.8em; font-size:.7rem; line-height:1.4; }
+  .ks-no-plumbing .np-method-label { font-size:.7rem; line-height:1.4; }
   .ks-no-plumbing .np-method > p:last-child { font-size:.82rem; }
   .ks-no-plumbing .np-flow { gap:.35rem; font-size:.71rem; }
   .ks-no-plumbing .np-flow strong { padding:.2rem .35rem; }
@@ -4873,6 +4878,10 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 
 .small-carry-on-comparison .sc-airline-table thead th:first-child { z-index:5; background:#eef3ed; }
 .small-carry-on-comparison .sc-airline-table small { display:block; }
+/* 549 space table: same frame and sticky first column as .sc-airline-table; the 6 columns scroll inside .ps-table-scroll on phones. */
+.compact-draft .ps-table-scroll > table#compact-space-table { min-width:44rem!important; }
+.compact-draft #compact-space-table th:first-child { position:sticky!important; left:0; z-index:2; }
+.compact-draft #compact-space-table thead th:first-child { z-index:5; }
 
 /* Large article only. Preserve the common body, original media and commerce bindings. */
 .ks-large-guide .lg-integrated-comparison .lg-scroll-hint{display:none}

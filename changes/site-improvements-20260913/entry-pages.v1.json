@@ -314,7 +314,7 @@
           "exact_model": "NP-TMLK1-K",
           "caption": "食洗機の例：パナソニック SOLOTA NP-TMLK1-K（タテ置き）",
           "diagram": [
-            "［壁］…起点",
+            "［壁］…図の線で読んだ起点",
             "　↓本体と壁のあき1.7cm以上",
             "［本体］奥行約22.5cm",
             "［開いた扉の先端］",
@@ -324,10 +324,10 @@
           ],
           "origin": {
             "label": "起点",
-            "text": "壁。図から読み取った起点です。50.2cmの矢印は、開いた扉の先より外側の線から「壁」と書かれた線まで引かれています。図の文字に「壁から」とは書かれていません",
+            "text": "壁。図の線から読み取った起点です。50.2cmの矢印は、開いた扉の先より外側の線から「壁」と書かれた線まで引かれています。図の文字に「壁から」とは書かれておらず、同じ図の代替テキストは「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」と書いています",
             "state": "KNOWN",
             "source_url": "https://panasonic.jp/dish/installation.html",
-            "locator": "「5．パーソナルタイプ」タテ置きの図（installation-30.png）",
+            "locator": "「5．パーソナルタイプ」タテ置きの図（installation-30.png）の線と代替テキスト",
             "checked_at": "2026-09-16"
           },
           "facts": [
@@ -340,11 +340,11 @@
               "checked_at": "2026-09-16"
             },
             {
-              "label": "水栓・蛇口までの目安",
+              "label": "必要な奥行（タテ置き）",
               "text": "50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい",
               "state": "KNOWN",
               "source_url": "https://panasonic.jp/dish/installation.html",
-              "locator": "タテ置きの図（installation-30.png）",
+              "locator": "タテ置きの図（installation-30.png）。代替テキスト「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」",
               "checked_at": "2026-09-16"
             },
             {
@@ -389,8 +389,8 @@
             }
           ],
           "calculation": {
-            "label": "検算",
-            "text": "開扉時奥行48.5cm＋1.7cm＝50.2cm。公式ページはこの内訳を書いていません",
+            "label": "足し算",
+            "text": "48.5cmと1.7cmを足すと50.2cmになりますが、内訳は公式に書かれておらず、48.5cmの起点も確認できていないため、この足し算では判断しません",
             "state": "CALCULATED"
           },
           "unknowns": [
