@@ -57,10 +57,12 @@ def main() -> int:
         diff_file = out / f"{key}.text.diff"
         diff = diff_file.read_text(encoding="utf-8") if diff_file.is_file() else ""
         body = "".join(
-            f"<span class='del'>{html.escape(l)}</span>\n" if l.startswith("-") and not l.startswith("---")
-            else f"<span class='add'>{html.escape(l)}</span>\n" if l.startswith("+") and not l.startswith("+++")
-            else html.escape(l) + "\n"
-            for l in diff.splitlines()
+            f"<span class='del'>{html.escape(line)}</span>\n"
+            if line.startswith("-") and not line.startswith("---")
+            else f"<span class='add'>{html.escape(line)}</span>\n"
+            if line.startswith("+") and not line.startswith("+++")
+            else html.escape(line) + "\n"
+            for line in diff.splitlines()
         )
         parts.append(
             f"<details open><summary>可視テキスト差分 ({html.escape(delta)})</summary><pre>"
