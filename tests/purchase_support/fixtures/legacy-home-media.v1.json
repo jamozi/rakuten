@@ -1,0 +1,722 @@
+{
+  "purpose": "Historical unit fixture for the inactive six-product homepage projection; not the anonymous current homepage or publication input.",
+  "catalog": {
+    "products": [
+      {
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "exact_model": "NP-TMLK1-K",
+        "name": "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K",
+        "anchor": "product-dish-np-tmlk1",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "RAKUTEN_GENERATED_VERBATIM",
+          "source_registry": "assets/rakuten-product-media.json",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "source_sha256": {
+            "240": "4d3c7ae9748063005aef9ffb120b0c1a64bb643b5b1dde6c8a15cc393195a0f4",
+            "300": "d8bbdc9a84c82e68263b4e6871f59f4957e86ed8146968553ff1f54a476201f5"
+          },
+          "checked_on": "2026-09-10",
+          "record_sha256": "2e414d4d6650ed1fc9e50f0bf851ad17e202eb0fc97f6dbfd9e2b74af1985e97"
+        }
+      },
+      {
+        "product_id": "PRD-SIROCA-SS-MA251",
+        "exact_model": "SS-MA251",
+        "name": "シロカ 食器洗い乾燥機 SS-MA251",
+        "anchor": "product-dish-ss-ma251",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "RAKUTEN_GENERATED_VERBATIM",
+          "source_registry": "assets/rakuten-product-media.json",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "source_sha256": {
+            "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
+            "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
+          },
+          "checked_on": "2026-09-10",
+          "record_sha256": "8f55fea1f4b21f13ad4c8a45ac62b260bb01d8c0c2fde97ea2b29809c831f77a"
+        }
+      },
+      {
+        "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "exact_model": "01521-09",
+        "name": "PROTECA エアロフレックスDX2 01521",
+        "anchor": "aeroflex-dx2-01521",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "RAKUTEN_GENERATED_VERBATIM",
+          "source_registry": "assets/rakuten-product-media.json",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "source_sha256": {
+            "240": "22863736527e3f0b3dbc39c9ba4f992ee35c75f2542b0c0a2f52283247251065",
+            "300": "e4836d1334abbe42a291f4ffecb3d1a23880d0437ca902245db15ed11f887b85"
+          },
+          "checked_on": "2026-09-10",
+          "record_sha256": "a9c6c7dc0e12ec861380c416a4c8aa07a60f94a4f6483fc79c0833c67b8699be"
+        }
+      },
+      {
+        "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "exact_model": "CS2*09007 / 134679-1041",
+        "name": "Samsonite C-Lite（シーライト）CS2*09007",
+        "anchor": "samsonite-c-lite-cs2-09007",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "RAKUTEN_GENERATED_VERBATIM",
+          "source_registry": "assets/rakuten-product-media.json",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "source_sha256": {
+            "240": "e1a507dc4859df7baab1e156957f419d5b87e1c365fd9370436f8116e16edcbf",
+            "300": "09c9fd1295c85301d8d8b82f46ebebcfc77e31ffc116d442a79576edf8b92fa5"
+          },
+          "checked_on": "2026-09-10",
+          "record_sha256": "95b4b881bdb0a51944e0dd28ba2470cff652213b3b65e49217404ad44742f419"
+        }
+      },
+      {
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "exact_model": "F155260",
+        "name": "iRobot Roomba Mini + AutoEmpty F155260",
+        "anchor": "product-robot-roomba-mini",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "OFFICIAL_PUBLICATION_KIT",
+          "source_asset": "assets/images/roomba-mini-official.jpg",
+          "source_sha256": "99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "checked_on": "2026-09-10"
+        }
+      },
+      {
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "exact_model": "K11+ Pro",
+        "name": "SwitchBot（スイッチボット）ロボット掃除機 K11+ Pro",
+        "anchor": "product-robot-k11-pro",
+        "image_review": {
+          "state": "VERIFIED_REGISTERED_MEDIA",
+          "basis": "RAKUTEN_GENERATED_VERBATIM",
+          "source_registry": "assets/rakuten-product-media.json",
+          "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+          "source_sha256": {
+            "240": "04730e70837f6ffb2d8414e45548c40da69c6c79dcb98d5c516731496e256073",
+            "300": "4831f1874093a539e569417d1e33afdf1d69d1d932c9e4100a7a019a679e108a"
+          },
+          "checked_on": "2026-09-10",
+          "record_sha256": "a609af08ad2440a3668d0784266a5eca3ff6766aa1b92da40230e5d306c55c8b"
+        }
+      }
+    ],
+    "offers": [
+      {
+        "offer_id": "siroca-ss-ma251-silver",
+        "product_id": "PRD-SIROCA-SS-MA251",
+        "product_model": "SS-MA251",
+        "seller_id": "siroca",
+        "seller": "シロカ公式通販",
+        "url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+        "source_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+        "source_urls": [
+          "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+          "https://www.siroca.co.jp/im/ss-ma251.pdf"
+        ],
+        "checked_at": "2026-09-12T10:59:00+00:00",
+        "valid_until": "2026-09-13T10:59:00+00:00",
+        "price_yen": 59800,
+        "shipping_yen": null,
+        "required_items_yen": null,
+        "state": "AVAILABLE",
+        "condition": "new",
+        "variant": "SS-MA251 シルバー・オートオープン・新品。SS-MU251（UV除菌タイプ）と共通の販売ページです。注文前に「オートオープンタイプ/シルバー(SS-MA251)」が選択されていることを確認してください（2026年9月12日にこのリンク先でSS-MA251が選択済み・価格は販売先で確認・カート追加可の表示を確認）。",
+        "warranty": "購入から1年。会員特典の延長は登録条件あり。",
+        "delivery": "届け先・注文画面で確認",
+        "price_scope": "沖縄・離島等の送料、洗剤・設置用品が未確定のため小計。",
+        "identity_verified": true,
+        "total_scope_complete": false,
+        "affiliate": false,
+        "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+        "merchant_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+        "affiliate_url": null,
+        "variant_id": "siroca-ss-ma251-silver",
+        "verified_at": "2026-09-12T10:59:00+00:00"
+      },
+      {
+        "offer_id": "ace-01521-09",
+        "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "product_model": "01521-09",
+        "seller_id": "ace",
+        "seller": "エース公式通販",
+        "url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+        "source_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+        "source_urls": [
+          "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+          "https://store.ace.jp/shop/pages/help_derivery.aspx"
+        ],
+        "checked_at": "2026-09-10T01:43:25+00:00",
+        "valid_until": "2026-09-11T01:43:25+00:00",
+        "price_yen": 82500,
+        "shipping_yen": 0,
+        "required_items_yen": 0,
+        "state": "AVAILABLE",
+        "condition": "new",
+        "variant": "01521-09 グレー×ホワイト・35L・新品",
+        "warranty": "製品保証10年、プレミアムケア3年。各保証規定に従う。",
+        "delivery": "当日出荷の案内あり。締切・休業日・届け先で変動。",
+        "price_scope": "国内通常配送・通常の荷物収納に必要な本体。任意ラッピングや支払手数料は含めない。",
+        "identity_verified": true,
+        "total_scope_complete": true,
+        "affiliate": false,
+        "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+        "merchant_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+        "affiliate_url": null,
+        "variant_id": "ace-01521-09",
+        "verified_at": "2026-09-10T01:43:25+00:00"
+      },
+      {
+        "offer_id": "irobot-f155260-white",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "product_model": "F155260",
+        "seller_id": "irobot",
+        "seller": "アイロボット公式ストア",
+        "url": "https://store.irobot-jp.com/item/F155260.html",
+        "source_url": "https://store.irobot-jp.com/item/F155260.html",
+        "source_urls": [
+          "https://store.irobot-jp.com/item/F155260.html",
+          "https://store.irobot-jp.com/ext/guide.html",
+          "https://store.irobot-jp.com/ext/terms.html"
+        ],
+        "checked_at": "2026-09-10T01:43:25+00:00",
+        "valid_until": "2026-09-11T01:43:25+00:00",
+        "price_yen": 49800,
+        "shipping_yen": 0,
+        "required_items_yen": 0,
+        "state": "PREORDER",
+        "condition": "new",
+        "variant": "F155260 白（SHIRO）・AutoEmpty付き・新品",
+        "warranty": "メーカー保証1年。公式の延長特典は対象商品・登録などの条件を要確認。",
+        "delivery": "予約受付。9月中旬入荷予定、前後する可能性あり。",
+        "price_scope": "本体と付属消耗品の初回使用分。予約品のため予算内の確定候補へは自動分類しない。",
+        "identity_verified": true,
+        "total_scope_complete": false,
+        "affiliate": false,
+        "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+        "merchant_url": "https://store.irobot-jp.com/item/F155260.html",
+        "affiliate_url": null,
+        "variant_id": "irobot-f155260-white",
+        "verified_at": "2026-09-10T01:43:25+00:00"
+      },
+      {
+        "offer_id": "switchbot-k11-pro-ivory",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "product_model": "K11+ Pro",
+        "seller_id": "switchbot",
+        "seller": "SwitchBot公式サイト",
+        "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+        "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+        "source_urls": [
+          "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "https://www.switchbot.jp/pages/payments-shipping-policy",
+          "https://www.switchbot.jp/pages/robot-vacuum-cleaner-support"
+        ],
+        "checked_at": "2026-09-10T01:43:25+00:00",
+        "valid_until": "2026-09-11T01:43:25+00:00",
+        "price_yen": 59800,
+        "shipping_yen": 0,
+        "required_items_yen": null,
+        "state": "AVAILABLE",
+        "condition": "new",
+        "variant": "K11+ Pro アイボリー・SKU 810224630279JP・新品",
+        "warranty": "公式または正規販売店での購入は2年間。修理時送料等は規定に従う。",
+        "delivery": "通常は入金後1〜3営業日。商品別案内を優先。",
+        "price_scope": "箱に含まれる消耗品を追加照合中。カート操作時の割引は未適用。",
+        "identity_verified": true,
+        "total_scope_complete": false,
+        "affiliate": false,
+        "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+        "merchant_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+        "affiliate_url": null,
+        "variant_id": "switchbot-k11-pro-ivory",
+        "verified_at": "2026-09-10T01:43:25+00:00"
+      },
+      {
+        "offer_id": "samsonite-c-lite-134679-1041",
+        "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "product_model": "CS2*09007 / 134679-1041",
+        "seller_id": "samsonite",
+        "seller": "サムソナイト公式ストア",
+        "url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+        "merchant_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+        "affiliate_url": null,
+        "affiliate": false,
+        "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+        "source_urls": [
+          "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html"
+        ],
+        "checked_at": "2026-09-12T10:38:00+00:00",
+        "verified_at": "2026-09-12T10:38:00+00:00",
+        "valid_until": "2026-09-13T10:38:00+00:00",
+        "price_yen": 83600,
+        "shipping_yen": null,
+        "required_items_yen": null,
+        "state": "AVAILABLE",
+        "condition": "new",
+        "variant_id": "134679-1041",
+        "variant": "CS2*09007 / 134679-1041 ブラック・55cm・36L（拡張時42L）・新品",
+        "warranty": "条件付き10年。電子機器部分は購入後1年。保証規定に従う。",
+        "delivery": "届け先・注文画面で確認",
+        "price_scope": "本体の税込表示。送料・必須費用を含む総額は未確認。",
+        "identity_verified": true,
+        "total_scope_complete": false,
+        "link_basis": "公式商品ページのSKU CS2*09007、ブラック（134679-1041）、税込83,600円、在庫あり表示を2026年9月12日に確認。通常リンク。"
+      },
+      {
+        "offer_id": "panasonic-rakuten-np-tmlk1-k",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "product_model": "NP-TMLK1-K",
+        "seller_id": "panasonic-store-rakuten",
+        "seller": "Panasonic Store Plus 楽天市場店",
+        "url": "https://item.rakuten.co.jp/panasonic-store/np-tml1-w/",
+        "source_url": "https://item.rakuten.co.jp/panasonic-store/np-tml1-w/",
+        "source_urls": [
+          "https://item.rakuten.co.jp/panasonic-store/np-tml1-w/",
+          "https://www.rakuten.co.jp/panasonic-store/info.html",
+          "https://www.rakuten.co.jp/panasonic-store/info2.html"
+        ],
+        "checked_at": "2026-09-10T14:23:58.738Z",
+        "valid_until": "2026-09-11T14:23:58.738000+00:00",
+        "price_yen": 37965,
+        "shipping_yen": null,
+        "required_items_yen": null,
+        "state": "AVAILABLE",
+        "condition": "new",
+        "variant": "NP-TMLK1-K ブラック・新品。白との共通販売ページで「ブラック」を選択してください。",
+        "warranty": "商品ページにメーカー1年保証の表示。適用条件は注文前に確認。",
+        "delivery": "届け先の納期は未確認。",
+        "price_scope": "税込本体の表示価格。送料は商品画面と店舗共通案内の条件を届け先ごとに再確認。洗剤・設置用品を含む総額は未確定。",
+        "identity_verified": true,
+        "total_scope_complete": false,
+        "affiliate": false,
+        "link_basis": "メーカー運営店の商品ページへの通常リンク。広告用URLや計測パラメーターは使用しない。",
+        "merchant_url": "https://item.rakuten.co.jp/panasonic-store/np-tml1-w/",
+        "affiliate_url": null,
+        "variant_id": "np-tmlk1-k",
+        "verified_at": "2026-09-10T14:23:58.738Z"
+      }
+    ],
+    "articles": [
+      {
+        "article_id": "countertop-dishwasher-for-small-households",
+        "post_id": 41,
+        "slug": "countertop-dishwasher-for-small-households",
+        "kind": "comparison",
+        "product_ids": [
+          "PRD-PANASONIC-NP-TMLK1",
+          "PRD-THANKO-RAKUA-MINI-COLOR",
+          "PRD-SIROCA-SS-MA251",
+          "PRD-PANASONIC-NP-TSP1"
+        ],
+        "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
+        "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機4モデルを、本体寸法・食器点数・給水方式・乾燥方式で比較。開扉時の寸法や余白などの設置条件と、確認日つきの販売条件も整理します。",
+        "conditions": [
+          {
+            "id": "one-person",
+            "label": "一食分が少なく、本体奥行を抑えたい",
+            "product_ids": [
+              "PRD-PANASONIC-NP-TMLK1"
+            ]
+          },
+          {
+            "id": "small-warm",
+            "label": "小型で温風乾燥も使いたい",
+            "product_ids": [
+              "PRD-THANKO-RAKUA-MINI-COLOR"
+            ]
+          },
+          {
+            "id": "two-way",
+            "label": "16点程度と給水2WAYを優先",
+            "product_ids": [
+              "PRD-SIROCA-SS-MA251"
+            ]
+          },
+          {
+            "id": "more-dishes",
+            "label": "大きめの食器量をまとめたい",
+            "product_ids": [
+              "PRD-PANASONIC-NP-TSP1"
+            ]
+          }
+        ],
+        "spec_labels": [
+          "本体寸法（幅×奥行×高さ）",
+          "標準食器点数",
+          "乾燥・扉",
+          "給水方式"
+        ],
+        "spec_detail_labels": [
+          "公表使用水量（条件は機種別）",
+          "開扉時の寸法",
+          "必要な余白"
+        ],
+        "intro": "食後の洗い物を減らしたい方へ。タンク式4機種を、食器の量・置き場所・毎回の作業で比べます。選ぶ理由と、給水・片付けなど残る手間を整理しました。",
+        "post_type": "post",
+        "legacy_anchor_targets": {
+          "blk-dish-003-title": "ps-choose",
+          "blk-dish-007-title": "ps-specs",
+          "blk-dish-008-title": "ps-products",
+          "dish-start": "ps-choose",
+          "dish-start-title": "ps-choose",
+          "blk-dish-016-title": "ps-offers",
+          "product-dish-np-tmlk1-caution": "product-dish-np-tmlk1",
+          "product-dish-np-tmlk1-cta-note": "ps-seller-product-dish-np-tmlk1",
+          "product-dish-rakua-mini-color-caution": "product-dish-rakua-mini-color",
+          "product-dish-rakua-mini-color-cta-note": "ps-seller-product-dish-rakua-mini-color",
+          "product-dish-ss-ma251-caution": "product-dish-ss-ma251",
+          "product-dish-ss-ma251-cta-note": "ps-seller-product-dish-ss-ma251",
+          "product-dish-np-tsp1-caution": "product-dish-np-tsp1",
+          "product-dish-np-tsp1-cta-note": "ps-seller-product-dish-np-tsp1",
+          "blk-dish-002-title": "ps-choose",
+          "blk-dish-004-title": "ps-choose",
+          "blk-dish-006-title": "ps-products",
+          "dish-opening-space-title": "ps-products"
+        },
+        "comparison_scope": {
+          "heading_id": "blk-dish-005-title",
+          "intro": "タンクから給水できる4モデルを、置き場所と一食分の食器に合うかで比較します。",
+          "included": [
+            "メーカー公式情報で食器点数・本体寸法・公表水量を確認できる候補を扱います。",
+            "設置面に加えて扉の開閉、給排水、電源・アースの条件を確認します。タンク式でも設置確認は必要です。"
+          ],
+          "excluded": [
+            "実機で測っていない洗浄力・乾き具合・運転音の順位は付けません。",
+            "水量は機種ごとに公表条件が異なります。同じ食器量・コースでの実測比較ではありません。"
+          ]
+        },
+        "condition_fact_labels": [
+          "本体寸法（幅×奥行×高さ）",
+          "標準食器点数",
+          "乾燥・扉"
+        ],
+        "history": [
+          {
+            "date": "2026-09-08",
+            "text": "SOLOTAのブラックの型番表記をNP-TMLK1-HからNP-TMLK1-Kへ訂正し、4モデルの扉開閉寸法と参照先を追加"
+          },
+          {
+            "date": "2026-09-10",
+            "text": "公式販売ページで4候補の販売条件（価格・保証・納期）を確認し、確認日時つきで掲載"
+          },
+          {
+            "date": "2026-09-12",
+            "text": "期限を過ぎた価格の非表示、商品画像広告の掲載条件（販売先を照合できた候補のみ）、結論の決め手、注意文の重複、確認先の表記を修正。SS-MA251の販売ページの型番選択と、ラクアmini colorの公式通販の状態（再入荷待ち）、SOLOTAの上・左右の余白が公式資料で未確認であることを追記"
+          },
+          {
+            "date": "2026-09-13",
+            "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+          },
+          {
+            "date": "2026-09-13",
+            "text": "SOLOTA説明書の離隔距離を反映。NP-TSP1の開扉奥行は個別仕様と比較表の表記差を記録し、数値による設置判定を保留"
+          }
+        ],
+        "preserved_editorial_sections": [
+          "dish-meal-work-title"
+        ]
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "post_id": 83,
+        "slug": "lightweight-carry-on-suitcase-under-3kg",
+        "kind": "comparison",
+        "product_ids": [
+          "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+          "PRD-FREQUENTER-LIEVE-1-250"
+        ],
+        "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+        "excerpt": "本体3kg以下・30L以上の機内持ち込みスーツケース4モデル（エアロフレックスDX2・C-Lite・APPLITE 4.0・LIEVE）を、外寸・3辺合計・容量・重量と、ストッパー・拡張・交換車輪の条件で公式情報から比較します。",
+        "conditions": [
+          {
+            "id": "stopper",
+            "label": "軽さに加えてストッパーがほしい",
+            "product_ids": [
+              "PRD-PROTECA-AEROFLEX-DX2-01521"
+            ]
+          },
+          {
+            "id": "hard",
+            "label": "ハードケースと拡張を選びたい",
+            "product_ids": [
+              "PRD-SAMSONITE-C-LITE-CS2-09007"
+            ]
+          },
+          {
+            "id": "soft",
+            "label": "軽いソフトケースと容量を優先",
+            "product_ids": [
+              "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+            ]
+          },
+          {
+            "id": "wheels",
+            "label": "自分で交換できる車輪を選びたい",
+            "product_ids": [
+              "PRD-FREQUENTER-LIEVE-1-250"
+            ]
+          }
+        ],
+        "spec_labels": [
+          "通常時外寸（幅×奥行×高さ）",
+          "3辺合計",
+          "容量",
+          "本体重量",
+          "選ぶ理由"
+        ],
+        "intro": "軽さに加えて残したい機能を選び、購入総額を確認します。航空会社ごとの持ち込み条件は別に照合してください。",
+        "post_type": "post",
+        "legacy_anchor_targets": {
+          "under-3kg-start": "ps-choose",
+          "under-3kg-start-title": "ps-choose",
+          "under-3kg-decision-title": "ps-choose",
+          "under-3kg-reader-title": "ps-choose",
+          "under-3kg-comparison-title": "ps-specs",
+          "under-3kg-same-weight-title": "ps-specs",
+          "under-3kg-products-title": "ps-products",
+          "under-3kg-fits-title": "ps-products",
+          "under-3kg-not-fits-title": "ps-products",
+          "purchase-check": "ps-flight-purchase-check",
+          "under-3kg-introduction-title": "ps-choose",
+          "under-3kg-cta-01-note": "ps-seller-aeroflex-dx2-01521",
+          "under-3kg-cta-03-note": "ps-seller-american-tourister-applite-qj6-68002",
+          "under-3kg-cta-02-note": "ps-previous-cabin-reference",
+          "under-3kg-cta-04-note": "ps-previous-clite-reference"
+        },
+        "historical_link_notes": [
+          {
+            "id": "ps-previous-cabin-reference",
+            "title": "以前のRIMOWA掲載箇所から来た方へ",
+            "text": "この位置では、以前RIMOWA Essential Lite キャビン 82353171を紹介していました。現在の比較候補には含めていません。その後、この位置に掲載したC-Lite CS2*09007は別の商品です。RIMOWAの仕様や購入先として読み替えないでください。"
+          },
+          {
+            "id": "ps-previous-clite-reference",
+            "title": "以前のC-Lite掲載箇所から来た方へ",
+            "text": "この位置では、以前C-Lite 134679-1549（ミッドナイトブルー）を紹介していました。現在の比較表にあるC-Lite CS2*09007 / 134679-1041（ブラック）と同じスタイル134679の色違いで、2026年9月12日にサムソナイト公式ストアの色別品番で確認しました。その後、この位置に掲載したLIEVE 1-250は別の商品です。旧型番の色や購入先として読み替えないでください。"
+          }
+        ],
+        "preserved_method_heading": "under-3kg-method-title",
+        "condition_fact_labels": [
+          "容量",
+          "本体重量",
+          "通常時外寸（幅×奥行×高さ）"
+        ],
+        "history": [
+          {
+            "date": "2026-08-29",
+            "text": "航空会社とメーカーの公式一次情報を確認し、型番単位で比較表を更新"
+          },
+          {
+            "date": "2026-09-10",
+            "text": "公式販売ページで2候補の販売条件を確認し、確認日時つきで掲載"
+          },
+          {
+            "date": "2026-09-12",
+            "text": "期限を過ぎた価格の非表示、販売先を照合できない候補の商品画像広告の非掲載、旧掲載型番の注記の整理（C-Lite 134679-1549は同じスタイルの色違いと確認）、サムソナイト公式ストアの販売条件の再確認"
+          },
+          {
+            "date": "2026-09-13",
+            "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+          }
+        ],
+        "preserved_editorial_sections": [
+          "suitcase-weight-example-title"
+        ]
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "post_id": 30,
+        "slug": "compact-robot-vacuum-shortlist",
+        "kind": "comparison",
+        "product_ids": [
+          "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "PRD-SWITCHBOT-K11-PRO",
+          "PRD-SWITCHBOT-K10-PRO-COMBO",
+          "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        ],
+        "title": "省スペースのロボット掃除機を条件で絞る",
+        "excerpt": "Roomba Mini・SwitchBot K11+ Pro・K10+ Pro Combo・Roomba Plus 515を、本体と台の寸法、水拭き方式、自動手入れから比較。置ける場所と任せたい作業で候補を絞り、購入前の確認先も示します。",
+        "conditions": [
+          {
+            "id": "compact",
+            "label": "台の小ささを重視する2機種",
+            "product_ids": [
+              "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+              "PRD-SWITCHBOT-K11-PRO"
+            ],
+            "alternative": {
+              "text": "自動ゴミ収集を省いて充電台を最小にしたい場合は、Roomba Mini Slim + SlimCharge（F115060）も候補になります。",
+              "href": "/roomba-mini-vs-switchbot-k11-pro/",
+              "label": "2機種比較の記事で構成と寸法を確認する"
+            }
+          },
+          {
+            "id": "vacuum",
+            "label": "コードレス掃除機と収納をまとめる",
+            "product_ids": [
+              "PRD-SWITCHBOT-K10-PRO-COMBO"
+            ]
+          },
+          {
+            "id": "mop",
+            "label": "モップ洗浄・乾燥の手間を減らす",
+            "product_ids": [
+              "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+            ]
+          }
+        ],
+        "spec_labels": [
+          "本体寸法（幅×奥行×高さ）",
+          "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "水拭き",
+          "自動手入れ"
+        ],
+        "intro": "本体・台の寸法で候補を絞り、家具下、帰還経路、紙パックやタンクを交換する空間まで確認します。",
+        "post_type": "post",
+        "legacy_anchor_targets": {
+          "blk-robot-003-title": "ps-choose",
+          "blk-robot-007-title": "ps-specs",
+          "blk-robot-008-title": "ps-products",
+          "robot-start": "ps-choose",
+          "robot-start-title": "ps-choose",
+          "blk-robot-016-title": "ps-products",
+          "blk-robot-017-title": "ps-products",
+          "product-robot-roomba-mini-caution": "product-robot-roomba-mini",
+          "product-robot-roomba-mini-cta-note": "ps-seller-product-robot-roomba-mini",
+          "product-robot-k11-pro-caution": "product-robot-k11-pro",
+          "product-robot-k11-pro-cta-note": "ps-seller-product-robot-k11-pro",
+          "product-robot-k10-pro-combo-caution": "product-robot-k10-pro-combo",
+          "product-robot-k10-pro-combo-cta-note": "ps-seller-product-robot-k10-pro-combo",
+          "product-robot-roomba-plus-515-caution": "product-robot-roomba-plus-515",
+          "product-robot-roomba-plus-515-cta-note": "ps-seller-product-robot-roomba-plus-515",
+          "blk-robot-002-title": "ps-choose",
+          "blk-robot-004-title": "ps-choose",
+          "blk-robot-006-title": "ps-products"
+        },
+        "decision_steps": {
+          "title": "MiniとK11+ Proが残ったら、接続条件と台の周囲を比べる",
+          "steps": [
+            "アプリに接続するWi-Fiを確認します。Roomba Mini + AutoEmpty F155260は2.4GHz・5GHz、K11+ Proは2.4GHzに対応します。5GHzでの接続を条件にするならMiniを確認候補に。K11+ Proを選ぶ場合は、設置場所で2.4GHzを使えるか先に確かめてください。周波数が合っても、ルーター設定などによって接続できない場合があります。",
+            "設置余白と紙パック・ブラシの確認は2機種比較にまとめています。購入する機種が決まっている場合は、このページの販売条件へ直接進めます。"
+          ],
+          "source_url": "/roomba-mini-vs-switchbot-k11-pro/#robot-connectivity-title",
+          "source_label": "2機種の通信・設置条件と、公式仕様・日本語説明書の出典を確認する",
+          "placement": "after_conditions"
+        },
+        "comparison_scope": {
+          "heading_id": "blk-robot-005-title",
+          "intro": "小型の本体と台を重視する2候補を中心に、ステーションの機能が異なる2候補を加えて比較します。",
+          "included": [
+            "本体・ステーションの公表寸法と、型番ごとの掃除・手入れ機能を照合します。",
+            "本体だけでなく、台の周囲や消耗品を交換する空間まで選択条件にします。"
+          ],
+          "excluded": [
+            "実機で測っていない清掃性能・段差への対応・障害物回避の順位は付けません。",
+            "4モデルすべての本体や台が同じ大きさの範囲に収まるわけではありません。K11+ Proの台の寸法は、公式掲載順の軸名が未確認です。"
+          ]
+        },
+        "condition_fact_labels": [
+          "本体寸法（幅×奥行×高さ）",
+          "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "自動手入れ"
+        ],
+        "history": [
+          {
+            "date": "2026-09-10",
+            "text": "公式販売ページで2候補の販売条件を確認し、確認日時つきで掲載"
+          },
+          {
+            "date": "2026-09-12",
+            "text": "期限を過ぎた価格の非表示、販売先を照合できない候補の商品画像広告の非掲載、結論への充電台が最小の構成（Roomba Mini Slim + SlimCharge）の案内を追加"
+          },
+          {
+            "date": "2026-09-13",
+            "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+          }
+        ]
+      }
+    ]
+  },
+  "records": [
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "name": "SOLOTA",
+      "slugs": [
+        "countertop-dishwasher-for-small-households"
+      ],
+      "shop_name": "カメラのキタムラ",
+      "item_url": "https://item.rakuten.co.jp/emedama/4550719155769/?variantId=4550719155769",
+      "captured_at": "2026-09-10",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "name": "エアロフレックスDX2 01521",
+      "slugs": [
+        "lightweight-carry-on-suitcase-under-3kg"
+      ],
+      "shop_name": "ACE Online Store 楽天市場店",
+      "item_url": "https://item.rakuten.co.jp/ace-store/01521/",
+      "captured_at": "2026-09-10",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_9re.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_9re.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      }
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "name": "C-Lite CS2*09007",
+      "slugs": [
+        "lightweight-carry-on-suitcase-under-3kg"
+      ],
+      "shop_name": "サムソナイト公式 楽天市場店",
+      "item_url": "https://item.rakuten.co.jp/samsonite/cs2-007/",
+      "captured_at": "2026-09-10",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      }
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "name": "SS-MA251",
+      "slugs": [
+        "countertop-dishwasher-for-small-households"
+      ],
+      "shop_name": "シロカ公式ストア　楽天市場店",
+      "item_url": "https://item.rakuten.co.jp/siroca/ss-ma251/?variantId=ss-ma251",
+      "captured_at": "2026-09-10",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      }
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "name": "SwitchBot ロボット掃除機 K11+ Pro",
+      "slugs": [
+        "compact-robot-vacuum-shortlist",
+        "roomba-mini-vs-switchbot-k11-pro"
+      ],
+      "shop_name": "コジマ楽天市場店",
+      "item_url": "https://item.rakuten.co.jp/r-kojima/0810224630279/?variantId=0810224630279",
+      "captured_at": "2026-09-10",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_2.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_2.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      }
+    }
+  ]
+}

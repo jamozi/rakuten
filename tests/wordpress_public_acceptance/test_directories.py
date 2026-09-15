@@ -1,8 +1,11 @@
 """Regression checks for the two reader-facing directories, with no network."""
 
+import json
 import os
 from pathlib import Path
 import unittest
+from urllib.parse import urlsplit
+from scripts.raos_reader_live_patch import Document
 from scripts.raos_public_acceptance import Page
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -35,7 +38,12 @@ class DirectoryTests(unittest.TestCase):
         doc = Page(self.text("guides"))
         self.assertIn("ks-guide-jump", doc.ids)
         self.assertTrue(
-            {"#travel-guides", "#kitchen-guides", "#cleaning-guides", "#preparedness-guides"}
+            {
+                "#travel-guides",
+                "#kitchen-guides",
+                "#cleaning-guides",
+                "#preparedness-guides",
+            }
             <= {x[0] for x in doc.links}
         )
 
@@ -50,26 +58,46 @@ class DirectoryTests(unittest.TestCase):
     def test_preserves_comparison_article_routes(self):
         doc = Page(self.text("comparisons"))
         hubs = {
-            "/", "/categories/", "/purposes/", "/guides/", "/comparisons/", "/updates/",
-            "/travel/", "/kitchen/", "/cleaning/", "/preparedness/",
-            "/comparison-policy/", "/about-ad-policy/", "/privacy-policy/",
+            "/",
+            "/categories/",
+            "/purposes/",
+            "/guides/",
+            "/comparisons/",
+            "/updates/",
+            "/travel/",
+            "/kitchen/",
+            "/cleaning/",
+            "/preparedness/",
+            "/comparison-policy/",
+            "/about-ad-policy/",
+            "/privacy-policy/",
         }
         article_links = {
-            h
+            urlsplit(h).path
             for h, _, _ in doc.links
             if h.startswith("/") and h not in hubs and not h.startswith("/#")
         }
         self.assertEqual(len(article_links), 10)
+        hrefs = {h for h, _, _ in doc.links}
+        for route in article_links:
+            self.assertIn(route, hrefs)
+            self.assertIn(route + "#ps-specs", hrefs)
+            self.assertIn(route + "#ps-offers", hrefs)
         self.assertIn("/solota-vs-rakua-mini-plus/", article_links)
         self.assertIn("/anker-solix-c300-c800-c1000-differences/", article_links)
 
-    def test_guides_list_five_guides_and_condition_sections_of_ten_comparisons(self):
-        # 2026-09-12 audit CH-05: guide-type articles are listed as routes; comparison
-        # articles appear only through fragment links to their condition sections.
+    def test_guides_list_five_guides_and_representative_condition_sections(self):
+        # Guide articles have direct routes; the other three categories lead to
+        # selected comparison sections that help readers establish conditions.
         doc = Page(self.text("guides"))
         hubs = {
-            "/", "/categories/", "/purposes/", "/comparisons/", "/comparison-policy/",
-            "/about-ad-policy/", "/without-installation/",
+            "/",
+            "/categories/",
+            "/purposes/",
+            "/comparisons/",
+            "/comparison-policy/",
+            "/about-ad-policy/",
+            "/without-installation/",
         }
         routes = {h for h, _, _ in doc.links if h.startswith("/") and h not in hubs}
         plain = {h for h in routes if "#" not in h}
@@ -84,18 +112,28 @@ class DirectoryTests(unittest.TestCase):
                 "/dishwasher-running-cost/",
             },
         )
-        self.assertEqual(len(fragments), 10)
+        self.assertEqual(
+            {h for h in routes if "#" in h},
+            {
+                "/lightweight-carry-on-suitcase-under-3kg/#ps-choose",
+                "/compact-robot-vacuum-shortlist/#ps-choose",
+                "/portable-power-station-guide/#ps-decision-steps",
+            },
+        )
         self.assertFalse(plain & fragments)
 
     def test_payment_and_points_are_separate(self):
         text = self.text("comparisons")
         self.assertIn("buyer-offer-check", text)
         self.assertIn("ポイントや条件付きクーポンは、支払額と分けて", text)
-        self.assertIn("今回は見送る選択", text)
+        self.assertIn("条件が残る場合は買わずに保留できます", text)
 
     def test_guide_does_not_promise_active_calculator(self):
         text = self.text("guides")
-        self.assertIn("公表値と自宅の単価から計算する式が決まります", text)
+        self.assertIn("/dishwasher-running-cost/", text)
+        self.assertIn("従量費を式で確認", text)
+        self.assertIn("計算できる小計と不足値を分けます", text)
+        self.assertFalse(any(n.tag in {"form", "input"} for n in Document(text).nodes))
         self.assertNotIn("計算フォーム", text)
 
     def test_no_external_or_tracking_links_added(self):
@@ -104,9 +142,32 @@ class DirectoryTests(unittest.TestCase):
                 self.assertTrue(
                     href.startswith(("/", "#")) and not href.startswith("//")
                 )
-            self.assertIn(
-                "比較記事（PR表示あり）には販売店への広告リンクが含まれます", self.text(slug)
-            )
+            text = self.text(slug)
+            self.assertIn("記事ごとの広告表示は実際のリンクに基づきます", text)
+            self.assertIn("掲載順・評価は報酬条件と切り離しています", text)
+            doc = Document(text)
+            cards = [n for n in doc.nodes if n.tag == "article"]
+            self.assertEqual(len(cards), 8 if slug == "guides" else 10)
+            for card in cards:
+                content = text[card.start : card.end]
+                self.assertEqual(
+                    content.count("PR・広告リンクあり")
+                    + content.count("広告リンクなし"),
+                    1,
+                )
+                metadata = json.loads(
+                    (
+                        ROOT
+                        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
+                    ).read_text()
+                )["articles"]
+                target = urlsplit(Page(content).links[0][0]).path.strip("/")
+                expected = (
+                    "PR・広告リンクあり"
+                    if metadata[target]["has_ads"]
+                    else "広告リンクなし"
+                )
+                self.assertIn(expected, content)
 
 
 if __name__ == "__main__":

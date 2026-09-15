@@ -1,0 +1,173 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/compact-robot-vacuum-shortlist.html",
+  "runtime_article": {
+    "article_id": "compact-robot-vacuum-shortlist",
+    "slug": "compact-robot-vacuum-shortlist",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+    "body_sha256": "c425c86cdc954424591d13bc1d41a494c2814c9aaee453e3bf400210449bec20",
+    "bindings": [
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "seller_id": "rakuten-irobotstore",
+        "offer_id": "rakuten-observed-irobot-roomba-mini-autoempty-irobotstore",
+        "cta_id": "purchase-30-rakuten-observed-irobot-roomba-mini-autoempty-irobotstore-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c271c.86322106.577c271d.26628929/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Firobotstore%2Ff15%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "image-PRD-SWITCHBOT-K11-PRO-300",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K11-PRO-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "image-PRD-SWITCHBOT-K11-PRO-240",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K11-PRO-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K11-PRO",
+        "seller_id": "rakuten-r-kojima",
+        "offer_id": "rakuten-observed-switchbot-k11-pro-r-kojima",
+        "cta_id": "purchase-30-rakuten-observed-switchbot-k11-pro-r-kojima-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "image-PRD-SWITCHBOT-K10-PRO-COMBO-300",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K10-PRO-COMBO-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "image-PRD-SWITCHBOT-K10-PRO-COMBO-240",
+        "cta_id": "purchase-image-PRD-SWITCHBOT-K10-PRO-COMBO-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "seller_id": "rakuten-ec-current",
+        "offer_id": "rakuten-observed-switchbot-k10-pro-combo-ec-current",
+        "cta_id": "purchase-30-rakuten-observed-switchbot-k10-pro-combo-ec-current-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+        "seller_id": "rakuten-biccamera",
+        "offer_id": "image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-300",
+        "cta_id": "purchase-image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+        "seller_id": "rakuten-biccamera",
+        "offer_id": "image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-240",
+        "cta_id": "purchase-image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "compact-robot-vacuum-shortlist",
+        "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+        "seller_id": "rakuten-biccamera",
+        "offer_id": "rakuten-observed-irobot-roomba-plus-515-combo-biccamera",
+        "cta_id": "purchase-30-rakuten-observed-irobot-roomba-plus-515-combo-biccamera-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-8209e038a072921849f5bdfbebd2a127",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY": "<figure class=\"ps-product-image ps-official-product-photo\" data-ps-media-sha256=\"99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433\"><img src=\"/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg\" width=\"2048\" height=\"2048\" loading=\"lazy\" decoding=\"async\" alt=\"Roomba Mini（白）とAutoEmpty充電ステーション。公式提供写真。\"><figcaption>アイロボット Roomba® Mini 掃除機＆床拭きロボット + AutoEmpty™ 充電ステーション<br>写真：<a href=\"https://irobotjp.mediaroom.com/media-kits?item=28\">アイロボットジャパン 公式掲載用素材</a></figcaption></figure>",
+      "PRD-SWITCHBOT-K11-PRO": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-SWITCHBOT-K11-PRO\" data-raos-seller-id=\"rakuten-r-kojima\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K11-PRO-300\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K11-PRO-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-SWITCHBOT-K11-PRO\" data-raos-seller-id=\"rakuten-r-kojima\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K11-PRO-240\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K11-PRO-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>K11+ Pro／本体・ステーション。スマートフォンは使用例（広告）</figcaption></figure>",
+      "PRD-SWITCHBOT-K10-PRO-COMBO": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-SWITCHBOT-K10-PRO-COMBO\" data-raos-seller-id=\"rakuten-ec-current\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K10-PRO-COMBO-300\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K10-PRO-COMBO-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12827451&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9127%2F0810150542370.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-SWITCHBOT-K10-PRO-COMBO\" data-raos-seller-id=\"rakuten-ec-current\" data-raos-offer-id=\"image-PRD-SWITCHBOT-K10-PRO-COMBO-240\" data-raos-cta-id=\"purchase-image-PRD-SWITCHBOT-K10-PRO-COMBO-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F0810150542370%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12827451&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9127%2F0810150542370.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>K10+ Pro Combo／本体・コードレス掃除機・ステーション（広告）</figcaption></figure>",
+      "PRD-IROBOT-ROOMBA-PLUS-515-COMBO": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-IROBOT-ROOMBA-PLUS-515-COMBO\" data-raos-seller-id=\"rakuten-biccamera\" data-raos-offer-id=\"image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-300\" data-raos-cta-id=\"purchase-image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1781.6d1f2196.575e1782.0b4be596/?me_id=1269553&item_id=15492258&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbiccamera%2Fcabinet%2Fproduct%2F17338%2F00000015132941_a01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"compact-robot-vacuum-shortlist\" data-raos-product-id=\"PRD-IROBOT-ROOMBA-PLUS-515-COMBO\" data-raos-seller-id=\"rakuten-biccamera\" data-raos-offer-id=\"image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-240\" data-raos-cta-id=\"purchase-image-PRD-IROBOT-ROOMBA-PLUS-515-COMBO-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-8209e038a072921849f5bdfbebd2a127\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1781.6d1f2196.575e1782.0b4be596/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbiccamera%2F0885155054982%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1781.6d1f2196.575e1782.0b4be596/?me_id=1269553&item_id=15492258&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbiccamera%2Fcabinet%2Fproduct%2F17338%2F00000015132941_a01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>N285060／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+    "PRD-SWITCHBOT-K11-PRO",
+    "PRD-SWITCHBOT-K10-PRO-COMBO",
+    "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/compact-robot-vacuum-shortlist/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

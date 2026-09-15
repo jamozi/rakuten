@@ -115,10 +115,13 @@
   const fields = element('fieldset');
   fields.append(element('legend', '使う条件と、自宅の単価を入力'));
   const select = element('select', '', { id: 'raos-cost-profile', 'aria-describedby': 'raos-cost-selected-condition' });
+  const currentModels = element('optgroup', '', {label:'現行比較の4機種'});
+  const previousModels = element('optgroup', '', {label:'以前の掲載機種（比較対象外）'});
+  select.append(currentModels, previousModels);
   for (const profile of profiles) {
     const option = element('option', `${profile.model} — ${profile.course}`, { value: profile.id });
     option.defaultSelected = profile.id === defaultId;
-    select.append(option);
+    (profile.anchor ? currentModels : previousModels).append(option);
   }
   const selectLabel = element('label', '型番・コース', { for: select.id });
   const selectedCondition = element('p', '', { id: 'raos-cost-selected-condition', class: 'raos-cost-help' });

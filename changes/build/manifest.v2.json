@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 153,
+    "owner_count": 154,
     "version": "2.0.0"
   },
   "owners": [
@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "fd99f7a997531376851baae78763a575767c0c25227a0013243af7d111c6fda1",
+          "sha256": "83fe19b914d98d1f266397ce7c30c880cc3c1162972429346de6e53c23520622",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "3983571e00ec102f70114e04d4de400e3afa3574700c9139fd56c92d36a3a7df",
+          "sha256": "6874fcdee04f56b1a024d844fa1858941809c39f4fad96690ae7fa7a90acc938",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,8 +93,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 258275,
-          "sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
+          "bytes": 258533,
+          "sha256": "cbe6ca9cdf5258e4648869452ae9447fcfef975ff74655fea7326ff43de5142f",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -307,12 +307,12 @@
       "outputs": [
         {
           "bytes": 21211,
-          "sha256": "b29db99402f0b90635d06134a8462d53fa72b5bab6be0097dba8a0124c34caca",
+          "sha256": "359c7623cf4408ba96f5d15e199e0be254d9259c343e7d47ee3068b1251e613a",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 33781,
-          "sha256": "be60b5b43b94c239265795c51ff40fbd72e12f82f928c78742a1c3470a0f88a5",
+          "bytes": 31933,
+          "sha256": "206c9bd629dde6c4b484b4d4aacef1f5f6a2f4130277acbce5245d8b79d6f01b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -664,8 +664,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 84971,
-          "sha256": "93dc713fb6dbc130d73c4ebd5eaf0dd33e778ab388874141f7758ef80ae4365d",
+          "bytes": 85161,
+          "sha256": "b01d5124a5e30850d2a8cb72cf17a8f1ae06d9de8130ad9c5a76ef80c1b6e338",
           "uri": "repo://changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json"
         }
       ],
@@ -1847,22 +1847,22 @@
       "outputs": [
         {
           "bytes": 4771,
-          "sha256": "a3d2368928a509ec1472221951bb42912134d61d571c010fe156103602948498",
+          "sha256": "b8e2b41f74bbae9a5c5535d0e910d93beb5b030636c8c6109296104ce0929cfd",
           "uri": "repo://changes/reader-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 2132,
-          "sha256": "dc33285cf2a8d9586d6bdfb12896baf59eb14cdc5c8d17512f86d055e321a815",
+          "sha256": "a6f8e5e12c1549fa8c76cb285994db0d10a03911dbd77fbd5fc5d2bb38a340ac",
           "uri": "repo://changes/reader-measurement-v1/theme-runtime-binding.v1.json"
         },
         {
           "bytes": 23683,
-          "sha256": "31f3d14319edc20a1c4a22847e02767869db98b71359e4aab3d12774eb35b7cb",
+          "sha256": "09c2f069363318a3e72549e485216787e93f028941af0ca33d838cde06fd64a2",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-allowlist.v1.json"
         },
         {
           "bytes": 1232,
-          "sha256": "41f90d54350f2174c480707cbf21ce1d780269d963e0dad0d0b10d9dd52a1b9f",
+          "sha256": "98a6c9298cc4f9418baddc8916eb0c6494ac8a424b6c1d3c3cbbad68b6a9557b",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-runtime.v1.json"
         }
       ],
@@ -1961,74 +1961,109 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 55430,
-          "sha256": "a9c24425f9102eb864fb42e85ca540f60b9981031a4604323c53affd3ab3a6f6",
+          "bytes": 704882,
+          "sha256": "f99df6b76937d73048d9fbd140bd4c979d22970b7a597529cfa3e129358a00e1",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
-          "bytes": 7157,
-          "sha256": "bd2e7fa8d69dc7ab4e0a026b552d08bb7bd9b809ae3fc63dd74cd746176ea651",
+          "bytes": 7505,
+          "sha256": "9fb8074b284ed63f8da61c4dbad6c5e0cb83c6a17d0f3343474b96f9710021eb",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/about-ad-policy.html"
         },
         {
-          "bytes": 32413,
-          "sha256": "042f00520b60b0e78e954782fee44b840ce7a6a731a11b2108aaa8eb87fc7cba",
+          "bytes": 62786,
+          "sha256": "6b3ef8bdae868dacfcc2104bbba0b4382402a1c96a129ece34a5be5d981fbbe3",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html"
+        },
+        {
+          "bytes": 44482,
+          "sha256": "ba8af69fcb57d70f85c9565b4a37003093fbcf51b819affb7e053a8b796bd618",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html"
+        },
+        {
+          "bytes": 52100,
+          "sha256": "5021239523d875aa63065db00e550b879df8964c0fae0f8d0fe679db81ae0f90",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
+        },
+        {
+          "bytes": 39074,
+          "sha256": "583554a996d775ff67887e7c27385e378c7e206ee9a3f766c833c07150c283a8",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
+        },
+        {
+          "bytes": 38576,
+          "sha256": "1abcbca96563c550b4b9cbd13ea615f6c1f278ab36c2fe6311afa02e01a2e303",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html"
         },
         {
-          "bytes": 8370,
-          "sha256": "30706a92557d1b3383d4b1332c15980dd2b59d3c63bf69334903e319dfd10173",
+          "bytes": 10343,
+          "sha256": "3314218fab9216fb487021fde6ed297178add458466ce63ab808d48f3f2e9c6b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 52821,
-          "sha256": "58addfb120b57b5412dddba0d5d06fa0e79c0b4fdd5003a607124ef9d893f5cb",
+          "bytes": 78249,
+          "sha256": "0552cbb4848c9433df731aed22e3dc47762a287f91df8f51d57f25368f185ef0",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
-          "bytes": 19420,
-          "sha256": "3cb8e824991b23339dfd2ff7161c4045edbfcefc90d7d13187993d16df390b35",
+          "bytes": 34466,
+          "sha256": "4d092c4ee5c63cda9431832f99d188196a406f7c4a57d567932d88afd0e50740",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html"
         },
         {
-          "bytes": 20195,
-          "sha256": "9761110f5225d36e7ed8c3d0b5003afc0356e688cea310f4175f0a443860ff18",
+          "bytes": 38895,
+          "sha256": "7af16a7768eaf5f5b04747671cbde9313880c7c423820869e96b2db99ca8ceae",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 26679,
-          "sha256": "535a629b0c5f2c0352ae221b96bf4b1aa2a835f6e251c2daa3be8315905bae7f",
+          "bytes": 32185,
+          "sha256": "e0d81b36829219af44e65cca2ba3561fb8380be9a1b7394a38f46f1a21739e3e",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
-          "bytes": 32348,
-          "sha256": "d68248d3d2e1fe5c15d23428083597c70f5e15e4e4ad2c2a8d6a7cead9fa6088",
+          "bytes": 35438,
+          "sha256": "2213d81dafa67640827b3bdd0659383757a5fdf0c5d69c1a1b623540f9d2b788",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html"
         },
         {
-          "bytes": 16598,
-          "sha256": "cc8337697a3a01cc0a48ddf064e2acb6a76760a5d97fe33436b9f6d526a1161b",
+          "bytes": 42739,
+          "sha256": "958a7b2cb96766b723b74a86fb50f34b962c67bfbe95fa1951261d3a81e5518f",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 8481,
-          "sha256": "40053bdc17cc11c064e3141edf933e8a96ba30b2b7e852a8d438c254f52b26ba",
+          "bytes": 62080,
+          "sha256": "89866f3f857aacac8907165e55654366f2e0ee9053ab7c4ade34ca495ee667b7",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
+        },
+        {
+          "bytes": 5656,
+          "sha256": "1bc0ffbf4a5e9ad5d7e8a554fa7260e64a2591e23232ae95407fb17158ebb6b4",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
-          "bytes": 39058,
-          "sha256": "074a67aa25981cab01110cfc431f6366b9165bed682c34bc55aa8b0597358e53",
+          "bytes": 49551,
+          "sha256": "c8778e037f8ddc5313a2b87397caa48b8deb584ee0f55aa3352db3c432cbcc02",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html"
         },
         {
-          "bytes": 34643,
-          "sha256": "484a34119c84809410526a15abad7ff408e52c0ffcb60997a8e0e9de99996a24",
+          "bytes": 57133,
+          "sha256": "bc4842c823af09a670a948881a01412454ad8a7d3033d7a2014cfa450cd35d8f",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html"
         },
         {
-          "bytes": 8434,
-          "sha256": "360c983a6db755831c19d3a365cb92ca599722482c09d4b0940e7076f7248763",
+          "bytes": 9709,
+          "sha256": "64790b043b742866b935f6740d36eb6628ed1d42662a3f34d3cdf16cb271083b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/privacy-policy.html"
+        },
+        {
+          "bytes": 50293,
+          "sha256": "d153769ac11c278446a2da300ad7b0157bd1bda2f6b00636023c8412631bd4d9",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
+        },
+        {
+          "bytes": 37403,
+          "sha256": "762e488037a0252ce16679ec07cacb033e332fff7c5bc77d7fc6a1ba90b5448a",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
         }
       ],
       "owner_dependencies": [],
@@ -2045,6 +2080,30 @@
           "kind": "tracked",
           "semantic_id": "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
           "uri": "repo://changes/reader-purchase-support-v1/articles/about-ad-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/carry-on-suitcase-comparison.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/carry-on-suitcase-under-100-seats.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/carry-on-suitcase-under-100-seats.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
           "version": 2
         },
         {
@@ -2097,6 +2156,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/reader-purchase-support-v1/articles/kitchen.html",
           "uri": "repo://changes/reader-purchase-support-v1/articles/kitchen.html",
           "version": 2
@@ -2117,6 +2182,18 @@
           "kind": "tracked",
           "semantic_id": "changes/reader-purchase-support-v1/articles/privacy-policy.html",
           "uri": "repo://changes/reader-purchase-support-v1/articles/privacy-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
+          "uri": "repo://changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
           "version": 2
         },
         {
@@ -2157,6 +2234,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/site_guide_improvements.py",
+          "uri": "repo://python/raos/application/editorial/site_guide_improvements.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/domain/editorial/purchase_support.py",
           "uri": "repo://python/raos/domain/editorial/purchase_support.py",
           "version": 2
@@ -2171,6 +2254,323 @@
           "kind": "tracked",
           "semantic_id": "tests/purchase_support",
           "uri": "repo://tests/purchase_support",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 5769,
+          "sha256": "789d96588cf50c4a091586baf907a24b8a5f5cf1a4db3e6a6fdb8c1af8306c2a",
+          "uri": "repo://changes/site-improvements-20260913/kitchen-template.html"
+        },
+        {
+          "bytes": 3815,
+          "sha256": "cb2e60d601b69b7bb6edb16f3cca22e926c0b2c1fa1b1b82f56605c87baa5ce5",
+          "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
+        },
+        {
+          "bytes": 15608,
+          "sha256": "917e6fbad859dde1e806138cff9961561af1769ee87ee4b49a402c6119762c80",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
+        },
+        {
+          "bytes": 2697,
+          "sha256": "bed9860ef3167ae483952a0c427c704633d880456fb541d54d10cf370c7aa765",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/categories.html"
+        },
+        {
+          "bytes": 4814,
+          "sha256": "da7983e594cbeabbaa1f80537f216eaef5be72a03cf2f8139ac485115edbacda",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/cleaning.html"
+        },
+        {
+          "bytes": 3549,
+          "sha256": "cc7bcb01e7cb989448e9add7d2bed629e8cd141d4fd7b331f1935757dc6725c0",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
+        },
+        {
+          "bytes": 9250,
+          "sha256": "ca5bdab3f819e88198ada7ccb7c3e1342e51ab4a5acdfbbf948d6b6783dc9fd8",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparisons.html"
+        },
+        {
+          "bytes": 7622,
+          "sha256": "aa4162230af7e6cb333a258ff9e9cac1e4eb8ed50082a300c0aa4f8f4cccd7c4",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
+        },
+        {
+          "bytes": 5609,
+          "sha256": "5e57a40ed456180d42426a72b0f2d2a2f6097e5b48538923b9752d66a343bece",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/guides.html"
+        },
+        {
+          "bytes": 4830,
+          "sha256": "74993d3063866350e7bd247e5d096b434ab7649bd286ed68bbcc6dbe870bf127",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/home.html"
+        },
+        {
+          "bytes": 3468,
+          "sha256": "5bb80a75657a2cf37bd19de16bad2c5eb6e0af6337a7fb261c4d463da17cc48c",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
+        },
+        {
+          "bytes": 7801,
+          "sha256": "29877a8e2df5b1ce958006e57c88efb6230797ccdcfb3152355e6f72aac197cd",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/preparedness.html"
+        },
+        {
+          "bytes": 2784,
+          "sha256": "e056d5fc677b17b779fb8dcbf50298ec71aa49dddb7f5319fa6d3b10d976911a",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/purposes.html"
+        },
+        {
+          "bytes": 3949,
+          "sha256": "287f65dd96b4aab07df547ac5e109480ae457ee7ac505cb69a46067a4cefea5d",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/save-housework.html"
+        },
+        {
+          "bytes": 3391,
+          "sha256": "dd7c4e2af0ee284e87567c012ab17f5a6d7cc9e2da89f03c4c45a5e07d01fd08",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
+        },
+        {
+          "bytes": 7333,
+          "sha256": "1a7e636609f1956a9bb4e692bd1228c8197259cf073545e58b24580d36290f5b",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
+        },
+        {
+          "bytes": 8444,
+          "sha256": "c9e93202559b5de5ef6144ebd2701d25a9147f09806b4e0ee03572724a2902e6",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/updates.html"
+        },
+        {
+          "bytes": 11716,
+          "sha256": "d14f2b7ce4cba43984675ba3bfdce1d472c7230976a8c658356075969b41004b",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/without-installation.html"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_site_editorial_pages",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/reader-purchase-support-v1/purchase-support.v1.json",
+          "uri": "repo://changes/reader-purchase-support-v1/purchase-support.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages.v1.json",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/cleaning.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/cleaning.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/preparedness.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/preparedness.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/travel.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/travel.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/site-improvements-20260913/entry-pages/without-installation.html",
+          "uri": "repo://changes/site-improvements-20260913/entry-pages/without-installation.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles.v1.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json",
+          "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/home_product_media.py",
+          "uri": "repo://python/raos/application/editorial/home_product_media.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_html.py",
+          "uri": "repo://python/raos/application/editorial/reader_html.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/site_editorial_pages.py",
+          "uri": "repo://python/raos/application/editorial/site_editorial_pages.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_site_editorial_pages.py",
+          "uri": "repo://scripts/build_site_editorial_pages.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/site_editorial_pages",
+          "uri": "repo://tests/site_editorial_pages",
           "version": 2
         }
       ],
@@ -15053,7 +15453,7 @@
         },
         {
           "bytes": 15113,
-          "sha256": "f4f825f58e8eefcfe2aba3245066892c1afa63fd1abce2d134e2301187a14a91",
+          "sha256": "ab12cc634bb935538d17e582d8991e783c9b8af1c670b2d1e48705661095e9fd",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -16087,7 +16487,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "2878aedb99d36773b101dce721a6d33690b6b81be758c3beec366f869a0b4409",
+          "sha256": "c3a2d99ec1e1a255f4b4c6d02f67a6cef0a499bb075309499da43cb732c578fa",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -16312,7 +16712,7 @@
       "outputs": [
         {
           "bytes": 32584,
-          "sha256": "49b13267705024689c51c758681e68d4fed3c98ff14b14548b792beb1b073756",
+          "sha256": "59b13cea3311ba1c30fa9ca7edd1d9adea11f06fffe5aceead2fdf9e7c4af80c",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -26735,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "68b98b2e86e57652cc56f0e01fc41fcc413a333975e7c9fd39bb54e6e7a8f28d",
+          "sha256": "543f0f939b03d78af1e28b95d5dfad6116d8639bdeb044ad6721febcd78b240e",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26966,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "a3dd53d96ffd1fa4b8b15f6dc9cef34f35b08264750ae296613fae23ef6fee79",
+          "sha256": "ed1af491b6615a28ce3dca1a9b86f5292daf64ffffd588eaf0731382edf6f06b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27634,6 +28034,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/consent-controls.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/consent-controls.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
           "version": 2
@@ -27736,6 +28142,36 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-dust-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-dust-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-manual-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-manual-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-mop-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-mop-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-vacuum-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-vacuum-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-wash-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/cleaning-wash-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
           "version": 2
@@ -27750,6 +28186,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp",
           "version": 2
         },
         {
@@ -27784,6 +28226,24 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-large-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-large-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-medium-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-medium-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-small-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/power-capacity-small-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
           "version": 2
@@ -27792,6 +28252,42 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-access-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-access-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-large-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-large-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-light-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-light-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-medium-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-medium-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-move-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-move-20260913.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/travel-small-20260913.webp",
           "version": 2
         },
         {
@@ -27846,6 +28342,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/reader-measurement-runtime.v1.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/reader-measurement-runtime.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json",
           "version": 2
         },
         {
@@ -29799,12 +30301,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "4cb168bd48e31da67fde7bcb1689b99574abf055fa33e9aafae793fc6e4abf62",
+          "sha256": "89a5c8807a2443bb732252dbf2708eaf8c26fe282a84bcb6d898188dd40f3d93",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 28259,
-          "sha256": "cfa49b9a2feab74a444a26c3504195afbfde49d7f99c3895d9881cc71aa89572",
+          "sha256": "74dc5b7e4810b7a8ea26e21a2531171e53e21eb6320f0122e2d0b630403f9fd4",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30661,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "5cf3144006f6f1cb22a83ee8717ff4e8b55d66319834d9efc025862e02a93aca",
+          "sha256": "92dc07676c99d40c35cb6e5bf189954781145e48030a2c6d6b1c60f0fdd9af9e",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
@@ -30672,6 +31174,7 @@
         "build_google_live_runtime_v1",
         "build_local_reader_guides",
         "build_reader_purchase_support_v1",
+        "build_site_editorial_pages",
         "build_st0104_contract_repository",
         "build_st0105_generated_contracts",
         "build_st1703_self_hosted_runtime_manifest",

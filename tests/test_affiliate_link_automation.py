@@ -26,7 +26,9 @@ ORIGINAL = (
 
 
 def setup_case(tmp_path, provider="linkshare", html=None):
-    now = datetime.now(UTC)
+    # File/offset tests need a grant inside its validity window, not at the
+    # wall-clock boundary. Explicit expired/future-grant cases remain below.
+    now = datetime.now(UTC) - timedelta(minutes=1)
     root = tmp_path / "repo"
     body = root / ARTICLE
     body.parent.mkdir(parents=True)

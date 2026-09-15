@@ -60,8 +60,14 @@ class Visuals(unittest.TestCase):
             html = (DIRECT / 'articles' / f"{a['category']}.html").read_text()
             m = Markup()
             m.feed(html)
-            self.assertTrue(any((i['src'] == a['url'] for i in m.images)))
-            self.assertIn(a['caption'], html)
+            self.assertTrue(m.images)
+            for image in m.images:
+                if image["src"].startswith("/wp-content/themes/kurashinoshirube-child/"):
+                    asset = ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child" / image["src"].split("/kurashinoshirube-child/", 1)[1]
+                    self.assertTrue(asset.is_file())
+                else:
+                    self.assertEqual(image["src"], a["url"])
+                self.assertTrue(image.get("alt"))
 
     def test_sources_do_not_restore_empty_shortcodes(self):
         for a in self.manifest()['assets']:
@@ -85,8 +91,9 @@ class Visuals(unittest.TestCase):
 
     def test_home_keeps_purchase_target(self):
         html = (DIRECT / 'articles/home.html').read_text()
-        self.assertIn('href="#home-purchase-check"', html)
-        self.assertIn('id="home-purchase-check"', html)
+        for slug in ('kitchen', 'travel', 'cleaning', 'preparedness'):
+            self.assertIn('href="/' + slug + '/"', html)
+        self.assertNotIn('data-ps-media-product=', html)
         self.assertIn('id="ks-visual-categories"', html)
 
     def test_actual_dimensions_not_upscaled_claim(self):

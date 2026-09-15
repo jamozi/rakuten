@@ -1,0 +1,159 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": false,
+  "immutable_snapshot": "b00be8fa1394c803b1f3",
+  "body_source": "output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/carry-on-suitcase-comparison.html",
+  "runtime_article": {
+    "article_id": "carry-on-suitcase-comparison",
+    "slug": "carry-on-suitcase-comparison",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+    "body_sha256": "11ac87db458161107165d6c9395391b00858924a9a41289fe50db17d23a65ac8",
+    "bindings": [
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-CRESTA-06316",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-CRESTA-06316-300",
+        "cta_id": "purchase-image-PRD-ACE-CRESTA-06316-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-CRESTA-06316",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-CRESTA-06316-240",
+        "cta_id": "purchase-image-PRD-ACE-CRESTA-06316-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-CRESTA-06316",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-ace-cresta-06316-ace-store",
+        "cta_id": "purchase-19-rakuten-observed-ace-cresta-06316-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-DIFFERENCE-05721",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-DIFFERENCE-05721-300",
+        "cta_id": "purchase-image-PRD-ACE-DIFFERENCE-05721-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-DIFFERENCE-05721",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-DIFFERENCE-05721-240",
+        "cta_id": "purchase-image-PRD-ACE-DIFFERENCE-05721-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-DIFFERENCE-05721",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-ace-difference-05721-ace-store",
+        "cta_id": "purchase-19-rakuten-observed-ace-difference-05721-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-MAXPASS4-01471",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-MAXPASS4-01471-300",
+        "cta_id": "purchase-image-PRD-ACE-MAXPASS4-01471-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-MAXPASS4-01471",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-MAXPASS4-01471-240",
+        "cta_id": "purchase-image-PRD-ACE-MAXPASS4-01471-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-comparison",
+        "product_id": "PRD-ACE-MAXPASS4-01471",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-ace-maxpass4-01471-ace-store",
+        "cta_id": "purchase-19-rakuten-observed-ace-maxpass4-01471-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-d3002610f2dd95c2e98e1d5652273244",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-ACE-CRESTA-06316": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-CRESTA-06316\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-CRESTA-06316-300\" data-raos-cta-id=\"purchase-image-PRD-ACE-CRESTA-06316-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10007275&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Facedby%2F06316_lp_03.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-CRESTA-06316\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-CRESTA-06316-240\" data-raos-cta-id=\"purchase-image-PRD-ACE-CRESTA-06316-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06316%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10007275&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Facedby%2F06316_lp_03.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>06316／5色の本体例（参考価格は02ブラック）（広告）</figcaption></figure>",
+      "PRD-ACE-DIFFERENCE-05721": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-DIFFERENCE-05721\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-DIFFERENCE-05721-300\" data-raos-cta-id=\"purchase-image-PRD-ACE-DIFFERENCE-05721-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009372&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F05721_thum.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-DIFFERENCE-05721\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-DIFFERENCE-05721-240\" data-raos-cta-id=\"purchase-image-PRD-ACE-DIFFERENCE-05721-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F05721%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009372&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F05721_thum.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>05721／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ACE-MAXPASS4-01471": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-MAXPASS4-01471\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-MAXPASS4-01471-300\" data-raos-cta-id=\"purchase-image-PRD-ACE-MAXPASS4-01471-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009099&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2024%2Fproteca%2F01471.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-ACE-MAXPASS4-01471\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-MAXPASS4-01471-240\" data-raos-cta-id=\"purchase-image-PRD-ACE-MAXPASS4-01471-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-d3002610f2dd95c2e98e1d5652273244\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01471%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009099&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2024%2Fproteca%2F01471.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>01471／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/theme.css",
+      "sha256": "67316dc2d2cdbcdc0a8b3e090aa4351e1f56bfd8e76b173bbe814a4db6425e8f"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/editorial-v2.css",
+      "sha256": "30fce88d1177e7cc3612fcde59c51a1226fb94f211ebfe460a6e08fdd1a82a51"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/b00be8fa1394c803b1f3/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-ACE-CRESTA-06316",
+    "PRD-ACE-DIFFERENCE-05721",
+    "PRD-ACE-MAXPASS4-01471"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/carry-on-suitcase-comparison/",
+  "shared_local_status": "PASS",
+  "candidate_id": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538"
+}

@@ -1,0 +1,395 @@
+{
+  "schema": "RAOS_OWNER_UI_AFFILIATE_CAPTURE_V1",
+  "source_html_modified": false,
+  "records": [
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-SS-M171",
+      "requested_merchant_url": "https://item.rakuten.co.jp/siroca/ss-m171/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-m171%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000217&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-m171%2Fthumb_ss-m171_new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-m171%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000217&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-m171%2Fthumb_ss-m171_new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-m171%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:37:26.931Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406186&item_id=10000217&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "53d341205759fb006d9a3913daad42ab9cf98e0b05053125c89aed32f208acf3",
+        "300": "2d7b136a3f22994209f057fcd6b400211877ca359e80441f9f66f4100b5992af"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-PDW-M151",
+      "requested_merchant_url": "https://item.rakuten.co.jp/siroca/pdw-m151/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fpdw-m151%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000218&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fpdw-m151%2Fthumb_pdw-m151_new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fpdw-m151%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000218&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fpdw-m151%2Fthumb_pdw-m151_new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fpdw-m151%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:37:38.742Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406186&item_id=10000218&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "bdfe0ad84d3fb0b83ab7739e72df3767356b56a566f609849ae3ca26c8e9f344",
+        "300": "7a84b800b2d82a4974c6e5ac483494ce077a2c13af97e5f7e92c7802294cd50b"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-SS-MU251",
+      "requested_merchant_url": "https://item.rakuten.co.jp/siroca/ss-mu251/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-mu251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000025&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-mu251%2Fthumb_ss-mu251_p10.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-mu251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000025&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-mu251%2Fthumb_ss-mu251_p10.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-mu251%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:37:49.375Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406186&item_id=10000025&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "d8fa1274951ad3ef7270f89f80bc32215b9d8eda59947d08be9c480b61eaffae",
+        "300": "36276f3bc60aa33c6416866c41da2ee16cab0f38b9673e720c9a3a0729f57e32"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+      "requested_merchant_url": "https://item.rakuten.co.jp/e-cutestyle/p003000014427/",
+      "image_identity_state": "REJECTED_NO_IMAGE_PLACEHOLDER",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbc1d.3b6d6a09.577cbc1e.59c81282/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fe-cutestyle%2Fp003000014427%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbc1d.3b6d6a09.577cbc1e.59c81282/?me_id=1276560&item_id=19779390&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fe-cutestyle%2Fcabinet%2Fnoimg.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbc1d.3b6d6a09.577cbc1e.59c81282/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fe-cutestyle%2Fp003000014427%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbc1d.3b6d6a09.577cbc1e.59c81282/?me_id=1276560&item_id=19779390&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fe-cutestyle%2Fcabinet%2Fnoimg.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbc1d.3b6d6a09.577cbc1e.59c81282/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fe-cutestyle%2Fp003000014427%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:37:58.863Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1276560&item_id=19779390&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "5e43ae61802f62a4be591578529277e218ad47c28c417c760406a2fe5eb2dda9",
+        "300": "c473b39e3d477645a08ea9f1d56cf8867a4dfedaca0d8fa644f358d072e10f86"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-AX-S7",
+      "requested_merchant_url": "https://item.rakuten.co.jp/tamatama2020/tamatama2020_0710sa002/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbc49.a3c4e9b7.577cbc4a.be75c258/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftamatama2020%2Ftamatama2020_0710sa002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbc49.a3c4e9b7.577cbc4a.be75c258/?me_id=1383777&item_id=10000496&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Ftamatama2020%2Fcabinet%2F07669255%2Fkitchen%2F0710sa002.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbc49.a3c4e9b7.577cbc4a.be75c258/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftamatama2020%2Ftamatama2020_0710sa002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbc49.a3c4e9b7.577cbc4a.be75c258/?me_id=1383777&item_id=10000496&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Ftamatama2020%2Fcabinet%2F07669255%2Fkitchen%2F0710sa002.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbc49.a3c4e9b7.577cbc4a.be75c258/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ftamatama2020%2Ftamatama2020_0710sa002%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:38:08.419Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1383777&item_id=10000496&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "468f1bcf23facae2fca3c19f6a109f04ebea401556c5f39d3504ea9084068b15",
+        "300": "53258592f187e0b2b912f8cdee06de44943e5e53b9a4272a35ef8f5ee658e78f"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+      "requested_merchant_url": "https://item.rakuten.co.jp/jyousui/dws-33b-w/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcac.0b8a0f9a.577cbcad.30191477/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjyousui%2Fdws-33b-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcac.0b8a0f9a.577cbcad.30191477/?me_id=1231044&item_id=10005231&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjyousui%2Fcabinet%2F01785067%2Ftest%2Fimgrc0116262449.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcac.0b8a0f9a.577cbcad.30191477/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjyousui%2Fdws-33b-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcac.0b8a0f9a.577cbcad.30191477/?me_id=1231044&item_id=10005231&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjyousui%2Fcabinet%2F01785067%2Ftest%2Fimgrc0116262449.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbcac.0b8a0f9a.577cbcad.30191477/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjyousui%2Fdws-33b-w%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:38:18.691Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1231044&item_id=10005231&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "7835d353772ea9977c45e0658ce62b6f384393db0f7a6b6103f1698a01e31f9f",
+        "300": "bf90bc052d5be1b2c223993562daffb8c4b5774ea44d132b0efc5df2e6f4a8ae"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-NP-TCR5-W",
+      "requested_merchant_url": "https://item.rakuten.co.jp/jism/4549980763964-21-54876-n/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4549980763964-21-54876-n%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcd0.a28b6168.577cbcd1.a5012141/?me_id=1206032&item_id=14066769&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjism%2Fcabinet%2F0139%2F4549980763964.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4549980763964-21-54876-n%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcd0.a28b6168.577cbcd1.a5012141/?me_id=1206032&item_id=14066769&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjism%2Fcabinet%2F0139%2F4549980763964.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4549980763964-21-54876-n%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:38:30.569Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1206032&item_id=14066769&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "cae69b80d98788eb05ee98db0aa107f4f814a03c9bbc2206df408cc56ebe93a5",
+        "300": "ac8a623612985d6266995cf9b9ccd452ca4837a5e2a4e44f92a8ab8925c0af48"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-TKDWSLHWH",
+      "requested_merchant_url": "https://item.rakuten.co.jp/thanko/000000004559/?variantId=TKDWSLHWH",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004559%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005333&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother21%2Ftkdwslhwh-rakuten.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004559%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005333&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother21%2Ftkdwslhwh-rakuten.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004559%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:38:41.421Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10005333&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "6ce330a7f97857c8cf04196473b18d24a065eaaddc63eb4c99a66a7240b7cdd6",
+        "300": "8621edaf002bc70b260e96ff5d18b666670767de74ef6b6030af6744848f3f5b"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-NP-TSK2",
+      "requested_merchant_url": "https://item.rakuten.co.jp/panasonic-store/np-tsk2-c/?variantId=np-tsk2-w",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tsk2-c%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001736&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tsk2_main01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tsk2-c%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001736&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tsk2_main01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tsk2-c%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:38:54.603Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1414582&item_id=10001736&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "a4c64cf03bdccea1ac1d90129e2b5b4ee68ebde4a70f646d2848c8a4929af417",
+        "300": "3f7415fcfbb740fc8b2724b2859342baa238cdd82762fbe3690d210e9c9a0a58"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-TKDWWDHWH",
+      "requested_merchant_url": "https://item.rakuten.co.jp/thanko/000000004557/?variantId=TKDWWDHWH",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004557%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005331&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother21%2Ftkdwwdhwh-rakuten.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004557%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005331&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother21%2Ftkdwwdhwh-rakuten.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004557%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:39:04.763Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10005331&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "08a3daacb077ac3e5a0f767dd3f6a77cad3b120d5afd2aa7c3006b04d5c5e7f9",
+        "300": "73980400ba18aa666507fe0453c153afa501279a386b7ea51968cc4a31b8f8f5"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-ADW-M28B",
+      "requested_merchant_url": "https://item.rakuten.co.jp/jism/4582678515773-21-66842-n/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4582678515773-21-66842-n%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcd0.a28b6168.577cbcd1.a5012141/?me_id=1206032&item_id=14804857&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjism%2Fcabinet%2F0084%2F4582678515773.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4582678515773-21-66842-n%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbcd0.a28b6168.577cbcd1.a5012141/?me_id=1206032&item_id=14804857&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjism%2Fcabinet%2F0084%2F4582678515773.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbcd0.a28b6168.577cbcd1.a5012141/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjism%2F4582678515773-21-66842-n%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:39:15.123Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1206032&item_id=14804857&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "549e0dcdb625b3e9178dbc479ada37553025b3631f76a63852af6a4c74fe5057",
+        "300": "fd56b1dbd563767f76189fd0ecd20abf7e637564aaf63701b0ff6fb15a543c28"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
+      "requested_merchant_url": "https://item.rakuten.co.jp/siroca/ss-lh451/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000222&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-lh451%2Fthumb_ss-lh451_new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000222&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-lh451%2Fthumb_ss-lh451_new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-lh451%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:39:29.302Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1406186&item_id=10000222&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "fde30382ed0c0a1262872d5a7e5b5b2687d4e067defa76e0e08eac83ba1f66ce",
+        "300": "818f08adaa251b49bc918f92c89c8b222844085cb22572d569077a2767e039c9"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B",
+      "requested_merchant_url": "https://item.rakuten.co.jp/edion/4582678515766/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10908053&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_578%2F4582678515766_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e21cb.99cb3ec6.575e21cc.840c4c83/?me_id=1272415&item_id=10908053&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fedion%2Fcabinet%2Fgoods%2Fll%2Fimg_578%2F4582678515766_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e21cb.99cb3ec6.575e21cc.840c4c83/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fedion%2F4582678515766%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:39:39.570Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1272415&item_id=10908053&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "09c2983755184fd6dc66ee7a05de132f5906b9cb746c85f88e503d3457cb244e",
+        "300": "0602b82fb2a38cbc892e70cb6e718b9e15118de9952314991c3cee7091404607"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TA5",
+      "requested_merchant_url": "https://item.rakuten.co.jp/panasonic-store/np-ta5-w/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001240&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-ta5_000.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001240&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-ta5_000.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-ta5-w%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:39:50.266Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1414582&item_id=10001240&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "25ff8723110cabe047808a8e7c044ddb953831c02155ebf966aed8917947d214",
+        "300": "8561add5a71995f584016133ca02d50465702ec71e126e10d68292103f010014"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500",
+      "requested_merchant_url": "https://item.rakuten.co.jp/panasonic-store/np-tz500-w/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001238&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tz500_000.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001238&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2Fthumb%2Fnp-tz500_000.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-tz500-w%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:40:01.888Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1414582&item_id=10001238&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "9838f029e061df41a9d38f7013c65f7d3bc093a7a414032f01af993011b46730",
+        "300": "36f31d1a5e1223215561d6761b18af29e5611767198091baf4c91f07871953a6"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TH5",
+      "requested_merchant_url": "https://item.rakuten.co.jp/panasonic-store/np-th5-s/?variantId=np-th5-w",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001239&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2F12923490%2Fnp-th5_main01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbd46.af2b08c0.577cbd47.bea4069d/?me_id=1414582&item_id=10001239&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fpanasonic-store%2Fcabinet%2Fbanner%2F12923490%2Fnp-th5_main01.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbd46.af2b08c0.577cbd47.bea4069d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpanasonic-store%2Fnp-th5-s%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:40:14.077Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1414582&item_id=10001239&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "3d0bfcfbb5fc551773350b15d5add9c408eed09f045cd07a2b4ade194f1e3d18",
+        "300": "62ab6679778371a58f0065a9bec3884bcb097c4f7fdf3f82a865068a91319db0"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LA451",
+      "requested_merchant_url": "https://item.rakuten.co.jp/ec-current/4589919848539/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12870434&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9191%2F4589919848539.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1769.ad69e97c.575e176a.a3d1f804/?me_id=1220942&item_id=12870434&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fec-current%2Fcabinet%2F9191%2F4589919848539.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1769.ad69e97c.575e176a.a3d1f804/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fec-current%2F4589919848539%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:40:24.578Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1220942&item_id=12870434&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "560ba53888a8c83868560e66cd77aac826ef21416c507bb57ca30435f1bf4f9d",
+        "300": "be5d068a59ddece261b701328ace668a0931682ecea2eeed82c52672a7a8acb2"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312",
+      "requested_merchant_url": "https://item.rakuten.co.jp/mujirushi-ryohin/4548076431268/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbfef.26d82316.577cbff0.ff08d5a7/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmujirushi-ryohin%2F4548076431268%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbfef.26d82316.577cbff0.ff08d5a7/?me_id=1385909&item_id=10010448&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fmujirushi-ryohin%2Fcabinet%2Fitem54%2F4548076431312.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cbfef.26d82316.577cbff0.ff08d5a7/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmujirushi-ryohin%2F4548076431268%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cbfef.26d82316.577cbff0.ff08d5a7/?me_id=1385909&item_id=10010448&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fmujirushi-ryohin%2Fcabinet%2Fitem54%2F4548076431312.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cbfef.26d82316.577cbff0.ff08d5a7/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmujirushi-ryohin%2F4548076431268%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:44:42.531Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1385909&item_id=10010448&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "763f6dac1b06aaf7bf3173ce440b73053de7fcb76cb67ca9f87cd3c75a5b2dd2",
+        "300": "d9657d17aba8578d81c7c435f5533064fdb0679a3983962dee1140799036a3c6"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "checked_at": "2026-09-13T05:42:01.136Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1211464&item_id=10000691&l-id=af_header_cta_link",
+      "raw_html": "https://hb.afl.rakuten.co.jp/ichiba/577cc04f.f5d75e75.577cc050.94e1a097/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fparis-p%2F5208-49%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjEwMHgxMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "image_identity_state": "UNAVAILABLE_PROVIDER_IMAGE_DISABLED",
+      "reason": "楽天アフィリエイト発行画面：都合により商品画像はご利用になれません。",
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+      "requested_merchant_url": "https://item.rakuten.co.jp/paris-p/5208-49/",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cc04f.f5d75e75.577cc050.94e1a097/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fparis-p%2F5208-49%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjEwMHgxMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:42:01.136Z"
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
+      "requested_merchant_url": "https://item.rakuten.co.jp/galleria/tum00363/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:42:11.796Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1210849&item_id=10043264&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "e5e73f04fc1325438dbfaba02c05416978ae3e80898f69e8583fda1b7089b0cc",
+        "300": "25af35ad6e7af5065b0743c4f3b628d68071166e163ed57472abe284833e9eaa"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+      "requested_merchant_url": "https://item.rakuten.co.jp/r-kojima/3219110503692/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F3219110503692%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11389442&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000000792%2F3219110503692_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F3219110503692%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11389442&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fr-kojima%2Fcabinet%2Fn0000000792%2F3219110503692_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F3219110503692%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:44:53.288Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1270903&item_id=11389442&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "67542ce0ad14e2bfedc35b6bc0551b3b78ddd87bd8400d9d927d4414eb602212",
+        "300": "0bd2ef2d2e813c79ea687bd486ce77219bd3a466084b0949fad9318ca3a8c305"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/new-row-issued-images.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+      "requested_merchant_url": "https://item.rakuten.co.jp/hana-kura-kaban/5208-49/",
+      "image_identity_state": "VERIFIED_VISUAL_MODEL_CONFIGURATION",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cd2d0.a831d8d9.577cd2d1.3d061d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhana-kura-kaban%2F5208-49%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cd2d0.a831d8d9.577cd2d1.3d061d39/?me_id=1255076&item_id=10007292&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fhana-kura-kaban%2Fcabinet%2Flegendwalker%2F5208-49_whiteback.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577cd2d0.a831d8d9.577cd2d1.3d061d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhana-kura-kaban%2F5208-49%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577cd2d0.a831d8d9.577cd2d1.3d061d39/?me_id=1255076&item_id=10007292&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fhana-kura-kaban%2Fcabinet%2Flegendwalker%2F5208-49_whiteback.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577cd2d0.a831d8d9.577cd2d1.3d061d39/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhana-kura-kaban%2F5208-49%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "captured_at": "2026-09-13T05:54:32.265Z",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1255076&item_id=10007292&l-id=af_header_cta_link",
+      "source_sha256": {
+        "240": "c084695d96810ef2fe182a30055343d89034e28d38636208ba52551c20260c2d",
+        "300": "de7025e1c2ab2a6ee27c2926f24186bf448ad5f353146af83937c861f5b8897f"
+      },
+      "visual_review_evidence": "output/site-improvements-20260913/legend-black-issued-image.png",
+      "reviewed_at": "2026-09-13T05:56:10.716629+00:00"
+    }
+  ]
+}

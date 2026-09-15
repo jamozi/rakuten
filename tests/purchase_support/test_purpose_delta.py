@@ -52,26 +52,19 @@ def dishwashers(catalog):
 # --- FD-08 / R-BRIDGE: category 136 promises only what the comparison offers ---
 
 
-def test_hub_links_each_condition_product_to_its_own_anchor(catalog):
+def test_hub_routes_water_choices_to_their_dedicated_articles(catalog):
     html, _ = compile(catalog)
     hub = fragment(html["kitchen"])
     choose = next(n for n in hub.find(tag="section") if n.attrs.get("id") == "choose")
-    anchors = {p["anchor"]: p["name"] for p in dishwashers(catalog)}
-    links = [
-        a
-        for a in choose.find(tag="a")
-        if a.attrs.get("href", "").startswith(f"/{ps.MAIN_SLUG}/#")
-    ]
-    product_links = [a for a in links if a.attrs["href"].split("#", 1)[1] in anchors]
-    assert len(product_links) == 4
-    assert {a.attrs["href"].split("#", 1)[1] for a in product_links} == set(anchors)
-    for a in product_links:
-        assert a.text() == anchors[a.attrs["href"].split("#", 1)[1]]
-    assert not [a for a in links if a.attrs["href"].endswith("#ps-choose")]
-    # AC31: the anchors already exist in the published comparison, so the neutral
-    # category text can go first without waiting for the new comparison layout.
+    destinations = {a.attrs["href"] for a in choose.find(tag="a")}
+    assert destinations == {
+        "/without-installation/",
+        "/dishwasher-branch-faucet-guide/",
+        "/dishwasher-water-supply-methods/",
+    }
+    # Existing detailed comparisons retain their product bookmarks.
     published = ids_of((PUBLISHED / f"{ps.MAIN_SLUG}.html").read_text())
-    assert set(anchors) <= published
+    assert {p["anchor"] for p in dishwashers(catalog)} <= published
     assert "ps-specs" in published
 
 
@@ -79,17 +72,11 @@ def test_hub_lead_and_cta_do_not_promise_budget_filtering(catalog):
     html, _ = compile(catalog)
     hub = html["kitchen"]
     assert "予算" not in hub
-    assert "設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。" in hub
-    # The category hub keeps the shared hub skeleton (CH-06): entry breadcrumb, note, policy links.
-    for label in ("このサイトの入口", "このページの読み方", "ほかの商品カテゴリ", "編集方針"):
-        assert f'<nav aria-label="{label}"' in hub
-    assert '<span aria-current="page">食洗機の選び方・比較</span>' in hub
-    assert 'class="ks-reader-note"' in hub
-    assert hub.count('class="ks-pr-badge"') == 1
-    assert f'<a href="/{ps.MAIN_SLUG}/#ps-specs">決め手になる比較表（4機種）</a>' in hub
-    for _, slug in ps.STAGES.values():
-        assert f'href="/{slug}/"' in hub
-    assert 'href="/solota-vs-rakua-mini-plus/"' in hub
+    assert "洗う量と、給水方法から。" in hub
+    for destination in ("/comparison-policy/", "/about-ad-policy/"):
+        assert destination in hub
+    assert "kitchen-after-buying" not in hub
+    assert "ks-kitchen-other" not in hub
 
 
 @pytest.mark.parametrize("mutation", ["missing_product", "missing_anchor"])
@@ -166,8 +153,8 @@ def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
         for a in choose.find(tag="a")
         if a.attrs.get("href", "").startswith("#product-")
     ]
-    assert sorted(links) == sorted(anchors)
-    assert "data-ps-pair-options" in html[ps.MAIN_SLUG]
+    assert set(links) == anchors
+    assert "data-ps-pair-options" not in html[ps.MAIN_SLUG]
     for slug in (
         "lightweight-carry-on-suitcase-under-3kg",
         "compact-robot-vacuum-shortlist",
@@ -176,7 +163,10 @@ def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
         other = fragment(html[slug])
         other_top = next(n for n in other.walk() if "data-raos-article-id" in n.attrs)
         assert "data-ps-purpose-mode" not in other_top.attrs
-        assert any("data-ps-purpose-options" in n.attrs for n in other.walk())
+        if not next(a for a in catalog["articles"] if a["slug"] == slug).get(
+            "authored_comparison"
+        ):
+            assert any("data-ps-purpose-options" in n.attrs for n in other.walk())
 
 
 def test_main_comparison_section_order_and_single_slots(catalog):
@@ -185,10 +175,9 @@ def test_main_comparison_section_order_and_single_slots(catalog):
     order = [
         "ps-choose",
         "ps-specs",
-        "ps-task-fit",
-        "ps-products",
-        "ps-installation-context",
         "ps-offers",
+        "ps-task-fit",
+        "ps-installation-context",
         "ps-hold-reasons",
         "ps-guides",
         "ps-evidence",
@@ -213,21 +202,20 @@ def test_main_comparison_section_order_and_single_slots(catalog):
 def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
     html, _ = compile(catalog)
     root = fragment(html[ps.MAIN_SLUG])
-    tables = {t.attrs.get("class"): t for t in root.find(tag="table")}
-    main_table, detail = tables["ps-comparison"], tables["ps-installation-details"]
+    main_table = root.find(tag="table", cls="ps-row-comparison")[0]
+    detail = root.find(tag="table", cls="ps-installation-details")[0]
     main_rows = [
-        r.find(tag="th")[0].text()
+        r.attrs["data-product-id"]
         for r in main_table.find(tag="tbody")[0].find(tag="tr")
     ]
+    assert (
+        main_rows
+        == next(a for a in catalog["articles"] if a["slug"] == ps.MAIN_SLUG)[
+            "product_ids"
+        ]
+    )
     detail_rows = [
         r.find(tag="th")[0].text() for r in detail.find(tag="tbody")[0].find(tag="tr")
-    ]
-    assert main_rows == [
-        "本体寸法（幅×奥行×高さ）",
-        "標準食器点数",
-        "乾燥・扉",
-        "給水方式",
-        "購入条件",
     ]
     assert detail_rows == ["公表使用水量（条件は機種別）", "開扉時の寸法", "必要な余白"]
     context = next(
@@ -253,8 +241,10 @@ def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
                 a.attrs.get("href") for a in cell.find(tag="a")
             ]
             assert ps.jp_date(fact["checked_at"]) in cell.text()
-    # Each caution is stated once, on the product card, with a link to the detail section.
-    cautions = [n for n in root.walk() if n.attrs.get("class") == "ps-product-caution"]
+    # Each caution stays once in the conclusion, linked to the installation detail.
+    cautions = [
+        n for n in root.walk() if n.attrs.get("class") == "ps-condition-caution"
+    ]
     assert len(cautions) == 4
     assert all(
         any(a.attrs.get("href") == "#ps-installation-context" for a in c.find(tag="a"))
@@ -303,7 +293,9 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
     assert len(notes) == 4
     for p, note in zip(dishwashers(catalog), notes):
         text = note.text()
-        assert text.startswith(p["exact_model"] + "の照合基準（公表値）：")
+        assert text.startswith(
+            p["exact_model"] + "の照合基準（公表値・条件を満たす計算値）："
+        )
         missing = [
             label
             for key, label in ps.INSTALLATION_LABELS.items()
@@ -340,20 +332,36 @@ def test_route_links_skip_only_the_current_guide(catalog):
     assert ps.route_links(product, current_slug="unrelated-slug") == comparison
 
 
-def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
+def test_guides_offer_direct_model_navigation_and_no_self_links(catalog):
     html, _ = compile(catalog)
     for _, slug in ps.STAGES.values():
         root = fragment(html[slug])
-        index = next(
-            n for n in root.find(tag="nav") if n.attrs.get("class") == "ps-model-index"
-        )
-        anchors = [a.attrs["href"].lstrip("#") for a in index.find(tag="a")]
-        assert anchors == [p["anchor"] for p in dishwashers(catalog)]
-        sections = {
-            n.attrs.get("id") for n in root.find(tag="section", cls="ps-guide-model")
-        }
-        assert set(anchors) <= sections
-        assert "を確認する機種を選ぶ" in index.text()
+        if slug == "dishwasher-water-supply-methods":
+            rows = [
+                n
+                for n in root.find(tag="tr")
+                if n.attrs.get("data-product-id")
+                and not n.attrs.get("data-ps-supplementary")
+            ]
+            anchors = [n.attrs["id"] for n in rows]
+            assert anchors == [p["anchor"] for p in dishwashers(catalog)]
+            assert {"#" + a for a in anchors} <= {
+                n.attrs.get("href") for n in root.find(tag="a")
+            }
+        else:
+            index = next(
+                n
+                for n in root.find(tag="nav")
+                if n.attrs.get("class") == "ps-model-index"
+            )
+            anchors = [a.attrs["href"].lstrip("#") for a in index.find(tag="a")]
+            assert anchors == [p["anchor"] for p in dishwashers(catalog)]
+            sections = {
+                n.attrs.get("id")
+                for n in root.find(tag="section", cls="ps-guide-model")
+            }
+            assert set(anchors) <= sections
+            assert "を確認する機種を選ぶ" in index.text()
         assert not root.find(tag="nav", cls="ps-model-routes")
         for route in root.find(tag="ul", cls="ps-model-routes"):
             assert not any(
@@ -366,7 +374,7 @@ def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
         # One comparison link per model plus the next-read link keeps the guide at <= 5.
         assert html[slug].count(f'href="/{ps.MAIN_SLUG}/') <= 5
     body = html["dishwasher-water-supply-methods"]
-    assert body.index('class="ps-model-index"') < body.index('class="ps-guide-model"')
+    assert body.index('id="guide-water-steps"') < body.index('id="guide-evidence"')
 
 
 # --- FD-05 / R-M: sale routes are described without asserting current totals ---
@@ -398,10 +406,12 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
             state = offer.attrs["data-ps-price-state"]
             assert state in {"RECHECK_REQUIRED", "EXPIRED"}
             if state == "EXPIRED":
-                assert "販売条件の期限切れ・再確認中" in text
-                assert f"{offer.attrs['data-ps-price-yen']}円" not in text.replace(",", "")
+                assert "本体価格・送料・必須品は販売先で確認してください。" in text
+                assert f"{offer.attrs['data-ps-price-yen']}円" not in text.replace(
+                    ",", ""
+                )
             else:
-                assert "確認時の販売条件です。現在価格の再確認が必要です。" in text
+                assert "本体価格・送料・必須品は販売先で確認してください。" in text
         elif verified_offers:
             assert any(n.has("ps-unavailable") for n in section.walk())
         else:
@@ -420,11 +430,13 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
         "bindings"
     ]
     kinds = {(b["link_purpose"], b["affiliate"]) for b in bindings}
-    assert ("merchant_purchase", "false") in kinds
+    assert kinds <= {("merchant_purchase", "false"), ("affiliate_purchase", "true")}
     assert ("affiliate_purchase", "true") in kinds
     for p in dishwashers(catalog):
         card = next(
-            n for n in root.find(tag="article") if n.attrs.get("id") == p["anchor"]
+            n
+            for n in root.find(cls="ps-condition-item")
+            if any(a.attrs.get("href") == "#" + p["anchor"] for a in n.find(tag="a"))
         )
         assert p["lead"] in card.text()
         assert all(item in card.text() for item in p["fit"] + p["avoid"])

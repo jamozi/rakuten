@@ -1,0 +1,57 @@
+{
+  "schema": "RAOSKitchenCapacityImagesV1",
+  "tool": "image_gen.imagegen",
+  "model": "not returned by tool",
+  "review": "Visually inspected all three original outputs before use. Distinct dish amounts; warm natural light and consistent ceramics; no product identity or claimed physical capacity.",
+  "limitation": "Conceptual dish amount only; not actual dishwasher capacity, dimensions, loading examples or guaranteed pot fit.",
+  "images": [
+    {
+      "name": "kitchen-capacity-compact-20260913",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-compact-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-compact-20260913.webp",
+      "source_sha256": "5644f9c3e8a018ea155896e9458f996f54a0fa86e17b4bb20a813d372bf11ff5",
+      "output_sha256": "f46216dccb204f7791fd30ef30f6be619d63810088c13c8d892aaecbdcdddabe",
+      "width": 900,
+      "height": 600,
+      "bytes": 46774,
+      "generation_intent": "CONCEPTUAL_DISH_AMOUNT_COMPACT",
+      "allowed_uses": [
+        "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+      ]
+    },
+    {
+      "name": "kitchen-capacity-standard-20260913",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-standard-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-standard-20260913.webp",
+      "source_sha256": "12a8b050904326f7e70a3536ae7c21b126b9560c8990db84b322251f2b9a7e28",
+      "output_sha256": "6c1c766e69b7e39634f0363e087f255ed21ede528ce3d505a3c0eb5b03027a37",
+      "width": 900,
+      "height": 600,
+      "bytes": 58782,
+      "generation_intent": "CONCEPTUAL_DISH_AMOUNT_STANDARD",
+      "allowed_uses": [
+        "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+      ]
+    },
+    {
+      "name": "kitchen-capacity-large-20260913",
+      "source": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/kitchen-capacity-large-20260913.png",
+      "output": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/kitchen-capacity-large-20260913.webp",
+      "source_sha256": "4e2282644d880712f2b8f493c5fc2cd668ee1e1caf20b8978ca0ac3f8404d0cf",
+      "output_sha256": "aa69f7b790fe7e595789d7ed79e23089bea15b3aadde17089bffae684c92a3a8",
+      "width": 900,
+      "height": 600,
+      "bytes": 54600,
+      "generation_intent": "CONCEPTUAL_DISH_AMOUNT_LARGE",
+      "allowed_uses": [
+        "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION"
+      ]
+    }
+  ],
+  "sources": [
+    "https://panasonic.jp/dish/comparison.html",
+    "https://www.siroca.co.jp/news/contents_dishwasher_01/#point01",
+    "https://www.thanko.jp/view/page/rakua"
+  ],
+  "source_use": "Official category/choice references and fallback destinations only. No manufacturer images or capacity numbers copied."
+}

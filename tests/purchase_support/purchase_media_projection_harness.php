@@ -1,7 +1,18 @@
 <?php
-$fixture = json_decode(base64_decode($argv[3]), true);
+$fixture = json_decode(gzuncompress(base64_decode($argv[3], true)), true);
 $fixture['runtime'] = file_get_contents(dirname(dirname($argv[1])) . '/assets/purchase-support.v1.json');
 $mode = $argv[2] ?? 'valid';
+if (in_array($mode, array('missing-guide-scope', 'duplicate-guide-scope', 'unregistered-guide-media'), true)) {
+    $runtime = json_decode($fixture['runtime'], true);
+    foreach ($runtime['articles'] as &$entry) {
+        if ($entry['slug'] !== $fixture['snapshot']['slug']) { continue; }
+        if ($mode === 'missing-guide-scope') { unset($entry['guide_product_scope']); }
+        elseif ($mode === 'duplicate-guide-scope') { $entry['guide_product_scope']['supplementary'] = array($entry['guide_product_scope']['main'][0]); }
+        else { $entry['guide_product_scope']['supplementary'] = array('PRD-UNREGISTERED'); }
+    }
+    unset($entry);
+    $fixture['runtime'] = json_encode($runtime);
+}
 $fixture['theme'] = sys_get_temp_dir() . '/purchase-media-' . uniqid();
 mkdir($fixture['theme'] . '/assets', 0700, true);
 file_put_contents($fixture['theme'] . '/assets/purchase-support.v1.json', $fixture['runtime']);

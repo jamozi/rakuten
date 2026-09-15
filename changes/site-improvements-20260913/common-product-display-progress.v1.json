@@ -1,0 +1,2628 @@
+{
+  "schema": "RAOS_COMMON_PRODUCT_DISPLAY_PROGRESS_V1",
+  "checked_at": "2026-09-13T09:51:28.991407+00:00",
+  "scope": "21 product leaf pages: 14 comparison rows verified; 7 guide commerce additions remain separately pending",
+  "publication_authorized": true,
+  "source_commit": "d98087d2",
+  "shared_candidate": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
+  "pages": [
+    {
+      "slug": "countertop-dishwasher-for-small-households",
+      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
+      "post_id": 41,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c1-da26-7933-832b-d986f44fd858",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/countertop-dishwasher-for-small-households/"
+    },
+    {
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+      "post_id": 83,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-FREQUENTER-LIEVE-1-250"
+      ],
+      "author_thread": "01a098c1-97e7-7d60-bb84-ff4a60c5d413",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/lightweight-carry-on-suitcase-under-3kg/"
+    },
+    {
+      "slug": "compact-robot-vacuum-shortlist",
+      "title": "省スペースのロボット掃除機を条件で絞る",
+      "post_id": 30,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+      ],
+      "author_thread": "01a098c1-e5eb-7a22-959d-e7ef541ee59a",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/compact-robot-vacuum-shortlist/"
+    },
+    {
+      "slug": "portable-power-station-guide",
+      "title": "停電対策のポータブル電源4モデル比較｜容量・出力・重さで選ぶ",
+      "post_id": 28,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-JACKERY-500-NEW",
+        "PRD-BLUETTI-AC70",
+        "PRD-ECOFLOW-DELTA3-CLASSIC"
+      ],
+      "author_thread": "01a098c1-f344-7012-bfb7-a6ad5dd1a3e4",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/portable-power-station-guide/"
+    },
+    {
+      "slug": "carry-on-suitcase-comparison",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+      "post_id": 19,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ACE-CRESTA-06316",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-ACE-MAXPASS4-01471"
+      ],
+      "author_thread": "01a098c1-8a77-7550-ba35-7aa7883acf9b",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/carry-on-suitcase-comparison/"
+    },
+    {
+      "slug": "carry-on-suitcase-under-100-seats",
+      "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
+      "post_id": 82,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PROTECA-STARIA-CXR-02350",
+        "PRD-PROTECA-FRESTER-EX-01550",
+        "PRD-ACE-PALISADES3-Z-06910",
+        "PRD-BERMAS-INTER-CITY-60524"
+      ],
+      "author_thread": "01a098c1-9120-7361-bf09-1674bde6c692",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/carry-on-suitcase-under-100-seats/"
+    },
+    {
+      "slug": "front-open-carry-on-suitcase-with-stopper",
+      "title": "前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
+      "post_id": 84,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-INNOVATOR-INV50",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-PROTECA-FRESTER-EX-01551",
+        "PRD-BERMAS-INTER-CITY-II-60561"
+      ],
+      "author_thread": "01a098c1-9f67-7d51-b78f-9ab404bf95d6",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/front-open-carry-on-suitcase-with-stopper/"
+    },
+    {
+      "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "title": "Roomba MiniとK11+ Pro｜台の寸法と手入れで比較",
+      "post_id": 85,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO"
+      ],
+      "author_thread": "01a098c1-ed2e-78c3-9e19-1d12ac1c79a5",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/roomba-mini-vs-switchbot-k11-pro/"
+    },
+    {
+      "slug": "solota-vs-rakua-mini-plus",
+      "title": "SOLOTAとラクアmini Plus｜大きさ・食器量・乾燥方式",
+      "post_id": 86,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-PLUS"
+      ],
+      "author_thread": "01a098c1-df93-7df3-bdf8-e0f374cdf7ea",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/solota-vs-rakua-mini-plus/"
+    },
+    {
+      "slug": "anker-solix-c300-c800-c1000-differences",
+      "title": "Anker Solix 4モデルの違い｜容量・出力・重量で選ぶ",
+      "post_id": 29,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2"
+      ],
+      "author_thread": "01a098c2-24e9-7693-b030-b6a97bf3eab0",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/anker-solix-c300-c800-c1000-differences/"
+    },
+    {
+      "slug": "compact-dishwasher-comparison",
+      "title": "コンパクト食洗機を比較｜少量の食器に合う小型機を選ぶ",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-TK-MDW22W",
+        "PRD-THANKO-RAKUA-MINI-PLUS",
+        "PRD-THANKO-RAKUA-MINI-COLOR"
+      ],
+      "author_thread": "01a09879-c31a-71a0-bc4a-8e25573f797b",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/compact-dishwasher-comparison/"
+    },
+    {
+      "slug": "standard-dishwasher-comparison",
+      "title": "標準容量の食洗機比較｜16〜28点の選び方",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [
+        "PRD-STANDARD-DISHWASHER-SS-M171",
+        "PRD-STANDARD-DISHWASHER-PDW-M151",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-STANDARD-DISHWASHER-SS-MU251",
+        "PRD-STANDARD-DISHWASHER-STTDWADW",
+        "PRD-STANDARD-DISHWASHER-AX-S7",
+        "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+        "PRD-STANDARD-DISHWASHER-NP-TCR5-W",
+        "PRD-STANDARD-DISHWASHER-TKDWSLHWH",
+        "PRD-STANDARD-DISHWASHER-NP-TSK2",
+        "PRD-PANASONIC-NP-TSP1",
+        "PRD-STANDARD-DISHWASHER-TKDWWDHWH",
+        "PRD-STANDARD-DISHWASHER-ADW-M28B"
+      ],
+      "author_thread": "01a0987c-8828-7a51-9473-762925e96608",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/standard-dishwasher-comparison/"
+    },
+    {
+      "slug": "large-dishwasher-comparison",
+      "title": "大容量の卓上食洗機比較｜40点モデルの給水・置き場",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [
+        "PRD-LARGE-DISHWASHER-SS-LH451",
+        "PRD-LARGE-DISHWASHER-ADW-L40B",
+        "PRD-LARGE-DISHWASHER-NP-TA5",
+        "PRD-LARGE-DISHWASHER-NP-TZ500",
+        "PRD-LARGE-DISHWASHER-NP-TH5",
+        "PRD-LARGE-DISHWASHER-SS-LA451"
+      ],
+      "author_thread": "01a0987c-d1ab-7923-b9eb-610731e0e655",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/large-dishwasher-comparison/"
+    },
+    {
+      "slug": "small-carry-on-suitcase-comparison",
+      "title": "小型・機内持ち込みスーツケース比較｜軽さ・開き方・移動で選ぶ",
+      "post_id": null,
+      "catalog_product_ids": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+        "PRD-FREQUENTER-LIEVE-1-250",
+        "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+        "PRD-ACE-CRESTA-06316",
+        "PRD-INNOVATOR-INV50",
+        "PRD-BERMAS-INTER-CITY-II-60561",
+        "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+        "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
+        "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
+      ],
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_VERIFIED",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
+      "local_url": "http://127.0.0.1:41398/small-carry-on-suitcase-comparison/"
+    },
+    {
+      "slug": "without-installation",
+      "title": "工事なしの食洗機",
+      "post_id": 144,
+      "mode": "existing",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987b-b01a-70e3-8353-541edddbff88",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    },
+    {
+      "slug": "dishwasher-installation-measurement",
+      "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
+      "post_id": 262,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-2b84-7203-854b-ded5dceadd32",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    },
+    {
+      "slug": "dishwasher-water-supply-methods",
+      "title": "食洗機の給水方法｜タンク・ポンプ・分岐水栓の違い",
+      "post_id": 263,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a0987c-3d94-7ec2-9bcc-c447e2ce4154",
+      "common_information_status": "READY",
+      "shared_preview_stage": "PHOTOS_AND_TABLE_VERIFIED",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "変更後の最終ユーザー了承・本番公開指示待ち。",
+      "comparison_row_scope": "GUIDE_MAIN4_SUPPLEMENT1",
+      "supplementary_product_ids": [
+        "PRD-LARGE-DISHWASHER-SS-LH451"
+      ],
+      "evidence": "output/site-improvements-20260913/water-table-review/verification.json"
+    },
+    {
+      "slug": "dishwasher-detergent-guide",
+      "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
+      "post_id": 264,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-31ef-7053-bb53-0de9507b6d41",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    },
+    {
+      "slug": "dishwasher-cleaning-guide",
+      "title": "卓上食洗機のお手入れ｜機種ごとの清掃箇所・手順・確認時期",
+      "post_id": 265,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-396d-7592-919b-160f04c1f0ca",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    },
+    {
+      "slug": "dishwasher-running-cost",
+      "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
+      "post_id": 266,
+      "mode": "existing",
+      "catalog_product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "author_thread": "01a098c2-40cf-70c1-91fb-52124933a225",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "SHARED_CATALOG_UPDATED",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    },
+    {
+      "slug": "dishwasher-branch-faucet-guide",
+      "title": "分岐水栓式の食洗機｜蛇口・置き場・費用の確認",
+      "post_id": null,
+      "mode": "new",
+      "catalog_product_ids": [],
+      "author_thread": "01a0987b-fb6f-7901-af4f-d4f7101b8d92",
+      "common_information_status": "IN_PROGRESS",
+      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "brand_labels": "AUTHOR_UPDATING",
+      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
+      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+    }
+  ],
+  "catalog_products": [
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "name": "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K",
+      "exact_model": "NP-TMLK1-K",
+      "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "b88100f0664f6f626b34d8c33db7151cca3877f29f6623fa166e01e6b9198a86",
+          "300": "679d17d06c9d8ccc8eb828ea36864c138036ea171dfbc6c27a8a2269267f365e"
+        },
+        "record_sha256": "8281ad4b3bc60ae824bebef74b8880605c766af8be53bd9cce6b44b3af1692f7",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/emedama/4550719155769/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T03:57:04.897Z",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TMLK1-K／ブラック・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "panasonic-rakuten-np-tmlk1-k",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-10T14:23:58.738Z",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T14:23:58.738000+00:00",
+          "price_scope": "税込本体の表示価格。送料は商品画面と店舗共通案内の条件を届け先ごとに再確認。洗剤・設置用品を含む総額は未確定。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-ui-solota-20260913",
+          "seller": "カメラのキタムラ",
+          "checked_at": "2026-09-13T03:01:48.828196+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:01:48.828196+00:00",
+          "price_scope": "本体単体。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini color",
+      "exact_model": "TDWS25SBL / TDWS25SRD",
+      "source_url": "https://www.thanko.jp/view/item/000000004715",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "d5efb3d95bea889582d24354f38729e7109699c4b104e322a604338fca8c933d",
+          "300": "4120bf1c2d22a19bc0d0066ff882469c435c15012f2e71572d70644a90752a65"
+        },
+        "record_sha256": "ac3c102064feb9437f1a464c9c513d5a6e16650798f2584c77412ed96363cff9",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000004715/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T03:59:45.993Z",
+        "checked_on": "2026-09-13",
+        "caption": "TDWS25SBL／ミスティーブルー・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "thanko-tdws25s",
+          "seller": "サンコー公式通販（THANKO）",
+          "checked_at": "2026-09-12T10:38:00+00:00",
+          "state": "SOLD_OUT",
+          "condition": "new",
+          "valid_until": "2026-09-13T10:38:00+00:00",
+          "price_scope": "公式通販の税込表示価格。送料・洗剤等は未確認のため小計。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-ui-mini-color-20260913",
+          "seller": "サンコーレアモノショップ",
+          "checked_at": "2026-09-13T03:59:45.993Z",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:59:45.993000+00:00",
+          "price_scope": "本体単体。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "name": "シロカ 食器洗い乾燥機 SS-MA251",
+      "exact_model": "SS-MA251",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
+          "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
+        },
+        "record_sha256": "e9e76d283c66b8e3a42e2f0ccdfba47447107d56c94cdbeb576e1d95596aba3a",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/siroca/ss-ma251/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:12:03.406Z",
+        "checked_on": "2026-09-13",
+        "caption": "SS-MA251／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "siroca-ss-ma251-silver",
+          "seller": "シロカ公式通販",
+          "checked_at": "2026-09-12T10:59:00+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-13T10:59:00+00:00",
+          "price_scope": "沖縄・離島等の送料、洗剤・設置用品が未確定のため小計。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-siroca-ss-ma251-siroca",
+          "seller": "シロカ公式ストア 楽天市場店",
+          "checked_at": "2026-09-13T03:01:48.828196+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:01:48.828196+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "name": "パナソニック 食器洗い乾燥機 NP-TSP1-W",
+      "exact_model": "NP-TSP1-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
+          "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
+        },
+        "record_sha256": "8e25c62a4050e252f1e32d4f413929b46908b935a259e6cbd00de3d40f29b58b",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/edion/4549980451250/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:04:54.782Z",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TSP1-W／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "panasonic-rakuten-np-tsp1-w",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-10T14:18:06.011Z",
+          "state": "SOLD_OUT",
+          "condition": "new",
+          "valid_until": "2026-09-11T14:18:06.011000+00:00",
+          "price_scope": "税込本体の表示価格。送料は商品画面と店舗共通案内の条件を届け先ごとに再確認。洗剤・設置用品を含む総額は未確定。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-panasonic-np-tsp1-edion",
+          "seller": "エディオン 楽天市場店",
+          "checked_at": "2026-09-13T03:01:48.828196+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:01:48.828196+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "name": "PROTECA エアロフレックスDX2 01521",
+      "exact_model": "01521-09",
+      "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "85e834f5e5819330a7dcabea533ed164e6749ff95a925cf9d397327099e28e71",
+          "300": "bb4d9e01bd38b5b8e46a7e69d7fba8205d0f151764a8fa2a2582ba0609c90b06"
+        },
+        "record_sha256": "abc9dcd702d7acffbe6ec76edc2a15ec49317ae67175912f539c48d2642cba39",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/01521/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:00:11.969Z",
+        "checked_on": "2026-09-13",
+        "caption": "01521-09／09 グレー×ホワイト・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "ace-01521-09",
+          "seller": "エース公式通販",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T01:43:25+00:00",
+          "price_scope": "国内通常配送・通常の荷物収納に必要な本体。任意ラッピングや支払手数料は含めない。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-proteca-aeroflex-dx2-01521-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T03:24:03.231Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:24:03.231000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "name": "Samsonite C-Lite（シーライト）CS2*09007",
+      "exact_model": "CS2*09007 / 134679-1041",
+      "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "67b28ff6240be684c03de36dccb504a8b96dc296b39f15b2dbca80e37034056f",
+          "300": "00720c1ec5bdcdcdf7b59b495fa781cfba7933163ffc40ee4ba7e2cae60b637c"
+        },
+        "record_sha256": "f7517e21f76e884bcf9c5fe672bb6bc0407ba4bacaada11cc51b8dd86ee924ef",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/samsonite/cs2-007/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:00:23.873Z",
+        "checked_on": "2026-09-13",
+        "caption": "CS2*09007 / 134679-1041／ブラック・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "samsonite-c-lite-134679-1041",
+          "seller": "サムソナイト公式ストア",
+          "checked_at": "2026-09-12T10:38:00+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-13T10:38:00+00:00",
+          "price_scope": "本体の税込表示。送料・必須費用を含む総額は未確認。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-samsonite-c-lite-cs2-09007-samsonite",
+          "seller": "サムソナイト公式 楽天市場店",
+          "checked_at": "2026-09-13T03:25:53.721Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:25:53.721000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "name": "AMERICAN TOURISTER APPLITE 4.0 QJ6-68002",
+      "exact_model": "QJ6-68002",
+      "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "b2c10de195e06e6f6545d75a302dd25446a3bf7b93057c5b08c28c5463fd639b",
+          "300": "314c5ab2adb43151206295e76e28780b391a7765767be65f4401c9410575c5c7"
+        },
+        "record_sha256": "16081facc44347d83232977decbcec18792294310ee863020227a85dc31329d4",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/galleria/act00031/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:00:36.731Z",
+        "checked_on": "2026-09-13",
+        "caption": "QJ6-68002／GREY×RED・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "official-american-tourister-applite-4-qj6-68002",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-american-tourister-applite-4-qj6-68002-galleria",
+          "seller": "ギャレリア Bag＆Luggage",
+          "checked_at": "2026-09-13T03:24:03.232Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:24:03.232000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "name": "FREQUENTER LIEVE（フリクエンター リエーヴェ）1-250",
+      "exact_model": "1-250",
+      "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "9f7cfb41bac7aaea3a71484d44fe1374463ba5f00c87a3436831e1794633b074",
+          "300": "6bdc8d6adcfa536ce5c0a1bb9869a9f183648c632c2c96168497c762cc4c93ff"
+        },
+        "record_sha256": "a44db34836b6070750fdb054ec31a9f1f8b19edb995b3421ae38d7f5f1a72b57",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/endolust/1-250-33/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:00:49.941Z",
+        "checked_on": "2026-09-13",
+        "caption": "1-250／ダークグレー・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "official-frequenter-lieve-1-250",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-frequenter-lieve-1-250-endolust",
+          "seller": "エンドーラゲージストア",
+          "checked_at": "2026-09-13T03:24:03.232Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:24:03.232000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "name": "iRobot Roomba Mini + AutoEmpty F155260",
+      "exact_model": "F155260",
+      "source_url": "https://store.irobot-jp.com/item/F155260.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "OFFICIAL_PUBLICATION_KIT",
+        "source_asset": "assets/images/roomba-mini-official.jpg",
+        "source_sha256": "99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "checked_on": "2026-09-10",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/irobotstore/f15/?variantId=f155260",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:08:55.203Z"
+      },
+      "offers": [
+        {
+          "offer_id": "irobot-f155260-white",
+          "seller": "アイロボット公式ストア",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "state": "PREORDER",
+          "condition": "new",
+          "valid_until": "2026-09-11T01:43:25+00:00",
+          "price_scope": "本体と付属消耗品の初回使用分。予約品のため予算内の確定候補へは自動分類しない。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-irobot-roomba-mini-autoempty-irobotstore",
+          "seller": "アイロボット公式 楽天市場店",
+          "checked_at": "2026-09-13T12:20:31.345000+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:20:31.345000+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "name": "SwitchBot（スイッチボット）ロボット掃除機 K11+ Pro",
+      "exact_model": "K11+ Pro",
+      "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "e2cb63fd07edca6997a0dc22661549214b6ef328cf0364b5a2bd52d957bc0aeb",
+          "300": "07e8d6063239dca06948f2ada5b20b3ec2885e212b915b64d3854966a31c4d7a"
+        },
+        "record_sha256": "f64dd9c7977439db0df6a7c0cbd5afd059879151953498634bfb9d55aab0030c",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/r-kojima/0810224630279/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:09:05.556Z",
+        "checked_on": "2026-09-13",
+        "caption": "K11+ Pro／本体・ステーション。スマートフォンは使用例"
+      },
+      "offers": [
+        {
+          "offer_id": "switchbot-k11-pro-ivory",
+          "seller": "SwitchBot公式サイト",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T01:43:25+00:00",
+          "price_scope": "箱に含まれる消耗品を追加照合中。カート操作時の割引は未適用。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-switchbot-k11-pro-r-kojima",
+          "seller": "コジマ楽天市場店",
+          "checked_at": "2026-09-13T12:20:49.531000+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:20:49.531000+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "name": "SwitchBot（スイッチボット）ロボット掃除機 K10+ Pro Combo",
+      "exact_model": "K10+ Pro Combo",
+      "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "f013aa118d1795e7cb5073a1f508c5ac456d6169a9d575ddd55e75ef867b28b6",
+          "300": "0bc9a0807b5a7a5e603c083a89ce3bb2a80435dca2496d5b86c24b353e9b7f02"
+        },
+        "record_sha256": "55ea0f1d736a85e9da1016878fd4c65810f9c6d59e988ed42257bd687b166da1",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ec-current/0810150542370/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:09:16.209Z",
+        "checked_on": "2026-09-13",
+        "caption": "K10+ Pro Combo／本体・コードレス掃除機・ステーション"
+      },
+      "offers": [
+        {
+          "offer_id": "official-switchbot-k10-pro-combo",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-switchbot-k10-pro-combo-ec-current",
+          "seller": "ＥＣカレント",
+          "checked_at": "2026-09-13T12:21:02.421000+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:21:02.421000+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "name": "iRobot Roomba Plus 515 Combo + AutoWash N285060",
+      "exact_model": "N285060",
+      "source_url": "https://store.irobot-jp.com/item/N285060.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "3616cb707017976e16ca70468dcc36c39fee64fcf7ce960945077857bf20147a",
+          "300": "5a0744ccd897ddc53035e0f7f6c0206a433e77778c26a4098d1311f1b32c4fe0"
+        },
+        "record_sha256": "d7b63667324c3ce1653c0f4fc26f7a2b4e3eee05e1b39cd0b1236df0e173d598",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/biccamera/0885155054982/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:09:25.836Z",
+        "checked_on": "2026-09-13",
+        "caption": "N285060／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-irobot-roomba-plus-515-combo",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-irobot-roomba-plus-515-combo-biccamera",
+          "seller": "楽天ビック（ビックカメラ×楽天）",
+          "checked_at": "2026-09-13T12:21:15.566000+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:21:15.566000+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "name": "Anker（アンカー）Solix C300 Portable Power Station",
+      "exact_model": "A17225Z1",
+      "source_url": "https://www.ankerjapan.com/products/a1722",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "02fcdb9b554171c5261607ebc4a8af78721ca943529b4dd8f3355f8e1142db64",
+          "300": "1648945d6dfa74939d9d9cbbba7dc75146a9b457423a7df48c8c973cf7128904"
+        },
+        "record_sha256": "0a255b06559f617c95eea9b62cda5440a76ba24d757fe39784af5154ccc34fdb",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/d-shop1one/4571411221002/?variantId=4571411221002",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:13:45.924Z",
+        "checked_on": "2026-09-13",
+        "caption": "A17225Z1／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "anker-a17225z1",
+          "seller": "Anker公式ストア",
+          "checked_at": "2026-09-10T01:43:25+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T01:43:25+00:00",
+          "price_scope": "国内配送可能な住所で、付属ACケーブルによる壁コンセント充電を想定。車載ケーブル・ソーラーパネルは含めない。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-anker-solix-c300-d-shop1one",
+          "seller": "ディーショップワン",
+          "checked_at": "2026-09-13T03:18:58.074Z",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:18:58.074000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "name": "Jackery（ジャクリ）ポータブル電源 500 New",
+      "exact_model": "Jackery ポータブル電源 500 New",
+      "source_url": "https://www.jackery.jp/products/explorer-500-new",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "addf6dc1b16a97414b30687a9bc912e4da804475decd9b7bc7901da5187cb19c",
+          "300": "0cb5c831e7307e1f7de8f2dc7e6109cc630e8f85d0087866c3ced4920a5ed7e9"
+        },
+        "record_sha256": "2353919ed2aa5c9f538b68cf21ac9af28e60d314213db287707c92543425fad8",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/jackery-japan/n-p-400200-bkor-jk2/?variantId=21-0001-000321",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:11:42.026Z",
+        "checked_on": "2026-09-13",
+        "caption": "Jackery ポータブル電源 500 New／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "jackery-500-new-base",
+          "seller": "Jackery公式ストア",
+          "checked_at": "2026-09-12T10:59:00+00:00",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-13T10:59:00+00:00",
+          "price_scope": "公式ストアの商品データで確認した税込の通常価格（比較価格との差なし）。9月10日までのセール価格は終了。通常送料が未確認のため小計。付属ACケーブルで壁コンセントから充電する構成。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-jackery-500-new-jackery-japan",
+          "seller": "Jackery Japan 楽天市場店",
+          "checked_at": "2026-09-13T03:18:58.607Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:18:58.607000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BLUETTI-AC70",
+      "name": "BLUETTI（ブルーティ）ポータブル電源 AC70",
+      "exact_model": "AC70",
+      "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "d9f46a99fe0e3fb1d2bf1d8efa46d62a55fef6504818723a16f2f01725bd3146",
+          "300": "3d07898e96bcebabdf362e54bc2d8190ccd9e8cabca9ce56ecd3e015c3ac94a1"
+        },
+        "record_sha256": "ee3beb5025adb6ece691073882865d6c2dc7f2889eebf687732a8b002178d4de",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/bluettijapan/bluettijapan_ac70/?variantId=bluettijapan_ac70",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:11:52.895Z",
+        "checked_on": "2026-09-13",
+        "caption": "AC70／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "bluetti-ac70-base",
+          "seller": "BLUETTI公式ストア",
+          "checked_at": "2026-09-10T15:04:13.523Z",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T15:04:13.523000+00:00",
+          "price_scope": "BLUETTI公式ページの本体のみ・国内送料無料の範囲。付属AC充電ケーブルで家庭のコンセントから充電する構成。ソーラーパネル、走行充電器、接続機器や用途別の追加用品は含みません。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-bluetti-ac70-bluettijapan",
+          "seller": "BLUETTI JAPAN 楽天市場店",
+          "checked_at": "2026-09-13T03:18:58.123Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:18:58.123000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "name": "EcoFlow（エコフロー）ポータブル電源 DELTA 3 Classic",
+      "exact_model": "EcoFlow DELTA 3 Classic",
+      "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "d1876abfbb167d94a5b96a56b5b1bac113fa63c1b5f2d628542fa9c7347d6f74",
+          "300": "a631bf4d80ad9dabeb3944e5a6d4bea9ca71f4342a4cc5181028c6749796461a"
+        },
+        "record_sha256": "195e2a60028395fb5f953d5376dbfb93634e1d97d310da0d76110d40ea2731d8",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ecmaison/compass1782726434/?variantId=compass_sku_1782726442412",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:10:49.128Z",
+        "checked_on": "2026-09-13",
+        "caption": "EcoFlow DELTA 3 Classic／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "ecoflow-delta3-classic-base",
+          "seller": "EcoFlow公式ストア",
+          "checked_at": "2026-09-10T15:04:16.711Z",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-11T15:04:16.711000+00:00",
+          "price_scope": "EcoFlow公式ページの本体のみ・国内送料無料の範囲。付属AC充電ケーブルで家庭のコンセントから充電する構成。ソーラーパネル、走行充電器、接続機器や用途別の追加用品は含みません。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-observed-ecoflow-delta3-classic-ecmaison",
+          "seller": "株式会社ECメゾン",
+          "checked_at": "2026-09-13T03:18:58.007Z",
+          "state": "AVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T03:18:58.007000+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "name": "ACE クレスタ 06316",
+      "exact_model": "06316",
+      "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "51d8cb37be401bf65479c413bd2bc19ae390db13c1b32a3632197bb5b8779464",
+          "300": "0abed461e063c382c555e19e10c90c1d2338558c971c916c3eae0224223f885a"
+        },
+        "record_sha256": "d2d6ef4382133adc253d03dd28884a9df4f64a5ca6c4beefdc578f6d2e0b583f",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/06316/?variantId=41775",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:59:59.751Z",
+        "checked_on": "2026-09-13",
+        "caption": "06316／5色の本体例（参考価格は02ブラック）"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-cresta-06316",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-ace-cresta-06316-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:18:17+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:18:17+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "name": "ace.TOKYO LABEL ディフェレンス 05721",
+      "exact_model": "05721",
+      "source_url": "https://store.ace.jp/shop/g/g05721-04",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "4d760f2adb0e67d172fc880fa4fdf31d3e2e0f381b5edc6969f2ca8ee72f4f98",
+          "300": "c073848d7c45ac5e77509e65c5fda8fcf78360a7a66977e65bf285c3b118ccf3"
+        },
+        "record_sha256": "6c7ab4bb79c5655b59c0e52ae48d5734df7aff996536ec25214ee8e442fd3ec5",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/05721/?variantId=06",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:05:27.322Z",
+        "checked_on": "2026-09-13",
+        "caption": "05721／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-difference-05721",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-ace-difference-05721-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:18:17+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:18:17+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "name": "PROTECA マックスパス4 01471",
+      "exact_model": "01471",
+      "source_url": "https://store.ace.jp/shop/g/g01471-02",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "0ccd245817902f111041a16c3eb4441c42434b086dee9ef1c2988b27551ee649",
+          "300": "18a56667639eb44da6da685187535ad6c14af81b316238df106c5c6e8cfcb4ae"
+        },
+        "record_sha256": "433ccf7896c8b251c26d84c46d0bc936c6cf6155605bc2c0fc79376974c51461",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/01471/?variantId=02",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:05:38.671Z",
+        "checked_on": "2026-09-13",
+        "caption": "01471／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-maxpass4-01471",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-ace-maxpass4-01471-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:18:17+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:18:17+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "name": "PROTECA スタリアCXR 02350",
+      "exact_model": "02350",
+      "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "e4e61ffbd43aaabd4b36ac7866d56b47417129c5bbc4416243bccd08bc4c8dd3",
+          "300": "d9e4281aabbc76f05df0f30a5b3225a4501201f385a34d2a33b706d0cddc18db"
+        },
+        "record_sha256": "223c47d84a7003c62354a337e1e99529e18abd2dd299118648ea0327b4cd3cc9",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/02350/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:05:48.532Z",
+        "checked_on": "2026-09-13",
+        "caption": "02350／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-staria-cxr-02350",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-proteca-staria-cxr-02350-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:17:55+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:17:55+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "name": "PROTECA フレスターEX 01550",
+      "exact_model": "01550",
+      "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "f401b6c4565709b98d31ffb752bb9f2b89f12997575dde9cf1bebd9bd6e480ff",
+          "300": "3d2dca3bdd35e70c8344f192f786eb44880b990e6716b34b4cbbcf4448687323"
+        },
+        "record_sha256": "8c222c97eeae18010562599f837bcfba472e5d4cb72add3fd9882589e0a4870e",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/01550/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:05:59.356Z",
+        "checked_on": "2026-09-13",
+        "caption": "01550／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-frester-ex-01550",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-proteca-frester-ex-01550-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:17:55+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:17:55+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "name": "ace. パリセイド3-Z 06910",
+      "exact_model": "06910",
+      "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "87134bcb4eb533f2020a005876bda1327daee76e3f95ce395d2be55cc0efbe0a",
+          "300": "0cd479099f26a2c16ff04d05553be6f65e968b56adafd56b060f23492af2cb64"
+        },
+        "record_sha256": "1e52391ebbb4a532e308eff1c04fba1f183e5d643110deb57a7ddb09755acc4a",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/06910/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:06:10.642Z",
+        "checked_on": "2026-09-13",
+        "caption": "06910／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-ace-palisades3-z-06910",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-ace-palisades3-z-06910-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:17:55+09:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:17:55+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "name": "BERMAS INTER CITY 60524",
+      "exact_model": "60524（新仕様・USBポートなし）",
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "e465095a9e70d0ea5da614b3c6429c98b16e357f513d1371b127662b6f479d2a",
+          "240": "307a9f1057892597336f2f972bda15480c0e69bb8c603a949aabc9106e08cae9"
+        },
+        "record_sha256": "213e8626ebf12dfc975176ce9f36b5ba1d5efbc681b1edde83c7fed59c11c805",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/business-bugs/bermas-60524/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "60524新仕様／シルバー・前面／側面／背面",
+        "listing_identity": {
+          "product_id": "PRD-BERMAS-INTER-CITY-60524",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "variant": "60524新仕様／シルバー・前面／側面／背面",
+          "condition": "UNKNOWN"
+        }
+      },
+      "offers": [
+        {
+          "offer_id": "official-bermas-inter-city-60524",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "name": "innovator スーツケース INV50",
+      "exact_model": "INV50",
+      "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "9ea89a4a6ffd51755d9cc916d25b5c9ac596278488002d4c9c74679be34a2d73",
+          "240": "8febd0c2a8aec8443e85521e374d0bc1dfc8eb7395840c8482f0cf924da233b6"
+        },
+        "record_sha256": "4e10dce7c93cc42b00023a64a6805adc85aa5e2967f777cc896e4bbe2883c39c",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/newbag/i02inv50/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "INV50／ペールブルー・スチールグレー",
+        "listing_identity": {
+          "product_id": "PRD-INNOVATOR-INV50",
+          "exact_model": "INV50",
+          "variant": "INV50／ペールブルー・スチールグレー",
+          "condition": "UNKNOWN"
+        }
+      },
+      "offers": [
+        {
+          "offer_id": "official-innovator-inv50",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "name": "PROTECA フレスターEX 01551",
+      "exact_model": "01551",
+      "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "8179fd609bd86104f2341ff46ecafd08f5c08d330800d0ce13b64e5b788fb4ec",
+          "300": "27cab45b5654db6ef3259f8a74cf5cc28946d051ea5a394099ca1ad487ac7866"
+        },
+        "record_sha256": "92a37db826199b0662b93ec0f7fdc73fff5e44ff528b4c66007c39abb465d525",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ace-store/01551/?variantId=02",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T06:10:15.593206+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "01551／本体の側面（参考価格はガンメタリック）"
+      },
+      "offers": [
+        {
+          "offer_id": "official-proteca-frester-ex-01551",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-proteca-frester-ex-01551-ace-store",
+          "seller": "ACE Online Store 楽天市場店",
+          "checked_at": "2026-09-13T12:21:25+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:21:25+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "name": "BERMAS INTER CITY II 60561",
+      "exact_model": "60561",
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "05793d663f952d25c58016efb35245088a71b2d61df0d4abec74c071a2afe678",
+          "300": "33b547ce929290baeaee533014d27bf07bd726a8fbaea5dbfd6c4f78cb24c16b"
+        },
+        "record_sha256": "5506989e20b3ec4a78705bb54a0b31a1d0e5bb1d55ad651642c81821e4325ba9",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/travel-passport/bar0069/?variantId=bar006901",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:01:01.401Z",
+        "checked_on": "2026-09-13",
+        "caption": "60561／シルバー・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "official-bermas-inter-city-ii-60561",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-bermas-inter-city-ii-60561-travel-passport",
+          "seller": "旅行用品の専門店 コンサイス",
+          "checked_at": "2026-09-13T12:21:05+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:21:05+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "name": "iRobot Roomba Mini Slim + SlimCharge F115060",
+      "exact_model": "F115060",
+      "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "a65840b5c51f814b9baf3eddd85df146c6b00a40a636865009223ee044f43cca",
+          "300": "33fb2d2d5099085273d0e105067916739617062fcfbcbd7ec704917720468575"
+        },
+        "record_sha256": "38fce159c75fbfeaaaff10960f05e6329bb853857a165d5c1d63b92ea13dd877",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/edion/0885155053633/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:09:35.369Z",
+        "checked_on": "2026-09-13",
+        "caption": "F115060／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-irobot-roomba-mini-slim-f115060",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-irobot-roomba-mini-slim-f115060-edion",
+          "seller": "エディオン 楽天市場店",
+          "checked_at": "2026-09-13T12:18:28+09:00",
+          "state": "UNKNOWN",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T12:18:28+09:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "name": "Anker Solix C800 Plus Portable Power Station",
+      "exact_model": "A1754",
+      "source_url": "https://www.ankerjapan.com/products/a1754",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "2f9d45b8ae20b97971eda39502ac10f99145c8885b003545f6181e63d247a63e",
+          "300": "4b637bdeaa1c130101867aa771103c39d75631252b605205267413a4d7d1af09"
+        },
+        "record_sha256": "7ad882c661960512e3a1c4903f82b8b61892280a0f7b7a5c9e7a55b0210c9749",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/d-shop1one/4571411217234/?variantId=4571411217234",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:13:55.945Z",
+        "checked_on": "2026-09-13",
+        "caption": "A1754／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c800-plus",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-anker-solix-c800-plus-d-shop1one",
+          "seller": "ディーショップワン",
+          "checked_at": "2026-09-13T03:19:23.666147+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:19:23.666147+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "name": "Anker Solix C1000 Portable Power Station",
+      "exact_model": "A1761",
+      "source_url": "https://www.ankerjapan.com/products/a1761",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "8ec31797add93889cf66fef419f1dc0f0eed7060faececf08135f8a7e61cd9c3",
+          "300": "e6a7293fbfbdc854737349d82e0644a5f621935080b9825efc55858b2717bb63"
+        },
+        "record_sha256": "51a5b2d65f388f0489a0a7bd2b70eabf78642a79211a0a88f439e0b1c188500c",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ecmaison/compass1753502424/?variantId=compass_sku_1753502443403",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:11:09.006Z",
+        "checked_on": "2026-09-13",
+        "caption": "A1761／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c1000",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-anker-solix-c1000-ecmaison",
+          "seller": "株式会社ECメゾン",
+          "checked_at": "2026-09-13T03:19:23.647071+00:00",
+          "state": "SOLD_OUT",
+          "condition": "new",
+          "valid_until": "2026-09-14T03:19:23.647071+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "name": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "exact_model": "A17635Z1 / A1763521",
+      "source_url": "https://www.ankerjapan.com/products/a1763",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "46a118caf6eaad46c65b63f628ba66c4531dd69dd1b2cf70899e07681fd5b1b0",
+          "300": "9fbe12f96d9fd7c96a80725737a2a49601ef940dffddb5236bd41f0b3ebbc41c"
+        },
+        "record_sha256": "417f39faa715855471f31eb7e49a692282fa7613cc182878ad9bea6f7560e5b5",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/anker/a1763/?variantId=A17635Z1",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T04:11:18.911Z",
+        "checked_on": "2026-09-13",
+        "caption": "A17635Z1 / A1763521／販売ページの本体・同梱構成例"
+      },
+      "offers": [
+        {
+          "offer_id": "official-anker-solix-c1000-gen2",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-observed-anker-solix-c1000-gen2-anker",
+          "seller": "アンカー・ダイレクト楽天市場店",
+          "checked_at": "2026-09-13T03:19:23.714465+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:19:23.714465+00:00",
+          "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini Plus TK-MDW22B",
+      "exact_model": "TK-MDW22B",
+      "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "5d5825b3a76ee3ad54cf2dd49b74967d0fd40da2ea884597725b2a525d890867",
+          "300": "4b2e15ced446009ef521c7b1203a8eb328043aa3e1d082f5b96d7a0ddd9bc360"
+        },
+        "record_sha256": "42ecea611e317a2877c8c5e0af115c4148c11f23d1db4fcf9ffec513104d3eb3",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000004055/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T03:59:02.514Z",
+        "checked_on": "2026-09-13",
+        "caption": "TK-MDW22B／ブラック・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "official-thanko-rakua-mini-plus",
+          "seller": "メーカー公式通販",
+          "checked_at": "2026-09-13T04:08:19+09:00",
+          "state": "UNAVAILABLE",
+          "condition": "new",
+          "valid_until": "2026-09-14T04:08:19+09:00",
+          "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+          "identity_verified": false
+        },
+        {
+          "offer_id": "rakuten-ui-mini-plus-20260913",
+          "seller": "サンコーレアモノショップ",
+          "checked_at": "2026-09-13T03:59:02.514Z",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:59:02.514000+00:00",
+          "price_scope": "本体単体。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-THANKO-TK-MDW22W",
+      "name": "サンコー 食器洗い乾燥機 ラクアmini TK-MDW22W",
+      "exact_model": "TK-MDW22W",
+      "source_url": "https://www.thanko.jp/view/item/000000003922",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "eb3d57422d71d5100c8102d610f9bd680452f204c4fd1fe475afa372541e4316",
+          "300": "9d8f50f7578ffe772b2351d4c377e95207ecc03e7f7faa1975353e598a08e761"
+        },
+        "record_sha256": "ef557a34e19f9c68defbec645701e2c00da7890e3761bc496bce0f8da607d2ee",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000003922/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T03:58:18.569Z",
+        "checked_on": "2026-09-13",
+        "caption": "TK-MDW22W／ホワイト・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-mini-20260913",
+          "seller": "サンコーレアモノショップ",
+          "checked_at": "2026-09-13T03:58:18.569Z",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:58:18.569000+00:00",
+          "price_scope": "本体単体。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-SS-M171",
+      "name": "シロカ 食器洗い乾燥機 SS-M171",
+      "exact_model": "SS-M171",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "53d341205759fb006d9a3913daad42ab9cf98e0b05053125c89aed32f208acf3",
+          "300": "2d7b136a3f22994209f057fcd6b400211877ca359e80441f9f66f4100b5992af"
+        },
+        "record_sha256": "9b8187836d027fe3fb9c7a8c84363347a5573b87089bacae490e0a31b9a4b832",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/siroca/ss-m171/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "SS-M171／メタリックウォームグレー・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-ss-m171-siroca",
+          "seller": "シロカ公式ストア　楽天市場店",
+          "checked_at": "2026-09-13T05:23:20.726610+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:20.726610+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-PDW-M151",
+      "name": "シロカ 食器洗い乾燥機 PDW-M151",
+      "exact_model": "PDW-M151",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "bdfe0ad84d3fb0b83ab7739e72df3767356b56a566f609849ae3ca26c8e9f344",
+          "300": "7a84b800b2d82a4974c6e5ac483494ce077a2c13af97e5f7e92c7802294cd50b"
+        },
+        "record_sha256": "034e202aefcb6dd6ebed2ca45756f434f592c2b9248403b02b59d2162518a656",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/siroca/pdw-m151/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "PDW-M151／シャンパンシルバー・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-pdw-m151-siroca",
+          "seller": "シロカ公式ストア　楽天市場店",
+          "checked_at": "2026-09-13T05:23:20.727030+00:00",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:20.727030+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-SS-MU251",
+      "name": "シロカ 食器洗い乾燥機 SS-MU251",
+      "exact_model": "SS-MU251",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "d8fa1274951ad3ef7270f89f80bc32215b9d8eda59947d08be9c480b61eaffae",
+          "300": "36276f3bc60aa33c6416866c41da2ee16cab0f38b9673e720c9a3a0729f57e32"
+        },
+        "record_sha256": "cd369f2d9cec71ddebedafe0232453fa2bed0d96d96c694129e2cf471e98c433",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/siroca/ss-mu251/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "SS-MU251／ホワイト・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-ss-mu251-siroca",
+          "seller": "シロカ公式ストア　楽天市場店",
+          "checked_at": "2026-09-13T05:23:20.727374+00:00",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:20.727374+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+      "name": "サンコー ラクア STTDWADW",
+      "exact_model": "STTDWADW",
+      "source_url": "https://www.thanko.jp/view/item/000000003491",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "eb0da82c108aacc9daa78ac60bdb660caf290a6247b1eb975ad6b0a5666ea214",
+          "240": "45d9a4450ca2557b39e17e4fa4bb922817a8212e63e11a0f89e774d6b1df715d"
+        },
+        "record_sha256": "4f5329c1dbd20df9ca0bec5e90e6a523351ef31da7523c43bf6b74101b671e49",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000003491/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "STTDWADW／ホワイト・本体",
+        "listing_identity": {
+          "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+          "exact_model": "STTDWADW",
+          "variant": "STTDWADW／ホワイト・本体",
+          "condition": "UNKNOWN"
+        }
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-sttdwadw-e-cutestyle",
+          "seller": "ディーライズ2号店",
+          "checked_at": "2026-09-13T05:26:28.954319+00:00",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:26:28.954319+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-AX-S7",
+      "name": "AINX 食器洗い乾燥機 AX-S7",
+      "exact_model": "AX-S7",
+      "source_url": "https://ainx.info/dishwasher_uv",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "468f1bcf23facae2fca3c19f6a109f04ebea401556c5f39d3504ea9084068b15",
+          "300": "53258592f187e0b2b912f8cdee06de44943e5e53b9a4272a35ef8f5ee658e78f"
+        },
+        "record_sha256": "d7802a8734c2ef3749d02ef9ee11755c0a23cca61e5e86d1d67f7b2d17ce0725",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/tamatama2020/tamatama2020_0710sa002/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "AX-S7／ホワイト・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-ax-s7-tamatama2020",
+          "seller": "たまたま　楽天市場店",
+          "checked_at": "2026-09-13T05:26:28.953632+00:00",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:26:28.953632+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+      "name": "東芝 食器洗い乾燥機 DWS-33B(W)",
+      "exact_model": "DWS-33B(W)",
+      "source_url": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "7835d353772ea9977c45e0658ce62b6f384393db0f7a6b6103f1698a01e31f9f",
+          "300": "bf90bc052d5be1b2c223993562daffb8c4b5774ea44d132b0efc5df2e6f4a8ae"
+        },
+        "record_sha256": "13183b79c229255c432e86b1050360c6c2c2599d2f2afd67af200b94c4b77e43",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/jyousui/dws-33b-w/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "DWS-33B(W)／白 / ホワイト・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-dws-33b-w-jyousui",
+          "seller": "ショップ　NIC家電",
+          "checked_at": "2026-09-13T05:23:30.926276+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:30.926276+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-NP-TCR5-W",
+      "name": "パナソニック 食器洗い乾燥機 NP-TCR5-W",
+      "exact_model": "NP-TCR5-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TCR5/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "cae69b80d98788eb05ee98db0aa107f4f814a03c9bbc2206df408cc56ebe93a5",
+          "300": "ac8a623612985d6266995cf9b9ccd452ca4837a5e2a4e44f92a8ab8925c0af48"
+        },
+        "record_sha256": "85e0f697ec018658c241a165395a9c7dc4ef59c6f892d85c935d315cd5a49e2f",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/jism/4549980763964-21-54876-n/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TCR5-W／ホワイト・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-np-tcr5-w-jism",
+          "seller": "Joshin web 家電とPCの大型専門店",
+          "checked_at": "2026-09-13T05:23:30.946481+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:30.946481+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-TKDWSLHWH",
+      "name": "サンコー ファミリー食洗機 ラクア スリム TKDWSLHWH",
+      "exact_model": "TKDWSLHWH",
+      "source_url": "https://www.thanko.jp/view/item/000000004559",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "6ce330a7f97857c8cf04196473b18d24a065eaaddc63eb4c99a66a7240b7cdd6",
+          "300": "8621edaf002bc70b260e96ff5d18b666670767de74ef6b6030af6744848f3f5b"
+        },
+        "record_sha256": "447abc3994f97dd431b81b906a64003b934627abab14a4bc82890081d8a6d6ff",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000004559/?variantId=TKDWSLHWH",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "TKDWSLHWH／ホワイトの本体・使用例"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-tkdwslhwh-thanko",
+          "seller": "サンコーレアモノショップ",
+          "checked_at": "2026-09-13T05:23:31.031902+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:31.031902+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-NP-TSK2",
+      "name": "パナソニック 食器洗い乾燥機 NP-TSK2",
+      "exact_model": "NP-TSK2",
+      "source_url": "https://panasonic.jp/dish/products/NP-TSK2/spec.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "a4c64cf03bdccea1ac1d90129e2b5b4ee68ebde4a70f646d2848c8a4929af417",
+          "300": "3f7415fcfbb740fc8b2724b2859342baa238cdd82762fbe3690d210e9c9a0a58"
+        },
+        "record_sha256": "4e8c63c8a9038285c5c8ba1269fae1afe482d3fad4314d47afd10bb926a887a3",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/panasonic-store/np-tsk2-c/?variantId=np-tsk2-w",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TSK2／2色の使用例（参考価格はホワイト）"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-np-tsk2-panasonic-store",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-13T05:23:41.070885+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:41.070885+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-TKDWWDHWH",
+      "name": "サンコー ファミリー食洗機 ラクア ワイド TKDWWDHWH",
+      "exact_model": "TKDWWDHWH",
+      "source_url": "https://www.thanko.jp/view/item/000000004557",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "08a3daacb077ac3e5a0f767dd3f6a77cad3b120d5afd2aa7c3006b04d5c5e7f9",
+          "300": "73980400ba18aa666507fe0453c153afa501279a386b7ea51968cc4a31b8f8f5"
+        },
+        "record_sha256": "98671cffcfa8b9cac39f8ce9bb4e2a470ed0e01e43272c4f0262b640a66d2e60",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000004557/?variantId=TKDWWDHWH",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "TKDWWDHWH／ホワイトの本体・使用例"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-tkdwwdhwh-thanko",
+          "seller": "サンコーレアモノショップ",
+          "checked_at": "2026-09-13T05:23:41.138262+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:23:41.138262+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-STANDARD-DISHWASHER-ADW-M28B",
+      "name": "AQUA 食器洗い乾燥機 ADW-M28B",
+      "exact_model": "ADW-M28B",
+      "source_url": "https://aqua-has.com/product/m28b/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "549e0dcdb625b3e9178dbc479ada37553025b3631f76a63852af6a4c74fe5057",
+          "300": "fd56b1dbd563767f76189fd0ecd20abf7e637564aaf63701b0ff6fb15a543c28"
+        },
+        "record_sha256": "678f611e2eeb0dfeed6b29a566f4b6951eb1781917d688a45125a23870b262ad",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/jism/4582678515773-21-66842-n/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "ADW-M28B／ホワイト・本体単体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-adw-m28b-jism",
+          "seller": "Joshin web 家電とPCの大型専門店",
+          "checked_at": "2026-09-13T05:26:39.157210+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:26:39.157210+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LH451",
+      "name": "シロカ 食器洗い乾燥機（大人数向け） SS-LH451",
+      "exact_model": "SS-LH451",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "fde30382ed0c0a1262872d5a7e5b5b2687d4e067defa76e0e08eac83ba1f66ce",
+          "300": "818f08adaa251b49bc918f92c89c8b222844085cb22572d569077a2767e039c9"
+        },
+        "record_sha256": "b39ad337f07245d42c25b1b967a2187cca91eafd67c630477af1a5b0e15377f1",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/siroca/ss-lh451/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "SS-LH451／ホワイト×ホワイト・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-ss-lh451-siroca",
+          "seller": "シロカ公式ストア　楽天市場店",
+          "checked_at": "2026-09-13T03:03:39.436273+00:00",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:03:39.436273+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B",
+      "name": "AQUA 食器洗い乾燥機 ADW-L40B(W)",
+      "exact_model": "ADW-L40B(W)",
+      "source_url": "https://aqua-has.com/product/l40b/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "09c2983755184fd6dc66ee7a05de132f5906b9cb746c85f88e503d3457cb244e",
+          "300": "0602b82fb2a38cbc892e70cb6e718b9e15118de9952314991c3cee7091404607"
+        },
+        "record_sha256": "0b5b85c61544c4d568b96ec907ebed507f1ba4b27a161564e5757f52578e9c6b",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/edion/4582678515766/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "ADW-L40B(W)／ホワイト・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-adw-l40b-edion",
+          "seller": "エディオン　楽天市場店",
+          "checked_at": "2026-09-13T03:03:39.436863+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:03:39.436863+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TA5",
+      "name": "パナソニック 食器洗い乾燥機 NP-TA5-W",
+      "exact_model": "NP-TA5-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TA5.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "25ff8723110cabe047808a8e7c044ddb953831c02155ebf966aed8917947d214",
+          "300": "8561add5a71995f584016133ca02d50465702ec71e126e10d68292103f010014"
+        },
+        "record_sha256": "c1de8c29f8f952373c2f4af824ad2fa4fc01cd9945f329a5e56a8f81a70fec40",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/panasonic-store/np-ta5-w/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TA5-W／ホワイト・本体"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-np-ta5-panasonic-store",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-13T03:03:49.643391+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:03:49.643391+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500",
+      "name": "パナソニック 食器洗い乾燥機 NP-TZ500-W",
+      "exact_model": "NP-TZ500-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TZ500.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "9838f029e061df41a9d38f7013c65f7d3bc093a7a414032f01af993011b46730",
+          "300": "36f31d1a5e1223215561d6761b18af29e5611767198091baf4c91f07871953a6"
+        },
+        "record_sha256": "6271aa082396bbf292aed013b477399262346a3a6e7d4174e040ac0c64a1d929",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/panasonic-store/np-tz500-w/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TZ500-W／2色の本体例（参考価格はホワイト）"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-np-tz500-panasonic-store",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-13T03:03:49.913996+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:03:49.913996+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-NP-TH5",
+      "name": "パナソニック 食器洗い乾燥機 NP-TH5-W",
+      "exact_model": "NP-TH5-W",
+      "source_url": "https://panasonic.jp/dish/products/NP-TH5.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "3d0bfcfbb5fc551773350b15d5add9c408eed09f045cd07a2b4ade194f1e3d18",
+          "300": "62ab6679778371a58f0065a9bec3884bcb097c4f7fdf3f82a865068a91319db0"
+        },
+        "record_sha256": "7ce809f8259db8854c634ae9c6782cbba69c5c3dd60c408a3e0ccec34dd23844",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/panasonic-store/np-th5-s/?variantId=np-th5-w",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "NP-TH5-W／2色の本体例（参考価格はホワイト）"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-np-th5-panasonic-store",
+          "seller": "Panasonic Store Plus 楽天市場店",
+          "checked_at": "2026-09-13T03:03:59.896420+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:03:59.896420+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-LARGE-DISHWASHER-SS-LA451",
+      "name": "シロカ 食器洗い乾燥機（大人数向け） SS-LA451-W/HL",
+      "exact_model": "SS-LA451-W/HL",
+      "source_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "560ba53888a8c83868560e66cd77aac826ef21416c507bb57ca30435f1bf4f9d",
+          "300": "be5d068a59ddece261b701328ace668a0931682ecea2eeed82c52672a7a8acb2"
+        },
+        "record_sha256": "4233207eaa55259089461d198fc87b08cf46e2eb2be1f211c112509a0d00245a",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/ec-current/4589919848539/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "SS-LA451-W/HL／ホワイト×グレーの本体・使用例"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-ss-la451-ec-current",
+          "seller": "ＥＣカレント",
+          "checked_at": "2026-09-13T03:04:00.855073+00:00",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T03:04:00.855073+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+      "name": "RIMOWA Essential Lite キャビン 82353704",
+      "exact_model": "82353704",
+      "source_url": "https://www.rimowa.com/jp/ja/luggage/colour/beige/キャビン/82353704.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "417cc4a2e8bcf9bdda5b6d8f018229db0f519afc9b95ba9b6b6f181abf52b622",
+          "240": "e01be7ee53e9e0f7f11dd9a3f9e154b8e50b5ffedd1b270aabb6bd53a745f4a6"
+        },
+        "record_sha256": "b1453c01aed43316d07deae398a535b49f3a53b0b71040e6f4d990e32e924e8d",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/retro/276129/?variantId=276129",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "82353704／アイボリー・中古掲載品の写真",
+        "listing_identity": {
+          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+          "exact_model": "82353704",
+          "variant": "82353704／アイボリー・中古掲載品の写真",
+          "condition": "used"
+        }
+      },
+      "offers": []
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+      "name": "DELSEY CHATELET AIR 2.0 55cm d00167680106（ブラウン）",
+      "exact_model": "d00167680106（ブラウン）",
+      "source_url": "https://delsey.jp/products/d001676801-chatelet-air-2-0-s-55cm",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "67542ce0ad14e2bfedc35b6bc0551b3b78ddd87bd8400d9d927d4414eb602212",
+          "300": "0bd2ef2d2e813c79ea687bd486ce77219bd3a466084b0949fad9318ca3a8c305"
+        },
+        "record_sha256": "27aa26d34fc833b00f0c6c58bd2967b03e40e83829b70f3d19027791560b7fd1",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/r-kojima/3219110503692/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "d00167680106（ブラウン）／チョコレート（販売属性：ブラウン）"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-delsey-d00167680106-r-kojima",
+          "seller": "コジマ楽天市場店",
+          "checked_at": "2026-09-13T05:41:46.002Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:41:46.002000+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+      "name": "LEGEND WALKER MALIBU 5208-49（照合色BK）",
+      "exact_model": "5208-49（照合色BK）",
+      "source_url": "https://tands-luggage.jp/products/5208_hard-case?color=color74",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "c084695d96810ef2fe182a30055343d89034e28d38636208ba52551c20260c2d",
+          "300": "de7025e1c2ab2a6ee27c2926f24186bf448ad5f353146af83937c861f5b8897f"
+        },
+        "record_sha256": "2725978bf51ac88bc3cef3831617240344788ad38b1e551622774a4de6c87ea4",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/hana-kura-kaban/5208-49/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "5208-49（照合色BK）／ブラック"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-legend-walker-5208-49-paris-p",
+          "seller": "パリスパートナー",
+          "checked_at": "2026-09-13T05:24:52.889Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:24:52.889000+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        },
+        {
+          "offer_id": "rakuten-ui-legend-5208-49-hana-kura-kaban",
+          "seller": "はなくら鞄～バッグ・財布専門店",
+          "checked_at": "2026-09-13T05:46:52.379Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:46:52.379000+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
+      "name": "TUMI 19 DEGREE フロント・アクセス・エクスパンダブル・キャリーオン 0228793DTX / 1589906153",
+      "exact_model": "0228793DTX / 1589906153",
+      "source_url": "https://www.tumi.co.jp/luggage/tu-158990.html",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "e5e73f04fc1325438dbfaba02c05416978ae3e80898f69e8583fda1b7089b0cc",
+          "300": "25af35ad6e7af5065b0743c4f3b628d68071166e163ed57472abe284833e9eaa"
+        },
+        "record_sha256": "c11452774c7ca36f508e90a64b20194031cff89f41e9b9e1b779accd8a4b8c1f",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/galleria/tum00363/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "0228793DTX / 1589906153／BlackTexture"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-tumi-0228793dtx-galleria",
+          "seller": "ギャレリア Bag＆Luggage",
+          "checked_at": "2026-09-13T05:24:51.865Z",
+          "state": "SOLD_OUT",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:24:51.865000+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    },
+    {
+      "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312",
+      "name": "無印良品 バーを自由に調節できる ハードキャリーケース（36L） 商品番号76431312（ネイビー）",
+      "exact_model": "商品番号76431312（ネイビー）",
+      "source_url": "https://www.muji.com/jp/ja/store/cmdty/detail/4548076431312",
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json",
+        "source_sha256": {
+          "240": "763f6dac1b06aaf7bf3173ce440b73053de7fcb76cb67ca9f87cd3c75a5b2dd2",
+          "300": "d9657d17aba8578d81c7c435f5533064fdb0679a3983962dee1140799036a3c6"
+        },
+        "record_sha256": "05bd00beded31f08235dffc0520958ce607025a6a96fcc86c7837ccdf1909e17",
+        "display_purpose": "verified_listing_reference",
+        "listing_url": "https://item.rakuten.co.jp/mujirushi-ryohin/4548076431268/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T05:56:10.716629+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "商品番号76431312（ネイビー）／ネイビー"
+      },
+      "offers": [
+        {
+          "offer_id": "rakuten-ui-muji-76431312-mujirushi-ryohin",
+          "seller": "無印良品 公式楽天市場店",
+          "checked_at": "2026-09-13T05:24:50.861Z",
+          "state": "AVAILABLE",
+          "condition": "UNKNOWN",
+          "valid_until": "2026-09-14T05:24:50.861000+00:00",
+          "price_scope": "本体単体・税込。送料・必須品を含む総額は未確認。",
+          "identity_verified": true
+        }
+      ]
+    }
+  ],
+  "new_products": "54 total products registered; 4 exact-media gaps remain",
+  "acquisition_status": {
+    "legacy_capture": "Retained; expanded with bounded authenticated UI-issued captures",
+    "installed_owner_local_doctor": "READY_LOCAL_REPAIR_ONLY_NO_LIVE_API_CALL",
+    "valuecommerce_config": "READY_NOT_LIVE_VERIFIED",
+    "linkshare_config": "READY_NOT_LIVE_VERIFIED",
+    "authenticated_browser_session": "VERIFIED_ISSUED_IMAGE_AND_LINK_CAPTURE_WITHOUT_CREDENTIAL_READ",
+    "capture_evidence": [
+      "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
+      "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
+      "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json"
+    ],
+    "recovered_images": "changes/site-improvements-20260913/recovered-product-images.v1.json"
+  },
+  "comparison_progress": "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+  "shared_state_note": "39本文＋テーマを統合候補ab318343へ反映しlocal preview PASS。比較表は80fd2d0e、給水表は1e5335f7とab318343の候補別検証を保持。本番未公開。",
+  "combined_candidate": {
+    "candidate_id": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
+    "source_commit": "d98087d2",
+    "scope": "39 documents plus theme",
+    "preview_status": "PASS",
+    "production_published": false,
+    "verified_at": "2026-09-13T10:05:44.533525+00:00"
+  },
+  "production_publication": {
+    "record": "changes/site-improvements-20260913/publication-result.v1.json",
+    "status": "PUBLISHED_AND_READBACK_VERIFIED",
+    "candidate_ids": [
+      "4d0a0dbccd57eb1104c01d3b08681d82dafdc88b2fe8e7f859238c6b20b0fbb4",
+      "83b8ea07ccf97c8cf6b898eba7323df9d8cdd80cc4a00b342cf7b7a28008f426"
+    ],
+    "published_documents": 39,
+    "public_html_findings": 1
+  }
+}

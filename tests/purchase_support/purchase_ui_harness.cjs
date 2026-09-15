@@ -81,7 +81,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
     const prices = [30000, 60000, 90000, 10000];
     const offers = ids.map((id, i) => `<section class="ps-product-offers" data-ps-product="${id}"><div data-ps-offer="offer-${id}" data-ps-checked-at="2026-09-10T05:00:00Z" data-ps-valid-until="2026-09-10T06:00:01Z" data-ps-identity="true" data-ps-state="AVAILABLE" data-ps-condition="new" data-ps-complete="${id === 'c' ? 'false' : 'true'}" data-ps-price-yen="${prices[i]}" data-ps-shipping-yen="0" data-ps-required-items-yen="0"><p class="ps-price-status">確認時の条件</p></div></section>`).join('');
     const row = values => `<tr><th>項目</th>${ids.map((id,i) => `<td data-ps-product="${id}">${values[i]}</td>`).join('')}</tr>`;
-    const html = `<div class="ps-article"><div class="ps-budget-controls" hidden data-ps-purpose-options='[{"id":"small","label":"少量"}]'></div><div class="ps-pair-controls" hidden data-ps-pair-options='${JSON.stringify(ids.map(id => ({ id, label: id })))}'></div><div class="ps-table-scroll" tabindex="0"><table class="ps-comparison"><thead><tr><th>項目</th>${ids.map(id => `<th data-ps-product="${id}">${id}</th>`).join('')}</tr></thead><tbody>${row(['同値','同値','別','別'])}${row(['未確認','未確認','未確認','未確認'])}</tbody></table></div><div class="ps-product-grid">${ids.map(id => `<article class="ps-product" data-ps-product="${id}" data-ps-use-cases="${id === 'd' ? 'large' : 'small'}"><h3>${id}</h3><p data-ps-product-budget role="status"></p></article>`).join('')}</div>${offers}<div class="ps-installation" data-ps-installation='${JSON.stringify(dimensions)}'><div class="ps-installation-controls" hidden></div><p>安全保証なし</p></div></div>`;
+    const html = `<div class="ps-article"><div class="ps-budget-controls" hidden data-ps-purpose-options='[{"id":"small","label":"少量"}]'></div><div class="ps-pair-controls" hidden data-ps-pair-options='${JSON.stringify(ids.map(id => ({ id, label: id })))}'></div><div class="ps-table-scroll" tabindex="0"><table class="ps-comparison"><thead><tr><th>項目</th>${ids.map(id => `<th data-ps-product="${id}">${id}</th>`).join('')}</tr></thead><tbody>${row(['同値<sup class="ps-reference">[1]</sup>','同値<sup class="ps-reference">[2]</sup>','別','別'])}${row(['未確認','未確認','未確認','未確認'])}</tbody></table></div><div class="ps-product-grid">${ids.map(id => `<article class="ps-product" data-ps-product="${id}" data-ps-use-cases="${id === 'd' ? 'large' : 'small'}"><h3>${id}</h3><p data-ps-product-budget role="status"></p></article>`).join('')}</div>${offers}<div class="ps-installation" data-ps-installation='${JSON.stringify(dimensions)}'><div class="ps-installation-controls" hidden></div><p>安全保証なし</p></div></div>`;
     await page.setContent(html);
     await page.addStyleTag({ content: css });
     assert.equal(await page.locator('.ps-product:visible').count(), 4, 'all products before JS');
@@ -151,22 +151,18 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
       await noScript.setContent(body);
       assert.equal(await noScript.locator('input, select, button, noscript').count(), 0, `${article.slug}: inert published content`);
       if (article.kind === 'comparison') {
-        assert.equal(await noScript.locator('.ps-product:visible').count(), 4);
-        assert.equal(await noScript.locator('.ps-product-offers:visible').count(), 4);
+        assert.equal(await noScript.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), article.product_ids.length);
+        assert.equal(await noScript.locator('.ps-condition-product-purchase').count(), article.conditions.reduce((n,c)=>n+c.product_ids.length,0));
+        if (!article.authored_comparison) assert.equal(await noScript.locator('.ps-product-offers').count(), article.product_ids.length + (article.supplementary_product_ids || []).length);
         await page.setContent(body);
         await page.addScriptTag({ content: source });
+        assert.equal(await page.locator('.ps-pair-controls').count(), 0, 'column-only controls are not attached to product rows');
         if (article.slug === 'countertop-dishwasher-for-small-households') {
-          // Links-only comparison: no purpose/budget inputs, four condition links, pair still works.
-          assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'no purpose/budget inputs on the main comparison');
-          assert.equal(await page.locator('#ps-choose a[href^="#product-"]').count(), 4);
-          assert.equal(await page.locator('.ps-product:visible').count(), 4);
-          await page.locator('[data-ps-pair="a"]').selectOption(article.product_ids[0]);
-          assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 2);
-          assert.equal(await page.locator('.ps-installation-details thead [data-ps-product]:visible').count(), 4, 'detail table keeps all candidates');
-          // Each caution is stated once, on its product card (the seller panel no longer repeats it).
-          assert.equal(await page.locator('.ps-product-caution:visible').count(), 4, 'cautions stay visible for every candidate');
-          await page.locator('[data-ps-pair-reset]').click();
-          assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 4);
+          assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0);
+          assert.equal(await page.locator('#ps-choose .ps-condition-product a[href^="#product-"]').count(), 4);
+          assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), 4);
+          assert.equal(await page.locator('.ps-installation-details thead [data-ps-product]:visible').count(), 4);
+          assert.equal(await page.locator('.ps-condition-caution').count(), 4);
           // Same-document hash: product anchors are revealed and focused on hashchange, back/forward and same-hash clicks.
           await page.addScriptTag({ content: navigationSource });
           const anchor = 'product-dish-ss-ma251';
@@ -177,13 +173,15 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
           await page.evaluate(() => history.forward());
           await page.waitForFunction(id => location.hash === '#' + id && document.activeElement && document.activeElement.id === id, anchor);
           await page.locator('h1, .ps-lead').first().focus();
-          await page.locator(`#ps-choose a[href="#${anchor}"]`).click();
+          await page.locator(`#ps-choose .ps-condition-product a[href="#${anchor}"]`).click();
           await page.waitForFunction(id => document.activeElement && document.activeElement.id === id, anchor);
-          assert.equal(await page.locator('.ps-product:visible').count(), 4, 'hash navigation does not hide candidates');
+          assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), 4, 'hash navigation does not hide candidates');
+        } else if (article.authored_comparison && !(await page.locator('[data-ps-purpose-options]').count())) {
+          assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'authored comparisons use direct condition links');
         } else {
           assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);
           await page.locator('[data-ps-budget]').fill('1');
-          assert.equal(await page.locator('.ps-product:visible').count(), 4, 'budget never hides published candidates');
+          assert.equal(await page.locator('.ps-row-comparison tbody tr[data-product-id]:not([data-ps-supplementary]):visible').count(), article.product_ids.length, 'budget never hides published candidates');
           const firstCase = article.conditions[0].id;
           await page.locator('[data-ps-purpose]').selectOption(firstCase);
           assert.match(await page.locator('[data-ps-budget-result]').textContent(), /候補を表示/);
@@ -198,7 +196,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
         assert.ok(await page.locator('.ps-installation-field').count() > known, 'unknown references are listed as site-side gaps');
         await page.locator('#ps-install-0-width_mm').fill('1');
         assert.match(await page.locator('.ps-installation-result').first().textContent(), /不足 1項目/);
-        assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 4項目/);
+        assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 1項目/);
       }
     }
     await noScript.close();

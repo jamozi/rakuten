@@ -137,6 +137,7 @@ def test_theme_package_is_deterministic_closed_and_has_only_owned_javascript() -
         javascript = [name for name in archive.namelist() if name.endswith(".js")]
         assert javascript == [
             "kurashinoshirube-child/assets/analytics-consent-gate.js",
+            "kurashinoshirube-child/assets/consent-controls.js",
             "kurashinoshirube-child/assets/editorial-navigation.js",
             "kurashinoshirube-child/assets/local-running-cost.js",
             "kurashinoshirube-child/assets/measurement.js",

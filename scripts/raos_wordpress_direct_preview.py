@@ -283,7 +283,9 @@ def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dic
                 continue
             for source in photo["sources"].values():
                 AffiliateImages().feed(source)
-    if len(urls) > 96:
+    # 54 registered products can each have two approved thumbnail sizes, plus
+    # the site's editorial illustrations. Keep the multi-article mirror bounded.
+    if len(urls) > 128:
         raise ValueError("DIRECT_PREVIEW_IMAGE_LIMIT")
     if not urls:
         return {}

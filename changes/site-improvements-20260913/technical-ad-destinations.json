@@ -1,0 +1,818 @@
+{
+  "checked_on": "2026-09-13",
+  "candidate": "0c240d945aba1d4659ecb64be0ec85c93a4ea515b2e7af84f22e29bc8d244766",
+  "runtime_sha256": "b5ff304e621bfd4d12f3b65dc826563048c77eeccf15546c297bf7d7bda3227f",
+  "unique_requests": 26,
+  "product_count": 10,
+  "scope": "26 runtime admitted URLs:16affiliate and10ordinaryofficial links; each uniquehref requested once; no forms/login/cart/purchase; rawURLs andqueryvalues omitted",
+  "checks": [
+    {
+      "check_id": "AD-01",
+      "bindings": [
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "rakuten-emedama",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "NP-TMLK1-K"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/emedama/4550719155769/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】パナソニック 工事が要らない パーソナル 食器洗い乾燥機 NP-TMLK1-K ブラック 新生活 プレゼント ギフト 時短 簡単：カメラのキタムラ",
+      "model_text_matches": {
+        "NP-TMLK1-K": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-02",
+      "bindings": [
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "rakuten-emedama",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "NP-TMLK1-K"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/emedama/4550719155769/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】パナソニック 工事が要らない パーソナル 食器洗い乾燥機 NP-TMLK1-K ブラック 新生活 プレゼント ギフト 時短 簡単：カメラのキタムラ",
+      "model_text_matches": {
+        "NP-TMLK1-K": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-03",
+      "bindings": [
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "panasonic-store-rakuten",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "panasonic-store-rakuten",
+          "placement": "final_summary"
+        },
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "panasonic-store-rakuten",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "seller_id": "panasonic-store-rakuten",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "NP-TMLK1-K"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/panasonic-store/np-tml1-w/",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "【楽天市場】【公式店】 パナソニック 食器洗い乾燥機 SOLOTA 庫内容積約10L 選べる2色 NP-TML1/TMLK1 パーソナル食洗機 タンク式 ストリーム除菌洗浄 ソロタ コンパクト 卓上食洗 一人暮らし 1人分 送料無料：Panasonic Store Plus 楽天市場店",
+      "model_text_matches": {
+        "NP-TMLK1-K": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-04",
+      "bindings": [
+        {
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "rakuten-siroca",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "SS-MA251"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/siroca/ss-ma251/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【シロカ公式】2WAY食器洗い乾燥機 オートオープンタイプ SS-MA251 シルバー｜1〜3人用 工事不要 オートオープン機能 給水トレイ付属 タンク式（手動給水）/分岐水栓式 食器16点 小物かご付属 チャイルドロック 予約運転｜食洗機 食器洗い機 食器乾燥機 節水 日本メーカー☆：シロカ公式ストア　楽天市場店",
+      "model_text_matches": {
+        "SS-MA251": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-05",
+      "bindings": [
+        {
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "rakuten-siroca",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "SS-MA251"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/siroca/ss-ma251/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【シロカ公式】2WAY食器洗い乾燥機 オートオープンタイプ SS-MA251 シルバー｜1〜3人用 工事不要 オートオープン機能 給水トレイ付属 タンク式（手動給水）/分岐水栓式 食器16点 小物かご付属 チャイルドロック 予約運転｜食洗機 食器洗い機 食器乾燥機 節水 日本メーカー☆：シロカ公式ストア　楽天市場店",
+      "model_text_matches": {
+        "SS-MA251": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-06",
+      "bindings": [
+        {
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "SS-MA251"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "store.siroca.jp",
+      "final_path": "/products/ss-mu251",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "食器洗い乾燥機 SS-MU251/SS-MA251 | シロカオンラインストア",
+      "model_text_matches": {
+        "SS-MA251": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-07",
+      "bindings": [
+        {
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "rakuten-ace-store",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "01521-09"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/ace-store/01521/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【エース公式】スーツケース ハードケース Proteca プロテカ エアロフレックスDX2 機内持込み 軽量 35L キャスターストッパー TSダイヤルロック キャリーケース 01521：ACE Online Store 楽天市場店",
+      "model_text_matches": {
+        "01521-09": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "01521・35L・エアロフレックスDX2を題名で確認。色suffix09の選択は未確認。"
+    },
+    {
+      "check_id": "AD-08",
+      "bindings": [
+        {
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "rakuten-ace-store",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "01521-09"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/ace-store/01521/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【エース公式】スーツケース ハードケース Proteca プロテカ エアロフレックスDX2 機内持込み 軽量 35L キャスターストッパー TSダイヤルロック キャリーケース 01521：ACE Online Store 楽天市場店",
+      "model_text_matches": {
+        "01521-09": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "01521・35L・エアロフレックスDX2を題名で確認。色suffix09の選択は未確認。"
+    },
+    {
+      "check_id": "AD-09",
+      "bindings": [
+        {
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "01521-09"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "store.ace.jp",
+      "final_path": "/shop/g/g01521-09/",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "PROTECA／プロテカ エアロフレックスDX2 スーツケース 日本製 35L 機内持ち込み 01521(09：グレー×ホワイト): プロテカ｜エース公式通販",
+      "model_text_matches": {
+        "01521-09": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-10",
+      "bindings": [
+        {
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "seller_id": "rakuten-samsonite",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "CS2*09007 / 134679-1041"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/samsonite/cs2-007/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】≪公式店≫サムソナイト スーツケース キャリーケース キャリーバッグ 機内持ち込み Samsonite [シーライト CS2 スピナー55 エキスパンダブル]  1〜3泊 約36/42L ハードケース 旅行：サムソナイト公式 楽天市場店",
+      "model_text_matches": {
+        "CS2*09007 / 134679-1041": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "シーライトCS2スピナー55エキスパンダブル36/42Lを題名で確認。CS2*09007/134679-1041のexactvariantは未確認。"
+    },
+    {
+      "check_id": "AD-11",
+      "bindings": [
+        {
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "seller_id": "rakuten-samsonite",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "CS2*09007 / 134679-1041"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/samsonite/cs2-007/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】≪公式店≫サムソナイト スーツケース キャリーケース キャリーバッグ 機内持ち込み Samsonite [シーライト CS2 スピナー55 エキスパンダブル]  1〜3泊 約36/42L ハードケース 旅行：サムソナイト公式 楽天市場店",
+      "model_text_matches": {
+        "CS2*09007 / 134679-1041": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "シーライトCS2スピナー55エキスパンダブル36/42Lを題名で確認。CS2*09007/134679-1041のexactvariantは未確認。"
+    },
+    {
+      "check_id": "AD-12",
+      "bindings": [
+        {
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "seller_id": "samsonite",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "seller_id": "samsonite",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "CS2*09007 / 134679-1041"
+      ],
+      "request_count": 1,
+      "status": 406,
+      "final_host": "www.samsonite.co.jp",
+      "final_path": "/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": null,
+      "model_text_matches": {
+        "CS2*09007 / 134679-1041": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-13",
+      "bindings": [
+        {
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "placement": "final_summary"
+        },
+        {
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "F155260"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "store.irobot-jp.com",
+      "final_path": "/item/F155260.html",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション | アイロボット公式オンラインストア",
+      "model_text_matches": {
+        "F155260": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-14",
+      "bindings": [
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "rakuten-r-kojima",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "rakuten-r-kojima",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "K11+ Pro"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/r-kojima/0810224630279/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】SWITCHBOT　SwitchBot ロボット掃除機 K11+Pro ［吸引＋拭くタイプ(乾拭き)］ アイボリー　W3004100：コジマ楽天市場店",
+      "model_text_matches": {
+        "K11+ Pro": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "K11+Pro表記とW3004100・アイボリーを題名で確認。空白差によるliteral不一致。選択構成/在庫は未確認。"
+    },
+    {
+      "check_id": "AD-15",
+      "bindings": [
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "rakuten-r-kojima",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "rakuten-r-kojima",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "K11+ Pro"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/r-kojima/0810224630279/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】SWITCHBOT　SwitchBot ロボット掃除機 K11+Pro ［吸引＋拭くタイプ(乾拭き)］ アイボリー　W3004100：コジマ楽天市場店",
+      "model_text_matches": {
+        "K11+ Pro": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "K11+Pro表記とW3004100・アイボリーを題名で確認。空白差によるliteral不一致。選択構成/在庫は未確認。"
+    },
+    {
+      "check_id": "AD-16",
+      "bindings": [
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "placement": "final_summary"
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "K11+ Pro"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "www.switchbot.jp",
+      "final_path": "/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "SwitchBot ロボット掃除機 K11+ Pro\n– SwitchBot (スイッチボット)",
+      "model_text_matches": {
+        "K11+ Pro": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-17",
+      "bindings": [
+        {
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "placement": "final_summary"
+        },
+        {
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "A17225Z1"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "www.ankerjapan.com",
+      "final_path": "/products/a1722",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "Anker Solix C300 Portable Power Station | ポータブル電源の製品情報 | Anker Japan 公式オンラインストア",
+      "model_text_matches": {
+        "A17225Z1": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-18",
+      "bindings": [
+        {
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "rakuten-jackery-japan",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "Jackery ポータブル電源 500 New"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/jackery-japan/n-p-400200-bkor-jk2/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【クーポン利用で38,870円 9/14 00:00から】Jackery ポータブル電源 500 New 512Wh リン酸鉄 長寿命 定格500W コンパクト 軽量 急速充電 家庭用 アウトドア用 防災 車中泊 UPS機能  純正弦波 ジャクリ：Jackery Japan 楽天市場店",
+      "model_text_matches": {
+        "Jackery ポータブル電源 500 New": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-19",
+      "bindings": [
+        {
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "rakuten-jackery-japan",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "Jackery ポータブル電源 500 New"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/jackery-japan/n-p-400200-bkor-jk2/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【クーポン利用で38,870円 9/14 00:00から】Jackery ポータブル電源 500 New 512Wh リン酸鉄 長寿命 定格500W コンパクト 軽量 急速充電 家庭用 アウトドア用 防災 車中泊 UPS機能  純正弦波 ジャクリ：Jackery Japan 楽天市場店",
+      "model_text_matches": {
+        "Jackery ポータブル電源 500 New": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-20",
+      "bindings": [
+        {
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "Jackery ポータブル電源 500 New"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "www.jackery.jp",
+      "final_path": "/products/explorer-500-new",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "Jackery ポータブル電源 500 New | 512Wh・500W出力・LFP長寿命 | 防災・キャンプ・車中泊    – Jackery Japan",
+      "model_text_matches": {
+        "Jackery ポータブル電源 500 New": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-21",
+      "bindings": [
+        {
+          "product_id": "PRD-BLUETTI-AC70",
+          "seller_id": "rakuten-bluettijapan",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "AC70"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/bluettijapan/bluettijapan_ac70/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【在庫一掃 クーポン利用で39,600円】BLUETTI ポータブル電源 AC70 768Wh/1000W 大容量 家庭用 蓄電池 5年保証 リン酸鉄 長寿命 バックアップ電源  (サージ2000W)  自動切替機能 アプリ遠隔操作 発電機 アウトドア キャンプ 車中泊 お釣り 防災 停電 台風 節電対策：BLUETTI JAPAN 楽天市場店",
+      "model_text_matches": {
+        "AC70": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-22",
+      "bindings": [
+        {
+          "product_id": "PRD-BLUETTI-AC70",
+          "seller_id": "rakuten-bluettijapan",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "AC70"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/bluettijapan/bluettijapan_ac70/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【在庫一掃 クーポン利用で39,600円】BLUETTI ポータブル電源 AC70 768Wh/1000W 大容量 家庭用 蓄電池 5年保証 リン酸鉄 長寿命 バックアップ電源  (サージ2000W)  自動切替機能 アプリ遠隔操作 発電機 アウトドア キャンプ 車中泊 お釣り 防災 停電 台風 節電対策：BLUETTI JAPAN 楽天市場店",
+      "model_text_matches": {
+        "AC70": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": true
+    },
+    {
+      "check_id": "AD-23",
+      "bindings": [
+        {
+          "product_id": "PRD-BLUETTI-AC70",
+          "seller_id": "bluetti",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-BLUETTI-AC70",
+          "seller_id": "bluetti",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "AC70"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "www.bluetti.jp",
+      "final_path": "/products/bluetti-ac70",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "BLUETTI AC70 小型ポータブル電源 | 防災推奨・車中泊・キャンプ |768Wh、1000W\n      \n      \n      ブルーティ",
+      "model_text_matches": {
+        "AC70": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    },
+    {
+      "check_id": "AD-24",
+      "bindings": [
+        {
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "seller_id": "rakuten-ecmaison",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "EcoFlow DELTA 3 Classic"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/ecmaison/compass1782726434/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【特価！新品】EcoFlow エコフロー DELTA 3 CLASSIC ポータブル電源 1024Wh 大容量 リン酸鉄リチウム電池 急速充電 高出力 防災 停電対策 アウトドア キャンプ 車中泊 非常用電源 1年保証：株式会社ECメゾン",
+      "model_text_matches": {
+        "EcoFlow DELTA 3 Classic": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "DELTA 3 CLASSIC・新品・株式会社ECメゾン・1年保証を題名で確認。公式保証条件への同一視禁止。選択構成/在庫は未確認。"
+    },
+    {
+      "check_id": "AD-25",
+      "bindings": [
+        {
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "seller_id": "rakuten-ecmaison",
+          "placement": "product_card"
+        }
+      ],
+      "exact_models": [
+        "EcoFlow DELTA 3 Classic"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "item.rakuten.co.jp",
+      "final_path": "/ecmaison/compass1782726434/",
+      "redirect_count": 2,
+      "redirect_statuses": [
+        302,
+        302
+      ],
+      "title": "【楽天市場】【特価！新品】EcoFlow エコフロー DELTA 3 CLASSIC ポータブル電源 1024Wh 大容量 リン酸鉄リチウム電池 急速充電 高出力 防災 停電対策 アウトドア キャンプ 車中泊 非常用電源 1年保証：株式会社ECメゾン",
+      "model_text_matches": {
+        "EcoFlow DELTA 3 Classic": false
+      },
+      "result": "UNVERIFIED",
+      "affiliate": true,
+      "manual_title_assessment": "DELTA 3 CLASSIC・新品・株式会社ECメゾン・1年保証を題名で確認。公式保証条件への同一視禁止。選択構成/在庫は未確認。"
+    },
+    {
+      "check_id": "AD-26",
+      "bindings": [
+        {
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "seller_id": "ecoflow",
+          "placement": "product_card"
+        },
+        {
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "seller_id": "ecoflow",
+          "placement": "final_summary"
+        }
+      ],
+      "exact_models": [
+        "EcoFlow DELTA 3 Classic"
+      ],
+      "request_count": 1,
+      "status": 200,
+      "final_host": "jp.ecoflow.com",
+      "final_path": "/products/delta-3-classic",
+      "redirect_count": 0,
+      "redirect_statuses": [],
+      "title": "エコフロー ポータブル電源 DELTA 3 Classic (1024Wh)\n– EcoFlow Japan",
+      "model_text_matches": {
+        "EcoFlow DELTA 3 Classic": true
+      },
+      "result": "MODEL_TEXT_PRESENT_VARIANT_NOT_VERIFIED",
+      "affiliate": false
+    }
+  ],
+  "affiliate_unique_requests": 16,
+  "ordinary_unique_requests": 10
+}

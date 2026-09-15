@@ -1,5 +1,9 @@
 # 日常のWordPress更新
 
+商品比較子記事の新規作成・更新では[共通の商品行形式](../../../../changes/reader-purchase-support-v1/comparison-rows.md)を使う。
+画像・仕様・参考価格・正規リンクを同じ商品行へ結合し、カテゴリ固有の比較軸は入力データに置く。
+画像・価格・リンクの処理や期限判定を記事ごとに作らない。ホーム・カテゴリ等の入口は対象外。
+
 1. `make wordpress-production-request ARGS='direct status'`で限定公開能力を実確認する。
    worktreeでは`direct --owner-checkout /home/minami/rakuten status`のように所有者の保管先を指定し、
    初回設定した認証を使う。記事source・候補・Git保存先は作業中のworktreeのままにする。
