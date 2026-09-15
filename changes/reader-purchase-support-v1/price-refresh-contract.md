@@ -7,7 +7,7 @@
   - publisher 組み込み: `scripts/raos_wordpress_price_overlay.py`（`scripts/raos_wordpress_direct_publish.py` の `prepare` / `publish` に明示の `--price-overlay-run` / `--price-overlay-purge` を足す）
   - WordPress plugin 側の保存の redact: `changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-owner-direct.php` の `redact_price_overlay_copies()`（§10.1-3。ソースのみ、未デプロイ）
   - テスト: `tests/purchase_support/test_rakuten_price_refresh.py`、`tests/purchase_support/test_rakuten_price_overlay_publish.py`、`tests/wordpress_mcp_v1/php/owner_direct_overlay_redaction_harness.php`（fixture はすべて合成値。WordPress は offline の fake、plugin は PHP の shim）
-- 現状（2026-09-16、バッチ G）: publisher への組み込み（§6〜§8）、candidate ディレクトリの purge、テーマの税別表示、`SOLD_OUT_WITH_CTA`、plugin 側の保存の redact（ソース。本文の行・undo option・テーマ release 行）、値が残る限り run を解除しない判定（§5）、値の配信中のフラグ無し prepare の拒否と status の伏せ字（§8）を実装しました。**初回の実値公開の前提条件として §10.1-3（plugin のデプロイ、WordPress のリビジョンとページキャッシュの実測、preview のデータベースの後始末）が残っています。**それを満たすまで値を公開しません。
+- 現状（2026-09-16、バッチ G）: publisher への組み込み（§6〜§8）、candidate ディレクトリの purge、テーマの税別表示、`SOLD_OUT_WITH_CTA`、plugin 側の保存の redact（ソース。本文の行・undo option・テーマ release 行）、値が残る限り run を解除しない判定（§5）、値の配信中（owner checkout を基準に判定）のフラグ無し prepare / publish / 状態表示の拒否（§8）を実装しました。**初回の実値公開の前提条件として §10.1-3（plugin のデプロイ、WordPress のリビジョンとページキャッシュの実測、preview のデータベースの後始末、plugin に残る hash についてのオーナー決定 §1-5）が残っています。**それを満たすまで値を公開しません。
 - フラグを付けない `prepare` / `publish` の挙動は、値の配信中でなければ変わりません（配信中の拒否は §8）。
   - テスト `test_flag_free_prepare_and_publish_match_the_pre_batch_g_publisher` は、バッチ G 直前の main の commit `2fac0278b3b64b46545389c083f3fcedaf5e0199`（#289）から `git archive` で取り出した publisher と、作業ツリーの publisher に同じ fixture で prepare・publish させます。candidate.json、candidate ディレクトリ、WordPress への呼び出し、journal、標準出力が一致することを確かめます。
   - origin/main ではなく commit を固定する理由: バッチ G を merge すると origin/main 自身がフラグを持つので、比較が自分自身との比較になり、「バッチ G 以前である」ことの検査も main で失敗するためです。
@@ -19,6 +19,9 @@
 2. API 値は owner checkout の `.secrets/rakuten-price-refresh/<run_id>/` に置きます（ディレクトリ 0700、ファイル 0600、git 管理外）。`observed_at` と `cache_expires_at`（24 時間以内）を必ず付けます。カタログへ反映する promote 段はありません。
 3. publisher は WordPress へ送る直前に overlay を本文へ注入し、期限前に価格なしの本文を送り直して消します（purge 公開）。
 4. オーナーの 1 回の承認で「fetch・公開・期限前の purge 公開」を 1 組として行います。定期実行と自動公開はしません。
+5. **OWNER DECISION REQUIRED（未決定）**: sha256 hashes of injected documents/themes remain in plugin proposal rows and undo options after purge; either the owner accepts this (hashes are not prices, but can be brute-forced) or a row/option deletion step must be designed before the first real publish.
+   - 残る場所: proposal 行の `before_sha256` / `after_sha256` 列（本文行・テーマ release 行）、本文行の payload の `block_markup: sha256:<注入本文の sha256>` と `price_overlay_redaction.sides.*.block_markup_sha256`、undo option の `applied_document.content_sha256` など（§10.1-3）。
+   - 決まるまで値を公開しません（§10.1-3 の残る作業 4）。WordPress DB の hash 列を残す設計は変えていません。`run_status()`（§5）はこの項目を理由に解除も判定の変更もしません。
 
 ## 2. 公式仕様の確認（2026-09-15 取得）
 
@@ -113,9 +116,11 @@
 
 - 同じ理由で、price-recoverable な hash は標準出力にも出しません（端末やエージェントの記録は 24 時間を超えて残るため）。
   - price overlay の candidate は handle で名指しします（§8）。
-  - 値の配信中（公開の記録があり、purge 公開もオーナーの incident 記録も無い run がある間）は、`status`（`--candidate` なし）が `theme` の中の 64 桁の hash（`tree_sha256`、`runtime_revision` など）と、キー名に tree / manifest を含む値を `REDACTED_PRICE_OVERLAY_LIVE` に置き換え、`price_overlay_live`（run_id の一覧）を付けます。
+  - 値の配信中（§8。owner checkout か ROOT に、公開の記録があり purge 公開もオーナーの incident 記録も無い run、または承認記録が読めない run がある間）は、`status`（`--candidate` なし）が WordPress を呼ばず `{"price_overlay_live": [<run_id>...], "status": "REDACTED_PRICE_OVERLAY_LIVE"}` だけを出します。
+    - フラグ無し candidate の `status --candidate` は、64 桁 hex を含む文字列と `runtime_revision` / `plugin_runtime_revision` を、どの深さでも `REDACTED_PRICE_OVERLAY_LIVE` に置き換えます（`theme` 配下を含む）。
+    - deployment operator の読み取りコマンドは拒否します（§8）。
   - 同じ間、フラグを付けない `prepare` を拒否します（§8。baseline に配信中の注入本文や注入テーマの tree hash が入り、id とディレクトリを出力するため）。
-- WordPress 側では、owner-direct plugin がテーマ release 行の payload にある注入テーマの hash を伏せます（§10.1-3）。行の `before_sha256` / `after_sha256` 列には残ります。
+- WordPress 側では、owner-direct plugin がテーマ release 行の payload にある注入テーマの hash を伏せます（§10.1-3）。行の `before_sha256` / `after_sha256` 列には残ります。purge 後も残る hash の扱いはオーナー決定待ちです（§1-5）。
 
 ## 4. 実行単位と承認の記録
 
@@ -175,6 +180,7 @@ confirm-plugin-cleanup --owner-checkout /home/minami/rakuten --run-id <run_id> -
 - **出力**: 件数、状態別の集計、offer_id、期限だけです。価格は出しません。
 - **`--now`**: 時計を先へ進めることにだけ使えます（実際の時刻との大きい方を採用）。過去の時刻を渡して期限検査を避けることはできません。
 - **期限切れ run の放置防止**: 期限を過ぎて purge されていない run（記録が壊れて期限が読めない run を含む）があると、`fetch` は `EXPIRED_RUN_NOT_PURGED` で拒否し、`gate` も同じ code で拒否します。定期実行はしないため、これが 24 時間の保持上限を運用で守らせる仕組みです。
+  - ローカルの値を消した run で、承認記録（`approval.v1.json`）が無い・読めない（symlink、JSON でない、オブジェクトでない）場合は `UNDATED` です。承認記録は fetch の通信前に作られるので、無ければ公開と purge の義務を確かめられません。
   - `purge-expired` でローカルの値を消した run が purge 済み（`PURGED`）になるのは、次の**すべて**を満たすときだけです（`run_status()`、上から順に判定）。1 つでも欠ければ、`fetch` と `gate` は `EXPIRED_RUN_NOT_PURGED` で拒否を続けます。
     1. 公開の記録が無い、または purge 公開の記録かオーナーの incident 記録がある。欠ければ `PUBLISHED_NOT_PURGED`。
     2. 承認記録に price-recoverable な id・hash が残っていない。残れば `REDACTION_PENDING`。
@@ -183,13 +189,15 @@ confirm-plugin-cleanup --owner-checkout /home/minami/rakuten --run-id <run_id> -
     5. 公開の記録がある run では、承認記録の `purge_publish.wordpress_redaction` が `COMPLETE`、またはオーナーの plugin 後始末の記録（`plugin-cleanup.v1.json`）がある。欠ければ `WORDPRESS_REDACTION_UNCONFIRMED`。
   - **ローカル複製の走査**（`sweep_local_copies()` が削除し、`local_copies()` が検出する）
     - 対象
-      - owner checkout の `.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/` の `candidate.json` / `journal.json` / `preview.json`（一致すればディレクトリごと削除）
+      - owner checkout の `.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/` の全ファイル（`candidate.json` / `journal.json` / `preview.json` のほか `bodies/`・`theme/`・`*.tmp` など。一致すればディレクトリごと削除）と、承認記録にある id の candidate ディレクトリ（中身にかかわらず削除）
+      - 同じ場所の `.staging-*`（注入 candidate の書き出しが中断して残るもの。記録に無い注入後の hash しか持たないことがあるので、中身にかかわらずディレクトリごと削除）
       - `.secrets/wordpress-direct-preview/` の凍結テーマ `theme-<tree>`（中の 1 ファイルでも一致すればディレクトリごと）と、`fixtures/` 以下のファイル
     - 探すもの: 承認記録にある candidate id、run の目印 `data-ps-overlay-run="<run_id>"`、値を持つ entry の観測時刻・期限・`response_row_sha256`、承認記録に残る注入後の hash（生の形と JSON エスケープ形）。
     - これで見つかる例: 値の公開中にフラグ無しで prepare した candidate（baseline に注入本文）、値を持つ preview の凍結テーマと fixture。
     - 注入テーマの凍結コピーは目印を持たず、注入後の hash でしか見つかりません。そのため `purge-expired`・purge 公開・`resolve-incident` は、承認記録の hash を redact する**前に**走査します。
-    - 走査しないもの: `.secrets` 外のコピー、ほかの clone・worktree、preview のデータベース（§10.1-3）、上記以外の `.secrets` 内のファイル。
-  - `purge-expired` の報告（`result`）: `PURGED` / `ALREADY_PURGED` のほか、残っている条件に応じて `PURGE_PUBLISH_MISSING`（上の 1）、`REDACTION_PENDING`（2〜4。通常は同じ実行で解消）、`WORDPRESS_REDACTION_UNCONFIRMED`（5）を返します。`candidate_directories_deleted`・`preview_copies_deleted`・`stale_tmp_files_deleted` も出します。
+    - candidate の置き場や preview ディレクトリ（またはその中の途中のパス）が symlink なら `PRIVATE_PATH_UNSAFE` で止まり、何も消しません（run は `UNDATED`）。`delete_preview_copy()` は `theme-*` 1 段か `fixtures/` 以下だけを受け付け、`..` を含むパスを拒否します。
+    - 走査しないもの: `.secrets` 外のコピー、ほかの clone・worktree、preview のデータベース（§10.1-3）、上記以外の `.secrets` 内のファイル。worktree の `.secrets` へ複製が入る経路は、配信中のフラグ無し prepare / publish の拒否（§8、owner checkout を基準に判定）で塞いでいます。
+  - `purge-expired` の報告（`result`）: `PURGED` / `ALREADY_PURGED` のほか、残っている条件に応じて `PURGE_PUBLISH_MISSING`（上の 1）、`REDACTION_PENDING`（2〜4。通常は同じ実行で解消）、`WORDPRESS_REDACTION_UNCONFIRMED`（5）、承認記録が無い・読めない `UNDATED` を返します。`candidate_directories_deleted`・`preview_copies_deleted`・`stale_tmp_files_deleted` も出します。
   - **`PUBLISHED_NOT_PURGED` の解除**は次のどちらかだけです。
     - purge 公開を記録する（期限後でも可。§8-5）。完了時に purge candidate・ローカル複製・id も消えます。
     - オーナーが `resolve-incident` で記録する。purge 公開はできないが、WordPress が値を配信していないことをオーナーが確かめた場合です（手作業で価格なしに戻した `WORDPRESS_RESTORED_OUTSIDE_PUBLISHER`、記事を非公開にした `WORDPRESS_POSTS_WITHDRAWN`）。
@@ -308,12 +316,14 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 - `--price-overlay-run` と `--price-overlay-purge` は `--theme` 必須、affiliate 系の引数・patch 行とは併用できません（`PRICE_OVERLAY_THEME_REQUIRED` / `PRICE_OVERLAY_AFFILIATE_UNSUPPORTED` / `PRICE_OVERLAY_PATCH_SOURCE_UNSUPPORTED`）。
 - 注入 candidate の publish はフラグが無いと `PRICE_OVERLAY_FLAG_REQUIRED`、価格なし candidate にフラグを付けると `PRICE_OVERLAY_CANDIDATE_UNBOUND`、run や種別が違えば `PRICE_OVERLAY_RUN_MISMATCH` です。
 - 何も注入されない overlay（本文に値を持つ offer が無い）は `PRICE_OVERLAY_NOTHING_INJECTED` で、承認を消費しません。
-- **値の配信中のフラグ無し prepare**: 公開の記録があり、purge 公開もオーナーの incident 記録も無い run（`live_publish_runs()`）がある間は、フラグを付けない `prepare` を `PRICE_OVERLAY_LIVE` で拒否します。
-  - 対象: `--theme` を付けた場合と、記事キーがその run の `article_keys` に含まれる場合です。WordPress への呼び出しと checkpoint の前に拒否します。
-  - 理由: baseline に配信中の注入本文（または注入テーマの tree hash）が入り、その candidate の id とディレクトリが出力されるためです。
-  - 承認記録が読めない run は、すべての記事が注入済みとして扱います（安全側）。
-  - `--price-overlay-run` / `--price-overlay-purge` の prepare はこの検査を通りません（purge は配信中の記事に対して行うもの）。別の run が配信中のときの run 付き prepare は §10.1-11 を見てください。
-  - 同じ間、`status`（`--candidate` なし）はテーマの hash を伏せます（§3）。
+- **値の配信中のフラグ無しコマンド**: 公開の記録があり purge 公開もオーナーの incident 記録も無い run、または承認記録が読めない run（`live_run_ids()`）がある間は、フラグを付けない `prepare` と `publish` を、記事や `--theme` の有無にかかわらずすべて `PRICE_OVERLAY_LIVE` で拒否します。
+  - 判定する場所: 検証済みの `--owner-checkout`、固定の `OWNER_CHECKOUT`（`/home/minami/rakuten`）、publisher の ROOT、それぞれの `.secrets/rakuten-price-refresh`。`--owner-checkout` が無い場合や ROOT と違う場合（worktree から実行する通常の形）も `OWNER_CHECKOUT` を見ます。
+  - run ディレクトリが symlink かディレクトリでない場合は `PRICE_OVERLAY_PRIVATE_PATH_UNSAFE`、owner checkout が不正なら `PRICE_OVERLAY_OWNER_CHECKOUT_INVALID` で拒否します（安全側）。
+  - WordPress への呼び出し、checkpoint の commit、candidate ディレクトリ、publish の lock と journal より前に拒否します。
+  - 理由: prepare は baseline に配信中の注入本文（または注入テーマの tree hash）を入れ、その candidate の id とディレクトリを出力します。publish は記録の無い書き込みで配信中の run の purge 公開の前提を崩します。
+  - `--price-overlay-run` / `--price-overlay-purge` の prepare と publish はこの検査を通りません（purge は配信中の記事に対して行うもの）。別の run が配信中のときの run 付き prepare は §10.1-11 を見てください。
+  - 同じ間、`status`（`--candidate` なし）は WordPress を呼ばず `{"price_overlay_live": [...], "status": "REDACTED_PRICE_OVERLAY_LIVE"}` だけを出し、フラグ無し candidate の `status --candidate` は hash と revision を伏せます（§3）。
+  - `scripts/raos_wordpress_deployment_operator.py` の `deployment-status` / `operation-status` / `publication-batch-status` / `owner-direct-status` / `owner-direct-document` / `owner-direct-operation-status` も、同じ判定で `WORDPRESS_MCP_PRICE_OVERLAY_LIVE`（run の状態が読めなければ `WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID`）で拒否します。publisher 内部の呼び出し（purge 公開の status など）は CLI を通らないので影響しません。
 - 出力に candidate id を出しません。注入 candidate の id は注入後本文の hash、purge candidate の id は live の注入後本文を baseline に持つ candidate の hash で、どちらも価格を総当たりで復元できるためです。
   - `prepare` は id を承認記録の `prepared_candidates` にだけ書き、`{"candidate": "price-overlay:<run_id>:<mode>", "candidate_id": "REDACTED_PRICE_OVERLAY", ...}` を出します。candidate ディレクトリのパスも出しません。
   - `preview` / `publish` / `status` / `sync` は price overlay の candidate について、handle、`REDACTED_PRICE_OVERLAY`、mode・run_id、状態（`publication_ready` / `publication_status` / `status` / `result_code`）、`git_sync.status` だけを出します（preview の runtime hash や journal の proposal id・receipt は出さない。`preview.json` と `journal.json` には従来どおり書く）。
@@ -386,7 +396,7 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
 2. ~~**candidate ディレクトリと journal の purge**~~ **済（2026-09-16）**: §8-5・§8-6 のとおり、purge 公開の成功時と `purge-expired` で candidate ディレクトリ（journal を含む）を削除します。残る限界:
    - purge 公開をせず `purge-expired` だけを実行しても、WordPress 上の値は消えません（期限前の purge 公開は運用で行う）。その run は `PURGE_PUBLISH_MISSING` と報告され、`PUBLISHED_NOT_PURGED` として `fetch` / `gate` を拒否し続けます。解除は purge 公開の記録（期限後でも可。完了時に purge candidate と id も消える）か、オーナーの `resolve-incident`（plugin の後始末の確認とローカル複製の走査を含む）だけです（§5）。
    - preview のローカル WordPress（docker のデータベース）に取り込まれた注入後本文は消しません（§10.1-3 の残る作業 3）。
-   - ローカル複製の走査（§5）が見るのは、owner checkout の candidate ディレクトリの `candidate.json` / `journal.json` / `preview.json` と、preview の凍結テーマ・fixture だけです。`.secrets` 外のコピー、ほかの clone・worktree の `.secrets`、preview のデータベースは対象外です。
+   - ローカル複製の走査（§5）が見るのは、owner checkout の candidate ディレクトリ（全ファイルと `.staging-*`）と、preview の凍結テーマ・fixture だけです。`.secrets` 外のコピー、ほかの clone・worktree の `.secrets`、preview のデータベースは対象外です。worktree から実行した publisher が配信中の値を複製する経路は、§8 の拒否（owner checkout を基準に判定）で塞いでいます。
    - purge 用 candidate は、公開時と同じ `source_sha256` を要求します（`PURGE_SOURCE_DRIFT`）。公開後に git の本文を変えた場合は、checkpoint の内容に戻してから purge します。
 3. **WordPress 側に残る注入本文**（一部実装、未解決。**初回の実値公開の前提条件**）
    - **実装済み（plugin ソースのみ、未デプロイ）**: owner-direct plugin は、proposal 行の `payload.before` / `payload.after`（公開時は `after`、purge 公開時は `before` が注入本文）と、option `raos_codex_owner_direct_undo_<proposal_id>`（`applied_document`・`public_before`）に注入本文を保存します。purge 公開の batch を finalize したとき（rollback できなくなった時点）、`RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies()` がこれらを redact します。
@@ -404,8 +414,9 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
      - テスト（PHP harness）
        - `finish_owner_direct_batch()` の finalize を実際に通します。応答の `price_overlay_redaction`、本文の行・undo option・両方のテーマ行の書き換え、無関係なテーマ行が変わらないこと、完了記録の保存を確かめます。呼び出しを `null` に置き換える変異で失敗することを確認済みです。
        - 配信中の本文変更（before と after の両方に目印。同じ run・別の run）を purge と見なさないことを確かめます。「after に目印が無い」条件を外す変異で失敗することを確認済みです。
-       - テーマ行の記録の改ざんと、終了状態でない行の拒否も確かめます。
-     - 残す hash: 行の `before_sha256` / `after_sha256` 列には元から注入後文書の hash があるため、本文の sha256 を残しても復元の手がかりは増えません。これらの hash も価格を総当たりで復元できる点は §3 と同じで、WordPress のデータベース内に残ります。
+       - テーマ行の UPDATE が失敗した finalize: 結果は `INCOMPLETE`、`theme_proposals` は増えず、finish の `price_overlay_redaction` は `COMPLETE` になりません。
+       - テーマ行の記録の改ざん（tree_sides と印の食い違い、before 側だけの行の manifest の印、空の runs、不正な run id、余分なキー、本文行・plugin 行に付けたテーマ形の記録）と、終了状態でない行の拒否を確かめます。別の作成者の batch 行を手がかりにしないことも確かめます。harness は PHP の Warning / Notice を例外にします。
+     - 残す hash: 行の `before_sha256` / `after_sha256` 列には元から注入後文書の hash があるため、本文の sha256 を残しても復元の手がかりは増えません。これらの hash も価格を総当たりで復元できる点は §3 と同じで、WordPress のデータベース内に残ります。**purge 後も残るこの hash の扱いは §1-5 のオーナー決定待ちです（下の残る作業 4）。**
      - テスト: `tests/wordpress_mcp_v1/php/owner_direct_overlay_redaction_harness.php`（`test_owner_direct_server.py` から実行）。
      - plugin の `RUNTIME_REVISION` は変えていません。変えると、デプロイ前の本番に対する既存の公開要求（`EXPECTED_PLUGIN_RUNTIME_REVISION`）がすべて止まるためです。デプロイ済みかは revision では判別できず、下の確認で見ます。
    - **初回の実値公開までに残る作業**（満たすまで値を公開しない）
@@ -414,6 +425,8 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
         - 初回の purge 公開の後: 承認記録の `purge_publish.wordpress_redaction` が `COMPLETE` であること。`INCOMPLETE` / `NOT_REPORTED` なら、同じ期限内に plugin の proposal 行・undo option の注入本文とテーマ release 行の注入テーマ hash を手作業で消し、`confirm-plugin-cleanup` で記録します（記録するまで run は `WORDPRESS_REDACTION_UNCONFIRMED`、§5）。
      2. **WordPress の投稿リビジョンとページキャッシュの実測**: purge 公開の後に、`wp_posts` のリビジョン行（`post_type=revision`）と、ページキャッシュ・CDN に注入本文が残るかを実測します。残る設定なら、purge 公開と同じ期限までに消す手順（リビジョンの削除、キャッシュの purge）を先に用意します（§8-7）。plugin の redact はリビジョンとキャッシュを対象にしていません。
      3. **preview のデータベースの後始末**: 注入 candidate の preview は、注入後本文をローカルの WordPress（docker のデータベース）に取り込みます。purge 公開も `purge-expired` もこれを消しません。値を含む preview の後、同じ 24 時間以内にローカル環境を作り直す（またはデータベースを消す）手順を決めます。
+     4. **OWNER DECISION REQUIRED: plugin に残る hash（§1-5）**: sha256 hashes of injected documents/themes remain in plugin proposal rows and undo options after purge; either the owner accepts this (hashes are not prices, but can be brute-forced) or a row/option deletion step must be designed before the first real publish.
+        - 決まるまで値を公開しません。`run_status()` の判定（§5）は今のままで、この項目を理由に run を解除しません。
    - 参考（値は含まない）: purge 公開のテーマ release は、置き換え前のテーマ（注入後 runtime JSON を含む）を plugin の `operation-<proposal_id>/before` に一時保存します。runtime JSON にあるのは注入後本文の sha256 だけで、価格そのものはありません。plugin の redact はこの一時保存を対象にしません。
 4. ~~**税別価格の表示（theme JS）**~~ **済（2026-09-16）**: §6.1 のとおり、JS は税別価格を「本体税別」と表示し、合計に含めません。gate は送るテーマ JS が表示分けを持つときだけ税別価格を通します。renderer の `data-ps-reference-offer` 目印は不要と判断し、追加していません（§6.2）。
 5. ~~**SOLD_OUT と CTA**~~ **済（2026-09-16）**: gate に `SOLD_OUT_WITH_CTA` を追加しました（`SOLD_OUT` と `NOT_FOUND_PENDING`。UI は変えない）。CTA を残したまま売り切れ・未発見の状態を注入する公開は拒否され、カタログ側で CTA を外してから再度 plan・fetch します。

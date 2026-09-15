@@ -1,6 +1,8 @@
 <?php
 /** KS-020 purge publish: stored price-overlay bodies and injected-theme hashes become markers. No WordPress bootstrap or network. */
 declare(strict_types=1);
+// A guard that only emits a Warning or Notice must still fail the harness.
+set_error_handler(static function ($severity, $message, $file, $line) { throw new ErrorException($message, 0, $severity, $file, $line); });
 define('ABSPATH', __DIR__ . '/');
 define('ARRAY_A', 'ARRAY_A');
 define('WP_CONTENT_DIR', __DIR__);
@@ -40,6 +42,7 @@ final class OverlayRedactionDB {
     public $rows = array();
     public $batches = array();
     public $fail_update = false;
+    public $fail_update_kinds = array();
     public function esc_like($text) { return addcslashes($text, '_%\\'); }
     public function prepare($sql, ...$values) { return array($sql, $values); }
     public function get_results($prepared, $output = null) {
@@ -73,7 +76,8 @@ final class OverlayRedactionDB {
         [$sql, $values] = $prepared;
         if ('UPDATE synthetic_raos_codex_operations_v1 SET payload_json = %s WHERE proposal_id = %s AND state = %s AND payload_json = %s' !== $sql) { throw new RuntimeException('UNEXPECTED_UPDATE'); }
         [$json, $id, $state, $old] = $values;
-        if ($this->fail_update || ! isset($this->rows[$id]) || $this->rows[$id]['state'] !== $state || $this->rows[$id]['payload_json'] !== $old) { return 0; }
+        if ($this->fail_update || ! isset($this->rows[$id]) || $this->rows[$id]['state'] !== $state || $this->rows[$id]['payload_json'] !== $old
+            || in_array($this->rows[$id]['kind'], $this->fail_update_kinds, true)) { return 0; }
         $this->rows[$id]['payload_json'] = $json;
         return 1;
     }
@@ -313,6 +317,25 @@ $db->batches[$token] = array('batch_token' => $token, 'state' => 'APPROVED', 'cr
 $purge_before_finish = hydrated($purge_row);
 $purge_theme_before_finish = hydrated($purge_theme);
 
+// A THEME_RELEASE row that cannot be rewritten: nothing counted for it, the injected tree hash
+// stays in both theme payloads, and the finish never reports the redaction COMPLETE.
+$rows_before_finish = $db->rows;
+$batches_before_finish = $db->batches;
+$options_before_finish = $GLOBALS['options'];
+$private_before_finish = scandir($work . '/private');
+$db->fail_update_kinds = array('THEME_RELEASE');
+$blocked = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($token, $db->batches[$token]['batch_manifest_sha256'], 'finalize');
+demand(! is_wp_error($blocked) && 'FINALIZED' === $blocked['state'], 'THEME_UPDATE_FAILURE_FINISH ' . json_encode($blocked));
+demand(($blocked['price_overlay_redaction'] ?? null) === array(array('state' => 'INCOMPLETE', 'runs' => array($run), 'post_id' => 12,
+    'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 0, 'theme_proposals' => 0)), 'THEME_UPDATE_FAILURE_REPORTED ' . json_encode($blocked));
+demand(get_option('raos_codex_owner_direct_finish_' . $token, null) === $blocked, 'THEME_UPDATE_FAILURE_NOT_RECORDED');
+demand($db->rows[str_repeat('a', 64)] === $publish_theme && $db->rows[str_repeat('b', 64)] === $purge_theme, 'THEME_ROWS_CHANGED_ON_UPDATE_FAILURE');
+$db->fail_update_kinds = array();
+$db->rows = $rows_before_finish;
+$db->batches = $batches_before_finish;
+$GLOBALS['options'] = $options_before_finish;
+foreach (array_diff(scandir($work . '/private'), $private_before_finish) as $name) { $remove($work . '/private/' . $name); }
+
 $finish = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($token, $db->batches[$token]['batch_manifest_sha256'], 'finalize');
 demand(! is_wp_error($finish), 'FINISH_REFUSED ' . (is_wp_error($finish) ? $finish->code : ''));
 demand('FINALIZED' === $finish['state'] && array_column($finish['members'], 'state') === array('FINALIZED', 'FINALIZED'), 'FINISH_NOT_FINALIZED ' . json_encode($finish));
@@ -361,6 +384,17 @@ demand(integrity($db->rows[$pending_theme['proposal_id']]) === true && $stored('
 $repeated = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge_before_finish, array($purge_theme_before_finish));
 demand('COMPLETE' === $repeated['state'] && 0 === $repeated['theme_proposals'], 'THEME_REDACTION_NOT_IDEMPOTENT');
 
+// A batch theme member created by another user is no clue to the rows around its tree.
+$clue_row = theme_proposal('c', 'EXPIRED', $older_tree, $injected_tree, manifest_of('5', '4'));
+$db->rows[$clue_row['proposal_id']] = $clue_row;
+$foreign_member = $purge_theme_before_finish;
+$foreign_member['created_by'] = 8;
+$foreign = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge_before_finish, array($foreign_member));
+demand($foreign === array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 0, 'undo_options' => 0,
+    'skipped_active' => 0, 'theme_proposals' => 0), 'FOREIGN_MEMBER_RESULT ' . json_encode($foreign));
+demand($db->rows[$clue_row['proposal_id']] === $clue_row, 'FOREIGN_MEMBER_USED_AS_CLUE');
+unset($db->rows[$clue_row['proposal_id']]);
+
 // The integrity exception for theme rows is bound to the record and to terminal states.
 $tamper = static function ($row, $change) {
     $payload = json_decode($row['payload_json'], true);
@@ -375,9 +409,32 @@ foreach (array(
     'UNLISTED_MANIFEST_PATH' => static function (array &$payload) { $payload['price_overlay_redaction']['manifest_paths'][] = 'assets/theme.css'; },
     'UNRECORDED_REDACTION' => static function (array &$payload) { unset($payload['price_overlay_redaction']); },
     'CONTENT_RECORD_SHAPE' => static function (array &$payload) { $payload['price_overlay_redaction'] = array('runs' => array('ks020-synthetic-0001'), 'sides' => array()); },
+    'TREE_SIDE_WITHOUT_MARKER' => static function (array &$payload) { $payload['price_overlay_redaction']['tree_sides'] = array('after', 'before'); },
+    'EMPTY_RUNS' => static function (array &$payload) { $payload['price_overlay_redaction']['runs'] = array(); },
+    'INVALID_RUN_ID' => static function (array &$payload) { $payload['price_overlay_redaction']['runs'] = array('Invalid Run'); },
+    'EXTRA_RECORD_KEY' => static function (array &$payload) { $payload['price_overlay_redaction']['extra'] = array(); },
 ) as $case => $change) {
     demand(is_wp_error(integrity($tamper($redacted_theme, $change))), 'TAMPERED_THEME_REDACTION_ACCEPTED_' . $case);
 }
+// The purge batch's row redacted only its before tree: a manifest marker there is drift.
+$redacted_purge_theme = $db->rows[str_repeat('b', 64)];
+foreach (array(
+    'BEFORE_SIDE_MANIFEST_HASH_MARKER' => static function (array &$payload) { $payload['code_package']['file_manifest_sha256'] = RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED; },
+    'BEFORE_SIDE_MANIFEST_ENTRY_MARKER' => static function (array &$payload) {
+        $payload['code_package']['file_manifest'][2]['sha256'] = RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED;
+        $payload['price_overlay_redaction']['manifest_paths'] = array('functions.php');
+    },
+) as $case => $change) {
+    demand(is_wp_error(integrity($tamper($redacted_purge_theme, $change))), 'TAMPERED_THEME_REDACTION_ACCEPTED_' . $case);
+}
+// A theme-shaped record is accepted on a THEME_RELEASE row only.
+$theme_record = array('manifest_paths' => array(), 'runs' => array($run), 'tree_sides' => array('after'));
+demand(is_wp_error(integrity($tamper($db->rows[str_repeat('1', 64)], static function (array &$payload) use ($theme_record) {
+    $payload['price_overlay_redaction'] = $theme_record;
+}))), 'THEME_RECORD_ON_CONTENT_ROW_ACCEPTED');
+$plugin_row = $tamper($redacted_theme, static function (array &$payload) { $payload['kind'] = 'PLUGIN_CHANGE'; });
+$plugin_row['kind'] = 'PLUGIN_CHANGE';
+demand(is_wp_error(integrity($plugin_row)), 'THEME_RECORD_ON_PLUGIN_ROW_ACCEPTED');
 $reopened = $redacted_theme; $reopened['state'] = 'PENDING'; $reopened['approved_at_gmt'] = null; $reopened['expires_at_gmt'] = '2026-09-15 02:00:00';
 demand(is_wp_error(integrity($reopened)), 'REDACTED_ACTIVE_THEME_ROW_ACCEPTED');
 echo "OWNER_DIRECT_PRICE_OVERLAY_REDACTION_OK\n";

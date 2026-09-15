@@ -2004,3 +2004,242 @@ def test_an_interrupted_replace_write_leftover_is_removed_only_when_stale(owner,
         1,
     )
     assert not leftover.exists() and run_status(store, RUN_ID)[0] == "PURGED"
+
+
+# ---------------------------------------------------------------------------
+# Local copies, stale leftovers and missing approvals keep a purged run blocked
+# ---------------------------------------------------------------------------
+
+CANDIDATES_RELATIVE = ".secrets/wordpress-mcp/owner-direct-v1"
+PREVIEW_RELATIVE = ".secrets/wordpress-direct-preview"
+RUN_MARKER = f'<div data-ps-overlay-run="{RUN_ID}">'
+
+
+def purged_run(root, *, redacted=True):
+    """A published run whose local values are purged, with an owner incident resolution and
+    plugin cleanup record: PURGED unless a local copy or leftover remains."""
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    published = rpr.record_publish(
+        approval(),
+        gate_overlay(),
+        candidate_id="d" * 64,
+        article_keys=["a"],
+        injected_body_sha256={"a": "e" * 64},
+        runtime_sha256="f" * 64,
+        now=T0 + timedelta(hours=1),
+    )
+    store.write_json(
+        directory / "approval.v1.json", rpr.redact_approval(published) if redacted else published
+    )
+    store.write_json(
+        directory / "overlay.v1.json",
+        {"schema": rpr.PURGED_SCHEMA, "run_id": RUN_ID, "purged_at": rpr.iso(T0), "offer_ids": []},
+    )
+    store.write_json(
+        directory / "incident-resolution.v1.json",
+        {"schema": "RAOS_RAKUTEN_PRICE_OVERLAY_INCIDENT_RESOLUTION_V1", "run_id": RUN_ID,
+         "resolution": "WORDPRESS_POSTS_WITHDRAWN", "recorded_at": rpr.iso(T0)},
+    )
+    store.write_json(
+        directory / "plugin-cleanup.v1.json",
+        {"schema": "RAOS_RAKUTEN_PRICE_OVERLAY_PLUGIN_CLEANUP_V1", "run_id": RUN_ID,
+         "reason": "INCIDENT_RESOLUTION", "confirmation": "PLUGIN_COPIES_REMOVED:" + RUN_ID,
+         "recorded_at": rpr.iso(T0)},
+    )
+    return store, directory
+
+
+def test_a_purged_run_without_a_readable_approval_stays_undated(owner, capsys):
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    path = directory / "approval.v1.json"
+    path.unlink()
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    assert (code, lines[-1]["runs"][0]["result"]) == (0, "UNDATED")
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    path.symlink_to(directory / "missing.v1.json")
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    path.unlink()
+    store.write_json(path, ["not", "an", "approval"])
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    path.write_text("{")
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+
+
+@pytest.mark.parametrize(
+    ("name", "relative", "content"),
+    [
+        # An interrupted derived candidate: removed whatever it holds (its injected theme
+        # carries only hashes that no record names yet).
+        (".staging-" + "c" * 64, "theme/functions.php", "<?php // synthetic\n"),
+        ("c" * 64, "preview.json", json.dumps({"fixture": RUN_MARKER})),
+        ("c" * 64, "bodies/synthetic-comparison.html", RUN_MARKER),
+        ("c" * 64, "candidate.json.tmp", RUN_MARKER),
+    ],
+)
+def test_a_candidate_copy_anywhere_in_its_directory_blocks_until_it_is_swept(
+    owner, capsys, name, relative, content
+):
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    root, _plan_path = owner
+    store, _directory = purged_run(root)
+    unrelated = root / CANDIDATES_RELATIVE / ("0" * 64) / "candidate.json"
+    unrelated.parent.mkdir(parents=True)
+    unrelated.write_text('{"synthetic": "price-free"}\n')
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    target = root / CANDIDATES_RELATIVE / name / relative
+    target.parent.mkdir(parents=True)
+    target.write_text(content)
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["result"], report["candidate_directories_deleted"]) == (
+        0,
+        "ALREADY_PURGED",
+        1,
+    )
+    assert not (root / CANDIDATES_RELATIVE / name).exists() and unrelated.exists()
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+
+def test_a_candidate_named_only_by_its_recorded_id_is_deleted(owner, capsys):
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    root, _plan_path = owner
+    store, _directory = purged_run(root, redacted=False)
+    recorded = root / CANDIDATES_RELATIVE / ("d" * 64)
+    recorded.mkdir(parents=True)
+    (recorded / "candidate.json").write_text("{}\n")
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["result"], report["record_state"], report["candidate_directories_deleted"]) == (
+        0,
+        "ALREADY_PURGED",
+        "REDACTION_PENDING",
+        1,
+    )
+    assert not recorded.exists() and run_status(store, RUN_ID)[0] == "PURGED"
+
+
+def test_preview_copies_behind_a_symlink_or_outside_the_preview_directory_are_never_deleted(
+    owner, capsys, tmp_path
+):
+    from raos.adapters.rakuten_price_refresh_client import local_copies, run_status
+
+    root, _plan_path = owner
+    store, _directory = purged_run(root)
+    sentinel = root / ".secrets/sentinel.txt"
+    sentinel.write_text("keep")
+    for relative in ("../sentinel.txt", "fixtures/../../sentinel.txt", "theme-1/../../sentinel.txt", "other", ""):
+        with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+            store.delete_preview_copy(relative)
+    assert sentinel.read_text() == "keep"
+
+    elsewhere = tmp_path / "elsewhere"
+    frozen = elsewhere / ("theme-" + "1" * 64) / "functions.php"
+    frozen.parent.mkdir(parents=True)
+    frozen.write_text(RUN_MARKER)
+    (root / PREVIEW_RELATIVE).symlink_to(elsewhere, target_is_directory=True)
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+        local_copies(store, RUN_ID, None, None)
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+        store.delete_preview_copy("theme-" + "1" * 64)
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    assert (code, lines[-1]["code"]) == (2, "PRIVATE_PATH_UNSAFE")
+    assert frozen.read_text() == RUN_MARKER
+
+
+@pytest.mark.parametrize("kind", ["mode-0644", "hardlink"])
+def test_a_stale_leftover_that_is_not_a_private_single_link_file_is_refused(owner, kind):
+    from raos.adapters.rakuten_price_refresh_client import STALE_TMP_SECONDS
+
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    path = directory / "approval.v1.json"
+    store.write_json(path, approval())
+    leftover = path.with_name(path.name + ".tmp")
+    linked = directory / "other.v1.json"
+    if kind == "mode-0644":
+        leftover.write_text("interrupted")
+        leftover.chmod(0o644)
+    else:
+        store.write_json(linked, {"kept": True})
+        os.link(linked, leftover)
+    stale = leftover.stat().st_mtime - STALE_TMP_SECONDS - 5
+    os.utime(leftover, (stale, stale))
+    before = path.read_bytes()
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+        store.write_json(path, approval(cache_expires_at=rpr.iso(T0)), replace=True)
+    assert leftover.exists() and path.read_bytes() == before
+    if kind == "hardlink":
+        assert leftover.stat().st_nlink == 2 and json.loads(linked.read_text()) == {"kept": True}
+    else:
+        assert leftover.read_text() == "interrupted"
+
+
+def test_resolve_incident_records_nothing_while_a_local_copy_survives_the_sweep(
+    owner, capsys, monkeypatch
+):
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    (directory / "incident-resolution.v1.json").unlink()
+    (directory / "plugin-cleanup.v1.json").unlink()
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+    stray = root / CANDIDATES_RELATIVE / ("c" * 64) / "journal.json"
+    stray.parent.mkdir(parents=True)
+    stray.write_text(json.dumps({"baseline": RUN_MARKER}))
+    monkeypatch.setattr(PrivateStore, "delete_owner_direct_candidate", lambda self, candidate_id: False)
+    code, lines = run(
+        ["resolve-incident", "--owner-checkout", root, "--run-id", RUN_ID,
+         "--resolution", "WORDPRESS_POSTS_WITHDRAWN", "--owner-confirmed-price-free", RUN_ID,
+         "--owner-confirmed-plugin-cleanup", "PLUGIN_COPIES_REMOVED:" + RUN_ID],
+        capsys,
+        clock=lambda: T0 + timedelta(hours=25),
+    )
+    assert (code, lines[-1]["code"]) == (2, "LOCAL_COPIES_REMAIN")
+    assert stray.exists()
+    assert not (directory / "incident-resolution.v1.json").exists()
+    assert not (directory / "plugin-cleanup.v1.json").exists()
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+
+
+def test_purge_expired_deletes_a_stale_leftover_of_an_unpurged_run(owner, capsys):
+    from raos.adapters.rakuten_price_refresh_client import STALE_TMP_SECONDS, run_status
+
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    store.write_json(directory / "approval.v1.json", approval())
+    store.write_json(directory / "overlay.v1.json", gate_overlay())
+    # Not rewritten by the purge itself: only the run-wide leftover sweep removes it.
+    leftover = directory / "incident-resolution.v1.json.tmp"
+    os.close(os.open(leftover, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600))
+    stale = leftover.stat().st_mtime - STALE_TMP_SECONDS - 5
+    os.utime(leftover, (stale, stale))
+    assert run_status(store, RUN_ID)[0] == "DATED"
+    code, lines = run(
+        ["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID, "--include-unexpired"],
+        capsys,
+    )
+    report = lines[-1]["runs"][0]
+    assert (code, report["result"], report["record_state"], report["stale_tmp_files_deleted"]) == (
+        0,
+        "PURGED",
+        "DATED",
+        1,
+    )
+    assert not leftover.exists() and run_status(store, RUN_ID)[0] == "PURGED"

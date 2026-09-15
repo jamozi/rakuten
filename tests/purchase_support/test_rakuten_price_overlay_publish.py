@@ -56,6 +56,10 @@ PROFILE_SHA = "a" * 64
 INITIAL_TREE = "b" * 64
 WRITES = {"ensure-draft", "content-propose", "theme-propose", "authorize", "apply"}
 # What an owner-direct plugin with the price-overlay redaction reports when nothing is left.
+PLUGIN_RUNTIME_REVISION = "7" * 64
+RUNTIME_REVISION = re.compile(
+    r"(?m)^const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '([0-9a-f]{64})';$"
+)
 COMPLETE_REDACTION = [
     {"state": "COMPLETE", "runs": [RUN_ID], "post_id": 101, "proposals": 2,
      "undo_options": 2, "skipped_active": 0, "theme_proposals": 2}
@@ -71,6 +75,13 @@ def no_network(monkeypatch):
     monkeypatch.setattr(socket, "create_connection", refuse)
     monkeypatch.setenv("GIT_AUTHOR_DATE", "2026-09-15T00:00:00+00:00")
     monkeypatch.setenv("GIT_COMMITTER_DATE", "2026-09-15T00:00:00+00:00")
+
+
+@pytest.fixture(autouse=True)
+def isolated_owner_checkout(monkeypatch, tmp_path):
+    """Flag-free commands check the fixed owner checkout for live runs (contract §8): point it
+    at an empty location so no test reads the real one."""
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", tmp_path / "fixed-owner-checkout")
 
 
 def git(root, *args, check=True):
@@ -242,6 +253,9 @@ class FakeWordPress:
             for key in KEYS
         }
         self.tree = INITIAL_TREE
+        functions = (root / THEME_PREFIX / "functions.php").read_text()
+        self.runtime_revision = RUNTIME_REVISION.search(functions)[1]
+        self.revisions = {}
         self.proposals = {}
         self.applied = set()
         self.calls = []
@@ -255,13 +269,23 @@ class FakeWordPress:
     def __call__(self, command, body):
         self.calls.append((command, deepcopy(body)))
         if command == "status":
+            # The shape of RAOS_Codex_MCP_Owner_Direct::status(): the theme of
+            # RAOS_Codex_MCP_Deployment::status() and the plugin runtime revision.
             return {
                 "schema": "RAOSOwnerDirectStatusV1",
                 "profile": direct.PROFILE,
                 "enabled": True,
                 "allow_new_posts": False,
                 "profile_sha256": PROFILE_SHA,
-                "theme": {"tree_sha256": self.tree, "version": "1.5.0"},
+                "plugin_runtime_revision": PLUGIN_RUNTIME_REVISION,
+                "theme": {
+                    "slug": operator.THEME_SLUG,
+                    "version": "1.5.0",
+                    "runtime_version": "1.5.0",
+                    "runtime_revision": self.runtime_revision,
+                    "active": True,
+                    "tree_sha256": self.tree,
+                },
                 "targets": [
                     {"article_key": k, "post_id": POST_IDS[k], "post_type": "post", "slug": k}
                     for k in KEYS
@@ -285,6 +309,9 @@ class FakeWordPress:
             tree = body["code_package"]["file_manifest_sha256"]
             self.proposals[proposal_id] = ("theme", tree, None)
             self.packages.append(base64.b64decode(body["package_base64"]))
+            with zipfile.ZipFile(io.BytesIO(self.packages[-1])) as archive:
+                functions = archive.read(operator.THEME_SLUG + "/functions.php").decode()
+            self.revisions[tree] = RUNTIME_REVISION.search(functions)[1]
             return {"proposal": {"proposal_id": proposal_id, "after_tree_sha256": tree}}
         if command == "operation-status":
             state = "APPLIED" if body["operation_id"] in self.applied else "PENDING"
@@ -306,6 +333,7 @@ class FakeWordPress:
                     self.docs[target] = stored
                 else:
                     self.tree = self.store_tree(target) if self.store_tree else target
+                    self.runtime_revision = self.revisions[target]
                 self.applied.add(proposal_id)
             return {"state": "APPLIED"}
         if command == "finish":
@@ -795,7 +823,8 @@ def test_purge_publish_restores_price_free_bytes_and_removes_local_copies(
     assert purge["source_sha256"] == candidate["source_sha256"]
     assert [a["document"]["block_markup"] for a in purge["articles"]] == [BODY, GUIDE]
     assert purge["theme"]["descriptor"]["file_manifest_sha256"] == base["theme"]["descriptor"]["file_manifest_sha256"]
-    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_FLAG_REQUIRED"):
+    # Without the flag it is a flag-free publish, refused while the run's values are live.
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_LIVE"):
         publish(owner, purge_directory, purge, server)
     publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
 
@@ -1358,74 +1387,129 @@ def test_an_incomplete_plugin_redaction_is_recorded_with_the_purge_publish(owner
 
 
 # ---------------------------------------------------------------------------
-# While values may be live: no flag-free candidate, no live theme hashes on stdout
+# While values may be live: no flag-free command, no live hash on stdout, from any checkout
 # ---------------------------------------------------------------------------
 
 
-def test_flag_free_prepare_and_status_hide_live_values_until_the_purge_publish(
-    owner, publisher, monkeypatch, capsys
+def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree_too(
+    owner, publisher, template, tmp_path, monkeypatch, capsys
 ):
+    """Runs live in the owner checkout; the publisher and the operator often run from a
+    worktree (its own .secrets, no runs), with or without --owner-checkout."""
     write_run(owner)
     server = FakeWordPress(owner)
-    monkeypatch.setattr(direct, "ROOT", owner)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", owner)
     monkeypatch.setattr(
         operator, "run", lambda name, body: server(name.removeprefix("owner-direct-"), body)
     )
+    source, _revision = template
+    worktree = (tmp_path / "worktree").resolve()
+    shutil.copytree(source, worktree, symlinks=True)
+    (worktree / ".secrets").mkdir(mode=0o700)
+    monkeypatch.setattr(direct, "ROOT", worktree)
+    # A flag-free candidate prepared in the worktree before the values went live.
+    earlier, earlier_directory = direct.prepare(worktree, KEYS, True, server)
+    previewed(earlier_directory, earlier)
     candidate, directory = prepare_overlay(owner, server)
     publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
-    injected_tree = server.tree
-    assert injected_tree == candidate["theme"]["descriptor"]["file_manifest_sha256"]
+    injected_revision = candidate["price_overlay"]["theme_revision"]
+    live_status = server("status", {})
+    assert (live_status["theme"]["tree_sha256"], live_status["theme"]["runtime_revision"]) == (
+        candidate["theme"]["descriptor"]["file_manifest_sha256"],
+        injected_revision,
+    )
 
     def cli(*arguments):
-        code = direct.execute_cli(direct.parser().parse_args(list(arguments)))
+        code = direct.main(list(arguments))
         captured = capsys.readouterr()
         return code, captured.out, captured.err
 
-    capsys.readouterr()
-    head = git(owner, "rev-parse", "HEAD").stdout
-    candidates = sorted(p.name for p in (owner / direct.PRIVATE).iterdir())
-    calls = len(server.calls)
-    for arguments in (
-        ["prepare", "--articles", "synthetic-comparison"],
-        ["prepare", "--articles", "synthetic-guide", "--theme"],
-        ["prepare", "--articles", "", "--theme"],
-    ):
-        code, out, err = cli(*arguments)
-        assert (code, out) == (69, "") and "RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_LIVE" in err
-    assert len(server.calls) == calls, "refused before any WordPress call"
-    assert git(owner, "rev-parse", "HEAD").stdout == head, "and before the checkpoint commit"
-    assert sorted(p.name for p in (owner / direct.PRIVATE).iterdir()) == candidates
-    # An article outside the injected set, without the theme, is not affected.
-    price_overlay.refuse_flag_free_prepare(direct, owner, ["another-article"], False)
+    def listings():
+        return [
+            (git(r, "rev-parse", "HEAD").stdout, sorted(p.name for p in (r / direct.PRIVATE).iterdir()))
+            for r in (owner, worktree)
+        ]
 
-    code, out, _err = cli("status")
-    printed = json.loads(out)
-    assert code == 0 and injected_tree not in out
-    assert printed["theme"] == {"tree_sha256": "REDACTED_PRICE_OVERLAY_LIVE", "version": "1.5.0"}
-    assert printed["price_overlay_live"] == {
-        "hashes": "REDACTED_PRICE_OVERLAY_LIVE",
-        "run_ids": [RUN_ID],
+    capsys.readouterr()
+    before = listings()
+    calls = len(server.calls)
+    for option in ([], ["--owner-checkout", str(owner)]):
+        for arguments in (
+            ["prepare", "--articles", "synthetic-comparison"],
+            ["prepare", "--articles", "synthetic-guide"],
+            ["prepare", "--articles", "synthetic-guide", "--theme"],
+            ["prepare", "--articles", "", "--theme"],
+            ["publish", "--candidate", earlier["candidate_id"]],
+        ):
+            assert cli(*option, *arguments) == (
+                69, "", "RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_LIVE\n"
+            ), (option, arguments)
+        code, out, _err = cli(*option, "status")
+        assert code == 0 and json.loads(out) == {
+            "price_overlay_live": [RUN_ID],
+            "status": "REDACTED_PRICE_OVERLAY_LIVE",
+        }
+        # A flag-free candidate's status: no hash of any kind on stdout.
+        code, out, _err = cli(*option, "status", "--candidate", earlier["candidate_id"])
+        assert code == 0 and re.findall(r"[0-9a-f]{64}", out) == [], out
+    assert len(server.calls) == calls, "refused before any WordPress call"
+    assert listings() == before, "and before any checkpoint commit or candidate directory"
+    assert not (earlier_directory / "journal.json").exists()
+
+    # Any status output scrubbed while live: the theme subtree (tree hash and the rebound
+    # runtime revision) and the plugin runtime revision become the marker.
+    marker = price_overlay.LIVE_HASH_MARKER
+    scrubbed = price_overlay.scrub_live_hashes(live_status)
+    assert scrubbed["theme"] == {
+        "slug": operator.THEME_SLUG,
+        "version": "1.5.0",
+        "runtime_version": "1.5.0",
+        "runtime_revision": marker,
+        "active": True,
+        "tree_sha256": marker,
     }
-    assert printed["profile_sha256"] == PROFILE_SHA
+    assert (scrubbed["plugin_runtime_revision"], scrubbed["profile_sha256"]) == (marker, marker)
+    assert injected_revision not in json.dumps(scrubbed)
+    # A runtime revision is a marker whatever its format.
+    assert price_overlay.scrub_live_hashes(
+        {"plugin_runtime_revision": "1.3.2-synthetic", "theme": {"runtime_revision": "r1", "slug": "s"}}
+    ) == {"plugin_runtime_revision": marker, "theme": {"runtime_revision": marker, "slug": "s"}}
+
+    # The deployment operator's read commands are refused the same way, before any request.
+    with monkeypatch.context() as local:
+        local.setattr(operator, "ROOT", worktree)
+        local.setattr(operator, "run", lambda *a: pytest.fail("WordPress was called"))
+        for command in sorted(operator.PRICE_OVERLAY_LIVE_REFUSED):
+            for option in ([], ["--owner-checkout", str(owner)]):
+                assert operator.main([*option, command]) == 69, command
+                assert capsys.readouterr().err == "WORDPRESS_MCP_PRICE_OVERLAY_LIVE\n"
 
     purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
     server.finish_redaction = deepcopy(COMPLETE_REDACTION)
     publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
     capsys.readouterr()
     code, out, _err = cli("status")
-    assert code == 0 and json.loads(out)["theme"]["tree_sha256"] == server.tree
-    assert "price_overlay_live" not in json.loads(out)
-    after, _after_directory = direct.prepare(owner, ["synthetic-comparison"], True, server)
+    assert code == 0 and json.loads(out) == server("status", {})
+    after, _after_directory = direct.prepare(worktree, ["synthetic-comparison"], True, server)
     assert after["publication_ready"] is True
+    operator.refuse_while_price_overlay_live(owner)
 
-    # An approval record that cannot be read counts as live for every article.
+    # An approval record that cannot be read counts as live.
     store = PrivateStore(owner)
     store.write_json(
         store.run_directory("ks020-synthetic-0002") / "approval.v1.json", {"schema": "tampered"}
     )
     with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_LIVE"):
-        price_overlay.refuse_flag_free_prepare(direct, owner, ["another-article"], False)
-
+        direct.prepare(worktree, ["synthetic-guide"], False, server)
+    # A run directory in the fixed owner checkout that is a symlink is refused too.
+    linked = (tmp_path / "linked-owner").resolve()
+    (linked / ".secrets").mkdir(parents=True, mode=0o700)
+    (linked / ".secrets/rakuten-price-refresh").symlink_to(owner / ".secrets/rakuten-price-refresh")
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", linked)
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_PRIVATE_PATH_UNSAFE"):
+        direct.prepare(worktree, ["synthetic-guide"], False, server)
+    with pytest.raises(operator.OperatorFailure, match="WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"):
+        operator.refuse_while_price_overlay_live(None)
 
 # ---------------------------------------------------------------------------
 # A run is finished only when no local copy of its values remains

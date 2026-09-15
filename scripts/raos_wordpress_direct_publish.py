@@ -290,21 +290,43 @@ def taxonomy_keys(value):
     return frozenset(value)
 
 
-def refuse_while_price_overlay_live(root, keys, theme):
-    """No-op unless the owner checkout has price-overlay runs (contract §8)."""
-    runs = root / ".secrets/rakuten-price-refresh"
-    if not runs.exists() and not runs.is_symlink():
-        return
+PRICE_OVERLAY_RUNS = ".secrets/rakuten-price-refresh"
+
+
+def price_overlay_live_run_ids(root):
+    """Run ids whose price-overlay values may be live (contract §8).
+
+    Runs live in the owner checkout while the publisher usually runs from a worktree, so the
+    validated --owner-checkout and the fixed OWNER_CHECKOUT are checked whether or not the
+    option was given or differs from ROOT; ROOT's own runs count too.
+    """
+    checkouts = [
+        Path(value)
+        for value in (operator._private_owner.get(), operator.OWNER_CHECKOUT, root)
+        if value is not None
+    ]
+    if not any(
+        (c / PRICE_OVERLAY_RUNS).exists() or (c / PRICE_OVERLAY_RUNS).is_symlink()
+        for c in checkouts
+    ):
+        return []
     from scripts import raos_wordpress_price_overlay as price_overlay
 
-    price_overlay.refuse_flag_free_prepare(sys.modules[__name__], root, keys, theme)
+    return price_overlay.live_runs(sys.modules[__name__], checkouts)
+
+
+def refuse_while_price_overlay_live(root):
+    """Every flag-free prepare and publish is refused while any run may be live: a candidate
+    would freeze live injected pages or the injected theme tree and print its id."""
+    if price_overlay_live_run_ids(root):
+        fail("PRICE_OVERLAY_LIVE")
 
 
 def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False, price_overlay_bound=False):
     if affiliate_plan is None and (affiliate_config is not None or affiliate_fetch):
         fail("AFFILIATE_PLAN_REQUIRED")
     if not price_overlay_bound:
-        refuse_while_price_overlay_live(root, keys, theme)
+        refuse_while_price_overlay_live(root)
     registry = read_json(root / REGISTRY)
     if (
         registry.get("schema") != "RAOSOwnerDirectArticlesV1"
@@ -703,14 +725,18 @@ def price_overlay_binding(candidate, run=None, purge=None):
     return price_overlay.resolve_binding(sys.modules[__name__], candidate, run, purge)
 
 
-def price_overlay_status_output(root, result):
-    """status without --candidate: unchanged unless a price-overlay run may be live."""
-    runs = root / ".secrets/rakuten-price-refresh"
-    if not runs.exists() and not runs.is_symlink():
-        return result
+def price_overlay_live_status(run_ids):
+    """status without --candidate while a run may be live: run ids and a marker only."""
     from scripts import raos_wordpress_price_overlay as price_overlay
 
-    return price_overlay.live_status_output(sys.modules[__name__], root, result)
+    return price_overlay.live_status_output(run_ids)
+
+
+def price_overlay_scrubbed(result):
+    """Other status output while a run may be live: hashes and revisions become a marker."""
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.scrub_live_hashes(result)
 
 
 def price_overlay_output(candidate, result):
@@ -747,6 +773,8 @@ def prepare_price_overlay(root, keys, theme=False, call=invoke, *, run=None, pur
 
 def publish(root, directory, candidate_id, call=invoke, *, price_overlay_run=None,
             price_overlay_purge=None):
+    if price_overlay_run is None and price_overlay_purge is None:
+        refuse_while_price_overlay_live(root)
     safe_ancestors(directory)
     descriptor = os.open(
         directory / "operation.lock", os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o600
@@ -1092,7 +1120,8 @@ def execute_cli(args):
         if args.command == "import-existing":
             result = import_existing(ROOT)
         elif args.command == "status" and args.candidate is None:
-            result = price_overlay_status_output(ROOT, invoke("status", {}))
+            live = price_overlay_live_run_ids(ROOT)
+            result = price_overlay_live_status(live) if live else invoke("status", {})
         elif args.command == "prepare" and (
             args.price_overlay_run or args.price_overlay_purge
         ):
@@ -1177,6 +1206,8 @@ def execute_cli(args):
                 result = journal
             if "price_overlay" in candidate:
                 result = price_overlay_output(candidate, result)
+            elif args.command == "status" and price_overlay_live_run_ids(ROOT):
+                result = price_overlay_scrubbed(result)
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except (DirectFailure, operator.OperatorFailure) as error:

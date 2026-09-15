@@ -30,7 +30,7 @@ if str(ROOT / "python") not in sys.path:
 from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
     PrivateStore,
     expired_unpurged_runs,
-    live_publish_runs,
+    live_run_ids,
     scan_repository_for_overlay,
     scan_revision_for_overlay,
     sweep_local_copies,
@@ -67,9 +67,11 @@ HANDLE_PREFIX = "price-overlay:"
 REDACTED_ID = "REDACTED_PRICE_OVERLAY"
 PUBLIC_FIELDS = ("publication_ready", "publication_status", "status", "result_code")
 SHA256_ID = re.compile(r"[0-9a-f]{64}\Z")
-# status without --candidate while a run may be live: the theme tree hash, runtime revision
-# and any manifest hash of the live injected theme are price-recoverable (contract §3).
+# While a run may be live, the theme tree hash, the theme and plugin runtime revisions and any
+# manifest hash of the live injected theme are price-recoverable (contract §3/§8).
 LIVE_HASH_MARKER = "REDACTED_PRICE_OVERLAY_LIVE"
+ANY_SHA256 = re.compile(r"[0-9a-f]{64}")
+LIVE_REVISION_KEYS = frozenset({"runtime_revision", "plugin_runtime_revision"})
 
 
 def clock():
@@ -129,41 +131,30 @@ def _remember_prepared(store, run_id, mode, candidate_id):
         store.write_json(path, approval, replace=True)
 
 
-def refuse_flag_free_prepare(direct, root, keys, theme):
-    """A flag-free prepare while values may be live would freeze live injected pages (or the
-    injected theme tree) as its baseline and print its id and directory."""
+def live_runs(direct, checkouts):
+    """Run ids whose values may be live in any of the checkouts (contract §8)."""
     with refusals(direct):
-        live = live_publish_runs(_store(root))
-    for _run_id, live_keys in live:
-        if theme or live_keys is None or set(keys) & set(live_keys):
-            direct.fail("PRICE_OVERLAY_LIVE")
+        return live_run_ids(checkouts)
 
 
-def live_status_output(direct, root, result):
-    """status (no --candidate): hashes of the live theme become a marker while a run is live."""
-    with refusals(direct):
-        live = live_publish_runs(_store(root))
-    if not live or not isinstance(result, dict):
-        return result
+def live_status_output(run_ids):
+    """status without --candidate while values may be live: nothing read from WordPress."""
+    return {"price_overlay_live": sorted(run_ids), "status": LIVE_HASH_MARKER}
 
-    def scrub(value, redact):
-        if isinstance(value, dict):
-            return {
-                key: scrub(item, redact or "tree" in key or "manifest" in key)
-                for key, item in value.items()
-            }
-        if isinstance(value, list):
-            return [scrub(item, redact) for item in value]
-        if redact and isinstance(value, str) and SHA256_ID.fullmatch(value):
-            return LIVE_HASH_MARKER
-        return value
 
-    view = {key: scrub(item, key == "theme") for key, item in result.items()}
-    view["price_overlay_live"] = {
-        "hashes": LIVE_HASH_MARKER,
-        "run_ids": sorted(run_id for run_id, _keys in live),
-    }
-    return view
+def scrub_live_hashes(value, key=None):
+    """Any other status output while values may be live: every string holding a 64-hex hash
+    (theme tree, theme runtime revision, manifest hashes, ids) and every runtime revision,
+    at any depth, becomes the marker."""
+    if isinstance(value, dict):
+        return {name: scrub_live_hashes(item, name) for name, item in value.items()}
+    if isinstance(value, list):
+        return [scrub_live_hashes(item, key) for item in value]
+    if key in LIVE_REVISION_KEYS and value is not None:
+        return LIVE_HASH_MARKER
+    if isinstance(value, str) and ANY_SHA256.search(value):
+        return LIVE_HASH_MARKER
+    return value
 
 
 def handle(candidate):

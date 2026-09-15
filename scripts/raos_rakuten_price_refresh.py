@@ -77,6 +77,8 @@ UNFINISHED_RESULTS = {
     "PUBLISHED_NOT_PURGED": "PURGE_PUBLISH_MISSING",
     "REDACTION_PENDING": "REDACTION_PENDING",
     "WORDPRESS_REDACTION_UNCONFIRMED": "WORDPRESS_REDACTION_UNCONFIRMED",
+    # Purged locally, but the approval record is missing or unreadable: still blocking.
+    "UNDATED": "UNDATED",
 }
 
 

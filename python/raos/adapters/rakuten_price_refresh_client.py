@@ -61,8 +61,9 @@ PRIVATE_FILE_MODE: Final = 0o600
 OWNER_DIRECT_CANDIDATE_RELATIVE: Final = ".secrets/wordpress-mcp/owner-direct-v1"
 # scripts/raos_wordpress_direct_preview.py: frozen display themes (theme-<tree>) and fixtures.
 PREVIEW_PRIVATE_RELATIVE: Final = ".secrets/wordpress-direct-preview"
-# Files a candidate directory keeps that can hold injected bodies or their hashes.
-CANDIDATE_RECORD_FILES: Final = ("candidate.json", "journal.json", "preview.json")
+# scripts/raos_wordpress_price_overlay.py _materialize: an interrupted derived candidate is
+# left as .staging-<candidate_id>/ (injected bodies, injected theme) before candidate.json.
+STAGING_PREFIX: Final = ".staging-"
 # A replace write leaves <file>.tmp only when it was interrupted between create and rename;
 # a younger one may belong to a concurrent writer and is never removed.
 STALE_TMP_SECONDS: Final = 60
@@ -451,19 +452,26 @@ class PrivateStore:
         return current
 
     def owner_direct_candidates_containing(self, needles: Sequence[str]) -> list[str]:
-        """Candidate ids whose candidate.json, journal.json or preview.json carries any needle."""
+        """Candidate directory names that may hold injected bytes.
+
+        Every ``.staging-*`` directory (an interrupted derived candidate: its injected theme
+        carries only hashes no record names yet), and every candidate directory any of whose
+        files (candidate.json, journal.json, preview.json, bodies/, theme/, *.tmp ...) carries
+        a needle.
+        """
         base = self._safe_base(OWNER_DIRECT_CANDIDATE_RELATIVE)
-        variants = _needle_variants(needles)
-        if not base.is_dir() or not variants:
+        if not base.is_dir():
             return []
+        variants = _needle_variants(needles)
         found = []
         for directory in sorted(base.iterdir()):
             if directory.is_symlink() or not directory.is_dir():
                 continue
-            for name in CANDIDATE_RECORD_FILES:
-                if _file_contains(directory / name, variants):
-                    found.append(directory.name)
-                    break
+            if directory.name.startswith(STAGING_PREFIX) or (
+                variants
+                and any(_file_contains(p, variants) for p in sorted(directory.rglob("*")))
+            ):
+                found.append(directory.name)
         return found
 
     def preview_copies_containing(self, needles: Sequence[str]) -> list[str]:
@@ -513,10 +521,18 @@ class PrivateStore:
         return False
 
     def delete_owner_direct_candidate(self, candidate_id: object) -> bool:
-        """Delete one publisher candidate directory (injected bodies, runtime, theme, journal)."""
-        if not isinstance(candidate_id, str) or len(candidate_id) != 64:
+        """Delete one publisher candidate directory (injected bodies, runtime, theme, journal):
+        ``<candidate_id>`` or an interrupted ``.staging-<name>``."""
+        if not isinstance(candidate_id, str):
             return False
-        if any(c not in "0123456789abcdef" for c in candidate_id):
+        staging = (
+            candidate_id.startswith(STAGING_PREFIX)
+            and len(candidate_id) > len(STAGING_PREFIX)
+            and PurePosixPath(candidate_id).name == candidate_id
+        )
+        if not staging and (
+            len(candidate_id) != 64 or any(c not in "0123456789abcdef" for c in candidate_id)
+        ):
             return False
         base = self._safe_base(OWNER_DIRECT_CANDIDATE_RELATIVE)
         directory = base / candidate_id
@@ -641,9 +657,9 @@ def sweep_local_copies(
 ) -> dict[str, int]:
     """Delete every local copy of the run's injected bytes outside the run directory.
 
-    Covers the ids recorded by the publisher, any candidate whose candidate.json /
-    journal.json / preview.json still carries the run's marker, values or injected hashes
-    (for example a flag-free candidate prepared while values were live), and preview
+    Covers the ids recorded by the publisher, every interrupted ``.staging-*`` candidate,
+    any candidate any of whose files still carries the run's marker, values or injected
+    hashes (for example a flag-free candidate prepared while values were live), and preview
     copies (frozen display themes and fixtures). Run it before redacting the approval: the
     injected hashes are what find a frozen injected theme.
     """
@@ -654,6 +670,30 @@ def sweep_local_copies(
         ),
         "preview_copies_deleted": sum(store.delete_preview_copy(p) for p in previews),
     }
+
+
+def live_run_ids(checkouts: Iterable[Path | None]) -> list[str]:
+    """Run ids whose values may be live, over every given checkout that has a run directory.
+
+    The publisher and the deployment operator pass the fixed owner checkout whether or not
+    ``--owner-checkout`` was given: runs live there while commands run from a worktree
+    (contract §8). A run directory that is a symlink or not a directory, and a checkout whose
+    store cannot be opened, are refused (fail closed).
+    """
+    found: set[str] = set()
+    seen: set[Path] = set()
+    for value in checkouts:
+        if value is None or Path(value) in seen:
+            continue
+        checkout = Path(value)
+        seen.add(checkout)
+        runs = checkout / PRIVATE_ROOT_RELATIVE
+        if not runs.exists() and not runs.is_symlink():
+            continue
+        if runs.is_symlink() or not runs.is_dir():
+            fail("PRIVATE_PATH_UNSAFE")
+        found.update(run_id for run_id, _keys in live_publish_runs(PrivateStore(checkout)))
+    return sorted(found)
 
 
 def live_publish_runs(store: PrivateStore) -> list[tuple[str, list[str] | None]]:
@@ -721,23 +761,24 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
         overlay = store.read_json(overlay_path) if overlay_path.exists() else None
         approval = store.read_json(approval_path) if approval_path.exists() else None
         if isinstance(overlay, dict) and overlay.get("schema") == PURGED_SCHEMA:
-            if has_raw:
+            # The approval is written before fetch sends anything: without a readable one a
+            # purged run cannot show that its publish and purge obligations are met.
+            if has_raw or not isinstance(approval, dict):
                 return "UNDATED", None
-            record = approval if isinstance(approval, dict) else None
-            if record is not None:
-                if (
-                    record.get("publish") is not None
-                    and record.get("purge_publish") is None
-                    and incident_resolution(store, run_id) is None
-                ):
-                    return "PUBLISHED_NOT_PURGED", None
-                if redact_approval(record) != record:
-                    return "REDACTION_PENDING", None
+            record = approval
+            if (
+                record.get("publish") is not None
+                and record.get("purge_publish") is None
+                and incident_resolution(store, run_id) is None
+            ):
+                return "PUBLISHED_NOT_PURGED", None
+            if redact_approval(record) != record:
+                return "REDACTION_PENDING", None
             if store.run_tmp_files(run_id) or any(
                 local_copies(store, run_id, overlay, record)
             ):
                 return "REDACTION_PENDING", None
-            if record is not None and record.get("publish") is not None:
+            if record.get("publish") is not None:
                 purge_publish = record.get("purge_publish")
                 redacted_by_plugin = (
                     isinstance(purge_publish, dict)

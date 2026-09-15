@@ -347,7 +347,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "29a8b6bf27eaa1d5cc121e23f3ff5f30c8bfb8e49d0afa077a6ea4dcf6e7dbfb",
+      "sha256": "1d679065fc14ffe059235c976258efe10cdfeb79d28fa2023331cf402139251c",
       "size": 54277
     },
     {
@@ -512,8 +512,8 @@
     },
     {
       "path": "scripts/raos_wordpress_deployment_operator.py",
-      "sha256": "2feb7e2deabefda3b93bafbc3f0d7b960dbcc747e81fd6da2f77476ae7bf1f62",
-      "size": 61435
+      "sha256": "d7ea85e7b1bcd19c69e1381472c07125b75f86d0debab6a8bd76f26f3a64ac24",
+      "size": 63278
     },
     {
       "path": "scripts/raos_wordpress_baseline_media.py",

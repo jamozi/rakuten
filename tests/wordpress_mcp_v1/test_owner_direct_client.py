@@ -11,6 +11,12 @@ def isolated_preview_check(monkeypatch):
     monkeypatch.setattr(direct, "verify_preview", lambda *args: None)
 
 
+@pytest.fixture(autouse=True)
+def isolated_owner_checkout(monkeypatch, tmp_path):
+    # Flag-free prepare/publish/status check the fixed owner checkout for live price-overlay runs.
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", tmp_path / "fixed-owner-checkout")
+
+
 def test_direct_status_is_read_only_and_has_dedicated_credentials(monkeypatch):
     calls = []
     monkeypatch.setattr(

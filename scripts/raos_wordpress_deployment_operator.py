@@ -1595,6 +1595,50 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
     fail("WORDPRESS_MCP_COMMAND_REFUSED")
 
 
+# Commands that print WordPress state (theme tree and runtime revisions, documents, operation
+# and batch records): refused while a Rakuten price-overlay run may be live, because the
+# injected bodies and injected theme hashes are price-recoverable (price-refresh contract §8).
+PRICE_OVERLAY_LIVE_REFUSED: Final = frozenset(
+    {
+        "deployment-status",
+        "operation-status",
+        "publication-batch-status",
+        "owner-direct-status",
+        "owner-direct-document",
+        "owner-direct-operation-status",
+    }
+)
+PRICE_OVERLAY_RUNS: Final = ".secrets/rakuten-price-refresh"
+
+
+def refuse_while_price_overlay_live(owner: Path | None) -> None:
+    """Checked in the validated --owner-checkout and the fixed OWNER_CHECKOUT whether or not
+    the option was given, and in ROOT (runs live in the owner checkout while the operator
+    may run from a worktree). Unreadable run state is refused too."""
+    checkouts = [value for value in (owner, OWNER_CHECKOUT, ROOT) if value is not None]
+    try:
+        if not any(
+            (c / PRICE_OVERLAY_RUNS).exists() or (c / PRICE_OVERLAY_RUNS).is_symlink()
+            for c in checkouts
+        ):
+            return
+        if str(ROOT / "python") not in sys.path:
+            sys.path.insert(0, str(ROOT / "python"))
+        from raos.adapters.rakuten_price_refresh_client import live_run_ids
+        from raos.domain.editorial.rakuten_price_refresh import RefreshError
+
+        try:
+            live = live_run_ids(checkouts)
+        except RefreshError:
+            live = None
+    except OSError:
+        live = None
+    if live is None:
+        fail("WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID")
+    if live:
+        fail("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
     result.add_argument("--owner-checkout", type=Path)
@@ -1628,6 +1672,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
         owner = validated_owner_checkout(arguments.owner_checkout)
+        if arguments.command in PRICE_OVERLAY_LIVE_REFUSED:
+            refuse_while_price_overlay_live(owner)
         private_context_reset = _private_owner.set(owner)
         try:
             if arguments.command == "owner-direct-theme-propose":
