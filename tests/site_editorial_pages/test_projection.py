@@ -157,10 +157,9 @@ class ProjectionTest(unittest.TestCase):
             headers,
             [
                 "使う機器",
-                "消費電力W",
+                "消費電力W・同時に使うか",
                 "必要時間",
-                "同時に使うか",
-                "起動時の条件（説明書で確認）",
+                "起動時の条件",
                 "動かす場所・手持ちの備え",
             ],
         )
@@ -174,10 +173,15 @@ class ProjectionTest(unittest.TestCase):
         ]
         examples = [r for r in cells if r[0].startswith("記入例")]
         self.assertEqual(len(examples), 2)
-        self.assertEqual(examples[0][1:3], ["10W", "8時間"])
-        self.assertEqual(examples[1][1:3], ["40W", "4時間"])
-        self.assertTrue(all(len(r) == 6 for r in cells))
-        self.assertGreaterEqual(sum(r[0].startswith("記入：") for r in cells), 2)
+        self.assertEqual(examples[0][1:3], ["10W扇風機と同時", "8時間"])
+        self.assertEqual(examples[1][1:3], ["40W合わせて50W", "4時間"])
+        # Five columns stay readable at 320px; the blank rule lives in the lead.
+        self.assertTrue(all(len(r) == 5 for r in cells))
+        self.assertIn("未確認なら空欄のままにします", body)
+        self.assertFalse(any("未確認なら空欄" in c for r in cells for c in r))
+        self.assertTrue(all(len(c) <= 16 for r in cells for c in r))
+        blank = [r for r in cells if all(set(c) <= set("＿W時間") for c in r)]
+        self.assertGreaterEqual(len(blank), 2)
         self.assertIn("10W×8時間＋40W×4時間＝240Wh", body)
         self.assertNotEqual(
             next(

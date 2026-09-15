@@ -100,8 +100,9 @@ class EntryCompletion(unittest.TestCase):
             "/compact-dishwasher-comparison/#compact-compare",
             "/standard-dishwasher-comparison/#std-comparison",
             "/large-dishwasher-comparison/#large-compare",
-            "/standard-dishwasher-comparison/#std-purchases",
-            "/large-dishwasher-comparison/#large-purchase",
+            "/compact-dishwasher-comparison/#compact-cost",
+            "/standard-dishwasher-comparison/#std-reference-details",
+            "/large-dishwasher-comparison/#large-cost",
             "/dishwasher-running-cost/#guide-cost-example",
         ):
             with self.subTest(href=href):
@@ -112,13 +113,24 @@ class EntryCompletion(unittest.TestCase):
         purchase = doc.ids["purchase-checks"]
         self.assertTrue(compare.start < purchase.start < purchase.end <= compare.end)
         purchase_html = doc.text[purchase.start : purchase.end]
+        # The cost card's lead promises totals, so it links to the total-cost
+        # sections rather than repeating the 機能 card's comparison tables.
+        self.assertIn("送料・必要品を含む総額と、毎月。", purchase_html)
         for href in (
-            "/compact-dishwasher-comparison/#compact-compare",
-            "/standard-dishwasher-comparison/#std-purchases",
-            "/large-dishwasher-comparison/#large-purchase",
+            "/compact-dishwasher-comparison/#compact-cost",
+            "/standard-dishwasher-comparison/#std-reference-details",
+            "/large-dishwasher-comparison/#large-cost",
             "/dishwasher-running-cost/#guide-cost-example",
         ):
             self.assertIn('href="' + href + '"', purchase_html)
+        for repeated in (
+            "#compact-compare",
+            "#std-comparison",
+            "#large-compare",
+            "#std-purchases",
+            "#large-purchase",
+        ):
+            self.assertNotIn(repeated + '"', purchase_html)
         tank = [
             h
             for h in hrefs
@@ -213,6 +225,9 @@ class EntryCompletion(unittest.TestCase):
             "100席未満の便の条件です。100席以上の便とは条件が違います", under_100
         )
         self.assertIn('href="/carry-on-suitcase-comparison/"', ace)
+        self.assertIn("エース系の3モデルで迷ったら", ace)
+        self.assertIn("同じメーカーの3モデルで、軽さ・容量・開き方の違いを。", ace)
+        self.assertNotIn("ブランド内", ace)
         self.assertIn(
             "エース系3モデル（外寸はANA国内線100席以上の基準で照合。重量は荷物込みで別途確認）",
             ace,
