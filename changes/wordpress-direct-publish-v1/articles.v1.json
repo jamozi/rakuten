@@ -159,13 +159,13 @@
       "post_type": "page",
       "slug": "categories",
       "title": "商品カテゴリから探す",
-      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。",
+      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html",
       "reader_role": {
         "page_kind": "directory",
         "primary_intent": "商品カテゴリごとに、比較記事とガイドを見たい",
         "reader": "商品の種類は決まり、どこから読むか迷う人",
-        "decision_after_reading": "代表比較へ進むか、採寸・条件整理を先にするか",
+        "decision_after_reading": "代表比較へ進むか、条件で候補を絞る節を先に読むか",
         "main_cta": {
           "kind": "internal",
           "target": null,
@@ -1407,7 +1407,7 @@
       "post_type": "post",
       "slug": "compact-robot-vacuum-shortlist",
       "title": "省スペースのロボット掃除機を条件で絞る",
-      "excerpt": "Roomba Mini・SwitchBot K11+ Pro・K10+ Pro Combo・Roomba Plus 515を、本体と台の寸法、水拭き方式、自動手入れから比較。置ける場所と任せたい作業で候補を絞り、購入前の確認先も示します。",
+      "excerpt": "Roomba Mini・SwitchBot K11+ Pro・K10+ Pro Combo・Roomba Plus 515を、本体と台の寸法、水拭き方式、自動手入れから比較。置き場所と、自動ゴミ収集・水拭きのどれを使うかで候補を絞り、購入前の確認先も示します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html",
       "taxonomies": {
         "category": [

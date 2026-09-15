@@ -1133,7 +1133,7 @@ def render_pages(
             # Keep old URLs useful without restoring removed homepage sections.
             body = body.replace(
                 "</div></section></section>",
-                '</div><nav class="ks-home-more" aria-label="ほかの探し方"><a id="km-purposes-title" href="/purposes/">目的から探す</a><span id="home-purchase-check"> ／ <a id="home-purchase-check-title" href="/comparisons/#purchase-checks">購入前の確認</a></span></nav></section></section>',
+                '</div><nav class="ks-home-more" aria-label="ほかの探し方"><a id="km-purposes-title" href="/purposes/">目的から探す</a><span id="home-purchase-check"> ／ <a id="home-purchase-check-title" href="/comparisons/#purchase-checks">購入前の4項目</a></span></nav></section></section>',
                 1,
             )
             policy = wrap(policy, "km-editorial-title")

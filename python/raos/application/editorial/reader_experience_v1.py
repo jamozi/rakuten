@@ -309,7 +309,7 @@ def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[st
     if sorted(categories) != sorted(known):
         raise ValueError('READER_PRIMARY_CATEGORY_MUST_BE_UNIQUE')
     core = [
-        ('categories', '商品カテゴリから探す', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。', 'categories', list(known)),
+        ('categories', '商品カテゴリから探す', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。', 'categories', list(known)),
         ('purposes', '悩み・目的から探す', '省スペース・残る家事・給排水・手入れ・旅行の荷物・停電への備えを、それぞれの問いから整理します。', 'purposes', list(known)),
         ('guides', '選び方ガイド', '置き場所を測る、給水作業を比べる、費用を試算するなど、知りたい作業から選べます。ガイド記事と比較記事内の選び方を区別しています。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
         ('comparisons', '商品比較の記事一覧', '商品ごとの比較記事を、主な違いと比較対象数つきで案内します。比較表と販売条件へ直接進めます。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),

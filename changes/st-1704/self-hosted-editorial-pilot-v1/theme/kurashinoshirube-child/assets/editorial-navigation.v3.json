@@ -516,7 +516,7 @@
           "roomba-mini-vs-switchbot-k11-pro",
           "solota-vs-rakua-mini-plus"
         ],
-        "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。",
+        "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
         "kind": "categories",
         "label": "商品カテゴリから探す",
         "slug": "categories"

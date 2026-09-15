@@ -64,6 +64,31 @@ LISTING_KEYS = {
     "sales_checked_at",
 }
 JST = timezone(timedelta(hours=9))
+HUB_PAGES = ("home", "categories", "comparisons", "updates", "guides", "purposes")
+# Wording replaced in earlier batch F rounds; none may come back on a hub.
+BANNED_HUB_WORDS = (
+    "移動で選ぶ",
+    "移動のしやすさ",
+    "任せる作業",
+    "任せたい作業",
+    "洗う量",
+    "採寸・条件整理",
+)
+# Key nouns of each home category decision; each must be in the representative body.
+HOME_DECISION_WORDS = {
+    "travel": ("軽さ", "開き方", "車輪"),
+    "kitchen": ("食器量", "給水方法"),
+    "cleaning": ("本体", "台", "置き場所", "自動ゴミ収集", "水拭き"),
+    "preparedness": ("機器", "時間", "容量", "出力"),
+}
+CATEGORIES_LEAD = (
+    "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。"
+    "代表比較と、条件で候補を絞る節へ直接進めます。"
+)
+NAVIGATION_ASSET = (
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/"
+    "assets/editorial-navigation.v3.json"
+)
 
 
 def inputs():
@@ -78,6 +103,23 @@ def published_posts(registry):
         and r.get("mode") == "existing"
         and (r.get("listing") or {}).get("state") == "published"
     ]
+
+
+def body_text(row):
+    body = (ROOT / row["body_source"]).read_text()
+    return re.sub(r"<[^>]+>", "", re.sub(r"<script.*?</script>", "", body, flags=re.S))
+
+
+def walk(node):
+    if isinstance(node, dict):
+        yield node
+        values = node.values()
+    elif isinstance(node, list):
+        values = node
+    else:
+        return
+    for value in values:
+        yield from walk(value)
 
 
 def section(html, ident):
@@ -542,37 +584,75 @@ class LedgerListings(unittest.TestCase):
 
     def test_hub_wording_uses_words_from_the_linked_body(self):
         rows = {r["article_key"]: r for r in published_posts(self.registry)}
-
-        def body_text(key):
-            body = (ROOT / rows[key]["body_source"]).read_text()
-            return re.sub(
-                r"<[^>]+>", "", re.sub(r"<script.*?</script>", "", body, flags=re.S)
-            )
-
         suitcase = rows["small-carry-on-suitcase-comparison"]
         dishwasher = rows["standard-dishwasher-comparison"]
+        robot = rows["compact-robot-vacuum-shortlist"]
         cleaning = self.data["categories"]["cleaning"]["decides"]
         hub = suitcase["title"] + suitcase["excerpt"]
         hub += suitcase["reader_role"]["decision_after_reading"]
         self.assertNotIn("移動", hub)
         self.assertNotIn("手入れ", dishwasher["excerpt"])
         self.assertNotIn("任せる", cleaning)
-        cases = {
-            "small-carry-on-suitcase-comparison": (
-                hub,
-                ("軽さ", "開き方", "車輪", "ストッパー"),
-            ),
-            "standard-dishwasher-comparison": (dishwasher["excerpt"], ("毎日の手間",)),
-            "compact-robot-vacuum-shortlist": (
-                cleaning,
-                ("本体", "台", "置き場所", "自動ゴミ収集", "水拭き"),
-            ),
-        }
-        for key, (wording, words) in cases.items():
-            text = body_text(key)
+        self.assertNotIn("任せ", robot["excerpt"])
+        cases = (
+            (suitcase, hub, ("軽さ", "開き方", "車輪", "ストッパー")),
+            (dishwasher, dishwasher["excerpt"], ("毎日の手間",)),
+            (robot, cleaning, ("本体", "台", "置き場所", "自動ゴミ収集", "水拭き")),
+            (robot, robot["excerpt"], ("置き場所", "自動ゴミ収集", "水拭き")),
+        )
+        for row, wording, words in cases:
+            text = body_text(row)
             for word in words:
-                with self.subTest(key=key, word=word):
+                with self.subTest(key=row["article_key"], word=word):
                     self.assertIn(word, wording)
+                    self.assertIn(word, text)
+
+    def test_hub_outputs_do_not_bring_back_replaced_wording(self):
+        rows = {r["article_key"]: r for r in self.registry["articles"]}
+        navigation = json.loads((ROOT / NAVIGATION_ASSET).read_text())
+        nav_leads = [
+            node["description"]
+            for node in walk(navigation)
+            if node.get("slug") == "categories" and "description" in node
+        ]
+        self.assertTrue(nav_leads)
+        header = re.findall(
+            r'<p class="ks-directory-lead">([^<]*)</p>', self.pages["categories"]
+        )
+        leads = {
+            "rendered header": header,
+            "entry-pages": [self.data["pages"]["categories"]["description"]],
+            "ledger excerpt": [rows["categories"]["excerpt"]],
+            "navigation": nav_leads,
+        }
+        for source, found in leads.items():
+            with self.subTest(source=source):
+                self.assertEqual(found, [CATEGORIES_LEAD])
+        texts = {slug: self.pages[slug] for slug in HUB_PAGES}
+        texts["categories decision"] = rows["categories"]["reader_role"][
+            "decision_after_reading"
+        ]
+        for name, text in texts.items():
+            for word in BANNED_HUB_WORDS:
+                with self.subTest(page=name, word=word):
+                    self.assertNotIn(word, text)
+        home = self.pages["home"]
+        label = re.search(r'href="/comparisons/#purchase-checks">([^<]+)</a>', home)[1]
+        checks = section(self.pages["comparisons"], "purchase-checks")
+        heading = re.sub(r"<[^>]+>", "", re.search(r"<h2[^>]*>(.*?)</h2>", checks)[1])
+        self.assertEqual(label, heading)
+
+    def test_home_decisions_use_nouns_from_their_representative_body(self):
+        rows = {r["article_key"]: r for r in published_posts(self.registry)}
+        grid = section(self.pages["home"], "km-categories-title")
+        self.assertEqual(set(HOME_DECISION_WORDS), set(self.data["categories"]))
+        for slug, category in self.data["categories"].items():
+            decides = category["decides"]
+            text = body_text(rows[category["representative"]])
+            self.assertIn(f"<p>{decides}</p>", grid)
+            for word in HOME_DECISION_WORDS[slug]:
+                with self.subTest(category=slug, word=word):
+                    self.assertIn(word, decides)
                     self.assertIn(word, text)
 
     def test_updates_lists_each_change_log_entry_with_its_own_date(self):
