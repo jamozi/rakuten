@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T14:20+09:00",
+  "updated_at": "2026-09-15T15:00+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -74,22 +74,23 @@
     },
     "KS-004": {
       "priority": "P0",
-      "status": "完了 (コード変更不要) + オーナー作業",
+      "status": "完了 (GSC/GA4 画面確認済み)。残: 外部回線からの GA4 受信確認と offer_click 有効化の判断",
       "batch": null,
       "evidence": [
         "evidence/KS-004.md"
       ],
-      "note": "GA4 page_view は同意後に送信。offer_click は OFF。GSC/GA4 の画面確認は owner-tasks-20260915.md A/B"
+      "note": "collect は 204 で受理。GA4 は内部トラフィック除外フィルタ有効のため自宅回線のヒットは表示されない。拡張計測はページビューのみ"
     },
     "KS-005": {
       "priority": "P1",
       "status": "未着手",
       "batch": null,
-      "evidence": []
+      "evidence": [],
+      "note": "基準値: GSC 28日 表示241/クリック7/CTR2.9%/順位9.1、楽天 30日 クリック25/売上0、GA4 表示0 (内部除外)"
     },
     "KS-006": {
       "priority": "P0",
-      "status": "公開規約は確認済み。オーナー確認 3 項目 (登録状態・30日実績・他ASP) 待ち",
+      "status": "公開規約 + 楽天管理画面 (登録・30日実績) 確認済み。残: 他 ASP の登録有無の申告",
       "batch": null,
       "evidence": [
         "evidence/KS-006.md"
@@ -140,7 +141,7 @@
     },
     "KS-027": {
       "priority": "P1",
-      "status": "完了 (変更不要) + オーナー作業 (GSC)",
+      "status": "完了。記事 19 (noindex 旧コピー) と 29 (検出-未登録) は 2026-09-15 に再クロール依頼済み",
       "batch": null,
       "evidence": [
         "evidence/KS-027.md"
