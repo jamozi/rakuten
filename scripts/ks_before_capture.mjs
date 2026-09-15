@@ -9,7 +9,8 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const input = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin)) throw new Error('LOCAL_ORIGIN_REQUIRED');
+// A local preview, or the public production origin when the published state is the Before.
+if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin) && input.origin !== 'https://kurashinoshirube.com') throw new Error('ORIGIN_NOT_ALLOWED');
 fs.mkdirSync(input.screenshots, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const failures = [];
