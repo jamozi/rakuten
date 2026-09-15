@@ -114,6 +114,22 @@ def tidy(text: object) -> str:
     return str(text).replace("～", "〜").replace("。 ", "。").replace("　", " ")
 
 
+INTERNAL_STATE_TOKENS = frozenset({"UNKNOWN", "UNAVAILABLE", "UNVERIFIED", "NONE", "N/A"})
+
+
+def reader_label(value: object, *, unknown: str = "未確認") -> str:
+    """Readable text for a catalog value; internal state enums never reach the reader.
+
+    Machine state stays in data-* attributes. Visible text shows the unverified
+    state in Japanese instead of the enum name (KS-008)."""
+    if value is None:
+        return unknown
+    text = tidy(value).strip()
+    if not text or text.upper() in INTERNAL_STATE_TOKENS:
+        return unknown
+    return text
+
+
 def jp_date(value: object) -> str:
     """'2026-09-11', an ISO timestamp or a datetime (shown in JST) as '2026年9月11日'."""
     if isinstance(value, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
@@ -664,9 +680,9 @@ def offer_panel(
         )
         rows += (
             "<p>納期："
-            + escape(tidy(o.get("delivery") or "未確認"))
+            + escape(reader_label(o.get("delivery")))
             + "／保証："
-            + escape(tidy(o.get("warranty") or "未確認"))
+            + escape(reader_label(o.get("warranty")))
             + "</p>"
         )
         href = None

@@ -923,7 +923,13 @@
         "reader-axes": "build-formula",
         "separate-energy": "build-formula",
         "add-detergent": "build-formula",
-        "reader-purchase-checks": "build-formula"
+        "reader-purchase-checks": "build-formula",
+        "guide-evidence-dws-33b-water-drainage": "guide-evidence",
+        "guide-evidence-ss-m171-maintenance": "guide-evidence",
+        "guide-evidence-ss-m171-water-drainage": "guide-evidence",
+        "guide-evidence-ss-ma251-water-drainage": "guide-evidence",
+        "guide-evidence-tk-mdw22b-water-drainage": "guide-evidence",
+        "guide-evidence-tk-mdw22w-water-drainage": "guide-evidence"
       },
       "history": [
         {
@@ -1055,7 +1061,14 @@
         "purchase-checks": "ps-offers",
         "suitcase-official-purchase-conditions": "ps-offers",
         "suitcase-official-purchase-conditions-title": "ps-offers",
-        "blk-suitcase-007-title": "ps-specs"
+        "blk-suitcase-007-title": "ps-specs",
+        "blk-suitcase-002-title": "ps-specs",
+        "blk-suitcase-003-title": "ps-choose",
+        "blk-suitcase-004-title": "ps-choose",
+        "blk-suitcase-005-title": "ps-specs",
+        "blk-suitcase-008-title": "ps-products",
+        "blk-suitcase-014-title": "ps-offers",
+        "maxpass4-pc-storage-spec": "product-maxpass4-01471"
       },
       "spec_detail_labels": [
         "PC収納（幅×高さ×厚さ）"
@@ -1170,7 +1183,13 @@
         "bermas-inter-city-60524-purchase": "ps-seller-bermas-inter-city-60524",
         "under-100-cta-04-note": "bermas-inter-city-60524",
         "purchase-checks": "ps-offers",
-        "under-100-caution-title": "ps-offers"
+        "under-100-caution-title": "ps-offers",
+        "bermas-60524-rakuten-landing": "ps-seller-bermas-inter-city-60524",
+        "under-100-editors-note-title": "ps-choose",
+        "under-100-fits-title": "ps-choose",
+        "under-100-method-title": "ps-specs",
+        "under-100-not-fits-title": "ps-choose",
+        "under-100-packing-title": "ps-specs"
       },
       "preserved_editorial_sections": [
         "small-flight-limits-title"
@@ -1292,7 +1311,20 @@
         "bermas-inter-city-ii-60561-purchase": "ps-seller-bermas-inter-city-ii-60561",
         "cta-60561-note": "bermas-inter-city-ii-60561",
         "purchase-checks": "ps-offers",
-        "purchase-caution-title": "ps-offers"
+        "purchase-caution-title": "ps-offers",
+        "editors-note-title": "ps-choose",
+        "faq": "ps-offers",
+        "faq-title": "ps-offers",
+        "fits-title": "ps-choose",
+        "front-open-next-step-title": "ps-offers",
+        "front-open-practical-checks": "ps-offers",
+        "front-open-seat-class-premise": "ps-choose",
+        "method": "ps-specs",
+        "method-title": "ps-specs",
+        "not-fits-title": "ps-choose",
+        "scenes-title": "ps-choose",
+        "stay-scenes-title": "ps-choose",
+        "transit-scenes-title": "ps-choose"
       },
       "spec_detail_labels": [
         "PC収納（幅×高さ×厚さ）",
@@ -1408,7 +1440,14 @@
         "roomba-mini-slim-f115060-purchase": "ps-seller-roomba-mini-slim-f115060",
         "robot-cta-slim-note": "roomba-mini-slim-f115060",
         "purchase-notes": "ps-offers",
-        "robot-caution-title": "ps-offers"
+        "robot-caution-title": "ps-offers",
+        "robot-comparable-title": "ps-specs",
+        "robot-editors-note-title": "ps-choose",
+        "robot-installation-requirements": "product-robot-k11-pro",
+        "robot-installation-title": "ps-specs",
+        "robot-method-title": "ps-specs",
+        "robot-next-step-title": "ps-offers",
+        "robot-not-comparable-title": "ps-specs"
       },
       "supplementary_product_ids": [
         "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
@@ -1619,7 +1658,17 @@
         "product-anker-c1000-cta-note": "ps-seller-product-anker-c1000",
         "product-anker-c1000-gen2-caution": "product-anker-c1000-gen2",
         "product-anker-c1000-gen2-cta-note": "ps-seller-product-anker-c1000-gen2",
-        "blk-anker-008-title": "ps-specs"
+        "blk-anker-008-title": "ps-specs",
+        "blk-anker-002-title": "ps-choose",
+        "blk-anker-003-title": "ps-choose",
+        "blk-anker-004-title": "ps-choose",
+        "blk-anker-005-title": "ps-specs",
+        "blk-anker-007-title": "ps-offers",
+        "blk-anker-009-title": "ps-products",
+        "blk-anker-015-title": "ps-choose",
+        "c1000-generation-choice": "product-anker-c1000-gen2",
+        "c1000-generation-choice-title": "product-anker-c1000-gen2",
+        "c1000-rated-output-discrepancy": "product-anker-c1000-gen2"
       },
       "preserved_editorial_sections": [
         "anker-port-summary-title"
@@ -4277,7 +4326,7 @@
       "avoid": [
         "持ち出す頻度が高く、軽さを最優先する人"
       ],
-      "caution": "本体は幅39.8×奥行20.0×高さ28.3cm、約12.1kgです。保管場所から安全に運べるか確認してください。",
+      "caution": "本体は幅20.0×奥行39.8×高さ28.3cm、約12.1kgです。保管場所から安全に運べるか確認してください。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [

@@ -105,7 +105,7 @@ def enhance_specification_tables(root: Element) -> None:
             if cell.text().strip() in {'', 'UNKNOWN', '未確認', '不明'}:
                 cell.attrs['data-raos-value-state'] = 'UNKNOWN'
                 if not cell.text().strip():
-                    cell.children = ['未確認（UNKNOWN）']
+                    cell.children = ['未確認']
         heads = table.find(tag='thead')
         bodies = table.find(tag='tbody')
         if not heads or not bodies:

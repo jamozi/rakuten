@@ -407,9 +407,9 @@
       "sha256": "044c351bfa0e9ecc1a3de56bc590170582bd690905b534605d6fab3308a55eef"
     },
     {
-      "bytes": 18522,
+      "bytes": 18509,
       "path": "python/raos/application/editorial/reader_components.py",
-      "sha256": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542"
+      "sha256": "682751ffafd552ec0728fea0866c8c5d63f8dbdd9aa25ac4d9e6975eb61ce92a"
     },
     {
       "bytes": 35835,
