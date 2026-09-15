@@ -385,15 +385,33 @@ def test_curated_history_block_requires_one_article_root(compiled) -> None:
 # Approved-layout record ----------------------------------------------------------
 
 
-def test_changed_approved_layouts_are_recorded_as_pending_owner_review() -> None:
+W3_CANDIDATE = "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf"
+
+
+def test_changed_approved_layouts_record_the_owner_review() -> None:
+    """A revision is pending until the owner accepts it; W3 was accepted and published."""
     record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
     for slug in (
         "compact-dishwasher-comparison",
         "standard-dishwasher-comparison",
         "large-dishwasher-comparison",
     ):
-        pending = record[slug]["pending_revision"]
-        assert pending["review"] == "PENDING_OWNER_BEFORE_AFTER"
-        assert pending["publication_authorized"] is False
-        assert pending["tasks"] and all(t.startswith("KS-") for t in pending["tasks"])
-        assert pending["source_paths"]
+        entry = record[slug]
+        pending = entry.get("pending_revision")
+        if pending is not None:
+            assert pending["review"] == "PENDING_OWNER_BEFORE_AFTER"
+            assert pending["publication_authorized"] is False
+            assert pending["tasks"] and all(
+                t.startswith("KS-") for t in pending["tasks"]
+            )
+            assert pending["source_paths"]
+        accepted = entry["latest_accepted"]
+        assert re.fullmatch(r"[0-9a-f]{64}", accepted["body_sha256"])
+        assert re.fullmatch(r"ps-[0-9a-f]{32}", accepted["snapshot_id"])
+        assert accepted["user_statement"] and accepted["confirmation_source_thread"]
+        assert accepted["publication_authorized"] is False
+        history = [accepted, *entry.get("previous_accepted", [])]
+        w3 = [a for a in history if a.get("shared_candidate") == W3_CANDIDATE]
+        assert len(w3) == 1, slug
+        assert w3[0]["tasks"] and all(t.startswith("KS-") for t in w3[0]["tasks"])
+        assert w3[0]["source_paths"]

@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-16T03:08+09:00",
+  "updated_at": "2026-09-16T07:05+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -256,6 +256,43 @@
       "effort_hours": null,
       "cost_yen": null,
       "confirmed_reward_yen": null
+    },
+    "W3": {
+      "tasks": [
+        "KS-015",
+        "KS-017",
+        "KS-026",
+        "KS-028",
+        "KS-029",
+        "KS-107",
+        "KS-108",
+        "KS-116",
+        "KS-120",
+        "KS-122",
+        "KS-129",
+        "KS-130"
+      ],
+      "commit": "d65048f3",
+      "candidate_id": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+      "published_at": "2026-09-15T21:53:47Z〜21:54:17Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "categories",
+        "compact-dishwasher-comparison",
+        "dishwasher-branch-faucet-guide",
+        "kitchen",
+        "large-dishwasher-comparison",
+        "prepare-outage",
+        "small-carry-on-suitcase-comparison",
+        "standard-dishwasher-comparison",
+        "travel",
+        "without-installation"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     }
   },
   "items": {
@@ -384,9 +421,10 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
@@ -397,9 +435,10 @@
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
@@ -507,12 +546,13 @@
     },
     "KS-129": {
       "priority": "P1",
-      "batch": "W2-23",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (266 側で SOLOTA の計算例と単価前提の違いを明記、本番公開)。549 側のリンクは承認済みレイアウトのバッチ"
+      "status": "完了 (266 側は W2-23、549 から 266 #guide-cost-example への相互参照は W3 で本番公開)"
     },
     "KS-018": {
       "priority": "P1",
@@ -532,11 +572,12 @@
     },
     "KS-017": {
       "priority": "P1",
-      "batch": "W2-1",
-      "status": "記録済み (幅7・文字拡大3・39ページ・キーボード6ページ)。実際にはスクロールしない案内文の削除は承認ゲート待ち",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-017.md"
-      ]
+      ],
+      "status": "完了 (記録は W2-1。実際にはスクロールしない案内文を 549・550・551 の本文と theme.css の ::before から削除し、W3 で本番公開)"
     },
     "KS-030": {
       "priority": "P1",
@@ -574,11 +615,12 @@
     },
     "KS-015": {
       "priority": "P1",
-      "batch": "W2-23",
-      "status": "一部完了 (553 の仕様グループのラベルと誤ったスクロール案内の削除、本番公開)。549〜551 は承認済みレイアウトのバッチ",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md"
-      ]
+      ],
+      "status": "完了 (553 は W2-23、549・551 の表内ラベルは W3 で本番公開)"
     },
     "KS-012": {
       "priority": "P1",
@@ -717,9 +759,75 @@
     },
     "KS-028": {
       "priority": "P1",
-      "batch": "W3 (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (source)。KS-028-d: categories のカード見出しを h2 にし、theme.css でカードの見た目を維持。purposes と updates は節見出し h2 の下に h3 のカードがあり見出しレベルが飛ばないため変更なし。266 の費用ルート見出しは W2 時点で h3 (飛びなし)。83 (lightweight-carry-on-suitcase-under-3kg) の表内 h4 は承認済みレイアウトのため記録のみで変更しない",
-      "evidence": []
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (KS-028-d: /categories/ のカード見出しを h2 にして本番公開。purposes と updates は見出しレベルが飛ばないので変更なし。83 の表内 h4 は承認済みレイアウトのため記録のみ)"
+    },
+    "KS-026": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (549・550・551・553 に訂正依頼の行を 1 つずつ置き、本番公開)。訂正履歴に載せる中身はオーナー判断"
+    },
+    "KS-029": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (ガイドの articleSection をハブ名に、/without-installation/ の親を /purposes/ に、方針ページは BreadcrumbList を出さない。本番公開)。ItemList を採らない理由を公開するかはオーナー判断"
+    },
+    "KS-107": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/kitchen/ #compare を置き場所・機能・費用への導線に作り直し、本番公開)"
+    },
+    "KS-108": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/travel/ の準備中カード 3 枚を削除し、82 と 19 を注記付きで追加。本番公開)"
+    },
+    "KS-116": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/prepare-outage/ を 5 列の記入式シートにし、記事 28 の計算例へリンク。本番公開)"
+    },
+    "KS-120": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (549 から置き場所・洗剤・手入れのガイドへのリンク。本番公開)"
+    },
+    "KS-122": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (551 の主表 6 行に本体寸法と開扉時の奥行を公式値で追加。本番公開)"
+    },
+    "KS-130": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (552 に 3 か所の確認表と容量別の比較への導線を置き、本番公開)。ヒーロー画像と機種の列挙は未実施"
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"
