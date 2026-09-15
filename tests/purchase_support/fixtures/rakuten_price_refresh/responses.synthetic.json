@@ -1,0 +1,35 @@
+{
+  "row_single": {
+    "itemCode": "synth-shop:synth-item-a",
+    "itemName": "【送料無料】シンセ 卓上機 SYN-100A ホワイト",
+    "itemUrl": "https://item.rakuten.co.jp/synth-shop/synth-item-a/",
+    "shopCode": "synth-shop",
+    "itemPrice": 12340,
+    "itemPriceMin1": 12340,
+    "itemPriceMax1": 12340,
+    "itemPriceMin3": 12340,
+    "itemPriceMax3": 12340,
+    "availability": 1,
+    "taxFlag": 0,
+    "postageFlag": 0
+  },
+  "row_variant": {
+    "itemCode": "synth-shop:synth-item-b",
+    "itemName": "シンセ キャリー SYN-200B 全3色",
+    "itemUrl": "https://item.rakuten.co.jp/synth-shop/synth-item-b/",
+    "shopCode": "synth-shop",
+    "itemPrice": 23450,
+    "itemPriceMin1": 23450,
+    "itemPriceMax1": 23450,
+    "itemPriceMin3": 23450,
+    "itemPriceMax3": 23450,
+    "availability": 1,
+    "taxFlag": 0,
+    "postageFlag": 1
+  },
+  "error_400": {"error": "wrong_parameter", "error_description": "specify valid applicationId"},
+  "error_404": {"error": "not_found", "error_description": "not found"},
+  "error_429": {"error": "too_many_requests", "error_description": "number of allowed requests has been exceeded for this API. please try again soon."},
+  "error_500": {"error": "system_error", "error_description": "api logic error"},
+  "error_503": {"error": "service_unavailable", "error_description": "XXX/XXX is under maintenance"}
+}
