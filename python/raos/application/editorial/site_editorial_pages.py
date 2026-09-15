@@ -126,12 +126,17 @@ def link(url: str, text: str) -> str:
 
 
 def table(
-    headers: list[str], rows: list[list[str]], label: str = "確認項目の表"
+    headers: list[str],
+    rows: list[list[str]],
+    label: str = "確認項目の表",
+    table_id: str = "",
 ) -> str:
     return (
         '<div class="ks-editorial-table" role="region" aria-label="'
         + escape(label, quote=True)
-        + '" tabindex="0"><table><thead><tr>'
+        + '" tabindex="0"><table'
+        + (f' id="{escape(table_id, quote=True)}"' if table_id else "")
+        + "><thead><tr>"
         + "".join(f'<th scope="col">{escape(h)}</th>' for h in headers)
         + "</tr></thead><tbody>"
         + "".join(
@@ -1070,6 +1075,7 @@ def render_pages(
                         ],
                         [[escape(cell) for cell in zone] for zone in zones],
                         "採寸の3つの枠",
+                        "space-zones-table",
                     )
                     + "<p>扉を開いたときの奥行が、どこから測った値かは型番の公式図で確かめます。起点が分からない数字は、本体の奥行に足しも引きもしません。</p>",
                 )
@@ -1077,7 +1083,7 @@ def render_pages(
                     "例で見る：起点と、まだ分からない範囲",
                     '<div class="ks-purpose-diagrams">'
                     + "".join(purpose_figure(figure) for figure in figures)
-                    + "</div><p>公式の図に寸法の矢印や起点の手がかりがない型番は、この例に入れていません。</p>",
+                    + "</div><p>公式の図から寸法の起点を読み取れない型番は、この例に入れていません。</p>",
                 )
                 + section(
                     "キッチンに置く",
@@ -1136,6 +1142,7 @@ def render_pages(
                                 example("ロボット掃除機"),
                             ],
                         ],
+                        table_id="housework-record-table",
                     )
                     + "<p>運転時間と人の作業時間は異なります。実測の削減時間や購入価値は断定していません。清掃頻度は機種で異なります。</p>",
                 )
@@ -1164,6 +1171,7 @@ def render_pages(
                             ],
                         ],
                         "作業時間の記入表",
+                        "housework-time-table",
                     ),
                 )
                 + section(
@@ -1236,6 +1244,7 @@ def render_pages(
                             ],
                         ],
                         "困りごとから比較を選ぶ表",
+                        "housework-route-table",
                     )
                     + "<p>減らしたい作業に○、残っても許せる作業に△を付けてから比べると、候補を絞りやすくなります。</p>",
                 )
@@ -1368,6 +1377,11 @@ def render_pages(
                             for row in groups[label]["rows"]
                         ],
                         label + "の手入れと部品",
+                        {
+                            "食洗機": "maintenance-dishwasher-table",
+                            "掃除機": "maintenance-vacuum-table",
+                            "スーツケース": "maintenance-suitcase-table",
+                        }[label],
                     )
                     + f"<p>{escape(note)}</p>"
                     + (f"<p>{routes}</p>" if routes else "")

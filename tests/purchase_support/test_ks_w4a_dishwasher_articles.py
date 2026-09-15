@@ -384,7 +384,7 @@ SPACE_HEADS = [
     "説明書の設置余白",
     "可燃物からの離隔（説明書）",
     "設置案内の図の寸法",
-    "必要な奥行（公式資料の記載）",
+    "水栓・蛇口に当たりにくい奥行の目安（公式資料の記載）",
 ]
 
 
@@ -416,6 +416,8 @@ def test_compact_space_table_keeps_source_kinds_apart(compiled) -> None:
     name, door, manual, flammable, figure, required, origin = rows[SOLOTA]
     assert "NP-TMLK1-K" in name
     assert cm(solota["door_depth_mm"]) in door and "＜485＞" in door
+    # The spec line is 「約 幅310×高さ435×奥行225＜485＞mm」, so the cell keeps 約.
+    assert door.startswith("約" + cm(solota["door_depth_mm"]))
     assert cm(solota["rear_mm"]) in figure and "50.2cm" not in figure
     assert origin == "official"
     assert required.startswith("50.2cm以上")
@@ -467,9 +469,19 @@ def test_compact_space_table_keeps_source_kinds_apart(compiled) -> None:
         else:
             assert origin == "unconfirmed", pid
             assert required.startswith("判定保留"), pid
+            assert "同じ種類の目安の記載を確認できず" in required, pid
             assert not re.search(r"[0-9]cm", required), pid
     text = squash(space.text())
     assert not MEASUREMENT_CLAIM.search(text)
+    # Panasonic prints 50.2cm as the depth at which the door is less likely to hit
+    # the faucet (当たりにくい), not as a required depth.
+    assert "必要な奥行" not in text
+    assert (
+        "水栓・蛇口に当たりにくい目安の50.2cm以上は設置案内の図の値" in text
+    )
+    space_table = by_id(root, "compact-space-table")
+    assert not space_table.find(tag="caption")
+    assert "出典の種類ごとに列を分けています。2026年9月16日に公式資料で確認しました。" in text
     assert "実機で測ったものではありません" in text
     assert (
         squash(
@@ -632,3 +644,50 @@ def test_mini_plus_scope_separates_page_specs_from_the_shared_manual(compiled) -
     manual = [f for f in product["facts"] if f["source_url"] == MANUALS[PLUS]]
     assert manual and all(f["exact_model"] == "TK-MDW22B" for f in manual)
     assert all("TK-STTDPSWH" in f["text"] + f["locator"] for f in manual)
+
+
+# W4a review round 2 ---------------------------------------------------------------
+
+SIROCA = "PRD-SIROCA-SS-MA251"
+
+
+def test_measurement_table_keeps_approximate_door_depths(compiled) -> None:
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[MEASURE])
+    rows = [
+        tr
+        for tr in nodes(root, lambda n: n.tag == "tr")
+        if any(
+            c.tag == "th" and squash(c.text()) == "扉を開いたとき" for c in elements(tr)
+        )
+    ]
+    assert len(rows) == 1
+    cells = {
+        c.attrs.get("data-ps-product"): squash(c.text())
+        for c in elements(rows[0])
+        if c.tag == "td"
+    }
+    assert cells[SOLOTA].startswith("奥行約485mm／")
+    assert cells[SIROCA].startswith("奥行約760mm／")
+    assert cells[COLOR].startswith("奥行594mm／")
+
+
+def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
+    catalog, _, outputs, _ = compiled
+    fact = next(
+        f
+        for f in product_of(catalog, SOLOTA)["facts"]
+        if f["label"] == "必要な余白"
+    )
+    assert fact["checked_at"] == "2026-09-16"
+    assert "取扱説明書P9901-20V10 p.8 設置場所の図（確認 2026年9月15日）" in fact["locator"]
+    for slug in (MEASURE, COUNTERTOP, PAIR):
+        root = fragment(outputs[slug])
+        body = squash(root.text())
+        assert "p.8設置場所の図（確認2026年9月15日）" in body, slug
+        assert "p.8設置場所の図。50.2cm" not in body, slug
+        # Source lists (41, 86) end each item with the installation.html check date.
+        for li in nodes(root, lambda n: n.tag == "li"):
+            item = squash(li.text())
+            if "P9901-20V10p.8" in item:
+                assert item.endswith("仕様確認2026年9月16日"), slug

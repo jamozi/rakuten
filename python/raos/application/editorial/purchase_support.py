@@ -2208,10 +2208,19 @@ def guide_decision_table(stage: str, products: list[dict[str, Any]]) -> str:
         for p in products:
             v = p.get("installation", {})
             conflicts = installation_conflicts(p)
+            door_text = " ".join(
+                f.get("text", "")
+                for f in p.get("facts", [])
+                if f.get("label", "").startswith("開扉時の寸法")
+            )
 
             def mm(key: str) -> str:
                 if money(v.get(key)):
-                    return f"{v[key]:g}mm"
+                    value = f"{v[key]:g}mm"
+                    # Keep 約 on a door value the model's door fact prints as approximate.
+                    if key.startswith("door_") and "約" + value in door_text:
+                        return "約" + value
+                    return value
                 if key in conflicts:
                     return "公式資料で値が異なる（" + conflict_values(conflicts[key]) + "）"
                 return "未確認"

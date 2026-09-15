@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 190a99f1f4018f79d0663061d83e48f114215c0ec6f1ce639ece42d456f59eae;
+  --raos-theme-runtime-revision-base: ee19b03cedeeceb0cd81617b67db0f5a1df3718b22761dd58afe11fa4dd07b60;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4191,6 +4191,11 @@ body .ks-editorial-page .ks-purpose-diagrams figure{max-width:none;min-width:0;m
 body .ks-editorial-page .ks-purpose-diagrams pre{margin:.75rem 0;padding:0;background:none;white-space:pre-wrap;overflow-wrap:anywhere;font:.9em/1.6 ui-monospace,monospace}
 body .ks-editorial-page .ks-purpose-diagrams dt{margin-top:.5rem;font-weight:700}
 body .ks-editorial-page .ks-purpose-diagrams dd{margin:0}
+/* Purpose-page tables with 3 to 5 text columns keep their columns on phones and scroll inside .ks-editorial-table, with a sticky first column (same pattern as #compact-space-table). */
+body .ks-editorial-page .ks-editorial-table > table:is(#space-zones-table,#housework-record-table,#housework-time-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table){min-width:44rem!important}
+body .ks-editorial-page .ks-editorial-table > table#housework-route-table{min-width:36rem!important}
+body .ks-editorial-page :is(#space-zones-table,#housework-record-table,#housework-time-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table,#housework-route-table) th:first-child{position:sticky!important;left:0;z-index:2}
+body .ks-editorial-page :is(#space-zones-table,#housework-record-table,#housework-time-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table,#housework-route-table) thead th:first-child{z-index:5}
 body .ks-anchor-alias{display:block;scroll-margin-top:6rem}
 body :where(section,h2,h3,details)[id]{scroll-margin-top:6rem}
 body .ks-editorial-page :focus-visible{outline:3px solid #8b3f2b;outline-offset:4px}

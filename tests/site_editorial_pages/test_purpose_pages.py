@@ -121,7 +121,8 @@ class FailsBeforeW4a(PurposeBase):
             "NP-TMLK1-K",
             "壁",
             "図の線から読み取った起点",
-            "必要な奥行（タテ置き）：50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい",
+            "水栓・蛇口までの目安（タテ置き）：50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい",
+            "50.2cmの矢印は、開いた扉の先端の線から「壁」と書かれた線まで引かれています",
             "同じ図の代替テキストは「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」",
             "48.5cmの起点も確認できていないため、この足し算では判断しません（編集部の計算）",
             "1.7cm以上",
@@ -132,6 +133,14 @@ class FailsBeforeW4a(PurposeBase):
         ):
             self.assertIn(phrase, solota)
         self.assertNotIn("公式ページはこの内訳を書いていません", solota)
+        self.assertNotIn("必要な奥行", solota)
+        self.assertNotIn("扉の先より外側", solota)
+        closing = text(section_after(page, "例で見る：起点と、まだ分からない範囲"))
+        self.assertIn(
+            "公式の図から寸法の起点を読み取れない型番は、この例に入れていません。",
+            closing,
+        )
+        self.assertNotIn("矢印や起点の手がかりがない", closing)
         self.assertNotIn("検算", solota)
         for phrase in (
             "K11+ Pro",
@@ -394,6 +403,40 @@ class W4aReviewFixes(PurposeBase):
             joined = " ".join(rules).replace(" ", "")
             self.assertIn("min-width:44rem!important", joined, table)
             self.assertIn("position:sticky!important", joined, table)
+
+    def test_purpose_multi_column_tables_scroll_in_their_frame_on_phones(self):
+        css = THEME_CSS.read_text()
+        expected = {
+            "small-space": ["space-zones-table"],
+            "save-housework": [
+                "housework-record-table",
+                "housework-time-table",
+                "housework-route-table",
+            ],
+            "easy-maintenance": [
+                "maintenance-dishwasher-table",
+                "maintenance-vacuum-table",
+                "maintenance-suitcase-table",
+            ],
+        }
+        rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+        for slug, ids in expected.items():
+            page = self.pages[slug]
+            for ident in ids:
+                self.assertEqual(page.count(f'id="{ident}"'), 1, ident)
+                self.assertRegex(
+                    page,
+                    r'<div class="ks-editorial-table[^"]*"[^>]*><table[^>]*\sid="'
+                    + ident
+                    + '"',
+                )
+                joined = " ".join(
+                    body.replace(" ", "")
+                    for selector, body in rules
+                    if "#" + ident in selector
+                )
+                self.assertRegex(joined, r"min-width:\d+rem!important", ident)
+                self.assertIn("position:sticky!important", joined, ident)
 
 
 class Regression(PurposeBase):
