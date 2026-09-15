@@ -154,6 +154,9 @@ purge-expired --owner-checkout /home/minami/rakuten [--run-id <run_id>] [--inclu
 - **出力**: 件数、状態別の集計、offer_id、期限だけです。価格は出しません。
 - **`--now`**: 時計を先へ進めることにだけ使えます（実際の時刻との大きい方を採用）。過去の時刻を渡して期限検査を避けることはできません。
 - **期限切れ run の放置防止**: 期限を過ぎて purge されていない run（記録が壊れて期限が読めない run を含む）があると、`fetch` は `EXPIRED_RUN_NOT_PURGED` で拒否し、`gate` も同じ code で拒否します。定期実行はしないため、これが 24 時間の保持上限を運用で守らせる仕組みです。
+  - `purge-expired` でローカルの値を消しても、run は次の場合に purge 済みと見なしません（`fetch` と `gate` は引き続き `EXPIRED_RUN_NOT_PURGED` で拒否）。
+    - `PUBLISHED_NOT_PURGED`: 公開の記録があり、purge 公開の記録が無い（WordPress がまだ値を配信している）。`purge-expired` は `PURGE_PUBLISH_MISSING` を返し、candidate の掃除と承認記録の redact だけを行います。
+    - `REDACTION_PENDING`: `purge-expired` の後に purge 公開を記録したため、承認記録に price-recoverable な candidate id が残る（purge 用 candidate も残る）。次の `purge-expired` が candidate を削除し redact します。
 
 判定（`classify_observation()`。上から順に評価します）:
 
@@ -326,12 +329,13 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
 
 1. ~~**publisher 組み込み**~~ **済（2026-09-16、バッチ G）**: `prepare` / `publish` の `--price-overlay-run` / `--price-overlay-purge`（§8）。checkpoint 後の注入、§7 の再計算（private の candidate だけ）、公開直前の再 gate と注入の再導出、承認の予約、readback と注入後 hash の照合、purge 公開の記録。テスト: `test_rakuten_price_overlay_publish.py`（git の全 ref・index・作業ツリー・checkpoint commit に値が無いこと、hash の整合、readback、purge、期限切れ、承認の再利用、フラグ無しのバイト一致）。
 2. ~~**candidate ディレクトリと journal の purge**~~ **済（2026-09-16）**: §8-5・§8-6 のとおり、purge 公開の成功時と `purge-expired` で candidate ディレクトリ（journal を含む）を削除します。残る限界:
-   - purge 公開をせず `purge-expired` だけを実行しても、WordPress 上の値は消えません（期限前の purge 公開は運用で行う）。
+   - purge 公開をせず `purge-expired` だけを実行しても、WordPress 上の値は消えません（期限前の purge 公開は運用で行う）。その run は `PUBLISHED_NOT_PURGED` として `fetch` / `gate` を拒否し続け、purge 公開を記録してから `purge-expired` を再実行するまで解除されません（§5）。
    - preview のローカル WordPress（docker のデータベース）に取り込まれた注入後本文は消しません。値を含む preview の後にローカル環境を消す手順は、初回の実値公開までに別途決めます。
    - `purge-expired` の目印検索は `candidate.json` と `journal.json` だけを見ます。candidate ディレクトリ以外（`.secrets` 外のコピーなど）は対象外です。
    - purge 用 candidate は、公開時と同じ `source_sha256` を要求します（`PURGE_SOURCE_DRIFT`）。公開後に git の本文を変えた場合は、checkpoint の内容に戻してから purge します。
 3. **WordPress のリビジョンとページキャッシュ**（未解決。**初回の実値公開の前提条件**）
    - purge 公開の後も注入本文が残るかは、未実測です。
+   - 実測の対象には、WordPress の投稿リビジョンとページキャッシュに加えて、owner-direct plugin 自身の保存も含めます。コード上、proposal 行の `payload.before` / `payload.after`（公開時は `after`、purge 公開時は `before` が注入本文）と、option `raos_codex_owner_direct_undo_<proposal_id>`（`applied_document` と `public_before`）が注入本文を保持し、purge 公開では消えません（`class-raos-codex-mcp-owner-direct.php` の `remember_applied_content()`）。これらを期限までに消す手順が無い限り、値を公開しません。
    - 実測し、残る設定なら同じ期限までに消す手順を先に用意します（§8-7）。
 4. ~~**税別価格の表示（theme JS）**~~ **済（2026-09-16）**: §6.1 のとおり、JS は税別価格を「本体税別」と表示し、合計に含めません。gate は送るテーマ JS が表示分けを持つときだけ税別価格を通します。renderer の `data-ps-reference-offer` 目印は不要と判断し、追加していません（§6.2）。
 5. ~~**SOLD_OUT と CTA**~~ **済（2026-09-16）**: gate に `SOLD_OUT_WITH_CTA` を追加しました（`SOLD_OUT` と `NOT_FOUND_PENDING`。UI は変えない）。CTA を残したまま売り切れ・未発見の状態を注入する公開は拒否され、カタログ側で CTA を外してから再度 plan・fetch します。

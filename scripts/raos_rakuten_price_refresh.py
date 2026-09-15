@@ -23,6 +23,7 @@ if str(ROOT / "python") not in sys.path:
     sys.path.insert(0, str(ROOT / "python"))
 
 from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
+    UNFINISHED_PURGE_STATUSES,
     PriceRefreshClient,
     PrivateStore,
     SystemHttpsTransport,
@@ -302,6 +303,34 @@ def command_gate(args: argparse.Namespace, clock: Callable[[], datetime]) -> int
     return EXIT_GATE_REFUSED if findings else EXIT_OK
 
 
+def _sweep_publisher_candidates(
+    store: PrivateStore, run_id: str, overlay: Any, approval: Any
+) -> int:
+    """Delete publisher candidate directories that hold this run's injected bytes.
+
+    Publisher candidate directories hold injected bodies, runtime, theme.zip, journals
+    and baselines frozen from live injected pages: the ids recorded by the publisher,
+    plus any candidate whose records still carry this run's markers or values.
+    """
+    candidate_ids: set[str] = set()
+    if isinstance(approval, dict):
+        for record, keys in (
+            (approval.get("publish"), ("candidate_id",)),
+            (approval.get("purge_publish"), PURGE_PUBLISH_HASH_KEYS),
+        ):
+            if isinstance(record, dict):
+                candidate_ids.update(str(record[key]) for key in keys if record.get(key))
+    if isinstance(overlay, dict) and overlay.get("run_id") == run_id:
+        try:
+            needles = leak_needles(
+                overlay, approval if isinstance(approval, dict) else None
+            )
+        except KeyError, TypeError:
+            needles = []
+        candidate_ids.update(store.owner_direct_candidates_containing(needles))
+    return sum(store.delete_owner_direct_candidate(c) for c in sorted(candidate_ids))
+
+
 def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> int:
     store = PrivateStore(args.owner_checkout)
     now = _now(args.now, clock)
@@ -315,6 +344,30 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
         status, expires = run_status(store, run_id)
         if status == "PURGED":
             report.append({"run_id": run_id, "result": "ALREADY_PURGED"})
+            continue
+        if status in UNFINISHED_PURGE_STATUSES:
+            # Values are already purged locally. Sweep candidates frozen or published since
+            # (e.g. a late purge publish) and redact; PUBLISHED_NOT_PURGED keeps blocking
+            # fetch and gate until the purge publish is recorded.
+            directory = store.run_directory(run_id)
+            approval_path = directory / "approval.v1.json"
+            overlay = _read_optional(store, directory / "overlay.v1.json")
+            approval = _read_optional(store, approval_path)
+            swept = _sweep_publisher_candidates(store, run_id, overlay, approval)
+            if isinstance(approval, dict):
+                store.write_json(approval_path, redact_approval(approval), replace=True)
+            report.append(
+                {
+                    "run_id": run_id,
+                    "result": (
+                        "PURGE_PUBLISH_MISSING"
+                        if status == "PUBLISHED_NOT_PURGED"
+                        else "ALREADY_PURGED"
+                    ),
+                    "record_state": status,
+                    "candidate_directories_deleted": swept,
+                }
+            )
             continue
         if status == "EMPTY":
             report.append({"run_id": run_id, "result": "NO_RECORDS"})
@@ -363,29 +416,8 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
             replace=True,
         )
         purge_publish_recorded = False
-        # Publisher candidate directories hold injected bodies, runtime, theme.zip, journals
-        # and baselines frozen from live injected pages: the ids recorded by the publisher,
-        # plus any candidate whose records still carry this run's markers or values.
-        candidate_ids: set[str] = set()
-        if isinstance(approval, dict):
-            for record, keys in (
-                (approval.get("publish"), ("candidate_id",)),
-                (approval.get("purge_publish"), PURGE_PUBLISH_HASH_KEYS),
-            ):
-                if isinstance(record, dict):
-                    candidate_ids.update(
-                        str(record[key]) for key in keys if record.get(key)
-                    )
-        if isinstance(overlay, dict) and overlay.get("run_id") == run_id:
-            try:
-                needles = leak_needles(
-                    overlay, approval if isinstance(approval, dict) else None
-                )
-            except KeyError, TypeError:
-                needles = []
-            candidate_ids.update(store.owner_direct_candidates_containing(needles))
-        candidates_deleted = sum(
-            store.delete_owner_direct_candidate(c) for c in sorted(candidate_ids)
+        candidates_deleted = _sweep_publisher_candidates(
+            store, run_id, overlay, approval
         )
         if isinstance(approval, dict):
             purge_publish_recorded = approval.get("purge_publish") is not None

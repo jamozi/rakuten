@@ -41,6 +41,7 @@ from raos.domain.editorial.rakuten_price_refresh import (
     iso,
     leak_needles,
     parse_time,
+    redact_approval,
     request_path,
     require_run_id,
     sha256_hex,
@@ -441,8 +442,15 @@ class PrivateStore:
         return True
 
 
+# Local values are purged but the run is not finished: WordPress still serves the injected
+# values (no purge publish recorded), or the approval still names price-recoverable
+# candidate ids (a purge publish recorded after purge-expired). Both block fetch and gate.
+UNFINISHED_PURGE_STATUSES: Final = frozenset({"PUBLISHED_NOT_PURGED", "REDACTION_PENDING"})
+
+
 def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
-    """PURGED / EMPTY / DATED (with the earliest expiry) / UNDATED (records unreadable or invalid)."""
+    """PURGED / PUBLISHED_NOT_PURGED / REDACTION_PENDING / EMPTY / DATED (with the earliest
+    expiry) / UNDATED (records unreadable or invalid)."""
     directory = store.run_directory(run_id)
     has_raw = (directory / "raw").exists()
     overlay_path, approval_path = (
@@ -453,7 +461,17 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
         overlay = store.read_json(overlay_path) if overlay_path.exists() else None
         approval = store.read_json(approval_path) if approval_path.exists() else None
         if isinstance(overlay, dict) and overlay.get("schema") == PURGED_SCHEMA:
-            return ("UNDATED", None) if has_raw else ("PURGED", None)
+            if has_raw:
+                return "UNDATED", None
+            if isinstance(approval, dict):
+                if (
+                    approval.get("publish") is not None
+                    and approval.get("purge_publish") is None
+                ):
+                    return "PUBLISHED_NOT_PURGED", None
+                if redact_approval(approval) != approval:
+                    return "REDACTION_PENDING", None
+            return "PURGED", None
         if overlay is not None:
             validate_overlay(overlay)
             return "DATED", parse_time(overlay["cache_expires_at"])
@@ -475,7 +493,7 @@ def expired_unpurged_runs(
         if run_id == exclude or RUN_ID_PATTERN.fullmatch(run_id) is None:
             continue
         status, expires = run_status(store, run_id)
-        if status == "UNDATED" or (
+        if status == "UNDATED" or status in UNFINISHED_PURGE_STATUSES or (
             status == "DATED" and expires is not None and now >= expires
         ):
             stale.append(run_id)

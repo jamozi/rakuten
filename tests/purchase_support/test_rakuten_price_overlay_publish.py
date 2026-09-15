@@ -885,3 +885,49 @@ assert.equal(readOffer(node({})).tax_included, null);
     assert result.returncode == 0, result.stdout + result.stderr
     assert rpr.theme_labels_tax_excluded(js.read_text())
     assert os.environ.get("GIT_COMMITTER_DATE")
+
+
+# ---------------------------------------------------------------------------
+# purge-expired before the purge publish keeps the run unfinished
+# ---------------------------------------------------------------------------
+
+
+def test_purge_expired_without_purge_publish_keeps_blocking_and_sweeps_a_late_purge(
+    owner, publisher, capsys, monkeypatch
+):
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    store = PrivateStore(owner)
+    expired = T0 + timedelta(hours=25)
+    purge_expired = ["purge-expired", "--owner-checkout", str(owner), "--run-id", RUN_ID]
+    capsys.readouterr()
+    assert refresh_cli.main(purge_expired, clock=lambda: expired) == 0
+    assert json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]["result"] == "PURGED"
+    assert rpr.ATTR_PRICE_YEN in server.docs[101]["block_markup"], "WordPress still serves values"
+    assert expired_unpurged_runs(store, expired) == [RUN_ID], "local purge alone must not unblock"
+    assert refresh_cli.main(purge_expired, clock=lambda: expired) == 0
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    assert report["result"] == "PURGE_PUBLISH_MISSING"
+
+    # A late purge publish freezes the live injected page as the purge candidate's baseline.
+    monkeypatch.setattr(price_overlay, "clock", lambda: expired + timedelta(hours=1))
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    assert server.docs[101]["block_markup"] == BODY
+    assert approval_record(owner)["purge_publish"]["before_expiry"] is False
+    assert f'{rpr.ATTR_PRICE_YEN}=\\"{PRICE}\\"'.encode() in (purge_directory / "candidate.json").read_bytes()
+    assert expired_unpurged_runs(store, expired) == [RUN_ID], "price-recoverable ids remain"
+    capsys.readouterr()
+    assert refresh_cli.main(purge_expired, clock=lambda: expired + timedelta(hours=2)) == 0
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    assert (report["result"], report["candidate_directories_deleted"]) == ("ALREADY_PURGED", 1)
+    assert not purge_directory.exists()
+    assert approval_record(owner)["purge_publish"]["candidate_id"] == "PURGED"
+    assert expired_unpurged_runs(store, expired + timedelta(hours=2)) == []
+    secrets_text = b"".join(p.read_bytes() for p in (owner / ".secrets").rglob("*") if p.is_file())
+    assert f'{rpr.ATTR_PRICE_YEN}=\\"{PRICE}\\"'.encode() not in secrets_text
+    assert purge["candidate_id"].encode() not in secrets_text

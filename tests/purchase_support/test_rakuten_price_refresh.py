@@ -803,7 +803,8 @@ def test_fetch_apply_gate_and_purge_keep_values_owner_private(owner, capsys, tmp
     )
     assert stat.S_IMODE(overlay_path.stat().st_mode) == 0o600
     code, lines = run([*purge, "--now", rpr.iso(T0 + timedelta(hours=30))], capsys)
-    assert lines[-1]["runs"][0]["result"] == "ALREADY_PURGED"
+    # Local values are gone, but no purge publish was recorded: WordPress still serves them.
+    assert lines[-1]["runs"][0]["result"] == "PURGE_PUBLISH_MISSING"
 
 
 def test_apply_refuses_a_plan_other_than_the_approved_one(owner, capsys, tmp_path):
