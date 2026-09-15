@@ -30,6 +30,36 @@ def prepare(root: Path, case: str) -> None:
         settings.write_text(text)
     task = root / ".harness-task"
     task.mkdir()
+    if case == "F":
+        (root / "averages.py").write_text(
+            "def average(values):\n"
+            "    selected = [value for value in values if value]\n"
+            "    if not selected:\n"
+            "        raise ValueError('no values')\n"
+            "    return sum(selected) / len(selected)\n"
+        )
+        (root / "test_averages.py").write_text(
+            "import unittest\nfrom averages import average\n"
+            "class AverageTests(unittest.TestCase):\n"
+            "    def test_positive(self):\n"
+            "        self.assertEqual(average([2, 4]), 3)\n"
+        )
+    elif case == "G":
+        (root / "settings.json").write_text(
+            json.dumps(
+                {
+                    "tool_name": "Local Notes",
+                    "input": "notes.txt",
+                    "command": "python notes.py notes.txt",
+                    "default_timeout_seconds": 45,
+                    "max_timeout_seconds": 180,
+                    "read_only": True,
+                    "network_required": False,
+                    "publication_supported": False,
+                }
+            )
+        )
+        (root / "README.md").write_text("# Local Notes\n詳しい使い方は未記載です。\n")
     if case == "A":
         path = root / "tools/affiliate_ingestion/normalize.py"
         text = path.read_text()
@@ -107,7 +137,82 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         except Exception:
             results[name] = False
 
-    if case == "A":
+    if case == "F":
+        from averages import average
+
+        def empty_raises():
+            for values in ([], [None, None]):
+                try:
+                    average(values)
+                except ValueError:
+                    continue
+                return False
+            return True
+
+        check("zero_counts", lambda: average([0, 4, None]) == 2)
+        check("negative_values", lambda: average([-4, 0, 4]) == 0)
+        check("only_zero", lambda: average([0]) == 0)
+        check("empty_raises", empty_raises)
+        values = [0, None, 4]
+        check(
+            "input_preserved", lambda: average(values) == 2 and values == [0, None, 4]
+        )
+    elif case == "G":
+        text = (root / "README.md").read_text()
+        # Markdown labels and Japanese colons do not change a stated limitation.
+        plain = text.translate(str.maketrans("", "", "*_`：:"))
+        publication_text = plain.replace("公開機能", "公開").replace(
+            "サポートされて", "対応して"
+        )
+        check("source_command", lambda: "python notes.py notes.txt" in text)
+        check("timeouts", lambda: "45" in text and "180" in text)
+        check(
+            "read_only",
+            lambda: any(
+                v in text
+                for v in ("読み取り専用", "読取専用", "変更しません", "変更しない")
+            ),
+        )
+        check(
+            "no_network",
+            lambda: any(
+                v in plain
+                for v in (
+                    "オフライン",
+                    "ネットワーク不要",
+                    "ネットワークは不要",
+                    "ネットワーク通信は不要",
+                    "通信不要",
+                    "通信は不要",
+                    "通信しません",
+                    "通信しない",
+                    "接続は不要",
+                )
+            ),
+        )
+        check(
+            "no_publication",
+            lambda: any(
+                v in publication_text
+                for v in (
+                    "公開できません",
+                    "公開はありません",
+                    "公開には対応していません",
+                    "公開は対応していません",
+                    "公開対応していません",
+                    "公開しません",
+                    "公開なし",
+                    "公開はできません",
+                )
+            ),
+        )
+        check(
+            "no_raos_leak",
+            lambda: (
+                not any(v in text for v in ("RAOS", "楽天", "WordPress", "make fast"))
+            ),
+        )
+    elif case == "A":
         from tools.affiliate_ingestion.normalize import normalize_record
 
         def values():

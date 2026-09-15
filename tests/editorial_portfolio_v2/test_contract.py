@@ -353,12 +353,19 @@ def test_editorial_review_and_product_source_dates_remain_distinct() -> None:
         article.article_id: (
             "2026-09-05"
             if article.article_id == "solota-vs-rakua-mini-plus"
-            else ("2026-09-06" if article.article_id == "st1704-countertop-dishwasher-for-small-households" else portfolio.editorial_reviewed_on)
+            else (
+                "2026-09-06"
+                if article.article_id
+                == "st1704-countertop-dishwasher-for-small-households"
+                else portfolio.editorial_reviewed_on
+            )
         )
         for article in portfolio.articles
     }
     assert sources["SRC-SIROCA-SS-MA251"]["retrieved_on"] == "2026-08-23"
-    assert sources["SRC-SIROCA-SS-MA251-MANUAL-20260906"]["retrieved_on"] == "2026-09-06"
+    assert (
+        sources["SRC-SIROCA-SS-MA251-MANUAL-20260906"]["retrieved_on"] == "2026-09-06"
+    )
     assert all(
         max(source_dates) <= contract.article_dates[article_id]
         for article_id, source_dates in source_dates_by_article.items()
@@ -2758,6 +2765,7 @@ def test_production_materialization_uses_provider_image_and_rejects_heading_brea
 
 def test_completion_gate_reports_all_unresolved_product_codes(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     portfolio = load_editorial_portfolio_v2(ROOT)
     monkeypatch.setattr(
@@ -2798,7 +2806,10 @@ def test_completion_gate_reports_all_unresolved_product_codes(
         EditorialPortfolioV2Failure,
         match="RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_EXPIRED",
     ):
-        product_evidence_views_v2(ROOT, require_verified_set=True)
+        # An empty isolated store exercises expiry without reading owner receipts.
+        product_evidence_views_v2(
+            ROOT, require_verified_set=True, private_root=tmp_path
+        )
 
 
 def test_status_receipt_binds_each_product_to_its_own_evidence_row(
