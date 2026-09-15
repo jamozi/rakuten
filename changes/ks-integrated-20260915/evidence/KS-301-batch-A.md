@@ -50,3 +50,8 @@
 - [x] 変更不要の項目 (KS-007 の SOLOTA / NP-TSP1) にも現行版の確認証拠がある
 
 ## 追記 (make fast / Before-After)
+
+- `make fast BASE=codex/all-pages-improvements-20260913` (worktree に `.venv` / `node_modules` を用意して全件計画で実行): **fast exit=0**。
+  pytest 全件 `21996 passed, 7 skipped, 157 subtests passed` (10:55)、serial `2042 passed`、DB/Storage partition `349 passed` / `91 passed`、Node `4 passed`、PHP 構文 OK。
+  1 回目の実行は Before/After スクリーンショット取得と並走中に `build_st1002_public_article_renderer` の check が失敗したが、単独再実行と 2 回目の `make fast` では再現せず (同 check PASS)。
+- Before/After: `output/ks-20260915/batch-a/` に 13 記事 × 2 幅 × before/after = 52 枚 + テキスト差分 13 本 + `index.md` / `review.html`。Before 取得は `PASS` (HTTP 200、失敗なし)。
