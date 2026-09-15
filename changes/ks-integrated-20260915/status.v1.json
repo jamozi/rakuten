@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T12:40+09:00",
+  "updated_at": "2026-09-15T16:15+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -38,11 +38,55 @@
     },
     "B": {
       "tasks": [
-        "KS-019"
+        "KS-019",
+        "KS-006 (免責文)"
       ],
-      "state": "次に着手 (KS-019。楽天 offer 再取得は実行前に再確認)",
-      "candidate_id": null,
-      "published_at": null
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "candidate_id": "a181afd8af1a905ab538c45c28e14cea6ed09754c907e79111408eb1d61e8dd8",
+      "published_at": "2026-09-15T06:31:14Z〜06:31:42Z",
+      "note": "楽天 offer の価格再取得はツール未実装 (09-13 は手動取得)。API 実装か手動週次かはオーナー判断 (保留)",
+      "articles": [
+        "about-ad-policy",
+        "anker-solix-c300-c800-c1000-differences",
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "countertop-dishwasher-for-small-households",
+        "front-open-carry-on-suitcase-with-stopper",
+        "portable-power-station-guide",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "theme": true,
+      "preview_origin": "http://127.0.0.1:42429",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "git_sync": "noop (push/PR なし。main へは PR #285)"
+    },
+    "C": {
+      "tasks": [
+        "KS-006 (クレジット)",
+        "KS-008 (抜粋)"
+      ],
+      "articles": [
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "front-open-carry-on-suitcase-with-stopper",
+        "countertop-dishwasher-for-small-households",
+        "solota-vs-rakua-mini-plus",
+        "dishwasher-water-supply-methods",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "portable-power-station-guide",
+        "anker-solix-c300-c800-c1000-differences",
+        "compact-dishwasher-comparison",
+        "standard-dishwasher-comparison",
+        "large-dishwasher-comparison",
+        "small-carry-on-suitcase-comparison"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "candidate_id": "382d985d07ca23badc322ee7c754542d97b9559efa4e0fa72ef0a941bfe0b136",
+      "published_at": "2026-09-15T07:07:34Z〜07:08:16Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "trigger": "evidence/production-audit-20260915.md (39ページ横断検査)"
     }
   },
   "items": {
@@ -74,26 +118,30 @@
     },
     "KS-004": {
       "priority": "P0",
-      "status": "完了 (コード変更不要) + オーナー作業",
+      "status": "完了 (GSC/GA4 画面確認済み)。残: 外部回線からの GA4 受信確認と offer_click 有効化の判断",
       "batch": null,
       "evidence": [
         "evidence/KS-004.md"
       ],
-      "note": "GA4 page_view は同意後に送信。offer_click は OFF。GSC はオーナー確認"
+      "note": "collect は 204 で受理。GA4 は内部トラフィック除外フィルタ有効のため自宅回線のヒットは表示されない。拡張計測はページビューのみ"
     },
     "KS-005": {
       "priority": "P1",
       "status": "未着手",
       "batch": null,
-      "evidence": []
+      "evidence": [],
+      "note": "基準値: GSC 28日 表示241/クリック7/CTR2.9%/順位9.1、楽天 30日 クリック25/売上0、GA4 表示0 (内部除外)"
     },
     "KS-006": {
       "priority": "P0",
-      "status": "承認待ち (オーナー確認表)",
+      "status": "完了 (規約確認・免責文・クレジット是正)。残: 他 ASP の申告 (保留)",
       "batch": null,
       "evidence": [
-        "evidence/KS-006.md"
-      ]
+        "evidence/KS-006.md",
+        "evidence/production-audit-20260915.md",
+        "evidence/KS-301-302-batch-C.md"
+      ],
+      "note": "楽天画像15ページ中13ページでクレジットが欠落していた件をバッチCで是正 (15/15)"
     },
     "KS-007": {
       "priority": "P0",
@@ -104,18 +152,23 @@
       ],
       "tests": [
         "tests/purchase_support/test_ks_emergency_20260915.py::test_cross_page_numeric_consistency"
-      ]
+      ],
+      "note": "EcoFlow 公式ページを 2026-09-15 14:09 JST に実ブラウザで確認 (20.0×39.8×28.3cm)。オーナー再確認は不要"
     },
     "KS-008": {
       "priority": "P0",
-      "status": "完了 (本番公開 2026-09-15)",
+      "status": "完了 (本番公開 バッチ A + C)",
       "batch": "A",
       "evidence": [
-        "evidence/KS-008.md"
+        "evidence/KS-008.md",
+        "evidence/production-audit-20260915.md",
+        "evidence/KS-301-302-batch-C.md"
       ],
       "tests": [
-        "tests/purchase_support/test_ks_emergency_20260915.py::test_visible_text_has_no_internal_tokens"
-      ]
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_visible_text_has_no_internal_tokens",
+        "tests/purchase_support/test_ks_emergency_20260915.py::test_ledger_titles_and_excerpts_have_no_internal_tokens"
+      ],
+      "note": "本文に加えて台帳の抜粋 (meta description / og / standfirst) も対象に含めた"
     },
     "KS-011": {
       "priority": "P0",
@@ -132,13 +185,18 @@
     },
     "KS-019": {
       "priority": "P0",
-      "status": "未着手 (バッチ B)",
+      "status": "完了 (変更不要・再発防止テスト追加)",
       "batch": "B",
-      "evidence": []
+      "evidence": [
+        "evidence/KS-019.md"
+      ],
+      "tests": [
+        "tests/purchase_support/test_ks_offer_state_consistency.py"
+      ]
     },
     "KS-027": {
       "priority": "P1",
-      "status": "完了 (変更不要) + オーナー作業 (GSC)",
+      "status": "完了。記事 19 (noindex 旧コピー) と 29 (検出-未登録) は 2026-09-15 に再クロール依頼済み",
       "batch": null,
       "evidence": [
         "evidence/KS-027.md"
@@ -155,19 +213,33 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A 完了",
+      "status": "バッチ A / B / C 完了",
       "batch": "A",
       "evidence": [
-        "evidence/KS-301-batch-A.md"
+        "evidence/KS-301-batch-A.md",
+        "evidence/KS-301-batch-B.md",
+        "evidence/KS-301-302-batch-C.md"
       ]
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A 完了",
+      "status": "バッチ A / B / C 完了",
       "batch": "A",
       "evidence": [
-        "evidence/KS-302-batch-A.md"
+        "evidence/KS-302-batch-A.md",
+        "evidence/KS-302-batch-B.md",
+        "evidence/KS-301-302-batch-C.md"
+      ]
+    },
+    "KS-020": {
+      "priority": "P1",
+      "status": "一部完了 (免責文リンク)。価格再取得の仕組みは保留",
+      "batch": "B",
+      "evidence": [
+        "evidence/KS-019.md",
+        "evidence/KS-006.md"
       ]
     }
-  }
+  },
+  "owner_tasks": "owner-tasks-20260915.md"
 }
