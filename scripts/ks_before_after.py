@@ -108,7 +108,8 @@ def main() -> int:
     parser.add_argument("--base-ref", default="codex/all-pages-improvements-20260913")
     parser.add_argument("--before-origin", default=None, help="running local WordPress, e.g. http://127.0.0.1:41398")
     parser.add_argument("--candidate", default=None, help="owner-direct candidate id whose screenshots are the After")
-    parser.add_argument("--owner-checkout", default="/home/minami/rakuten")
+    parser.add_argument("--owner-checkout", default="/home/minami/rakuten", help="checkout that has node_modules for preview-browser.mjs")
+    parser.add_argument("--candidate-root", default=None, help="checkout whose .secrets holds the candidate (default: this worktree)")
     parser.add_argument("--out", default="output/ks-20260915")
     parser.add_argument("--label", default="")
     args = parser.parse_args()
@@ -145,7 +146,8 @@ def main() -> int:
         before_report = capture_before(keys, rows, args.before_origin, out, owner_root)
     after_copied: dict[str, list[str]] = {}
     if args.candidate:
-        candidate_dir = owner_root / ".secrets/wordpress-mcp/owner-direct-v1" / args.candidate
+        candidate_root = Path(args.candidate_root) if args.candidate_root else ROOT
+        candidate_dir = candidate_root / ".secrets/wordpress-mcp/owner-direct-v1" / args.candidate
         if not candidate_dir.is_dir():
             raise SystemExit(f"CANDIDATE_DIR_MISSING {candidate_dir}")
         after_copied = copy_after(keys, rows, candidate_dir, out)
