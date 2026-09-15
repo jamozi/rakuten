@@ -15,8 +15,10 @@
         "standard-dishwasher-comparison"
       ],
       "theme": true,
-      "state": "KS-301 検査中 (ユーザーの Before/After 確認待ち)",
-      "candidate_id": null,
+      "state": "KS-301 検査済み (preview PASS)。ユーザーの Before/After 確認と KS-302 公開指示待ち",
+      "candidate_id": "6adf45e4c9388370c663cfc5a0765afd096589ecc59750029c6eac04022a4763",
+      "preview_origin": "http://127.0.0.1:42429",
+      "before_origin": "http://127.0.0.1:41398",
       "published_at": null
     },
     "B": {

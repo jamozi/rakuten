@@ -62,16 +62,16 @@ def surface_path(row: dict) -> str:
     return "/" if row["post_type"] == "page" and row["slug"] == "home" else "/" + row["slug"] + "/"
 
 
-def capture_before(keys: list[str], rows: dict[str, dict], origin: str, out: Path, owner_root: Path) -> dict:
-    """Run the tracked preview browser against the running local WordPress."""
+def capture_before(keys: list[str], rows: dict[str, dict], origin: str, out: Path, owner_root: Path, script: Path | None = None) -> dict:
+    """Screenshot the running local WordPress (default: the tracked preview browser script)."""
     shots = out / "_before-raw"
     shots.mkdir(parents=True, exist_ok=True)
     surfaces = [{"kind": "home" if surface_path(rows[k]) == "/" else "article", "path": surface_path(rows[k])} for k in keys]
     plan = {"origin": origin, "widths": [390, 1440], "surfaces": surfaces, "screenshots": str(shots), "images": {}}
     plan_file = out / "_before-input.json"
     plan_file.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
-    script = owner_root / BROWSER
-    result = subprocess.run(["node", str(script), str(plan_file)], cwd=owner_root, capture_output=True, text=True, timeout=900)
+    script = script or owner_root / BROWSER
+    result = subprocess.run(["node", str(script), str(plan_file)], cwd=owner_root, capture_output=True, text=True, timeout=3600)
     if result.returncode != 0:
         raise SystemExit(f"BEFORE_CAPTURE_FAILED\n{result.stdout}\n{result.stderr}")
     report = json.loads(result.stdout.strip().splitlines()[-1])
@@ -110,6 +110,7 @@ def main() -> int:
     parser.add_argument("--candidate", default=None, help="owner-direct candidate id whose screenshots are the After")
     parser.add_argument("--owner-checkout", default="/home/minami/rakuten", help="checkout that has node_modules for preview-browser.mjs")
     parser.add_argument("--candidate-root", default=None, help="checkout whose .secrets holds the candidate (default: this worktree)")
+    parser.add_argument("--before-script", default=None, help="alternative node screenshot script taking the same input JSON")
     parser.add_argument("--out", default="output/ks-20260915")
     parser.add_argument("--label", default="")
     args = parser.parse_args()
@@ -143,7 +144,10 @@ def main() -> int:
 
     before_report = None
     if args.before_origin:
-        before_report = capture_before(keys, rows, args.before_origin, out, owner_root)
+        before_report = capture_before(
+            keys, rows, args.before_origin, out, owner_root,
+            Path(args.before_script) if args.before_script else None,
+        )
     after_copied: dict[str, list[str]] = {}
     if args.candidate:
         candidate_root = Path(args.candidate_root) if args.candidate_root else ROOT
