@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "b16acc0eb3c162882f8b8f431250849b642cd77ae8fd0c0a7a4cf669941f5b2e",
+          "sha256": "07cd22b96ac3099554b142535a5c0f3482e943873eca942171e5378742c0f4e8",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 713880,
-          "sha256": "a8eb3fe2e2342217bc53650e284d48fce908164ed992b08cacd4ac1c5b0767c3",
+          "sha256": "0fc2b69b5bfe9ae6e8e0da0a7f7f80cbc34fa27b520aef809d1faf18ef53aedc",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1986,8 +1986,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
-          "bytes": 40640,
-          "sha256": "4580eda36e54995f2148d3bd7ba1e51de27f775a2f1707f47ee93fab3ab91418",
+          "bytes": 40790,
+          "sha256": "c108be8d61765ab6aa31034f91a9189c89194385942896c9f7fae7a391ba3b72",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
         },
         {
@@ -2036,8 +2036,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
         },
         {
-          "bytes": 6477,
-          "sha256": "8c759845857375b01567f7101175195b2780347bfeadc52f617aa7dcbbd255c0",
+          "bytes": 6484,
+          "sha256": "78d95b8806a3e06b1ccd7f37c1a5b4fa8c5bc73d9d8707e8d3bf68429a5af900",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
@@ -2313,8 +2313,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/home.html"
         },
         {
-          "bytes": 5518,
-          "sha256": "daa9fbf005df69ce830e989c002e332c630c54813b69f659e077305c90c9c9cd",
+          "bytes": 5202,
+          "sha256": "d0eeaaeb3dc49ff80fa6d1a635929a1be296303dd1ad836306ec8a02af946de4",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
         },
         {
@@ -2338,8 +2338,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
         },
         {
-          "bytes": 7866,
-          "sha256": "5f1446977bb15ec5966129dc69e686320333a0333e13af07986863578f1d2b87",
+          "bytes": 7885,
+          "sha256": "8485d4c69840a901eb5aee9932113f3b0724e21475c722cb1cf8fc6792cb7a95",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "1adb043fa4b1094d2e64fed98551a1009e75e4d6352acb295720ebdb471029d6",
+          "sha256": "6f2fefd8e7fba98cce4369cc3ac4a109e4e3009362fe2d1b007c2e0296990a46",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "485655995e0d7279f89bbf7cc063e78b77d75e49e06d9fbf1a725a04d003d38c",
+          "sha256": "d6978954e8d5a6ba5980b3c418998b18b6062bf75f86e70285acdc944702f68e",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "c060f6dd22a0cf1e3a18c47e952f5b85eb5e9dd348d2fedb62b683fec87d42d4",
+          "sha256": "6f91192f7dc7303284a12e412d65fe763e30aec6424e3fe6a023b18c102e51a5",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "40a671188852cc5c799dd3d27e98421ae9d6b9cfecdc3c44ddbcdc23c4db70a2",
+          "sha256": "c2eba465066ac9467c421b33ee385e2d009cf9e21726e571e190a5ada5757dc1",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

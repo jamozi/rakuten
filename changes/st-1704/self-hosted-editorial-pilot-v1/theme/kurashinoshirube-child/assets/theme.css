@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 2053848feba3e82d7cf891048566bc8efd329b34886b1b7573d90d44ddf8c7aa;
+  --raos-theme-runtime-revision-base: 01c4666d110a0d4b496bc51f71817ef1d359cbb383aa73cf1c7976d39f6b5035;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4723,6 +4723,11 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-branch-guide .ks-branch-table :is(th,td) { min-width:0; word-break:normal; }
 .ks-branch-guide .ks-branch-table tr > :first-child { width:25%; }
 .ks-branch-guide .ks-branch-table tbody th { position:static; min-width:0; max-width:none; }
+/* purchase-support.css loads later and its .ps-article .ps-comparison min-widths (40em table, 9em cells)
+   won over the rules above, so the two-column 552 tables scrolled at 320px. Same values, higher specificity. */
+.ps-article.ks-branch-guide .ks-branch-table { min-width:0; }
+.ps-article.ks-branch-guide .ks-branch-table :is(th,td) { min-width:0; }
+.ps-article.ks-branch-guide .ks-branch-table tbody th { position:static; min-width:0; max-width:none; }
 .ks-branch-guide .ks-branch-consult { padding-left:1.25em; }
 @media (max-width:42em) {
   .ks-branch-guide .ks-branch-opening { grid-template-columns:minmax(0,1fr); gap:1rem; }

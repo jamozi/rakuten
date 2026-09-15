@@ -143,18 +143,23 @@ def test_compact_comparison_links_the_dishwasher_guides(compiled) -> None:
 
 
 def test_compact_guide_scope_sentence_matches_the_guides(compiled) -> None:
-    """The #compact-space scope sentence is true of the three linked guides only."""
+    """The model-coverage note sits with the two guide links in #compact-care."""
     _, _, outputs, _ = compiled
-    space = squash(
-        by_id(
-            fragment(outputs["compact-dishwasher-comparison"]), "compact-space"
-        ).text()
+    root = fragment(outputs["compact-dishwasher-comparison"])
+    space = squash(by_id(root, "compact-space").text())
+    care = squash(by_id(root, "compact-care").text())
+    assert "型番別に扱っています" not in space
+    assert "以前掲載した機種の資料" not in space
+    assert (
+        "どちらのガイドも、本文ではこの記事の4商品のうちSOLOTAとminicolorを型番別に扱っています"
+        in care
     )
-    assert "設置・洗剤・手入れの各ガイド本文では" in space
-    assert "SOLOTAとminicolorを型番別に扱っています" in space
-    assert "「以前掲載した機種の資料」" in space
+    assert (
+        "miniとminiPlusの説明書の該当ページは、各ガイド末尾の「以前掲載した機種の資料」にあります"
+        in care
+    )
+    assert "取扱説明書の確認記録" not in care
     for slug in (
-        "dishwasher-installation-measurement",
         "dishwasher-detergent-guide",
         "dishwasher-cleaning-guide",
     ):
@@ -198,13 +203,26 @@ def test_compact_cost_example_cross_references_the_running_cost_exercise(
         "洗剤5円/回",
     ):
         assert token in text, token
-    assert "どの機種にも使える式の練習" in text
+    assert "機種を特定しない式の練習" in text
+    assert "どの機種にも使える" not in text
+    assert "単価の仮定が違うため、2つの金額は比べません" in text
+    # The home-price trial is limited to what the running-cost guide computes.
+    assert "自宅の単価での試算" not in text
+    assert "SOLOTAとminicolorも型番別の公表条件で試算できます" in text
+    assert "minicolorは電気代を算出できず、水道代と洗剤代の小計だけです" in text
     # The linked target states the same amounts and unit prices.
     target = squash(
         by_id(fragment(outputs["dishwasher-running-cost"]), "guide-cost-example").text()
     )
     for token in ("電気30円/kWh", "洗剤5円/回", "12.65円/回", "架空の条件"):
         assert token in target, token
+    # The home-price trial sentence matches the running-cost guide's own scope
+    # statement, which follows #guide-cost-example on that page.
+    guide = squash(fragment(outputs["dishwasher-running-cost"]).text())
+    assert (
+        "ラクアminicolorとSS-MA251は、1回の消費電力量が公表資料で確認できないため電気代を算出できず、水道代と洗剤代の小計だけを示します"
+        in guide
+    )
 
 
 # KS-015 / KS-017 --------------------------------------------------------------
