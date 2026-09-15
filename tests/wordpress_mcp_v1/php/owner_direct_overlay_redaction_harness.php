@@ -1,19 +1,35 @@
 <?php
-/** KS-020 purge publish: stored price-overlay bodies become hashes. No WordPress bootstrap or network. */
+/** KS-020 purge publish: stored price-overlay bodies and injected-theme hashes become markers. No WordPress bootstrap or network. */
 declare(strict_types=1);
 define('ABSPATH', __DIR__ . '/');
 define('ARRAY_A', 'ARRAY_A');
 define('WP_CONTENT_DIR', __DIR__);
 define('RAOS_OPERATOR_WRITES_ENABLED', true);
 class WP_Error {
-    public function __construct(public string $code, $message = '', $data = array()) {}
+    public function __construct(public string $code, $message = '', public $data = array()) {}
     public function get_error_code() { return $this->code; }
+    public function get_error_message() { return 'synthetic'; }
+    public function get_error_data() { return $this->data; }
 }
 function is_wp_error($value) { return $value instanceof WP_Error; }
 function wp_json_encode($value, $flags = 0) { return json_encode($value, $flags); }
 function get_option($key, $default = false) { return $GLOBALS['options'][$key] ?? $default; }
 function update_option($key, $value, $autoload = null) { $GLOBALS['options'][$key] = $value; return true; }
 function get_current_user_id() { return 7; }
+function current_user_can($capability) { return 'raos_codex_owner_direct_publish' === $capability; }
+function get_stylesheet() { return 'kurashinoshirube-child'; }
+function get_theme_root($slug = null) { return $GLOBALS['theme_root']; }
+final class WP_Post {
+    public function __construct(public int $ID, public string $post_type, public string $post_status, public string $post_title,
+        public string $post_name, public string $post_excerpt, public string $post_content, public string $post_modified_gmt,
+        public string $post_modified) {}
+}
+function get_post($id) { return $GLOBALS['posts'][(int) $id] ?? null; }
+function wp_get_post_revisions($id, $args = array()) { return array(); }
+function get_object_taxonomies($type, $output = 'names') { return array(); }
+function wp_get_object_terms($id, $taxonomy, $args = array()) { return array(); }
+function get_post_thumbnail_id($id) { return 0; }
+function get_post_type($id) { return 'post'; }
 class RAOS_Codex_MCP_Abilities {
     public static function runtime_identity_gate() { return true; }
     public static function plugin_runtime_revision() { return RAOS_Codex_MCP_Store::RUNTIME_REVISION; }
@@ -22,20 +38,36 @@ final class OverlayRedactionDB {
     public $prefix = 'synthetic_';
     public $last_error = '';
     public $rows = array();
+    public $batches = array();
     public $fail_update = false;
     public function esc_like($text) { return addcslashes($text, '_%\\'); }
     public function prepare($sql, ...$values) { return array($sql, $values); }
     public function get_results($prepared, $output = null) {
         [$sql, $values] = $prepared;
+        $found = array();
+        if ("SELECT proposal_id, state, before_sha256, after_sha256, payload_json FROM synthetic_raos_codex_operations_v1 WHERE kind = 'THEME_RELEASE' AND created_by = %d AND (before_sha256 = %s OR after_sha256 = %s)" === $sql) {
+            foreach ($this->rows as $row) {
+                if ('THEME_RELEASE' === $row['kind'] && (int) $row['created_by'] === $values[0]
+                    && ($row['before_sha256'] === $values[1] || $row['after_sha256'] === $values[2])) {
+                    $found[] = array_intersect_key($row, array_flip(array('proposal_id', 'state', 'before_sha256', 'after_sha256', 'payload_json')));
+                }
+            }
+            return $found;
+        }
         if ("SELECT proposal_id, state, payload_json FROM synthetic_raos_codex_operations_v1 WHERE kind = 'CONTENT_RELEASE' AND created_by = %d AND payload_json LIKE %s" !== $sql
             || '%data-ps-overlay-run=%' !== $values[1]) { throw new RuntimeException('UNEXPECTED_SELECT'); }
-        $found = array();
         foreach ($this->rows as $row) {
             if ('CONTENT_RELEASE' === $row['kind'] && (int) $row['created_by'] === $values[0] && str_contains($row['payload_json'], 'data-ps-overlay-run=')) {
                 $found[] = array('proposal_id' => $row['proposal_id'], 'state' => $row['state'], 'payload_json' => $row['payload_json']);
             }
         }
         return $found;
+    }
+    public function get_row($prepared, $output = null) {
+        [$sql, $values] = $prepared;
+        if ('SELECT * FROM synthetic_raos_codex_operations_v1 WHERE proposal_id = %s LIMIT 1' === $sql) { return $this->rows[$values[0]] ?? null; }
+        if ('SELECT * FROM synthetic_raos_codex_publication_batches_v1 WHERE batch_token = %s LIMIT 1' === $sql) { return $this->batches[$values[0]] ?? null; }
+        throw new RuntimeException('UNEXPECTED_ROW_SELECT');
     }
     public function query($prepared) {
         [$sql, $values] = $prepared;
@@ -110,6 +142,23 @@ function snapshot($document) {
 }
 
 $d = static fn($markup, $revision) => doc(12, 'existing', $markup, $revision);
+$undo = static fn($char) => 'raos_codex_owner_direct_undo_' . str_repeat($char, 64);
+
+// A content change while values are live (both bodies injected, by the same run or another
+// run) is not a purge publish: the "after body carries no marker" guard keeps it untouched.
+$db->rows = array();
+$live_same = proposal('6', 'APPLIED', $d($injected, 5), $d(str_replace('98760', '98761', $injected), 6));
+$live_other = proposal('7', 'APPLIED', $d($injected, 6), $d($injected_other_run, 7));
+foreach (array($live_same, $live_other) as $row) { $db->rows[$row['proposal_id']] = $row; }
+$GLOBALS['options'][$undo('6')] = array('applied_document' => $d(str_replace('98760', '98761', $injected), 6), 'public_before' => snapshot($d($injected, 5)));
+$guard_rows = $db->rows;
+$guard_options = $GLOBALS['options'];
+foreach (array($live_same, $live_other) as $row) {
+    demand(RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies(hydrated($row), array()) === null, 'LIVE_CHANGE_TREATED_AS_PURGE_' . $row['proposal_id'][0]);
+}
+demand($db->rows === $guard_rows && $GLOBALS['options'] === $guard_options, 'LIVE_CHANGE_REDACTED');
+unset($GLOBALS['options'][$undo('6')]);
+
 $db->rows = array();
 foreach (array(
     proposal('1', 'APPLIED', $d($free, 1), $d($injected, 2)),                               // publish with values
@@ -120,7 +169,6 @@ foreach (array(
 ) as $row) { $db->rows[$row['proposal_id']] = $row; }
 $original = $db->rows;
 foreach ($original as $row) { demand(integrity($row) === true, 'SYNTHETIC_ROW_INVALID_' . $row['proposal_id'][0]); }
-$undo = static fn($char) => 'raos_codex_owner_direct_undo_' . str_repeat($char, 64);
 $GLOBALS['options'][$undo('1')] = array('applied_document' => $d($injected, 2), 'public_before' => snapshot($d($free, 1)));
 $GLOBALS['options'][$undo('2')] = array('applied_document' => $d($free, 3), 'public_before' => snapshot($d($injected, 2)));
 $GLOBALS['options'][$undo('4')] = array('applied_document' => $d($injected_other_run, 5), 'public_before' => snapshot($d($free, 4)));
@@ -142,7 +190,7 @@ demand($failed['state'] === 'INCOMPLETE' && $failed['proposals'] === 0, 'UPDATE_
 $db->fail_update = false;
 
 $first = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge);
-demand($first === array('state' => 'INCOMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 1), 'FIRST_RESULT ' . json_encode($first));
+demand($first === array('state' => 'INCOMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 1, 'theme_proposals' => 0), 'FIRST_RESULT ' . json_encode($first));
 $published = json_decode($db->rows[str_repeat('1', 64)]['payload_json'], true);
 $purged = json_decode($db->rows[str_repeat('2', 64)]['payload_json'], true);
 demand($published['after']['block_markup'] === 'sha256:' . hash('sha256', $injected) && $published['before']['block_markup'] === $free, 'PUBLISH_PAYLOAD_NOT_REDACTED');
@@ -180,9 +228,156 @@ demand(is_wp_error(integrity($unmarked)), 'UNRECORDED_REDACTION_ACCEPTED');
 // Once the pending proposal can no longer be applied, a repeated finalize completes it.
 $db->rows[str_repeat('3', 64)]['state'] = 'EXPIRED';
 $second = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge);
-demand($second === array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 1, 'undo_options' => 0, 'skipped_active' => 0), 'SECOND_RESULT ' . json_encode($second));
+demand($second === array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 1, 'undo_options' => 0, 'skipped_active' => 0, 'theme_proposals' => 0), 'SECOND_RESULT ' . json_encode($second));
 demand(integrity($db->rows[str_repeat('3', 64)]) === true && ! str_contains($db->rows[str_repeat('3', 64)]['payload_json'], '98760'), 'EXPIRED_ROW_NOT_REDACTED');
 $third = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge);
 demand($third['state'] === 'COMPLETE' && $third['proposals'] === 0 && $third['undo_options'] === 0, 'REDACTION_NOT_IDEMPOTENT');
 demand(str_contains($db->rows[str_repeat('4', 64)]['payload_json'], '98760') && str_contains($db->rows[str_repeat('5', 64)]['payload_json'], '98760'), 'OTHER_RUN_OR_POST_REDACTED');
+
+// ---------------------------------------------------------------------------
+// The production call site: finish_owner_direct_batch(finalize) over a purge batch redacts the
+// content rows and the THEME_RELEASE rows around the injected theme tree.
+// ---------------------------------------------------------------------------
+define('RAOS_CODEX_MCP_RUNTIME_REVISION', RAOS_Codex_MCP_Store::RUNTIME_REVISION);
+$work = sys_get_temp_dir() . '/raos-overlay-finish-' . getmypid() . '-' . bin2hex(random_bytes(6));
+$theme_dir = $work . '/themes/kurashinoshirube-child';
+demand(mkdir($work . '/private', 0700, true) && mkdir($theme_dir . '/assets', 0700, true) && chmod($work . '/private', 0700), 'WORK_DIRECTORY');
+define('RAOS_CODEX_PRIVATE_DIR', $work . '/private');
+$GLOBALS['theme_root'] = $work . '/themes';
+file_put_contents($theme_dir . '/functions.php', "<?php\n// synthetic price-free theme\n");
+file_put_contents($theme_dir . '/assets/purchase-support.v1.json', "{\"articles\":[]}\n");
+$remove = static function ($path) use (&$remove) {
+    if (is_dir($path) && ! is_link($path)) {
+        foreach (array_diff(scandir($path), array('.', '..')) as $name) { $remove($path . '/' . $name); }
+        rmdir($path);
+    } elseif (file_exists($path) || is_link($path)) {
+        unlink($path);
+    }
+};
+register_shutdown_function(static function () use ($remove, $work) { $remove($work); });
+$price_free_tree = RAOS_Codex_MCP_Deployment::tree_hash($theme_dir);
+demand(RAOS_Codex_MCP_Store::is_sha256($price_free_tree), 'THEME_TREE_UNAVAILABLE');
+$injected_tree = str_repeat('9', 64);
+$older_tree = str_repeat('8', 64);
+$marker = RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED;
+function manifest_of($runtime, $functions) {
+    return array(
+        array('path' => 'assets/purchase-support.v1.json', 'size' => 16, 'sha256' => str_repeat($runtime, 64)),
+        array('path' => 'assets/theme.css', 'size' => 16, 'sha256' => str_repeat('3', 64)),
+        array('path' => 'functions.php', 'size' => 16, 'sha256' => str_repeat($functions, 64)),
+    );
+}
+function theme_proposal($char, $state, $before_tree, $after_tree, $manifest) {
+    $created = '2026-09-15 01:00:00';
+    $approved = in_array($state, array('APPLIED', 'FAILED'), true) ? '2026-09-15 01:10:00' : null;
+    $expires = null === $approved ? '2026-09-15 02:00:00' : '2026-09-15 01:25:00';
+    $proposal_id = str_repeat($char, 64);
+    $payload = array('schema' => 'CodeReleaseProposalV1', 'kind' => 'THEME_RELEASE',
+        'code_package' => array('schema' => 'CodePackageV1', 'kind' => 'theme', 'source' => 'tracked_child_theme',
+            'slug' => 'kurashinoshirube-child', 'file_manifest_sha256' => $after_tree, 'file_manifest' => $manifest),
+        'before_tree_sha256' => $before_tree, 'after_tree_sha256' => $after_tree, 'target_active' => true,
+        'authorization_profile' => $GLOBALS['direct']->binding(null),
+        'proposal_id' => $proposal_id, 'created_by' => 7,
+        'created_at_gmt' => RAOS_Codex_MCP_Store::timestamp_iso($created),
+        'expires_at_gmt' => RAOS_Codex_MCP_Store::timestamp_iso('2026-09-15 02:00:00'));
+    return array('proposal_id' => $proposal_id, 'operation_id' => $proposal_id, 'kind' => 'THEME_RELEASE', 'state' => $state,
+        'result_code' => 'SYNTHETIC', 'created_by' => 7, 'approved_by' => null === $approved ? null : 7,
+        'created_at_gmt' => $created, 'expires_at_gmt' => $expires, 'approved_at_gmt' => $approved,
+        'before_sha256' => $before_tree, 'after_sha256' => $after_tree, 'audit_id' => str_repeat('f', 64),
+        'payload_json' => RAOS_Codex_MCP_Store::canonical_json($payload), 'receipt_json' => '{}', 'idempotency_key' => null);
+}
+$GLOBALS['options'] = array(RAOS_Codex_MCP_Owner_Direct::PROFILE_OPTION => $GLOBALS['options'][RAOS_Codex_MCP_Owner_Direct::PROFILE_OPTION]);
+$GLOBALS['posts'][12] = new WP_Post(12, 'post', 'publish', 'existing', 'existing', '', $free, '2026-09-15 00:00:03', '2026-09-15 09:00:03');
+$db->rows = array();
+$publish_row = proposal('1', 'APPLIED', $d($free, 1), $d($injected, 2));
+$purge_row = proposal('2', 'APPLIED', $d($injected, 2), $d($free, 3));
+$purge_row['receipt_json'] = '{}';
+$publish_theme = theme_proposal('a', 'APPLIED', $older_tree, $injected_tree, manifest_of('5', '4'));
+$purge_theme = theme_proposal('b', 'APPLIED', $injected_tree, $price_free_tree, manifest_of('c', 'e'));
+$unrelated_theme = theme_proposal('d', 'APPLIED', str_repeat('7', 64), str_repeat('6', 64), manifest_of('5', '4'));
+foreach (array($publish_row, $purge_row, $publish_theme, $purge_theme, $unrelated_theme) as $row) { $db->rows[$row['proposal_id']] = $row; }
+foreach ($db->rows as $row) { demand(integrity($row) === true, 'FINISH_ROW_INVALID_' . $row['proposal_id'][0]); }
+$live = RAOS_Codex_MCP_Content::document(12);
+demand(! is_wp_error($live) && $live['content_sha256'] === $purge_row['after_sha256'], 'LIVE_DOCUMENT_MISMATCH');
+$GLOBALS['options'][$undo('1')] = array('applied_document' => $d($injected, 2), 'public_before' => snapshot($d($free, 1)));
+$GLOBALS['options'][$undo('2')] = array('applied_document' => $live, 'public_before' => snapshot($d($injected, 2)));
+$token = str_repeat('f', 64);
+$batch_manifest = array('schema' => 'RAOSWordPressPublicationBatchManifestV1', 'expected_theme_tree_sha256' => $price_free_tree,
+    'proposal_count' => 2, 'proposals' => array_map(static fn($row) => array('proposal_id' => $row['proposal_id'], 'kind' => $row['kind'],
+        'before_sha256' => $row['before_sha256'], 'after_sha256' => $row['after_sha256']), array($purge_row, $purge_theme)));
+$db->batches[$token] = array('batch_token' => $token, 'state' => 'APPROVED', 'created_by' => 7,
+    'created_at_gmt' => '2026-09-15 01:00:00', 'expires_at_gmt' => '2026-09-15 02:00:00', 'applying_at_gmt' => null,
+    'batch_manifest_sha256' => RAOS_Codex_MCP_Store::hash($batch_manifest),
+    'proposal_ids_json' => json_encode(array($purge_row['proposal_id'], $purge_theme['proposal_id'])),
+    'manifest_json' => json_encode($batch_manifest));
+$purge_before_finish = hydrated($purge_row);
+$purge_theme_before_finish = hydrated($purge_theme);
+
+$finish = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($token, $db->batches[$token]['batch_manifest_sha256'], 'finalize');
+demand(! is_wp_error($finish), 'FINISH_REFUSED ' . (is_wp_error($finish) ? $finish->code : ''));
+demand('FINALIZED' === $finish['state'] && array_column($finish['members'], 'state') === array('FINALIZED', 'FINALIZED'), 'FINISH_NOT_FINALIZED ' . json_encode($finish));
+demand(($finish['price_overlay_redaction'] ?? null) === array(array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12,
+    'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 0, 'theme_proposals' => 2)), 'FINISH_DID_NOT_REDACT ' . json_encode($finish));
+demand(get_option('raos_codex_owner_direct_finish_' . $token, null) === $finish, 'FINISH_RESULT_NOT_RECORDED');
+$stored = static fn($char) => json_decode($db->rows[str_repeat($char, 64)]['payload_json'], true);
+demand($stored('1')['after']['block_markup'] === 'sha256:' . hash('sha256', $injected)
+    && $stored('2')['before']['block_markup'] === 'sha256:' . hash('sha256', $injected), 'FINISH_CONTENT_NOT_REDACTED');
+$published_theme = $stored('a');
+demand($published_theme['after_tree_sha256'] === $marker && $published_theme['before_tree_sha256'] === $older_tree
+    && $published_theme['code_package']['file_manifest_sha256'] === $marker
+    && array_column($published_theme['code_package']['file_manifest'], 'sha256', 'path') === array(
+        'assets/purchase-support.v1.json' => $marker, 'assets/theme.css' => str_repeat('3', 64), 'functions.php' => $marker)
+    && $published_theme['price_overlay_redaction'] === array('manifest_paths' => array('assets/purchase-support.v1.json', 'functions.php'),
+        'runs' => array($run), 'tree_sides' => array('after')), 'PUBLISH_THEME_NOT_REDACTED ' . json_encode($published_theme));
+$purged_theme = $stored('b');
+demand($purged_theme['before_tree_sha256'] === $marker && $purged_theme['after_tree_sha256'] === $price_free_tree
+    && $purged_theme['code_package']['file_manifest_sha256'] === $price_free_tree
+    && array_column($purged_theme['code_package']['file_manifest'], 'sha256', 'path') === array_column(manifest_of('c', 'e'), 'sha256', 'path')
+    && $purged_theme['price_overlay_redaction'] === array('manifest_paths' => array(), 'runs' => array($run), 'tree_sides' => array('before')),
+    'PURGE_THEME_NOT_REDACTED ' . json_encode($purged_theme));
+demand($db->rows[str_repeat('d', 64)] === $unrelated_theme, 'UNRELATED_THEME_CHANGED');
+foreach (array('1', '2', 'a', 'b', 'd') as $char) {
+    $row = $db->rows[str_repeat($char, 64)];
+    demand(integrity($row) === true, 'FINISHED_ROW_INTEGRITY_' . $char);
+    foreach (array('98760', 'data-ps-overlay-run=', $injected_tree, str_repeat('5', 64), str_repeat('4', 64)) as $needle) {
+        demand('d' === $char || ! str_contains($row['payload_json'], $needle), 'VALUE_LEFT_IN_FINISHED_ROW_' . $char);
+    }
+}
+// The row columns keep the tree hashes (a documented residual, contract §10.1-3).
+demand($db->rows[str_repeat('a', 64)]['after_sha256'] === $injected_tree && $db->rows[str_repeat('b', 64)]['before_sha256'] === $injected_tree, 'THEME_COLUMNS_CHANGED');
+
+// An active theme row around the injected tree is never rewritten and keeps the result INCOMPLETE.
+$pending_theme = theme_proposal('0', 'PENDING', $older_tree, $injected_tree, manifest_of('5', '4'));
+$db->rows[$pending_theme['proposal_id']] = $pending_theme;
+$again = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge_before_finish, array($purge_theme_before_finish));
+demand($again === array('state' => 'INCOMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 0, 'undo_options' => 0,
+    'skipped_active' => 1, 'theme_proposals' => 0), 'ACTIVE_THEME_RESULT ' . json_encode($again));
+demand($db->rows[$pending_theme['proposal_id']] === $pending_theme, 'ACTIVE_THEME_ROW_REWRITTEN');
+$db->rows[$pending_theme['proposal_id']]['state'] = 'EXPIRED';
+$expired = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge_before_finish, array($purge_theme_before_finish));
+demand($expired === array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12, 'proposals' => 0, 'undo_options' => 0,
+    'skipped_active' => 0, 'theme_proposals' => 1), 'EXPIRED_THEME_RESULT ' . json_encode($expired));
+demand(integrity($db->rows[$pending_theme['proposal_id']]) === true && $stored('0')['after_tree_sha256'] === $marker, 'EXPIRED_THEME_NOT_REDACTED');
+$repeated = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($purge_before_finish, array($purge_theme_before_finish));
+demand('COMPLETE' === $repeated['state'] && 0 === $repeated['theme_proposals'], 'THEME_REDACTION_NOT_IDEMPOTENT');
+
+// The integrity exception for theme rows is bound to the record and to terminal states.
+$tamper = static function ($row, $change) {
+    $payload = json_decode($row['payload_json'], true);
+    $change($payload);
+    $row['payload_json'] = RAOS_Codex_MCP_Store::canonical_json($payload);
+    return $row;
+};
+$redacted_theme = $db->rows[str_repeat('a', 64)];
+foreach (array(
+    'UNRECORDED_TREE_SIDE' => static function (array &$payload) { $payload['price_overlay_redaction']['tree_sides'] = array('before'); },
+    'UNLISTED_MANIFEST_MARKER' => static function (array &$payload) { $payload['code_package']['file_manifest'][1]['sha256'] = RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED; },
+    'UNLISTED_MANIFEST_PATH' => static function (array &$payload) { $payload['price_overlay_redaction']['manifest_paths'][] = 'assets/theme.css'; },
+    'UNRECORDED_REDACTION' => static function (array &$payload) { unset($payload['price_overlay_redaction']); },
+    'CONTENT_RECORD_SHAPE' => static function (array &$payload) { $payload['price_overlay_redaction'] = array('runs' => array('ks020-synthetic-0001'), 'sides' => array()); },
+) as $case => $change) {
+    demand(is_wp_error(integrity($tamper($redacted_theme, $change))), 'TAMPERED_THEME_REDACTION_ACCEPTED_' . $case);
+}
+$reopened = $redacted_theme; $reopened['state'] = 'PENDING'; $reopened['approved_at_gmt'] = null; $reopened['expires_at_gmt'] = '2026-09-15 02:00:00';
+demand(is_wp_error(integrity($reopened)), 'REDACTED_ACTIVE_THEME_ROW_ACCEPTED');
 echo "OWNER_DIRECT_PRICE_OVERLAY_REDACTION_OK\n";

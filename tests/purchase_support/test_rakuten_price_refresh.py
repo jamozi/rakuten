@@ -10,6 +10,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from html import unescape
 import json
+import os
 from pathlib import Path
 import re
 import socket
@@ -1812,7 +1813,31 @@ def test_gate_and_fetch_refuse_until_the_purge_publish_or_an_owner_incident_reso
     code, lines = run(gate_args, capsys, clock=lambda: later)
     assert code == 3, "refusals recorded nothing"
 
-    code, lines = run([*resolve, "--owner-confirmed-price-free", RUN_ID], capsys, clock=lambda: later)
+    confirmed = [*resolve, "--owner-confirmed-price-free", RUN_ID]
+    # The plugin redaction runs only when a purge publish is finalized: the owner also confirms,
+    # with the run's exact text, that the plugin rows and undo options were cleaned by hand.
+    for extra in ([], ["--owner-confirmed-plugin-cleanup", "PLUGIN_COPIES_REMOVED:" + second]):
+        code, lines = run([*confirmed, *extra], capsys, clock=lambda: later)
+        assert (code, lines[-1]["code"]) == (2, "PLUGIN_CLEANUP_CONFIRMATION_REQUIRED")
+    assert not (run_dir / "incident-resolution.v1.json").exists()
+    # Local copies left behind (a candidate frozen from the live page, a preview fixture) are
+    # swept by the resolution itself before anything is recorded.
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    stray = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("c" * 64)
+    stray.mkdir(parents=True)
+    (stray / "journal.json").write_text(
+        json.dumps({"baseline": f'<div data-ps-overlay-run="{RUN_ID}">'})
+    )
+    fixture = root / ".secrets/wordpress-direct-preview/fixtures/articles/synthetic.html"
+    fixture.parent.mkdir(parents=True)
+    fixture.write_text(f'<div data-ps-overlay-run="{RUN_ID}">')
+    assert run_status(PrivateStore(root), RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+    code, lines = run(
+        [*confirmed, "--owner-confirmed-plugin-cleanup", "PLUGIN_COPIES_REMOVED:" + RUN_ID],
+        capsys,
+        clock=lambda: later,
+    )
     assert (code, lines[-1]) == (
         0,
         {
@@ -1820,12 +1845,20 @@ def test_gate_and_fetch_refuse_until_the_purge_publish_or_an_owner_incident_reso
             "run_id": RUN_ID,
             "resolution": "WORDPRESS_POSTS_WITHDRAWN",
             "record_state": "PURGED",
+            "candidate_directories_deleted": 1,
+            "preview_copies_deleted": 1,
         },
     )
-    assert stat.S_IMODE((run_dir / "incident-resolution.v1.json").stat().st_mode) == 0o600
+    assert not stray.exists() and not fixture.exists()
+    for name in ("incident-resolution.v1.json", "plugin-cleanup.v1.json"):
+        assert stat.S_IMODE((run_dir / name).stat().st_mode) == 0o600
     code, lines = run(gate_args, capsys, clock=lambda: later)
     assert (code, lines[-1]["result"]) == (0, "GATE_PASS")
-    code, lines = run([*resolve, "--owner-confirmed-price-free", RUN_ID], capsys, clock=lambda: later)
+    code, lines = run(
+        [*confirmed, "--owner-confirmed-plugin-cleanup", "PLUGIN_COPIES_REMOVED:" + RUN_ID],
+        capsys,
+        clock=lambda: later,
+    )
     assert (code, lines[-1]["code"]) == (2, "INCIDENT_RESOLUTION_NOT_APPLICABLE")
 
 
@@ -1857,6 +1890,28 @@ def test_an_invalid_incident_resolution_keeps_the_run_blocked(owner, capsys):
     )
     assert run_status(store, RUN_ID)[0] == "UNDATED"
     assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    # A valid resolution still needs the plugin cleanup record, and a tampered one blocks.
+    store.write_json(
+        directory / "incident-resolution.v1.json",
+        {"schema": "RAOS_RAKUTEN_PRICE_OVERLAY_INCIDENT_RESOLUTION_V1", "run_id": RUN_ID,
+         "resolution": "WORDPRESS_POSTS_WITHDRAWN", "recorded_at": rpr.iso(T0)},
+        replace=True,
+    )
+    assert run_status(store, RUN_ID)[0] == "WORDPRESS_REDACTION_UNCONFIRMED"
+    cleanup = {
+        "schema": "RAOS_RAKUTEN_PRICE_OVERLAY_PLUGIN_CLEANUP_V1",
+        "run_id": RUN_ID,
+        "reason": "INCIDENT_RESOLUTION",
+        "confirmation": "PLUGIN_COPIES_REMOVED:ks020-synthetic-0002",
+        "recorded_at": rpr.iso(T0),
+    }
+    store.write_json(directory / "plugin-cleanup.v1.json", cleanup)
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    cleanup["confirmation"] = "PLUGIN_COPIES_REMOVED:" + RUN_ID
+    store.write_json(directory / "plugin-cleanup.v1.json", cleanup, replace=True)
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    assert expired_unpurged_runs(store, T0) == []
 
 
 def test_standalone_gate_reads_the_theme_js_from_the_repository(owner, capsys, tmp_path):
@@ -1891,3 +1946,61 @@ def test_standalone_gate_reads_the_theme_js_from_the_repository(owner, capsys, t
     assert code == 3 and {f["code"] for f in lines[-1]["findings"]} == {
         "TAX_EXCLUDED_PRICE_UNSUPPORTED"
     }
+
+
+def test_an_interrupted_replace_write_leftover_is_removed_only_when_stale(owner, capsys):
+    from raos.adapters.rakuten_price_refresh_client import (
+        STALE_TMP_SECONDS,
+        expired_unpurged_runs,
+        run_status,
+    )
+
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    path = directory / "approval.v1.json"
+    store.write_json(path, approval())
+    leftover = path.with_name(path.name + ".tmp")
+
+    def interrupted_write(payload):
+        descriptor = os.open(leftover, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(payload)
+
+    # A young leftover may belong to a concurrent writer: refused, nothing replaced.
+    interrupted_write(json.dumps({"publish": {"candidate_id": "d" * 64}}).encode())
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_TMP_BUSY"):
+        store.write_json(path, {**approval(), "cache_expires_at": rpr.iso(T0)}, replace=True)
+    assert json.loads(path.read_text()) == approval() and leftover.exists()
+    # A stale one (interrupted between create and rename) is deleted, never renamed into place.
+    stale = leftover.stat().st_mtime - STALE_TMP_SECONDS - 5
+    os.utime(leftover, (stale, stale))
+    store.write_json(path, {**approval(), "cache_expires_at": rpr.iso(T0)}, replace=True)
+    assert not leftover.exists()
+    assert json.loads(path.read_text())["cache_expires_at"] == rpr.iso(T0)
+    # Anything but a private regular file is refused however old it is.
+    leftover.symlink_to(root / "README.md")
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+        store.write_json(path, approval(), replace=True)
+    leftover.unlink()
+
+    # In a purged run a leftover (it may hold injected hashes) blocks until purge-expired.
+    store.write_json(path, approval(), replace=True)
+    store.write_json(
+        directory / "overlay.v1.json",
+        {"schema": rpr.PURGED_SCHEMA, "run_id": RUN_ID, "purged_at": rpr.iso(T0), "offer_ids": []},
+    )
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    interrupted_write(json.dumps({"publish": {"candidate_id": "d" * 64}}).encode())
+    os.utime(leftover, (stale, stale))
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["result"], report["record_state"], report["stale_tmp_files_deleted"]) == (
+        0,
+        "ALREADY_PURGED",
+        "REDACTION_PENDING",
+        1,
+    )
+    assert not leftover.exists() and run_status(store, RUN_ID)[0] == "PURGED"

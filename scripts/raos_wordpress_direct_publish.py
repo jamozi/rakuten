@@ -290,9 +290,21 @@ def taxonomy_keys(value):
     return frozenset(value)
 
 
-def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
+def refuse_while_price_overlay_live(root, keys, theme):
+    """No-op unless the owner checkout has price-overlay runs (contract §8)."""
+    runs = root / ".secrets/rakuten-price-refresh"
+    if not runs.exists() and not runs.is_symlink():
+        return
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    price_overlay.refuse_flag_free_prepare(sys.modules[__name__], root, keys, theme)
+
+
+def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False, price_overlay_bound=False):
     if affiliate_plan is None and (affiliate_config is not None or affiliate_fetch):
         fail("AFFILIATE_PLAN_REQUIRED")
+    if not price_overlay_bound:
+        refuse_while_price_overlay_live(root, keys, theme)
     registry = read_json(root / REGISTRY)
     if (
         registry.get("schema") != "RAOSOwnerDirectArticlesV1"
@@ -691,6 +703,16 @@ def price_overlay_binding(candidate, run=None, purge=None):
     return price_overlay.resolve_binding(sys.modules[__name__], candidate, run, purge)
 
 
+def price_overlay_status_output(root, result):
+    """status without --candidate: unchanged unless a price-overlay run may be live."""
+    runs = root / ".secrets/rakuten-price-refresh"
+    if not runs.exists() and not runs.is_symlink():
+        return result
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.live_status_output(sys.modules[__name__], root, result)
+
+
 def price_overlay_output(candidate, result):
     """Printed output of a price-overlay candidate: a handle instead of ids and hashes."""
     from scripts import raos_wordpress_price_overlay as price_overlay
@@ -1070,7 +1092,7 @@ def execute_cli(args):
         if args.command == "import-existing":
             result = import_existing(ROOT)
         elif args.command == "status" and args.candidate is None:
-            result = invoke("status", {})
+            result = price_overlay_status_output(ROOT, invoke("status", {}))
         elif args.command == "prepare" and (
             args.price_overlay_run or args.price_overlay_purge
         ):

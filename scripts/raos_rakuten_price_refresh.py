@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""KS-020 Rakuten price refresh: plan / fetch / apply / gate / purge-expired / resolve-incident.
+"""KS-020 Rakuten price refresh: plan / fetch / apply / gate / purge-expired / resolve-incident /
+confirm-plugin-cleanup.
 
 Only ``fetch`` talks to the network, and only with ``--owner-approved-run``.
 API price and availability values are written exclusively to
@@ -26,22 +27,26 @@ from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
     INCIDENT_RESOLUTION_FILE,
     INCIDENT_RESOLUTION_SCHEMA,
     INCIDENT_RESOLUTIONS,
+    PLUGIN_CLEANUP_FILE,
+    PLUGIN_CLEANUP_SCHEMA,
     UNFINISHED_PURGE_STATUSES,
     PriceRefreshClient,
     PrivateStore,
     SystemHttpsTransport,
     Transport,
     expired_unpurged_runs,
+    local_copies,
     observation_record,
+    plugin_cleanup_confirmation_text,
     read_refresh_credentials,
     run_status,
     scan_repository_for_overlay,
+    sweep_local_copies,
 )
 from raos.domain.editorial.rakuten_price_refresh import (  # noqa: E402
     MAX_REQUESTS_PER_RUN,
     OBSERVATION_SCHEMA,
     PURGED_SCHEMA,
-    PURGE_PUBLISH_HASH_KEYS,
     RUN_ID_PATTERN,
     UTC,
     GateFinding,
@@ -53,7 +58,6 @@ from raos.domain.editorial.rakuten_price_refresh import (  # noqa: E402
     fail,
     gate,
     iso,
-    leak_needles,
     new_approval,
     parse_time,
     redact_approval,
@@ -68,6 +72,12 @@ THEME_JS_RELATIVE = "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurash
 EXIT_OK = 0
 EXIT_REFUSED = 2
 EXIT_GATE_REFUSED = 3
+# purge-expired reports an unfinished run by what still blocks it (contract §5).
+UNFINISHED_RESULTS = {
+    "PUBLISHED_NOT_PURGED": "PURGE_PUBLISH_MISSING",
+    "REDACTION_PENDING": "REDACTION_PENDING",
+    "WORDPRESS_REDACTION_UNCONFIRMED": "WORDPRESS_REDACTION_UNCONFIRMED",
+}
 
 
 def emit(payload: dict[str, Any]) -> None:
@@ -109,10 +119,19 @@ def parser() -> argparse.ArgumentParser:
     incident.add_argument("--owner-checkout", type=Path, required=True)
     incident.add_argument("--run-id", required=True)
     incident.add_argument("--owner-confirmed-price-free", dest="confirmed_run")
+    incident.add_argument("--owner-confirmed-plugin-cleanup", dest="plugin_cleanup")
     incident.add_argument(
         "--resolution", choices=sorted(INCIDENT_RESOLUTIONS), required=True
     )
     incident.add_argument("--now")
+    cleanup = sub.add_parser(
+        "confirm-plugin-cleanup",
+        help="owner only: the plugin rows and undo options of a run were cleaned by hand",
+    )
+    cleanup.add_argument("--owner-checkout", type=Path, required=True)
+    cleanup.add_argument("--run-id", required=True)
+    cleanup.add_argument("--owner-confirmed-plugin-cleanup", dest="plugin_cleanup")
+    cleanup.add_argument("--now")
     return root
 
 
@@ -318,34 +337,6 @@ def command_gate(args: argparse.Namespace, clock: Callable[[], datetime]) -> int
     return EXIT_GATE_REFUSED if findings else EXIT_OK
 
 
-def _sweep_publisher_candidates(
-    store: PrivateStore, run_id: str, overlay: Any, approval: Any
-) -> int:
-    """Delete publisher candidate directories that hold this run's injected bytes.
-
-    Publisher candidate directories hold injected bodies, runtime, theme.zip, journals
-    and baselines frozen from live injected pages: the ids recorded by the publisher,
-    plus any candidate whose records still carry this run's markers or values.
-    """
-    candidate_ids: set[str] = set()
-    if isinstance(approval, dict):
-        for record, keys in (
-            (approval.get("publish"), ("candidate_id",)),
-            (approval.get("purge_publish"), PURGE_PUBLISH_HASH_KEYS),
-        ):
-            if isinstance(record, dict):
-                candidate_ids.update(str(record[key]) for key in keys if record.get(key))
-    if isinstance(overlay, dict) and overlay.get("run_id") == run_id:
-        try:
-            needles = leak_needles(
-                overlay, approval if isinstance(approval, dict) else None
-            )
-        except KeyError, TypeError:
-            needles = []
-        candidate_ids.update(store.owner_direct_candidates_containing(needles))
-    return sum(store.delete_owner_direct_candidate(c) for c in sorted(candidate_ids))
-
-
 def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> int:
     store = PrivateStore(args.owner_checkout)
     now = _now(args.now, clock)
@@ -361,26 +352,26 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
             report.append({"run_id": run_id, "result": "ALREADY_PURGED"})
             continue
         if status in UNFINISHED_PURGE_STATUSES:
-            # Values are already purged locally. Sweep candidates frozen or published since
-            # (e.g. a late purge publish) and redact; PUBLISHED_NOT_PURGED keeps blocking
-            # fetch and gate until the purge publish is recorded.
+            # Values are already purged locally. Sweep copies frozen or published since
+            # (e.g. a late purge publish, a flag-free candidate prepared while values were
+            # live), stale .tmp leftovers, and redact. PUBLISHED_NOT_PURGED and
+            # WORDPRESS_REDACTION_UNCONFIRMED keep blocking fetch and gate.
             directory = store.run_directory(run_id)
             approval_path = directory / "approval.v1.json"
             overlay = _read_optional(store, directory / "overlay.v1.json")
             approval = _read_optional(store, approval_path)
-            swept = _sweep_publisher_candidates(store, run_id, overlay, approval)
+            swept = sweep_local_copies(store, run_id, overlay, approval)
+            tmp_deleted = store.remove_stale_tmp_files(run_id)
             if isinstance(approval, dict):
                 store.write_json(approval_path, redact_approval(approval), replace=True)
+            final_status, _expires = run_status(store, run_id)
             report.append(
                 {
                     "run_id": run_id,
-                    "result": (
-                        "PURGE_PUBLISH_MISSING"
-                        if status == "PUBLISHED_NOT_PURGED"
-                        else "ALREADY_PURGED"
-                    ),
+                    "result": UNFINISHED_RESULTS.get(final_status, "ALREADY_PURGED"),
                     "record_state": status,
-                    "candidate_directories_deleted": swept,
+                    **swept,
+                    "stale_tmp_files_deleted": tmp_deleted,
                 }
             )
             continue
@@ -431,30 +422,28 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
             replace=True,
         )
         purge_publish_recorded = False
-        candidates_deleted = _sweep_publisher_candidates(
-            store, run_id, overlay, approval
-        )
+        # Before the redaction: the injected hashes are what find a frozen injected theme.
+        swept = sweep_local_copies(store, run_id, overlay, approval)
         if isinstance(approval, dict):
             purge_publish_recorded = approval.get("purge_publish") is not None
             store.write_json(approval_path, redact_approval(approval), replace=True)
+        tmp_deleted = store.remove_stale_tmp_files(run_id)
         # Local values are gone, but a publish without its purge publish leaves WordPress
-        # serving them: the run stays an obligation (fetch and gate keep refusing).
+        # serving them, and unconfirmed plugin copies keep them stored: the run stays an
+        # obligation (fetch and gate keep refusing).
         final_status, _expires = run_status(store, run_id)
         report.append(
             {
                 "run_id": run_id,
-                "result": (
-                    "PURGE_PUBLISH_MISSING"
-                    if final_status == "PUBLISHED_NOT_PURGED"
-                    else "PURGED"
-                ),
+                "result": UNFINISHED_RESULTS.get(final_status, "PURGED"),
                 "record_state": status,
                 "raw_files_deleted": deleted,
                 "published": bool(
                     isinstance(approval, dict) and approval.get("publish")
                 ),
                 "purge_publish_recorded": purge_publish_recorded,
-                "candidate_directories_deleted": candidates_deleted,
+                **swept,
+                "stale_tmp_files_deleted": tmp_deleted,
                 "approval_unreadable": approval_path.exists()
                 and not isinstance(approval, dict),
             }
@@ -475,13 +464,42 @@ def command_resolve_incident(
         # Only after purge-expired deleted the local values, and only for a publish whose
         # purge publish is missing. Everything else finishes through purge publish/purge.
         fail("INCIDENT_RESOLUTION_NOT_APPLICABLE")
+    # The plugin redaction runs only when a purge publish is finalized, which never
+    # happens on this path: the owner must also confirm the plugin rows and undo options
+    # of the run were cleaned by hand.
+    if args.plugin_cleanup != plugin_cleanup_confirmation_text(run_id):
+        fail("PLUGIN_CLEANUP_CONFIRMATION_REQUIRED")
+    directory = store.run_directory(run_id)
+    approval_path = directory / "approval.v1.json"
+    overlay = _read_optional(store, directory / "overlay.v1.json")
+    approval = _read_optional(store, approval_path)
+    swept = sweep_local_copies(store, run_id, overlay, approval)
+    store.remove_stale_tmp_files(run_id)
+    if isinstance(approval, dict) and redact_approval(approval) != approval:
+        store.write_json(approval_path, redact_approval(approval), replace=True)
+    if store.run_tmp_files(run_id) or any(local_copies(store, run_id, overlay, approval)):
+        fail("LOCAL_COPIES_REMAIN")
+    recorded_at = iso(_now(args.now, clock))
+    # Cleanup first (replaceable): an interruption before the incident record leaves the
+    # run PUBLISHED_NOT_PURGED, and the command can be repeated.
     store.write_json(
-        store.run_directory(run_id) / INCIDENT_RESOLUTION_FILE,
+        directory / PLUGIN_CLEANUP_FILE,
+        {
+            "schema": PLUGIN_CLEANUP_SCHEMA,
+            "run_id": run_id,
+            "reason": "INCIDENT_RESOLUTION",
+            "confirmation": args.plugin_cleanup,
+            "recorded_at": recorded_at,
+        },
+        replace=True,
+    )
+    store.write_json(
+        directory / INCIDENT_RESOLUTION_FILE,
         {
             "schema": INCIDENT_RESOLUTION_SCHEMA,
             "run_id": run_id,
             "resolution": args.resolution,
-            "recorded_at": iso(_now(args.now, clock)),
+            "recorded_at": recorded_at,
         },
     )
     status, _expires = run_status(store, run_id)
@@ -490,6 +508,56 @@ def command_resolve_incident(
             "result": "INCIDENT_RESOLUTION_RECORDED",
             "run_id": run_id,
             "resolution": args.resolution,
+            "record_state": status,
+            **swept,
+        }
+    )
+    return EXIT_OK
+
+
+def command_confirm_plugin_cleanup(
+    args: argparse.Namespace, clock: Callable[[], datetime]
+) -> int:
+    """Record that the owner removed a run's injected bodies from the plugin by hand.
+
+    Only for a run whose local values are purged and whose plugin redaction was not
+    reported COMPLETE (WORDPRESS_REDACTION_UNCONFIRMED); the purge and incident paths
+    and the local sweep must already be finished.
+    """
+    run_id = require_run_id(args.run_id)
+    store = PrivateStore(args.owner_checkout)
+    status, _expires = run_status(store, run_id)
+    if status != "WORDPRESS_REDACTION_UNCONFIRMED":
+        fail("PLUGIN_CLEANUP_CONFIRMATION_NOT_APPLICABLE")
+    if args.plugin_cleanup != plugin_cleanup_confirmation_text(run_id):
+        fail("PLUGIN_CLEANUP_CONFIRMATION_REQUIRED")
+    directory = store.run_directory(run_id)
+    approval = store.read_json(directory / "approval.v1.json")
+    purge_publish = approval.get("purge_publish") if isinstance(approval, dict) else None
+    reason = (
+        "INCIDENT_RESOLUTION"
+        if not isinstance(purge_publish, dict)
+        else "WORDPRESS_REDACTION_INCOMPLETE"
+        if purge_publish.get("wordpress_redaction") == "INCOMPLETE"
+        else "WORDPRESS_REDACTION_NOT_REPORTED"
+    )
+    store.write_json(
+        directory / PLUGIN_CLEANUP_FILE,
+        {
+            "schema": PLUGIN_CLEANUP_SCHEMA,
+            "run_id": run_id,
+            "reason": reason,
+            "confirmation": args.plugin_cleanup,
+            "recorded_at": iso(_now(args.now, clock)),
+        },
+        replace=True,
+    )
+    status, _expires = run_status(store, run_id)
+    emit(
+        {
+            "result": "PLUGIN_CLEANUP_RECORDED",
+            "run_id": run_id,
+            "reason": reason,
             "record_state": status,
         }
     )
@@ -518,6 +586,8 @@ def main(
             return command_gate(args, now_clock)
         if args.command == "resolve-incident":
             return command_resolve_incident(args, now_clock)
+        if args.command == "confirm-plugin-cleanup":
+            return command_confirm_plugin_cleanup(args, now_clock)
         return command_purge(args, now_clock)
     except RefreshError as error:
         emit({"result": "REFUSED", "code": error.code})

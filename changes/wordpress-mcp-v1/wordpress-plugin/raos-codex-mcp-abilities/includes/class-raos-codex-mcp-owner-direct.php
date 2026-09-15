@@ -386,11 +386,14 @@ final class RAOS_Codex_MCP_Owner_Direct
      * After a finalized purge publish (its before body carries price-overlay run markers and
      * its after body none), keep only the sha256 of every stored copy of those runs' injected
      * bodies for the same post: proposal payloads (before/after) of terminal rows and the
-     * owner-direct undo options (applied_document/public_before). Active rows (PENDING,
-     * MANUAL_REQUIRED, APPROVED, APPLYING) are never rewritten; they make the result INCOMPLETE.
+     * owner-direct undo options (applied_document/public_before). The THEME_RELEASE rows of the
+     * same batch ($batch_rows) name the injected theme tree they replaced; the payload copies
+     * of that tree hash and of the injected files' manifest hashes become a marker as well
+     * (redact_overlay_theme_rows). Active rows (PENDING, MANUAL_REQUIRED, APPROVED, APPLYING)
+     * are never rewritten; they make the result INCOMPLETE.
      * Returns null when the row is not a purge publish.
      */
-    public static function redact_price_overlay_copies($row)
+    public static function redact_price_overlay_copies($row, $batch_rows = array())
     {
         if (! self::is_direct($row) || 'CONTENT_RELEASE' !== ($row['kind'] ?? null)
             || 'APPLIED' !== ($row['state'] ?? null)
@@ -402,7 +405,7 @@ final class RAOS_Codex_MCP_Owner_Direct
         if (empty($runs) || ! is_int($post_id)) { return null; }
         global $wpdb;
         $result = array('state' => 'INCOMPLETE', 'runs' => $runs, 'post_id' => $post_id,
-            'proposals' => 0, 'undo_options' => 0, 'skipped_active' => 0);
+            'proposals' => 0, 'undo_options' => 0, 'skipped_active' => 0, 'theme_proposals' => 0);
         $table = RAOS_Codex_MCP_Store::table_name();
         $candidates = $wpdb->get_results($wpdb->prepare(
             'SELECT proposal_id, state, payload_json FROM ' . $table
@@ -458,8 +461,86 @@ final class RAOS_Codex_MCP_Owner_Direct
                 }
             }
         }
+        foreach ((is_array($batch_rows) ? $batch_rows : array()) as $member) {
+            if (! is_array($member) || ! self::is_direct($member)
+                || 'THEME_RELEASE' !== ($member['kind'] ?? null) || 'APPLIED' !== ($member['state'] ?? null)
+                || (int) ($member['created_by'] ?? 0) !== (int) $row['created_by']
+                || ! RAOS_Codex_MCP_Store::is_sha256($member['before_sha256'] ?? null)) {
+                continue;
+            }
+            if (! self::redact_overlay_theme_rows($row, $member['before_sha256'], $runs, $result)) { return $result; }
+        }
         $result['state'] = 0 === $result['skipped_active'] ? 'COMPLETE' : 'INCOMPLETE';
         return $result;
+    }
+
+    /**
+     * The theme release rows around one injected theme tree: the purge batch's row replaced it
+     * (before tree), the publish row installed it (after tree, whose code_package manifest lists
+     * the injected runtime JSON and functions.php). In their payloads those price-recoverable
+     * hashes become RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED, bound to a
+     * price_overlay_redaction record; the row columns keep the tree hashes. Returns false when
+     * a stored row could not be rewritten.
+     */
+    private static function redact_overlay_theme_rows($row, $tree, $runs, &$result)
+    {
+        global $wpdb;
+        $marker = RAOS_Codex_MCP_Store::PRICE_OVERLAY_REDACTED;
+        $table = RAOS_Codex_MCP_Store::table_name();
+        $themes = $wpdb->get_results($wpdb->prepare(
+            'SELECT proposal_id, state, before_sha256, after_sha256, payload_json FROM ' . $table
+            . " WHERE kind = 'THEME_RELEASE' AND created_by = %d AND (before_sha256 = %s OR after_sha256 = %s)",
+            (int) $row['created_by'], $tree, $tree
+        ), ARRAY_A);
+        if (! is_array($themes) || ! empty($wpdb->last_error)) { return false; }
+        foreach ($themes as $theme) {
+            $payload = is_string($theme['payload_json'] ?? null) ? json_decode($theme['payload_json'], true) : null;
+            if (! is_array($payload) || ! isset($payload['authorization_profile'])
+                || ! is_array($payload['code_package']['file_manifest'] ?? null)) {
+                continue;
+            }
+            $sides = array();
+            foreach (array('before', 'after') as $side) {
+                if (($theme[$side . '_sha256'] ?? null) === $tree && ($payload[$side . '_tree_sha256'] ?? null) === $tree) {
+                    $sides[] = $side;
+                }
+            }
+            if (empty($sides)) { continue; }
+            if (! in_array($theme['state'], array('APPLIED', 'FAILED', 'EXPIRED'), true)) {
+                $result['skipped_active']++;
+                continue;
+            }
+            $record = $payload[self::OVERLAY_REDACTION_KEY] ?? array('manifest_paths' => array(), 'runs' => array(), 'tree_sides' => array());
+            if (! is_array($record) || ! is_array($record['runs'] ?? null)
+                || ! is_array($record['tree_sides'] ?? null) || ! is_array($record['manifest_paths'] ?? null)) {
+                return false;
+            }
+            $paths = array();
+            foreach ($sides as $side) { $payload[$side . '_tree_sha256'] = $marker; }
+            if (in_array('after', $sides, true)) {
+                $payload['code_package']['file_manifest_sha256'] = $marker;
+                foreach ($payload['code_package']['file_manifest'] as $index => $entry) {
+                    if (is_array($entry) && in_array($entry['path'] ?? null, RAOS_Codex_MCP_Store::PRICE_OVERLAY_THEME_FILES, true)
+                        && RAOS_Codex_MCP_Store::is_sha256($entry['sha256'] ?? null)) {
+                        $payload['code_package']['file_manifest'][$index]['sha256'] = $marker;
+                        $paths[] = $entry['path'];
+                    }
+                }
+            }
+            foreach (array('runs' => $runs, 'tree_sides' => $sides, 'manifest_paths' => $paths) as $key => $values) {
+                $record[$key] = array_values(array_unique(array_merge($record[$key], $values)));
+                sort($record[$key], SORT_STRING);
+            }
+            $payload[self::OVERLAY_REDACTION_KEY] = $record;
+            $json = RAOS_Codex_MCP_Store::canonical_json($payload);
+            $updated = is_string($json) ? $wpdb->query($wpdb->prepare(
+                'UPDATE ' . $table . ' SET payload_json = %s WHERE proposal_id = %s AND state = %s AND payload_json = %s',
+                $json, $theme['proposal_id'], $theme['state'], $theme['payload_json']
+            )) : false;
+            if (1 !== $updated) { return false; }
+            $result['theme_proposals']++;
+        }
+        return true;
     }
 
     /** A public projection is materialized only after the existing apply engine commits. */

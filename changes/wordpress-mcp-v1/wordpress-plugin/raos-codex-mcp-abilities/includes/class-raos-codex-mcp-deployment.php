@@ -947,7 +947,7 @@ final class RAOS_Codex_MCP_Deployment
                 // stored injected bodies of its run are reduced to hashes now.
                 $redactions = array();
                 foreach ($rows as $row) {
-                    $redaction = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($row);
+                    $redaction = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($row, $rows);
                     if (is_array($redaction)) { $redactions[] = $redaction; }
                 }
                 if (! empty($redactions)) { $result['price_overlay_redaction'] = $redactions; }

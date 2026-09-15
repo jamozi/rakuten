@@ -13,6 +13,10 @@ final class RAOS_Codex_MCP_Store
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const PROPOSAL_REVIEW_TTL_SECONDS = 3600;
+    /** KS-020 price overlay (price-refresh-contract.md §10.1-3): a redacted injected-theme hash. */
+    const PRICE_OVERLAY_REDACTED = 'REDACTED_PRICE_OVERLAY';
+    /** Theme files whose bytes change when prices are injected (runtime JSON, rebound constant). */
+    const PRICE_OVERLAY_THEME_FILES = array('assets/purchase-support.v1.json', 'functions.php');
     const APPLY_LEASE_TTL_SECONDS = 900;
     const RECOVERY_GRACE_SECONDS = 120;
 
@@ -730,6 +734,12 @@ final class RAOS_Codex_MCP_Store
 
     private static function code_payload_integrity($row, $payload)
     {
+        if (array_key_exists('price_overlay_redaction', $payload)) {
+            $payload = self::theme_payload_before_overlay_redaction($row, $payload);
+            if (! is_array($payload)) {
+                return false;
+            }
+        }
         return 'CodeReleaseProposalV1' === $payload['schema']
             && isset($payload['kind'], $payload['code_package'])
             && array_key_exists('before_tree_sha256', $payload)
@@ -743,6 +753,70 @@ final class RAOS_Codex_MCP_Store
                 $row['after_sha256'],
                 $payload['code_package']['file_manifest_sha256']
             );
+    }
+
+    /**
+     * A terminal owner-direct THEME_RELEASE row whose injected-theme hashes the owner-direct
+     * plugin replaced by the price-overlay marker. The redaction record must name exactly the
+     * marked fields: the tree sides (their hashes are restored from the row columns, which
+     * keep them) and the manifest entries of the injected files. Anything else is drift.
+     */
+    private static function theme_payload_before_overlay_redaction($row, $payload)
+    {
+        $record = $payload['price_overlay_redaction'];
+        $marker = self::PRICE_OVERLAY_REDACTED;
+        $keys = is_array($record) ? array_keys($record) : array();
+        sort($keys, SORT_STRING);
+        if ('THEME_RELEASE' !== ($row['kind'] ?? null)
+            || ! in_array($row['state'] ?? null, array('APPLIED', 'FAILED', 'EXPIRED'), true)
+            || ! isset($payload['authorization_profile'])
+            || array('manifest_paths', 'runs', 'tree_sides') !== $keys
+            || ! is_array($record['runs']) || empty($record['runs'])
+            || ! is_array($record['tree_sides']) || empty($record['tree_sides'])
+            || count(array_unique($record['tree_sides'])) !== count($record['tree_sides'])
+            || array_diff($record['tree_sides'], array('before', 'after'))
+            || ! is_array($record['manifest_paths'])
+            || count(array_unique($record['manifest_paths'])) !== count($record['manifest_paths'])
+            || array_diff($record['manifest_paths'], self::PRICE_OVERLAY_THEME_FILES)
+            || ! is_array($payload['code_package'] ?? null)
+            || ! is_array($payload['code_package']['file_manifest'] ?? null)) {
+            return false;
+        }
+        foreach ($record['runs'] as $run) {
+            if (! is_string($run) || preg_match('/\A[a-z0-9][a-z0-9-]{7,63}\z/D', $run) !== 1) {
+                return false;
+            }
+        }
+        foreach (array('before', 'after') as $side) {
+            $redacted = in_array($side, $record['tree_sides'], true);
+            if ($redacted !== ($marker === ($payload[$side . '_tree_sha256'] ?? null))) {
+                return false;
+            }
+            if ($redacted) {
+                if (! self::is_sha256($row[$side . '_sha256'] ?? null)) {
+                    return false;
+                }
+                $payload[$side . '_tree_sha256'] = $row[$side . '_sha256'];
+            }
+        }
+        $after = in_array('after', $record['tree_sides'], true);
+        if ($after !== ($marker === ($payload['code_package']['file_manifest_sha256'] ?? null))
+            || (! $after && ! empty($record['manifest_paths']))) {
+            return false;
+        }
+        if ($after) {
+            $payload['code_package']['file_manifest_sha256'] = $row['after_sha256'];
+        }
+        $marked = array();
+        foreach ($payload['code_package']['file_manifest'] as $entry) {
+            if (is_array($entry) && $marker === ($entry['sha256'] ?? null)) {
+                $marked[] = $entry['path'] ?? null;
+            }
+        }
+        $expected = $record['manifest_paths'];
+        sort($marked, SORT_STRING);
+        sort($expected, SORT_STRING);
+        return $marked === $expected ? $payload : false;
     }
 
     private static function nullable_hash_is_valid($value)

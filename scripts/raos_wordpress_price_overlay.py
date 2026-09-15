@@ -30,8 +30,10 @@ if str(ROOT / "python") not in sys.path:
 from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
     PrivateStore,
     expired_unpurged_runs,
+    live_publish_runs,
     scan_repository_for_overlay,
     scan_revision_for_overlay,
+    sweep_local_copies,
 )
 from raos.domain.editorial import rakuten_price_refresh as rpr  # noqa: E402
 from scripts import raos_wordpress_deployment_operator as operator  # noqa: E402
@@ -65,6 +67,9 @@ HANDLE_PREFIX = "price-overlay:"
 REDACTED_ID = "REDACTED_PRICE_OVERLAY"
 PUBLIC_FIELDS = ("publication_ready", "publication_status", "status", "result_code")
 SHA256_ID = re.compile(r"[0-9a-f]{64}\Z")
+# status without --candidate while a run may be live: the theme tree hash, runtime revision
+# and any manifest hash of the live injected theme are price-recoverable (contract §3).
+LIVE_HASH_MARKER = "REDACTED_PRICE_OVERLAY_LIVE"
 
 
 def clock():
@@ -122,6 +127,43 @@ def _remember_prepared(store, run_id, mode, candidate_id):
         prepared[mode] = candidate_id
         approval[rpr.PREPARED_CANDIDATES_KEY] = prepared
         store.write_json(path, approval, replace=True)
+
+
+def refuse_flag_free_prepare(direct, root, keys, theme):
+    """A flag-free prepare while values may be live would freeze live injected pages (or the
+    injected theme tree) as its baseline and print its id and directory."""
+    with refusals(direct):
+        live = live_publish_runs(_store(root))
+    for _run_id, live_keys in live:
+        if theme or live_keys is None or set(keys) & set(live_keys):
+            direct.fail("PRICE_OVERLAY_LIVE")
+
+
+def live_status_output(direct, root, result):
+    """status (no --candidate): hashes of the live theme become a marker while a run is live."""
+    with refusals(direct):
+        live = live_publish_runs(_store(root))
+    if not live or not isinstance(result, dict):
+        return result
+
+    def scrub(value, redact):
+        if isinstance(value, dict):
+            return {
+                key: scrub(item, redact or "tree" in key or "manifest" in key)
+                for key, item in value.items()
+            }
+        if isinstance(value, list):
+            return [scrub(item, redact) for item in value]
+        if redact and isinstance(value, str) and SHA256_ID.fullmatch(value):
+            return LIVE_HASH_MARKER
+        return value
+
+    view = {key: scrub(item, key == "theme") for key, item in result.items()}
+    view["price_overlay_live"] = {
+        "hashes": LIVE_HASH_MARKER,
+        "run_ids": sorted(run_id for run_id, _keys in live),
+    }
+    return view
 
 
 def handle(candidate):
@@ -412,7 +454,7 @@ def prepare_publish(direct, root, keys, run_id, call):
             rpr.fail("APPROVAL_PUBLISH_ALREADY_USED")
         if rpr.parse_time(overlay["cache_expires_at"]) - clock() < rpr.GATE_MIN_REMAINING:
             rpr.fail("OVERLAY_VALUE_EXPIRING")
-    base, base_directory = direct.prepare(root, keys, True, call)
+    base, base_directory = direct.prepare(root, keys, True, call, price_overlay_bound=True)
     with refusals(direct):
         payloads = _price_free_payloads(direct, base, base_directory)
         _gate(root, store, run_id, base, payloads, overlay, approval, clock())
@@ -437,7 +479,7 @@ def prepare_purge(direct, root, keys, run_id, call):
             rpr.fail("APPROVAL_PURGE_ALREADY_USED")
         if sorted(set(keys)) != publish.get("article_keys"):
             rpr.fail("PURGE_ARTICLE_KEYS_MISMATCH")
-    base, base_directory = direct.prepare(root, keys, True, call)
+    base, base_directory = direct.prepare(root, keys, True, call, price_overlay_bound=True)
     try:
         return _derive_purge(direct, root, store, run_id, publish, base, base_directory)
     except (direct.DirectFailure, OSError, ValueError):
@@ -568,6 +610,11 @@ class Binding:
                 # Directory first: an interrupted cleanup leaves ids (REDACTION_PENDING,
                 # finished by purge-expired), never a directory without its recorded id.
                 store.delete_owner_direct_candidate(candidate["candidate_id"])
+                # Every other local copy of the run's injected bytes (candidates frozen from
+                # live pages, preview copies), found while the injected hashes are recorded.
+                sweep_local_copies(
+                    store, self.run_id, _overlay_for_check(store, self.run_id), approval
+                )
                 store.write_json(
                     approval_path, rpr.redact_purge_candidates(approval), replace=True
                 )

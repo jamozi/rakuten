@@ -31,7 +31,9 @@ from raos.domain.editorial.rakuten_price_refresh import (
     MAX_RESPONSE_BYTES,
     MIN_REQUEST_INTERVAL_SECONDS,
     OBSERVATION_SCHEMA,
+    PREPARED_CANDIDATES_KEY,
     PRIVATE_ROOT_RELATIVE,
+    PURGE_PUBLISH_HASH_KEYS,
     PURGED_SCHEMA,
     RUN_ID_PATTERN,
     UTC,
@@ -57,6 +59,13 @@ PRIVATE_DIRECTORY_MODE: Final = 0o700
 PRIVATE_FILE_MODE: Final = 0o600
 # scripts/raos_wordpress_direct_publish.py PRIVATE: candidate directories named by candidate_id.
 OWNER_DIRECT_CANDIDATE_RELATIVE: Final = ".secrets/wordpress-mcp/owner-direct-v1"
+# scripts/raos_wordpress_direct_preview.py: frozen display themes (theme-<tree>) and fixtures.
+PREVIEW_PRIVATE_RELATIVE: Final = ".secrets/wordpress-direct-preview"
+# Files a candidate directory keeps that can hold injected bodies or their hashes.
+CANDIDATE_RECORD_FILES: Final = ("candidate.json", "journal.json", "preview.json")
+# A replace write leaves <file>.tmp only when it was interrupted between create and rename;
+# a younger one may belong to a concurrent writer and is never removed.
+STALE_TMP_SECONDS: Final = 60
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -356,6 +365,8 @@ class PrivateStore:
             json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
         ).encode("utf-8")
         target = path.with_name(path.name + ".tmp") if replace else path
+        if replace:
+            self._remove_stale_tmp(target)
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC
         try:
             descriptor = os.open(target, flags, PRIVATE_FILE_MODE)
@@ -369,6 +380,39 @@ class PrivateStore:
             os.close(descriptor)
         if replace:
             os.replace(target, path)
+
+    def _remove_stale_tmp(self, target: Path) -> bool:
+        """Remove a leftover ``<file>.tmp`` of an interrupted replace write.
+
+        Only a regular 0600 file of this user that is older than STALE_TMP_SECONDS is
+        removed; a younger one may be a concurrent write (PRIVATE_TMP_BUSY), anything else
+        is refused (PRIVATE_PATH_UNSAFE). The leftover can hold the injected hashes of an
+        interrupted approval write, so it is deleted, never renamed into place.
+        """
+        try:
+            metadata = target.lstat()
+        except FileNotFoundError:
+            return False
+        if (
+            not stat.S_ISREG(metadata.st_mode)
+            or stat.S_IMODE(metadata.st_mode) != PRIVATE_FILE_MODE
+            or metadata.st_uid != os.getuid()
+            or metadata.st_nlink != 1
+        ):
+            fail("PRIVATE_PATH_UNSAFE")
+        if time.time() - metadata.st_mtime < STALE_TMP_SECONDS:
+            fail("PRIVATE_TMP_BUSY")
+        target.unlink()
+        return True
+
+    def run_tmp_files(self, run_id: str) -> list[Path]:
+        directory = self.run_directory(run_id)
+        if directory.is_symlink() or not directory.is_dir():
+            return []
+        return sorted(directory.glob("*.tmp"))
+
+    def remove_stale_tmp_files(self, run_id: str) -> int:
+        return sum(self._remove_stale_tmp(path) for path in self.run_tmp_files(run_id))
 
     def read_json(self, path: Path) -> Any:
         if self.root not in path.parents:
@@ -398,28 +442,75 @@ class PrivateStore:
             p.name for p in self.root.iterdir() if p.is_dir() and not p.is_symlink()
         )
 
+    def _safe_base(self, relative: str) -> Path:
+        current = self.owner_checkout
+        for part in PurePosixPath(relative).parts:
+            current = current / part
+            if current.is_symlink():
+                fail("PRIVATE_PATH_UNSAFE")
+        return current
+
     def owner_direct_candidates_containing(self, needles: Sequence[str]) -> list[str]:
-        """Candidate ids whose candidate.json or journal.json carries any needle (raw or JSON-escaped)."""
-        base = self.owner_checkout / OWNER_DIRECT_CANDIDATE_RELATIVE
-        if base.is_symlink():
-            fail("PRIVATE_PATH_UNSAFE")
-        if not base.is_dir() or not needles:
+        """Candidate ids whose candidate.json, journal.json or preview.json carries any needle."""
+        base = self._safe_base(OWNER_DIRECT_CANDIDATE_RELATIVE)
+        variants = _needle_variants(needles)
+        if not base.is_dir() or not variants:
             return []
-        variants = {n.encode("utf-8") for n in needles} | {
-            json.dumps(n)[1:-1].encode("ascii") for n in needles
-        }
         found = []
         for directory in sorted(base.iterdir()):
             if directory.is_symlink() or not directory.is_dir():
                 continue
-            for name in ("candidate.json", "journal.json"):
-                path = directory / name
-                if path.is_file() and not path.is_symlink():
-                    payload = path.read_bytes()
-                    if any(v in payload for v in variants):
-                        found.append(directory.name)
-                        break
+            for name in CANDIDATE_RECORD_FILES:
+                if _file_contains(directory / name, variants):
+                    found.append(directory.name)
+                    break
         return found
+
+    def preview_copies_containing(self, needles: Sequence[str]) -> list[str]:
+        """Preview paths (relative to the preview directory) that carry any needle.
+
+        A frozen display theme ``theme-<tree>`` is reported as a whole when any of its
+        files does (the injected runtime JSON holds injected body hashes, functions.php the
+        rebound runtime hash); fixture files are reported one by one.
+        """
+        base = self._safe_base(PREVIEW_PRIVATE_RELATIVE)
+        variants = _needle_variants(needles)
+        if not base.is_dir() or not variants:
+            return []
+        found = []
+        for entry in sorted(base.iterdir()):
+            if entry.is_symlink():
+                continue
+            if entry.is_dir() and entry.name.startswith("theme-"):
+                if any(_file_contains(p, variants) for p in sorted(entry.rglob("*"))):
+                    found.append(entry.name)
+            elif entry.is_dir() and entry.name == "fixtures":
+                found.extend(
+                    p.relative_to(base).as_posix()
+                    for p in sorted(entry.rglob("*"))
+                    if _file_contains(p, variants)
+                )
+        return found
+
+    def delete_preview_copy(self, relative: str) -> bool:
+        base = self._safe_base(PREVIEW_PRIVATE_RELATIVE)
+        parts = PurePosixPath(relative).parts
+        if not parts or any(part in {"", ".", ".."} for part in parts) or not (
+            (len(parts) == 1 and parts[0].startswith("theme-")) or parts[0] == "fixtures"
+        ):
+            fail("PRIVATE_PATH_UNSAFE")
+        current = base
+        for part in parts:
+            current = current / part
+            if current.is_symlink():
+                fail("PRIVATE_PATH_UNSAFE")
+        if current.is_dir():
+            shutil.rmtree(current)
+            return True
+        if current.is_file():
+            current.unlink()
+            return True
+        return False
 
     def delete_owner_direct_candidate(self, candidate_id: object) -> bool:
         """Delete one publisher candidate directory (injected bodies, runtime, theme, journal)."""
@@ -427,12 +518,7 @@ class PrivateStore:
             return False
         if any(c not in "0123456789abcdef" for c in candidate_id):
             return False
-        base = self.owner_checkout / OWNER_DIRECT_CANDIDATE_RELATIVE
-        current = self.owner_checkout
-        for part in PurePosixPath(OWNER_DIRECT_CANDIDATE_RELATIVE).parts:
-            current = current / part
-            if current.is_symlink():
-                fail("PRIVATE_PATH_UNSAFE")
+        base = self._safe_base(OWNER_DIRECT_CANDIDATE_RELATIVE)
         directory = base / candidate_id
         if directory.is_symlink():
             fail("PRIVATE_PATH_UNSAFE")
@@ -442,10 +528,30 @@ class PrivateStore:
         return True
 
 
-# Local values are purged but the run is not finished: WordPress still serves the injected
-# values (no purge publish recorded), or the approval still names price-recoverable
-# candidate ids (a purge publish recorded after purge-expired). Both block fetch and gate.
-UNFINISHED_PURGE_STATUSES: Final = frozenset({"PUBLISHED_NOT_PURGED", "REDACTION_PENDING"})
+def _needle_variants(needles: Sequence[str]) -> set[bytes]:
+    return {n.encode("utf-8") for n in needles if n} | {
+        json.dumps(n)[1:-1].encode("utf-8") for n in needles if n
+    }
+
+
+def _file_contains(path: Path, variants: set[bytes]) -> bool:
+    if path.is_symlink() or not path.is_file():
+        return False
+    payload = path.read_bytes()
+    return any(v in payload for v in variants)
+
+
+# Local values are purged but the run is not finished. All four block fetch and gate:
+# - PUBLISHED_NOT_PURGED: WordPress still serves the injected values (no purge publish and
+#   no owner incident resolution recorded);
+# - REDACTION_PENDING: the approval still names price-recoverable ids, a replace write left
+#   a .tmp, or a publisher candidate / preview copy still carries the run's markers or values;
+# - WORDPRESS_REDACTION_UNCONFIRMED: the plugin's stored copies are not known to be gone
+#   (purge_publish.wordpress_redaction is not COMPLETE and the owner recorded no manual
+#   plugin cleanup for the run). Contract §5.
+UNFINISHED_PURGE_STATUSES: Final = frozenset(
+    {"PUBLISHED_NOT_PURGED", "REDACTION_PENDING", "WORDPRESS_REDACTION_UNCONFIRMED"}
+)
 # The only other way out of PUBLISHED_NOT_PURGED: the owner records, after purge-expired,
 # that WordPress no longer serves the run's values although no purge publish was recorded
 # (for example the post was restored or withdrawn by hand). Contract §5.
@@ -454,6 +560,128 @@ INCIDENT_RESOLUTION_FILE: Final = "incident-resolution.v1.json"
 INCIDENT_RESOLUTIONS: Final = frozenset(
     {"WORDPRESS_RESTORED_OUTSIDE_PUBLISHER", "WORDPRESS_POSTS_WITHDRAWN"}
 )
+
+
+PLUGIN_CLEANUP_SCHEMA: Final = "RAOS_RAKUTEN_PRICE_OVERLAY_PLUGIN_CLEANUP_V1"
+PLUGIN_CLEANUP_FILE: Final = "plugin-cleanup.v1.json"
+PLUGIN_CLEANUP_REASONS: Final = frozenset(
+    {"WORDPRESS_REDACTION_INCOMPLETE", "WORDPRESS_REDACTION_NOT_REPORTED", "INCIDENT_RESOLUTION"}
+)
+
+
+def plugin_cleanup_confirmation_text(run_id: str) -> str:
+    """What the owner types after removing the run's injected bodies from the plugin rows
+    and undo options by hand (``--owner-confirmed-plugin-cleanup``)."""
+    return "PLUGIN_COPIES_REMOVED:" + require_run_id(run_id)
+
+
+def plugin_cleanup(store: PrivateStore, run_id: str) -> dict[str, Any] | None:
+    path = store.run_directory(run_id) / PLUGIN_CLEANUP_FILE
+    if not path.exists():
+        return None
+    record = store.read_json(path)
+    if (
+        not isinstance(record, dict)
+        or set(record) != {"schema", "run_id", "reason", "confirmation", "recorded_at"}
+        or record["schema"] != PLUGIN_CLEANUP_SCHEMA
+        or record["run_id"] != run_id
+        or record["reason"] not in PLUGIN_CLEANUP_REASONS
+        or record["confirmation"] != plugin_cleanup_confirmation_text(run_id)
+    ):
+        fail("PLUGIN_CLEANUP_RECORD_INVALID")
+    parse_time(record["recorded_at"])
+    return record
+
+
+def local_copy_needles(
+    run_id: str, overlay: object, approval: object
+) -> tuple[set[str], list[str]]:
+    """(candidate ids recorded for the run, content needles: marker, values, injected hashes)."""
+    candidate_ids: set[str] = set()
+    record = approval if isinstance(approval, dict) else None
+    if record is not None:
+        for part, keys in (
+            (record.get("publish"), ("candidate_id",)),
+            (record.get("purge_publish"), PURGE_PUBLISH_HASH_KEYS),
+        ):
+            if isinstance(part, dict):
+                candidate_ids.update(str(part[key]) for key in keys if part.get(key))
+        prepared = record.get(PREPARED_CANDIDATES_KEY)
+        if isinstance(prepared, dict):
+            candidate_ids.update(str(v) for v in prepared.values() if v)
+    source = (
+        overlay
+        if isinstance(overlay, dict) and overlay.get("run_id") == run_id
+        else {"run_id": run_id, "entries": []}
+    )
+    try:
+        needles = leak_needles(source, record)
+    except KeyError, TypeError:
+        needles = leak_needles({"run_id": run_id, "entries": []}, None)
+    return candidate_ids, needles
+
+
+def local_copies(
+    store: PrivateStore, run_id: str, overlay: object, approval: object
+) -> tuple[list[str], list[str]]:
+    """Publisher candidates and preview copies that still hold this run's injected bytes."""
+    candidate_ids, needles = local_copy_needles(run_id, overlay, approval)
+    base = store.owner_checkout / OWNER_DIRECT_CANDIDATE_RELATIVE
+    recorded = {
+        c
+        for c in candidate_ids
+        if len(c) == 64 and all(ch in "0123456789abcdef" for ch in c) and (base / c).exists()
+    }
+    candidates = sorted(recorded | set(store.owner_direct_candidates_containing(needles)))
+    return candidates, store.preview_copies_containing(needles)
+
+
+def sweep_local_copies(
+    store: PrivateStore, run_id: str, overlay: object, approval: object
+) -> dict[str, int]:
+    """Delete every local copy of the run's injected bytes outside the run directory.
+
+    Covers the ids recorded by the publisher, any candidate whose candidate.json /
+    journal.json / preview.json still carries the run's marker, values or injected hashes
+    (for example a flag-free candidate prepared while values were live), and preview
+    copies (frozen display themes and fixtures). Run it before redacting the approval: the
+    injected hashes are what find a frozen injected theme.
+    """
+    candidates, previews = local_copies(store, run_id, overlay, approval)
+    return {
+        "candidate_directories_deleted": sum(
+            store.delete_owner_direct_candidate(c) for c in candidates
+        ),
+        "preview_copies_deleted": sum(store.delete_preview_copy(p) for p in previews),
+    }
+
+
+def live_publish_runs(store: PrivateStore) -> list[tuple[str, list[str] | None]]:
+    """Runs whose values may be live on WordPress: a publish is recorded (or reserved) and
+    neither a purge publish nor an owner incident resolution is. Article keys are None when
+    the approval record cannot be read (fail safe: every article counts as injected)."""
+    live: list[tuple[str, list[str] | None]] = []
+    for run_id in store.run_ids():
+        if RUN_ID_PATTERN.fullmatch(run_id) is None:
+            continue
+        path = store.run_directory(run_id) / "approval.v1.json"
+        if not path.exists() and not path.is_symlink():
+            continue
+        try:
+            approval = validate_approval(store.read_json(path), run_id)
+            publish = approval["publish"]
+            if (
+                publish is None
+                or approval["purge_publish"] is not None
+                or incident_resolution(store, run_id) is not None
+            ):
+                continue
+            keys = publish.get("article_keys")
+            valid = isinstance(keys, list) and all(isinstance(k, str) for k in keys)
+            live.append((run_id, sorted(keys) if valid else None))
+        except RefreshError, OSError, ValueError, KeyError, TypeError:
+            live.append((run_id, None))
+    return live
 
 
 def incident_resolution(store: PrivateStore, run_id: str) -> dict[str, Any] | None:
@@ -474,8 +702,15 @@ def incident_resolution(store: PrivateStore, run_id: str) -> dict[str, Any] | No
 
 
 def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
-    """PURGED / PUBLISHED_NOT_PURGED / REDACTION_PENDING / EMPTY / DATED (with the earliest
-    expiry) / UNDATED (records unreadable or invalid)."""
+    """PURGED / PUBLISHED_NOT_PURGED / REDACTION_PENDING / WORDPRESS_REDACTION_UNCONFIRMED /
+    EMPTY / DATED (with the earliest expiry) / UNDATED (records unreadable or invalid).
+
+    A run whose local values are purged is PURGED only when all of these hold: the purge
+    publish or an owner incident resolution is recorded; the approval carries no
+    price-recoverable id; no replace write left a .tmp; no publisher candidate or preview
+    copy still carries the run's markers or values; and the plugin's stored copies are
+    known to be gone (wordpress_redaction COMPLETE, or the owner's plugin cleanup record).
+    """
     directory = store.run_directory(run_id)
     has_raw = (directory / "raw").exists()
     overlay_path, approval_path = (
@@ -488,15 +723,28 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
         if isinstance(overlay, dict) and overlay.get("schema") == PURGED_SCHEMA:
             if has_raw:
                 return "UNDATED", None
-            if isinstance(approval, dict):
+            record = approval if isinstance(approval, dict) else None
+            if record is not None:
                 if (
-                    approval.get("publish") is not None
-                    and approval.get("purge_publish") is None
+                    record.get("publish") is not None
+                    and record.get("purge_publish") is None
                     and incident_resolution(store, run_id) is None
                 ):
                     return "PUBLISHED_NOT_PURGED", None
-                if redact_approval(approval) != approval:
+                if redact_approval(record) != record:
                     return "REDACTION_PENDING", None
+            if store.run_tmp_files(run_id) or any(
+                local_copies(store, run_id, overlay, record)
+            ):
+                return "REDACTION_PENDING", None
+            if record is not None and record.get("publish") is not None:
+                purge_publish = record.get("purge_publish")
+                redacted_by_plugin = (
+                    isinstance(purge_publish, dict)
+                    and purge_publish.get("wordpress_redaction") == "COMPLETE"
+                )
+                if not redacted_by_plugin and plugin_cleanup(store, run_id) is None:
+                    return "WORDPRESS_REDACTION_UNCONFIRMED", None
             return "PURGED", None
         if overlay is not None:
             validate_overlay(overlay)

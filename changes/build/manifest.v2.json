@@ -30301,12 +30301,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "d1247e846ff2fce05123e23b71f5f2424e9e833b22603e9f7a1cab85d7f912cb",
+          "sha256": "bcea13bd73fe36d94d2cc50987385c78f2734f58bb4f589abbba6ac6ca118083",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 28259,
-          "sha256": "4f47ae96667858a35adb8e584fe82cceeeb8dab97895d566d08e67a5cac5bf74",
+          "sha256": "5a12edee573328f8c32ba45a7262403c152bf41628465a8a8dc309a459259cf9",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
