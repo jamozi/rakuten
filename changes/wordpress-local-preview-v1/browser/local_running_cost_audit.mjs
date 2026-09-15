@@ -1,6 +1,7 @@
 /** Local form audit; no script injection, publication, provider calls or human-test claims.
  * Usage: node changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs ORIGIN OUTPUT
- * Layout enlargement follows reader_experience_audit: 200% computed text sizes, not browser zoom. */
+ * Layout enlargement follows reader_experience_audit: 200% computed text sizes, not browser zoom.
+ * Result text and table cells are compared with tests/wordpress_local_preview/fixtures/running-cost-hand-calculations.v1.json. */
 import { chromium } from 'playwright';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -12,7 +13,7 @@ if (!['127.0.0.1', 'localhost'].includes(target.hostname) || target.protocol !==
 const widths = [360, 390, 768, 1024, 1440], keys = ['electricity', 'water', 'detergent', 'runs'];
 const mount = '[data-raos-cost-calculator="v1"]', form = mount + ' .raos-cost-form', normal = ['30.7', '262', '2.1', '30'];
 const invalid = [['negative', 'electricity', '-1'], ['nonfinite', 'water', 'Infinity'], ['nan', 'electricity', 'NaN'], ['nonnumeric', 'detergent', 'abc'], ['fraction-runs', 'runs', '2.5'], ['rounded-fraction-runs', 'runs', '1.0000000000000001']];
-const names = ['load', 'initial', 'profiles', 'blank', 'zero', 'normal', 'unknown', ...invalid.map(x => x[0]), 'keyboard', 'reset', 'privacy', 'reload', 'no-js', ...widths.flatMap(w => [1, 2].map(s => 'layout-' + w + '-' + s))];
+const names = ['load', 'initial', 'profiles', 'blank', 'zero', 'normal', 'unknown', 'hand-calculations', ...invalid.map(x => x[0]), 'keyboard', 'reset', 'privacy', 'reload', 'no-js', ...widths.flatMap(w => [1, 2].map(s => 'layout-' + w + '-' + s))];
 const report = { schema: 'LOCAL_RUNNING_COST_AUDIT_V1', status: 'NOT_RUN', origin: target.origin, started_at: new Date().toISOString(), human_tests: 'NOT_PERFORMED', checks: Object.fromEntries(names.map(n => [n, { status: 'NOT_RUN' }])), requests: [], storageEvents: [], runtimeAssets: [], errors: [], artifacts: [] };
 const save = () => writeFile(path.join(output, 'manifest.json'), JSON.stringify(report, null, 2) + '\n');
 await mkdir(output, { recursive: true }); await save();
@@ -52,18 +53,25 @@ try {
   report.registry_sha256 = createHash('sha256').update(bytes).digest('hex');
   report.audit_sha256 = createHash('sha256').update(await readFile(new URL(import.meta.url))).digest('hex');
   report.owner_asset_sha256 = createHash('sha256').update(await readFile('changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/local-running-cost.js')).digest('hex');
-  const expected = config.profiles.map(p => {
+  const handBytes = await readFile('tests/wordpress_local_preview/fixtures/running-cost-hand-calculations.v1.json', 'utf8'), hand = JSON.parse(handBytes);
+  report.hand_record_sha256 = createHash('sha256').update(handBytes).digest('hex');
+  const handFor = id => { const rec = hand.profiles.find(p => p.profile_id === id); assert.ok(rec, 'HAND_RECORD_MISSING ' + id); return rec; };
+  // Rendered order: product_anchor rows (現行比較の4機種) first, then legacy rows; anchor itself is not part of the compared data.
+  const rendered = [...config.profiles.filter(p => p.product_anchor), ...config.profiles.filter(p => !p.product_anchor)];
+  const expected = rendered.map(p => {
     const q = (ref, kind) => ref === null ? null : registry.facts.find(f => f.evidence_ref === ref && f.exact_model === p.exact_model).quantities.find(v => v.kind === kind && v.course === p.course);
     const e = q(p.energy_ref, 'energy_per_cycle'), w = q(p.water_ref, 'water_per_cycle');
     assert.notEqual(e, undefined); assert.notEqual(w, undefined); if (e && w) assert.equal(e.course_label, w.course_label);
     return { id: p.profile_id, model: p.exact_model, course: e?.course_label ?? w?.course_label ?? 'コース別の消費量は未確認', energy: e ? String(e.value) : null, water: w ? String(w.value) : null };
   });
-  assert.equal(expected.length, 6); report.expectedProfiles = expected;
+  assert.equal(expected.length, config.profiles.length); report.expectedProfiles = expected;
+  assert.deepEqual(hand.profiles.map(p => p.profile_id), expected.map(p => p.id)); assert.deepEqual(hand.inputs, Object.fromEntries(keys.map((k, i) => [k, normal[i]])));
   browser = await chromium.launch({ channel: 'chrome', headless: true }); report.browser = browser.version();
   const ctx = await context(); page = await ctx.newPage(); page.setDefaultTimeout(12000);
   const field = k => page.locator('#raos-cost-' + k), result = page.locator(form + ' .raos-cost-result');
   const fill = async values => { for (let i = 0; i < keys.length; i++) await field(keys[i]).fill(values[i]); };
   const submit = async row => { await page.locator(form + ' button[type="submit"]').click(); row.text = await result.innerText(); };
+  const lines = () => result.evaluate(e => [...e.children].flatMap(c => c.tagName === 'UL' ? [...c.children].map(li => li.textContent) : [c.textContent]));
   const values = () => Promise.all(keys.map(k => field(k).inputValue()));
   const storage = async () => ({ state: await ctx.storageState({ indexedDB: true }), session: await page.evaluate(() => Object.entries(sessionStorage).sort()), caches: await page.evaluate(async () => Promise.all((await caches.keys()).sort().map(async n => [n, (await (await caches.open(n)).keys()).map(r => r.url).sort()]))) });
   const cdp = await ctx.newCDPSession(page); await cdp.send('DOMStorage.enable');
@@ -87,7 +95,12 @@ try {
       row.data = await page.locator(mount + ' [data-raos-cost-profile]').evaluateAll(rs => rs.map(r => ({ id: r.dataset.raosCostProfile, model: r.dataset.raosCostModel, course: r.dataset.raosCostCourse, energy: r.getAttribute('data-raos-energy-wh'), water: r.getAttribute('data-raos-water-litres') })));
       assert.deepEqual(row.data, expected);
       row.tableText = await page.locator(mount + ' [data-raos-cost-profile]').evaluateAll(rs => rs.map(r => [...r.cells].map(c => c.textContent.trim())));
-      for (let i = 0; i < expected.length; i++) { const p = expected[i], cells = row.tableText[i]; assert.equal(cells[0], p.model); assert.equal(cells[1], p.course); assert.ok(cells[2].includes(p.energy === null ? '未確認' : p.energy + 'Wh')); assert.ok(cells[3].includes(p.water === null ? '未確認' : p.water + 'L')); }
+      assert.equal(row.tableText.length, expected.length);
+      for (let i = 0; i < expected.length; i++) {
+        const p = expected[i], cells = row.tableText[i], rec = handFor(p.id); assert.equal(cells.length, 5, p.id);
+        assert.equal(cells[0], p.model); assert.equal(cells[1], rec.scope); assert.equal(cells[2], p.course); assert.ok(cells[3].includes(p.energy === null ? '未確認' : p.energy + 'Wh')); assert.ok(cells[4].includes(p.water === null ? '未確認' : p.water + 'L'));
+        assert.deepEqual(cells.slice(0, 5), rec.table_cells, p.id);
+      }
       row.options = await field('profile').locator('option').evaluateAll(os => os.map(o => ({ value: o.value, text: o.textContent })));
       assert.deepEqual(row.options, expected.map(p => ({ value: p.id, text: p.model + ' — ' + p.course }))); row.conditions = [];
       for (const p of expected) { await field('profile').selectOption(p.id); const text = await page.locator('#raos-cost-selected-condition').innerText(); row.conditions.push(text); for (const part of [p.model, p.course, p.energy === null ? '消費電力量：未確認' : p.energy + 'Wh/回', p.water === null ? '使用水量：未確認' : p.water + 'L/回']) assert.ok(text.includes(part)); }
@@ -97,17 +110,25 @@ try {
     await check('zero', async row => { await field('profile').selectOption(config.default_profile); await fill(['0', '0', '0', '0']); await submit(row); for (const text of ['一回分：0円', '0回分：0円/月']) assert.ok(row.text.includes(text)); assert.doesNotMatch(row.text, /小計|未計算/); });
     await check('normal', async row => {
       await field('profile').selectOption('np-tmlk1-standard'); await fill(normal); await submit(row);
-      for (const text of ['電気代：7.06円/回', '上下水道代：0.66円/回', '洗剤代：2.1円/回', '一回分：9.82円', '30回分：294.48円/月']) assert.ok(row.text.includes(text), text);
+      row.lines = await lines(); assert.deepEqual(row.lines, handFor('np-tmlk1-standard').result_lines);
       await snapshot(page, 'normal-result', page.locator(form));
       await writeFile(path.join(output, 'rendered.html'), await page.content()); report.artifacts.push(path.resolve(output, 'rendered.html'));
     });
     await check('unknown', async row => {
       await field('profile').selectOption('dws-33b-unknown'); await fill(normal); await submit(row);
-      for (const text of ['小計', '電気代：未計算', '上下水道代：未計算', '一回分の小計：2.1円', '30回分の小計：63円/月']) assert.ok(row.text.includes(text), text);
+      row.lines = await lines(); assert.deepEqual(row.lines, handFor('dws-33b-unknown').result_lines);
       assert.doesNotMatch(row.text, /(?:電気代|上下水道代)：0円/); await snapshot(page, 'unknown-result', page.locator(form));
       row.waterOnly = {}; await field('profile').selectOption('tk-mdw22b-spec'); await submit(row.waterOnly);
-      for (const text of ['電気代：未計算', '上下水道代：0.84円/回', '一回分の小計：2.94円', '30回分の小計：88.15円/月']) assert.ok(row.waterOnly.text.includes(text), text);
+      row.waterOnly.lines = await lines(); assert.deepEqual(row.waterOnly.lines, handFor('tk-mdw22b-spec').result_lines);
       await snapshot(page, 'water-only-result', page.locator(form));
+    });
+    await check('hand-calculations', async row => {
+      row.profiles = [];
+      for (const rec of hand.profiles) {
+        await field('profile').selectOption(rec.profile_id); await fill(normal); const one = {}; await submit(one); one.id = rec.profile_id; one.lines = await lines(); row.profiles.push(one);
+        assert.deepEqual(one.lines, rec.result_lines, rec.profile_id); assert.doesNotMatch(one.text, /(?:電気代|上下水道代)：0円/);
+      }
+      assert.equal(row.profiles.length, config.profiles.length);
     });
     for (const [name, key, bad] of invalid) await check(name, async row => {
       await field('profile').selectOption(config.default_profile); await fill(normal); await field(key).fill(bad); await submit(row);
@@ -125,7 +146,7 @@ try {
         row.tabOrder.push({ selector, ...focused }); assert.ok(focused.focused && focused.outline !== 'none' && focused.width > 0);
       }
       await page.keyboard.press('Shift+Tab'); assert.ok(await page.locator(form + ' button[type="submit"]').evaluate(e => e === document.activeElement));
-      await page.keyboard.press('Enter'); row.submittedText = await result.innerText(); assert.ok(row.submittedText.includes('30回分：294.48円/月'));
+      await page.keyboard.press('Enter'); row.submittedText = await result.innerText(); assert.deepEqual(await lines(), handFor(config.default_profile).result_lines);
       await page.keyboard.press('Tab'); await page.keyboard.press('Space'); assert.deepEqual(await values(), ['', '', '', '']);
     });
     await check('reset', async row => {
@@ -162,7 +183,7 @@ try {
     try {
       const response = await p.goto(report.url, { waitUntil: 'networkidle' }); assert.equal(response.status(), 200); assert.equal(await p.locator(form).count(), 0); assert.ok(await p.locator(mount + ' .raos-cost-no-script').isVisible());
       row.text = await p.locator('main').innerText(); for (const pattern of [/Wh/, /1,?000/, /kWh/, /m[3³]/, /洗剤/]) assert.match(row.text, pattern);
-      assert.equal(await p.locator(mount + ' [data-raos-cost-profile]').count(), 6); row.sources = await p.locator('#guide-evidence a[href^="https://"]').evaluateAll(es => es.map(e => e.href)); assert.ok(row.sources.length > 0);
+      assert.equal(await p.locator(mount + ' [data-raos-cost-profile]').count(), config.profiles.length); row.sources = await p.locator('#guide-evidence a[href^="https://"]').evaluateAll(es => es.map(e => e.href)); assert.ok(row.sources.length > 0);
       row.brokenEvidence = await p.locator(mount + ' a[href^="#guide-evidence-"]').evaluateAll(es => es.filter(e => !document.getElementById(e.hash.slice(1))).map(e => e.hash)); assert.deepEqual(row.brokenEvidence, []);
       await writeFile(path.join(output, 'no-js.html'), await p.content()); report.artifacts.push(path.resolve(output, 'no-js.html')); await snapshot(p, 'no-js');
     } finally { await nojs.close(); }

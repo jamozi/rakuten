@@ -1,0 +1,254 @@
+{
+  "schema": "RAOS_RUNNING_COST_HAND_CALCULATIONS_V1",
+  "task": "KS-025",
+  "recorded_at": "2026-09-15",
+  "article_id": "dishwasher-running-cost",
+  "registry": "changes/editorial-portfolio-v3/local-reader-guides.v1.json",
+  "calculator_asset": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/local-running-cost.js",
+  "scope_note": "計算機の入力値は照合用の固定入力で、特定の家庭・地域の料金ではありません。消費量は registry に記録された公表値で、実測値ではありません。未確認の消費量は計算に含めません。",
+  "inputs": { "electricity": "30.7", "water": "262", "detergent": "2.1", "runs": "30" },
+  "input_units": { "electricity": "円/kWh", "water": "円/m³", "detergent": "円/回", "runs": "回/月" },
+  "formulas": {
+    "electricity": "energy_wh ÷ 1000 × electricity",
+    "water": "water_l ÷ 1000 × water",
+    "detergent": "detergent",
+    "per_cycle": "計算できた費目の和（未計算の費目は加えない）",
+    "monthly": "per_cycle × runs"
+  },
+  "display_rounding": "Intl.NumberFormat('ja-JP', { maximumFractionDigits: 2 })：小数第2位まで、端数0.005ちょうどは切り上げ",
+  "order": "描画順：product_anchor ありの行を registry 順、その後に product_anchor なしの行を registry 順",
+  "profiles": [
+    {
+      "profile_id": "np-tmlk1-standard",
+      "exact_model": "NP-TMLK1-K",
+      "scope": "現行比較対象",
+      "course_label": "標準（洗浄〜送風乾燥）",
+      "energy_wh": 230,
+      "water_l": 2.5,
+      "arithmetic": {
+        "electricity": "230 ÷ 1000 × 30.7 = 0.23 × 30.7 = 7.061",
+        "water": "2.5 ÷ 1000 × 262 = 0.0025 × 262 = 0.655",
+        "per_cycle": "7.061 + 0.655 + 2.1 = 9.816",
+        "monthly": "9.816 × 30 = 294.48"
+      },
+      "fees": { "electricity": "7.061", "water": "0.655", "detergent": "2.1" },
+      "per_cycle": "9.816",
+      "monthly": "294.48",
+      "complete": true,
+      "display": { "electricity": "7.06", "water": "0.66", "detergent": "2.1", "per_cycle": "9.82", "monthly": "294.48" },
+      "table_cells": ["NP-TMLK1-K", "現行比較対象", "標準（洗浄〜送風乾燥）", "230Wh 根拠", "2.5L 根拠"],
+      "result_lines": [
+        "入力した3費目の従量費の概算",
+        "電気代：7.06円/回",
+        "上下水道代：0.66円/回",
+        "洗剤代：2.1円/回",
+        "一回分：9.82円",
+        "30回分：294.48円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "ss-ma251-spec",
+      "exact_model": "SS-MA251",
+      "scope": "現行比較対象",
+      "course_label": "仕様掲載条件（コース別値は未確認）",
+      "energy_wh": null,
+      "water_l": 6,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "6 ÷ 1000 × 262 = 0.006 × 262 = 1.572",
+        "per_cycle": "1.572 + 2.1 = 3.672（電気代を含まない小計）",
+        "monthly": "3.672 × 30 = 110.16（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "1.572", "detergent": "2.1" },
+      "per_cycle": "3.672",
+      "monthly": "110.16",
+      "complete": false,
+      "display": { "electricity": null, "water": "1.57", "detergent": "2.1", "per_cycle": "3.67", "monthly": "110.16" },
+      "table_cells": ["SS-MA251", "現行比較対象", "仕様掲載条件（コース別値は未確認）", "未確認（計算に含めません）", "6L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：1.57円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：3.67円",
+        "30回分の小計：110.16円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "tdws25s-normal",
+      "exact_model": "TDWS25SBL / TDWS25SRD",
+      "scope": "現行比較対象",
+      "course_label": "通常洗浄（乾燥を含む）",
+      "energy_wh": null,
+      "water_l": 3.2,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "3.2 ÷ 1000 × 262 = 0.0032 × 262 = 0.8384",
+        "per_cycle": "0.8384 + 2.1 = 2.9384（電気代を含まない小計）",
+        "monthly": "2.9384 × 30 = 88.152（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "0.8384", "detergent": "2.1" },
+      "per_cycle": "2.9384",
+      "monthly": "88.152",
+      "complete": false,
+      "display": { "electricity": null, "water": "0.84", "detergent": "2.1", "per_cycle": "2.94", "monthly": "88.15" },
+      "table_cells": ["TDWS25SBL / TDWS25SRD", "現行比較対象", "通常洗浄（乾燥を含む）", "未確認（計算に含めません）", "3.2L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：0.84円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：2.94円",
+        "30回分の小計：88.15円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "np-tsp1-tank-level2",
+      "exact_model": "NP-TSP1-W",
+      "scope": "現行比較対象",
+      "course_label": "タンク給水・汚れレベル2・エコナビOFF",
+      "energy_wh": 670,
+      "water_l": 9,
+      "arithmetic": {
+        "electricity": "670 ÷ 1000 × 30.7 = 0.67 × 30.7 = 20.569",
+        "water": "9 ÷ 1000 × 262 = 0.009 × 262 = 2.358",
+        "per_cycle": "20.569 + 2.358 + 2.1 = 25.027",
+        "monthly": "25.027 × 30 = 750.81"
+      },
+      "fees": { "electricity": "20.569", "water": "2.358", "detergent": "2.1" },
+      "per_cycle": "25.027",
+      "monthly": "750.81",
+      "complete": true,
+      "display": { "electricity": "20.57", "water": "2.36", "detergent": "2.1", "per_cycle": "25.03", "monthly": "750.81" },
+      "table_cells": ["NP-TSP1-W", "現行比較対象", "タンク給水・汚れレベル2・エコナビOFF", "670Wh 根拠", "9L 根拠"],
+      "result_lines": [
+        "入力した3費目の従量費の概算",
+        "電気代：20.57円/回",
+        "上下水道代：2.36円/回",
+        "洗剤代：2.1円/回",
+        "一回分：25.03円",
+        "30回分：750.81円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "ss-m171-spec",
+      "exact_model": "SS-M171",
+      "scope": "参考（比較対象外）",
+      "course_label": "仕様掲載条件（コース別値は未確認）",
+      "energy_wh": null,
+      "water_l": 5,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "5 ÷ 1000 × 262 = 0.005 × 262 = 1.31",
+        "per_cycle": "1.31 + 2.1 = 3.41（電気代を含まない小計）",
+        "monthly": "3.41 × 30 = 102.3（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "1.31", "detergent": "2.1" },
+      "per_cycle": "3.41",
+      "monthly": "102.3",
+      "complete": false,
+      "display": { "electricity": null, "water": "1.31", "detergent": "2.1", "per_cycle": "3.41", "monthly": "102.3" },
+      "table_cells": ["SS-M171", "参考（比較対象外）", "仕様掲載条件（コース別値は未確認）", "未確認（計算に含めません）", "5L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：1.31円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：3.41円",
+        "30回分の小計：102.3円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "tk-mdw22w-spec",
+      "exact_model": "TK-MDW22W",
+      "scope": "参考（比較対象外）",
+      "course_label": "仕様掲載条件（コース別値は未確認）",
+      "energy_wh": null,
+      "water_l": 3.2,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "3.2 ÷ 1000 × 262 = 0.0032 × 262 = 0.8384",
+        "per_cycle": "0.8384 + 2.1 = 2.9384（電気代を含まない小計）",
+        "monthly": "2.9384 × 30 = 88.152（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "0.8384", "detergent": "2.1" },
+      "per_cycle": "2.9384",
+      "monthly": "88.152",
+      "complete": false,
+      "display": { "electricity": null, "water": "0.84", "detergent": "2.1", "per_cycle": "2.94", "monthly": "88.15" },
+      "table_cells": ["TK-MDW22W", "参考（比較対象外）", "仕様掲載条件（コース別値は未確認）", "未確認（計算に含めません）", "3.2L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：0.84円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：2.94円",
+        "30回分の小計：88.15円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "tk-mdw22b-spec",
+      "exact_model": "TK-MDW22B",
+      "scope": "参考（比較対象外）",
+      "course_label": "仕様掲載条件（コース別値は未確認）",
+      "energy_wh": null,
+      "water_l": 3.2,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "3.2 ÷ 1000 × 262 = 0.0032 × 262 = 0.8384",
+        "per_cycle": "0.8384 + 2.1 = 2.9384（電気代を含まない小計）",
+        "monthly": "2.9384 × 30 = 88.152（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "0.8384", "detergent": "2.1" },
+      "per_cycle": "2.9384",
+      "monthly": "88.152",
+      "complete": false,
+      "display": { "electricity": null, "water": "0.84", "detergent": "2.1", "per_cycle": "2.94", "monthly": "88.15" },
+      "table_cells": ["TK-MDW22B", "参考（比較対象外）", "仕様掲載条件（コース別値は未確認）", "未確認（計算に含めません）", "3.2L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：0.84円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：2.94円",
+        "30回分の小計：88.15円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    },
+    {
+      "profile_id": "dws-33b-unknown",
+      "exact_model": "DWS-33B(W)",
+      "scope": "参考（比較対象外）",
+      "course_label": "標準（食器18点・小物12点、水温20℃）",
+      "energy_wh": null,
+      "water_l": 6,
+      "arithmetic": {
+        "electricity": "消費電力量が未確認のため計算しない（0円にしない）",
+        "water": "6 ÷ 1000 × 262 = 0.006 × 262 = 1.572",
+        "per_cycle": "1.572 + 2.1 = 3.672（電気代を含まない小計）",
+        "monthly": "3.672 × 30 = 110.16（電気代を含まない小計）"
+      },
+      "fees": { "electricity": null, "water": "1.572", "detergent": "2.1" },
+      "per_cycle": "3.672",
+      "monthly": "110.16",
+      "complete": false,
+      "display": { "electricity": null, "water": "1.57", "detergent": "2.1", "per_cycle": "3.67", "monthly": "110.16" },
+      "table_cells": ["DWS-33B(W)", "参考（比較対象外）", "標準（食器18点・小物12点、水温20℃）", "未確認（計算に含めません）", "6L 根拠"],
+      "result_lines": [
+        "確認できた費目の小計（未計算の費目を含みません）",
+        "電気代：未計算（この条件の公表値が未確認）",
+        "上下水道代：1.57円/回",
+        "洗剤代：2.1円/回",
+        "一回分の小計：3.67円",
+        "30回分の小計：110.16円/月",
+        "基本料金などを含む請求額や、手洗いとの差額ではありません。表示は小数第2位までに丸めています。"
+      ]
+    }
+  ]
+}

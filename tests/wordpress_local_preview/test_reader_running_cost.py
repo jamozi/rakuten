@@ -227,3 +227,117 @@ def test_new_cost_sources_preserve_exact_models_and_course_boundaries():
     article["cost_calculator"]["profiles"][-1]["course"] = "branch-water"
     with pytest.raises(ValueError, match="LOCAL_COST_QUANTITY_AMBIGUOUS_OR_MISSING"):
         build_local_guides(data, today=date(2026, 9, 11))
+
+
+HAND_RECORD = "fixtures/running-cost-hand-calculations.v1.json"
+
+
+def _hand_record():
+    import json
+    from pathlib import Path
+
+    return json.loads(
+        (Path(__file__).resolve().parent / HAND_RECORD).read_text(encoding="utf-8")
+    )
+
+
+def test_rendered_cost_table_matches_hand_calculation_record():
+    import json
+    from pathlib import Path
+
+    from raos.application.editorial.reader_html import Element
+
+    record = _hand_record()
+    root = Path(__file__).resolve().parents[2]
+    data = json.loads(
+        (root / "changes/editorial-portfolio-v3/local-reader-guides.v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    article = next(
+        a for a in data["articles"] if a["article_id"] == "dishwasher-running-cost"
+    )
+    html = next(
+        a["html"]
+        for a in build_local_guides(data, today=date(2026, 9, 11))["articles"]
+        if a["article_id"] == "dishwasher-running-cost"
+    )
+    rows = [n for n in fragment(html).walk() if "data-raos-cost-profile" in n.attrs]
+    assert len(rows) == len(article["cost_calculator"]["profiles"])
+    assert len(record["profiles"]) == len(rows)
+
+    def attribute(value):
+        return None if value is None else str(value)
+
+    for row, expected in zip(rows, record["profiles"], strict=True):
+        cells = [c for c in row.children if isinstance(c, Element)]
+        assert [
+            row.attrs["data-raos-cost-profile"],
+            row.attrs["data-raos-cost-model"],
+            row.attrs["data-raos-cost-course"],
+            row.attrs.get("data-raos-energy-wh"),
+            row.attrs.get("data-raos-water-litres"),
+        ] == [
+            expected["profile_id"],
+            expected["exact_model"],
+            expected["course_label"],
+            attribute(expected["energy_wh"]),
+            attribute(expected["water_l"]),
+        ]
+        assert [c.tag for c in cells] == ["th", "td", "td", "td", "td"]
+        assert [c.text() for c in cells[:5]] == expected["table_cells"]
+        assert cells[1].text() == expected["scope"]
+
+
+def test_hand_calculation_record_arithmetic_is_exact_decimal():
+    from decimal import ROUND_HALF_UP, Decimal
+
+    record = _hand_record()
+    rate = {key: Decimal(value) for key, value in record["inputs"].items()}
+
+    def shown(value):
+        if value is None:
+            return None
+        return format(value.quantize(Decimal("0.01"), ROUND_HALF_UP).normalize(), "f")
+
+    for rec in record["profiles"]:
+        energy, water = rec["energy_wh"], rec["water_l"]
+        fees = {
+            "electricity": None
+            if energy is None
+            else Decimal(str(energy)) / 1000 * rate["electricity"],
+            "water": None
+            if water is None
+            else Decimal(str(water)) / 1000 * rate["water"],
+            "detergent": rate["detergent"],
+        }
+        per_cycle = sum(v for v in fees.values() if v is not None)
+        monthly = per_cycle * rate["runs"]
+        complete = None not in fees.values()
+        exact = {**fees, "per_cycle": per_cycle, "monthly": monthly}
+        recorded = {
+            **rec["fees"],
+            "per_cycle": rec["per_cycle"],
+            "monthly": rec["monthly"],
+        }
+        for key, value in exact.items():
+            assert (
+                None if recorded[key] is None else Decimal(recorded[key])
+            ) == value, (
+                rec["profile_id"],
+                key,
+            )
+            assert rec["display"][key] == shown(value), (rec["profile_id"], key)
+        assert rec["complete"] is complete
+        names = {"electricity": "電気代", "water": "上下水道代", "detergent": "洗剤代"}
+        suffix = "" if complete else "の小計"
+        assert rec["result_lines"][1:6] == [
+            *(
+                f"{names[k]}：未計算（この条件の公表値が未確認）"
+                if v is None
+                else f"{names[k]}：{shown(v)}円/回"
+                for k, v in fees.items()
+            ),
+            f"一回分{suffix}：{shown(per_cycle)}円",
+            f"{rate['runs']}回分{suffix}：{shown(monthly)}円/月",
+        ]

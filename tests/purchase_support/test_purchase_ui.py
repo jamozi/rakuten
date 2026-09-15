@@ -83,3 +83,110 @@ def test_published_controls_are_inert_before_browser_enhancement():
                 assert json.loads(configs[0]) == [
                     {"id": c["id"], "label": c["label"]} for c in article["conditions"]
                 ]
+
+
+DECISION_STEPS_SLUGS = (
+    "portable-power-station-guide",
+    "compact-robot-vacuum-shortlist",
+)
+
+
+def _placement_inputs():
+    import json
+
+    root = Path(__file__).resolve().parents[2]
+    catalog = json.loads(
+        (
+            root / "changes/reader-purchase-support-v1/purchase-support.v1.json"
+        ).read_text()
+    )
+    templates = {
+        slug: (
+            root / "changes/reader-purchase-support-v1/articles" / (slug + ".html")
+        ).read_text()
+        for slug in DECISION_STEPS_SLUGS
+    }
+    return catalog, templates
+
+
+def _positions(body):
+    return (
+        body.index('id="ps-decision-steps"'),
+        body.index('id="ps-choose"'),
+        body.index('id="ps-specs"'),
+    )
+
+
+def test_decision_steps_render_where_declared():
+    from copy import deepcopy
+
+    from raos.application.editorial.purchase_support import render_comparison
+
+    catalog, templates = _placement_inputs()
+    declared = [a for a in catalog["articles"] if a.get("decision_steps")]
+    assert {a["slug"] for a in declared} == set(DECISION_STEPS_SLUGS)
+    for article in declared:
+        # Every article states where its steps go; there is no implicit default.
+        assert "placement" in article["decision_steps"], article["slug"]
+        for placement in ("before_conditions", "after_conditions", "after_specs"):
+            variant = deepcopy(article)
+            variant["decision_steps"]["placement"] = placement
+            body, _ = render_comparison(
+                variant, catalog, templates[article["slug"]], "test-placement"
+            )
+            assert body.count('id="ps-decision-steps"') == 1
+            i, c, s = _positions(body)
+            if placement == "before_conditions":
+                assert i < c < s, (article["slug"], placement)
+            elif placement == "after_conditions":
+                assert c < i < s, (article["slug"], placement)
+                assert body.index("</section>", c) < i
+            else:
+                assert c < s < i, (article["slug"], placement)
+                assert body.index("</section>", s) < i
+        body, _ = render_comparison(
+            article, catalog, templates[article["slug"]], "test-placement"
+        )
+        i, c, s = _positions(body)
+        expected = {
+            "before_conditions": i < c,
+            "after_conditions": c < i < s,
+            "after_specs": s < i,
+        }
+        assert expected[article["decision_steps"]["placement"]], article["slug"]
+        # The generated body (authored templates included) matches the declaration.
+        generated = (
+            Path(__file__).resolve().parents[2]
+            / "changes/wordpress-direct-publish-v1/articles"
+            / (article["slug"] + ".html")
+        ).read_text()
+        assert generated.count('id="ps-decision-steps"') == 1
+        i, c, s = _positions(generated)
+        expected = {
+            "before_conditions": i < c,
+            "after_conditions": c < i < s,
+            "after_specs": s < i,
+        }
+        assert expected[article["decision_steps"]["placement"]], article["slug"]
+
+
+@pytest.mark.parametrize(
+    ("placement", "code"),
+    [
+        (None, "PURCHASE_DECISION_STEPS_PLACEMENT_REQUIRED"),
+        ("after_offers", "PURCHASE_DECISION_STEPS_PLACEMENT_INVALID"),
+    ],
+)
+def test_decision_steps_without_a_valid_placement_are_rejected(placement, code):
+    from copy import deepcopy
+
+    from raos.application.editorial.purchase_support import render_comparison
+
+    catalog, templates = _placement_inputs()
+    slug = DECISION_STEPS_SLUGS[0]
+    article = deepcopy(next(a for a in catalog["articles"] if a["slug"] == slug))
+    article["decision_steps"].pop("placement", None)
+    if placement is not None:
+        article["decision_steps"]["placement"] = placement
+    with pytest.raises(ValueError, match=code):
+        render_comparison(article, catalog, templates[slug], "test-placement")

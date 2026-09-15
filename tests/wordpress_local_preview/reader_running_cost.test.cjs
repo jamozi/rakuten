@@ -131,3 +131,91 @@ test('new NP-TSP1 and color profiles preserve unknown energy and units', () => {
   assert.equal(color.complete, false);
   assert.equal(color.fees.electricity, null);
 });
+
+// KS-025: every registry profile against the hand-calculation record, in rendered (anchored first) order.
+const HAND_RECORD = 'tests/wordpress_local_preview/fixtures/running-cost-hand-calculations.v1.json';
+const ASSET = 'changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/local-running-cost.js';
+const renderedProfiles = () => {
+  const registry = JSON.parse(readFileSync('changes/editorial-portfolio-v3/local-reader-guides.v1.json', 'utf8'));
+  const config = registry.articles.find(a => a.article_id === 'dishwasher-running-cost').cost_calculator;
+  const quantity = (p, ref, kind) => ref === null ? null : registry.facts
+    .find(f => f.evidence_ref === ref && f.exact_model === p.exact_model).quantities
+    .find(q => q.kind === kind && q.course === p.course);
+  const ordered = [...config.profiles.filter(p => p.product_anchor), ...config.profiles.filter(p => !p.product_anchor)];
+  return { total: config.profiles.length, rows: ordered.map(p => {
+    const e = quantity(p, p.energy_ref, 'energy_per_cycle'), w = quantity(p, p.water_ref, 'water_per_cycle');
+    return { id: p.profile_id, model: p.exact_model, anchor: p.product_anchor, energy: e ? e.value : null, water: w ? w.value : null,
+      course: e?.course_label ?? w?.course_label ?? 'コース別の消費量は未確認' };
+  }) };
+};
+class FakeElement {
+  constructor(tag) { Object.assign(this, { tagName: tag.toUpperCase(), children: [], attrs: {}, listeners: {}, ownText: '', hidden: false, dataset: {}, stored: undefined }); }
+  get id() { return this.attrs.id; }
+  get value() {
+    if (this.stored === undefined && this.tagName === 'SELECT') return [...this.walk()].find(o => o.tagName === 'OPTION' && o.defaultSelected)?.attrs.value;
+    return this.stored ?? '';
+  }
+  set value(v) { this.stored = v; }
+  set textContent(text) { this.ownText = String(text); this.children = []; }
+  get textContent() { return this.ownText + this.children.map(c => c.textContent).join(''); }
+  setAttribute(k, v) { this.attrs[k] = String(v); }
+  getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; }
+  hasAttribute(k) { return k in this.attrs; }
+  removeAttribute(k) { delete this.attrs[k]; }
+  append(...nodes) { this.children.push(...nodes); }
+  prepend(...nodes) { this.children.unshift(...nodes); }
+  replaceChildren(...nodes) { this.ownText = ''; this.children = nodes; }
+  addEventListener(name, handler) { this.listeners[name] = handler; }
+  focus() {}
+  *walk() { yield this; for (const child of this.children) yield* child.walk(); }
+}
+// Runs the asset's own mount and submit handler, so result wording comes from the production template.
+const mountCalculator = (rows, defaultId) => {
+  const mount = new FakeElement('div'), noScript = new FakeElement('p');
+  mount.dataset.raosDefaultProfile = defaultId;
+  const trs = rows.map(p => {
+    const tr = new FakeElement('tr');
+    Object.assign(tr.dataset, { raosCostProfile: p.id, raosCostModel: p.model, raosCostCourse: p.course, raosCostAnchor: p.anchor });
+    if (p.energy !== null) tr.setAttribute('data-raos-energy-wh', String(p.energy));
+    if (p.water !== null) tr.setAttribute('data-raos-water-litres', String(p.water));
+    return tr;
+  });
+  mount.querySelectorAll = () => trs;
+  mount.querySelector = selector => selector === '.raos-cost-no-script' ? noScript : null;
+  const document = { querySelector: s => s === '[data-raos-cost-calculator="v1"]' ? mount : null, createElement: tag => new FakeElement(tag) };
+  vm.runInNewContext(readFileSync(ASSET, 'utf8'), { document });
+  const nodes = [...mount.children[0].walk()], byId = id => nodes.find(n => n.attrs.id === id);
+  const output = nodes.find(n => n.attrs.class === 'raos-cost-result');
+  assert.equal(noScript.hidden, true);
+  return (profileId, values) => {
+    byId('raos-cost-profile').value = profileId;
+    for (const [key, value] of Object.entries(values)) byId('raos-cost-' + key).value = value;
+    mount.children[0].listeners.submit({ preventDefault() {} });
+    return output.children.flatMap(c => c.tagName === 'UL' ? c.children.map(li => li.textContent) : [c.textContent]);
+  };
+};
+
+test('hand-calculation record covers every registry profile', () => {
+  const record = JSON.parse(readFileSync(HAND_RECORD, 'utf8'));
+  const { total, rows } = renderedProfiles();
+  assert.equal(rows.length, total);
+  assert.deepEqual(record.profiles.map(p => p.profile_id), rows.map(p => p.id));
+  assert.deepEqual(record.inputs, input);
+  const amount = new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 2 });
+  const submit = mountCalculator(rows, 'np-tmlk1-standard');
+  for (const [i, row] of rows.entries()) {
+    const rec = record.profiles[i], id = rec.profile_id;
+    assert.deepEqual([rec.exact_model, rec.course_label, rec.energy_wh, rec.water_l, rec.scope],
+      [row.model, row.course, row.energy, row.water, row.anchor ? '現行比較対象' : '参考（比較対象外）'], id);
+    const result = calculate({ energyWh: rec.energy_wh, waterLitres: rec.water_l }, input);
+    const actual = { ...result.fees, per_cycle: result.perCycle, monthly: result.monthly };
+    const recorded = { ...rec.fees, per_cycle: rec.per_cycle, monthly: rec.monthly };
+    for (const [key, value] of Object.entries(recorded)) {
+      if (value === null) assert.equal(actual[key], null, id + ' ' + key);
+      else assert.ok(Math.abs(actual[key] - Number(value)) < 1e-9, `${id} ${key} ${actual[key]} != ${value}`);
+      assert.equal(actual[key] === null ? null : amount.format(actual[key]), rec.display[key], id + ' display ' + key);
+    }
+    assert.equal(result.complete, rec.complete, id);
+    assert.deepEqual(submit(id, input), rec.result_lines, id);
+  }
+});
