@@ -118,7 +118,7 @@
   - price overlay の candidate は handle で名指しします（§8）。
   - 値の配信中（§8。owner checkout か ROOT に、公開の記録があり purge 公開もオーナーの incident 記録も無い run、または承認記録が読めない run がある間）は、`status`（`--candidate` なし）が WordPress を呼ばず `{"price_overlay_live": [<run_id>...], "status": "REDACTED_PRICE_OVERLAY_LIVE"}` だけを出します。
     - フラグ無し candidate の `status --candidate` は、64 桁 hex を含む文字列と `runtime_revision` / `plugin_runtime_revision` を、どの深さでも `REDACTED_PRICE_OVERLAY_LIVE` に置き換えます（`theme` 配下を含む）。
-    - deployment operator の読み取りコマンドは拒否します（§8）。
+    - deployment operator の CLI と MCP bridge は、WordPress に届くコマンドをすべて拒否します（§8）。
   - 同じ間、フラグを付けない `prepare` を拒否します（§8。baseline に配信中の注入本文や注入テーマの tree hash が入り、id とディレクトリを出力するため）。
 - WordPress 側では、owner-direct plugin がテーマ release 行の payload にある注入テーマの hash を伏せます（§10.1-3）。行の `before_sha256` / `after_sha256` 列には残ります。purge 後も残る hash の扱いはオーナー決定待ちです（§1-5）。
 
@@ -323,7 +323,18 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
   - 理由: prepare は baseline に配信中の注入本文（または注入テーマの tree hash）を入れ、その candidate の id とディレクトリを出力します。publish は記録の無い書き込みで配信中の run の purge 公開の前提を崩します。
   - `--price-overlay-run` / `--price-overlay-purge` の prepare と publish はこの検査を通りません（purge は配信中の記事に対して行うもの）。別の run が配信中のときの run 付き prepare は §10.1-11 を見てください。
   - 同じ間、`status`（`--candidate` なし）は WordPress を呼ばず `{"price_overlay_live": [...], "status": "REDACTED_PRICE_OVERLAY_LIVE"}` だけを出し、フラグ無し candidate の `status --candidate` は hash と revision を伏せます（§3）。
-  - `scripts/raos_wordpress_deployment_operator.py` の `deployment-status` / `operation-status` / `publication-batch-status` / `owner-direct-status` / `owner-direct-document` / `owner-direct-operation-status` も、同じ判定で `WORDPRESS_MCP_PRICE_OVERLAY_LIVE`（run の状態が読めなければ `WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID`）で拒否します。publisher 内部の呼び出し（purge 公開の status など）は CLI を通らないので影響しません。
+  - `scripts/raos_wordpress_deployment_operator.py` の CLI も、同じ判定で WordPress に届くコマンドを**すべて**拒否します。配信中なら `WORDPRESS_MCP_PRICE_OVERLAY_LIVE`、run の状態が読めなければ `WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID` です。
+    - 判定は、ローカルだけで完結するコマンドの許可リスト（`PRICE_OVERLAY_LOCAL_COMMANDS`）で行います。今は `price-overlay-live-check` だけです。
+    - リストに無いコマンドはすべて拒否します。読み取り系、`owner-direct-*`（`ensure-draft` / `content-propose` / `theme-propose-candidate` / `authorize` / `apply` / `finish` を含む）、`theme-propose-release`、`release-wait-and-apply`、`plugin-propose-change`、`plugin-apply-change`、`operation-recover` が対象です。後から足したコマンドも、リストに加えない限り拒否します。
+    - 理由: 読み取りは注入本文や注入テーマの tree hash を出力します。提案の作成は、その hash を WordPress の新しい行に保存します（purge の対象外）。authorize と apply は、記録の無い書き込みになります。
+    - 拒否は CLI の入口（`main()`）だけで行います。publisher 内部の呼び出し（purge 公開の publish と、それが使う status）は `run()` を直接呼ぶので影響しません。
+  - MCP bridge（`packages/wordpress-mcp-bridge/src/index.ts`）は、どの tool でも、先に `price-overlay-live-check` を実行します。応答が `{"price_overlay_live": false}` と完全に一致したときだけ、本来のコマンドを operator に渡します。
+    - 終了コードが 0 以外なら、そのコード（`WORDPRESS_MCP_PRICE_OVERLAY_LIVE` など）を返します。
+    - 終了コードが 0 でも応答が違えば、`WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID` を返します。
+    - operator 側の拒否と二重になります。
+- **run の保存場所の固定**: `scripts/raos_rakuten_price_refresh.py` の `--owner-checkout` を取るコマンドは、固定の `OWNER_CHECKOUT`（`/home/minami/rakuten`、publisher・operator と同じ値）以外を `OWNER_CHECKOUT_NOT_PINNED` で拒否します。対象は `fetch` / `apply` / `gate` / `purge-expired` / `resolve-incident` / `confirm-plugin-cleanup` です。
+  - worktree の ROOT やほかの clone を指定した場合も、保存を開く前（資格情報の読み込み、承認記録の作成、run ディレクトリの作成より前）に拒否します。
+  - これで、publisher と operator が見ない場所に run が作られることはありません。
 - 出力に candidate id を出しません。注入 candidate の id は注入後本文の hash、purge candidate の id は live の注入後本文を baseline に持つ candidate の hash で、どちらも価格を総当たりで復元できるためです。
   - `prepare` は id を承認記録の `prepared_candidates` にだけ書き、`{"candidate": "price-overlay:<run_id>:<mode>", "candidate_id": "REDACTED_PRICE_OVERLAY", ...}` を出します。candidate ディレクトリのパスも出しません。
   - `preview` / `publish` / `status` / `sync` は price overlay の candidate について、handle、`REDACTED_PRICE_OVERLAY`、mode・run_id、状態（`publication_ready` / `publication_status` / `status` / `result_code`）、`git_sync.status` だけを出します（preview の runtime hash や journal の proposal id・receipt は出さない。`preview.json` と `journal.json` には従来どおり書く）。
@@ -444,7 +455,7 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
      - `HEAD` 以外のローカル branch、`refs/stash`、reflog
      - 上の 2 つ以外の clone・worktree
      - ignore 済みのファイル
-   - `--owner-checkout` は `/home/minami/rakuten` に固定していません。要求するのは、絶対パス・symlink でない・`.secrets` ディレクトリを持つ checkout であることだけです。
+   - 価格更新 CLI の `--owner-checkout` は `/home/minami/rakuten` に固定しています（§8、ほかは `OWNER_CHECKOUT_NOT_PINNED`）。そのうえで、絶対パス・symlink でない・`.secrets` ディレクトリを持つ checkout であることを要求します。`--repository` は固定していません。
    - 文脈一致の限界は §10.2-1 を見てください。
 8. **`hits=1` の曖昧さ**
    - 要求は `hits=1` なので、応答の行は 1 件までです。`classify_observation()` の `MULTIPLE_ROWS`（items が 1 件でない）は、実際には発火しません。

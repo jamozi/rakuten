@@ -82,6 +82,8 @@ def isolated_owner_checkout(monkeypatch, tmp_path):
     """Flag-free commands check the fixed owner checkout for live runs (contract §8): point it
     at an empty location so no test reads the real one."""
     monkeypatch.setattr(operator, "OWNER_CHECKOUT", tmp_path / "fixed-owner-checkout")
+    # The refresh CLI accepts only the fixed owner checkout: the temporary owner here.
+    monkeypatch.setattr(refresh_cli, "OWNER_CHECKOUT", (tmp_path / "owner").resolve())
 
 
 def git(root, *args, check=True):
@@ -1479,7 +1481,7 @@ def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree
     with monkeypatch.context() as local:
         local.setattr(operator, "ROOT", worktree)
         local.setattr(operator, "run", lambda *a: pytest.fail("WordPress was called"))
-        for command in sorted(operator.PRICE_OVERLAY_LIVE_REFUSED):
+        for command in OPERATOR_COMMANDS:
             for option in ([], ["--owner-checkout", str(owner)]):
                 assert operator.main([*option, command]) == 69, command
                 assert capsys.readouterr().err == "WORDPRESS_MCP_PRICE_OVERLAY_LIVE\n"
@@ -1510,6 +1512,361 @@ def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree
         direct.prepare(worktree, ["synthetic-guide"], False, server)
     with pytest.raises(operator.OperatorFailure, match="WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"):
         operator.refuse_while_price_overlay_live(None)
+
+# ---------------------------------------------------------------------------
+# While values may be live: every operator command and every bridge tool is refused
+# ---------------------------------------------------------------------------
+
+OPERATOR_COMMANDS = tuple(
+    next(action for action in operator.parser()._actions if action.dest == "command").choices
+)
+# Every operator command except the allowlisted local ones reaches WordPress. A new command
+# must be classified here; the operator refuses it while live unless it is allowlisted.
+WORDPRESS_COMMANDS = frozenset(
+    {
+        "deployment-status",
+        "operation-status",
+        "publication-batch-status",
+        "release-wait-and-apply",
+        "theme-propose-release",
+        "plugin-propose-change",
+        "plugin-apply-change",
+        "operation-recover",
+        "owner-direct-status",
+        "owner-direct-document",
+        "owner-direct-ensure-draft",
+        "owner-direct-content-propose",
+        "owner-direct-theme-propose",
+        "owner-direct-theme-propose-candidate",
+        "owner-direct-authorize",
+        "owner-direct-apply",
+        "owner-direct-operation-status",
+        "owner-direct-finish",
+    }
+)
+SYNTHETIC = {name: char * 64 for name, char in (("a", "a"), ("b", "b"), ("c", "c"))}
+BRIDGE_TOOL_INPUTS = {
+    "deployment-status": {},
+    "operation-status": {"operation_id": SYNTHETIC["a"]},
+    "publication-batch-status": {
+        "batch_token": SYNTHETIC["a"],
+        "batch_manifest_sha256": SYNTHETIC["b"],
+        "proposal_ids": [SYNTHETIC["c"]],
+    },
+    "release-wait-and-apply": {
+        "batch_token": SYNTHETIC["a"],
+        "batch_manifest_sha256": SYNTHETIC["b"],
+        "proposal_ids": [SYNTHETIC["c"]],
+    },
+    "theme-propose-release": {},
+    "plugin-propose-change": {
+        "source": "wordpress_org",
+        "slug": "synthetic-plugin",
+        "version": "1.0.0",
+        "activation_intent": "preserve",
+    },
+    "plugin-apply-change": {"proposal_id": SYNTHETIC["a"]},
+    "operation-recover": {"operation_id": SYNTHETIC["a"]},
+    "owner-direct-status": {},
+    "owner-direct-document": {"id": 101},
+    "owner-direct-ensure-draft": {
+        "profile": "owner-direct-v1",
+        "article_key": "synthetic-guide",
+        "slug": "synthetic-guide",
+        "idempotency_key": SYNTHETIC["a"],
+    },
+    "owner-direct-content-propose": {
+        "profile": "owner-direct-v1",
+        "article_key": "synthetic-guide",
+        "id": 102,
+        "precondition": {
+            "revision_id": 1,
+            "modified_gmt": "2026-09-14T00:00:00Z",
+            "content_sha256": SYNTHETIC["b"],
+        },
+        "document": {
+            "post_type": "post",
+            "title": "synthetic-guide",
+            "slug": "synthetic-guide",
+            "excerpt": "",
+            "block_markup": GUIDE,
+            "taxonomies": {},
+            "media_ids": [],
+        },
+        "idempotency_key": SYNTHETIC["a"],
+    },
+    "owner-direct-theme-propose-candidate": {"candidate_id": SYNTHETIC["a"]},
+    "owner-direct-authorize": {
+        "profile": "owner-direct-v1",
+        "proposal_ids": [SYNTHETIC["a"]],
+        "expected_theme_tree_sha256": INITIAL_TREE,
+    },
+    "owner-direct-operation-status": {"operation_id": SYNTHETIC["a"]},
+    "owner-direct-apply": {
+        "batch_token": SYNTHETIC["a"],
+        "batch_manifest_sha256": SYNTHETIC["b"],
+        "proposal_ids": [SYNTHETIC["c"]],
+    },
+    "owner-direct-finish": {
+        "profile": "owner-direct-v1",
+        "batch_token": SYNTHETIC["a"],
+        "batch_manifest_sha256": SYNTHETIC["b"],
+        "action": "finalize",
+    },
+}
+
+
+def plain_owner_checkout(tmp_path):
+    """A minimal owner checkout: git-ignored 0700 .secrets with the operator's private dir."""
+    root = (tmp_path / "plain-owner").resolve()
+    root.mkdir()
+    git(root, "init", "-q")
+    (root / ".gitignore").write_text(".secrets/\n")
+    (root / ".secrets/wordpress-mcp").mkdir(parents=True, mode=0o700)
+    (root / ".secrets").chmod(0o700)
+    return root
+
+
+def record_live_publish(root):
+    """A run whose publish is recorded and whose purge publish is not: its values are live."""
+    from raos.adapters.rakuten_price_refresh_client import live_run_ids
+
+    overlay = write_run(root)
+    store = PrivateStore(root)
+    path = store.run_directory(RUN_ID) / "approval.v1.json"
+    recorded = rpr.record_publish(
+        store.read_json(path),
+        overlay,
+        candidate_id=SYNTHETIC["a"],
+        article_keys=KEYS,
+        injected_body_sha256={key: SYNTHETIC["b"] for key in KEYS},
+        runtime_sha256=SYNTHETIC["c"],
+        now=T0 + timedelta(minutes=10),
+    )
+    store.write_json(path, recorded, replace=True)
+    assert live_run_ids([root]) == [RUN_ID]
+
+
+def test_every_operator_command_is_classified_as_reaching_wordpress_or_local():
+    assert operator.PRICE_OVERLAY_LOCAL_COMMANDS == {"price-overlay-live-check"}
+    assert len(OPERATOR_COMMANDS) == len(set(OPERATOR_COMMANDS))
+    assert not WORDPRESS_COMMANDS & operator.PRICE_OVERLAY_LOCAL_COMMANDS
+    assert set(OPERATOR_COMMANDS) == WORDPRESS_COMMANDS | operator.PRICE_OVERLAY_LOCAL_COMMANDS
+
+
+@pytest.mark.parametrize("state", ["live", "unreadable", "not-live"])
+@pytest.mark.parametrize("owner_option", [False, True], ids=["worktree-root", "owner-checkout"])
+@pytest.mark.parametrize("command", OPERATOR_COMMANDS)
+def test_while_live_every_operator_command_is_refused_before_wordpress(
+    tmp_path, monkeypatch, capsys, command, owner_option, state
+):
+    """Run from a separate worktree ROOT (its own .secrets, no runs); the run lives in the
+    fixed owner checkout. Every command, read or write, is refused before any WordPress call."""
+    owner = plain_owner_checkout(tmp_path)
+    worktree = (tmp_path / "worktree").resolve()
+    (worktree / ".secrets").mkdir(parents=True, mode=0o700)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(operator, "ROOT", worktree)
+    if state == "live":
+        record_live_publish(owner)
+    elif state == "unreadable":
+        (owner / ".secrets/rakuten-price-refresh").write_text("")
+    calls = []
+
+    def wordpress(*arguments, **_keywords):
+        calls.append(arguments)
+        return {"synthetic": True}
+
+    for name in ("run", "owner_direct_run", "request_json", "release_wait_and_apply"):
+        monkeypatch.setattr(operator, name, wordpress)
+    monkeypatch.setattr(operator, "read_stdin", lambda *_a: {})
+    option = ["--owner-checkout", str(owner)] if owner_option else []
+    capsys.readouterr()
+    code = operator.main([*option, command])
+    captured = capsys.readouterr()
+    if state == "not-live":
+        # Control: the same harness sees a WordPress call once nothing is live.
+        if command in operator.PRICE_OVERLAY_LOCAL_COMMANDS:
+            assert (code, calls, captured.err) == (0, [], "")
+            assert json.loads(captured.out) == {"price_overlay_live": False}
+        else:
+            assert (code, len(calls), captured.err) == (0, 1, "")
+        return
+    expected = {
+        "live": "WORDPRESS_MCP_PRICE_OVERLAY_LIVE",
+        "unreadable": "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID",
+    }[state]
+    assert (code, captured.out, captured.err, calls) == (69, "", expected + "\n", [])
+
+
+def bridge_root(tmp_path, python_source):
+    """A separate checkout holding the bridge; its .venv/bin/python is the given script."""
+    root = (tmp_path / "bridge-root").resolve()
+    bridge = root / "packages/wordpress-mcp-bridge/src/index.ts"
+    bridge.parent.mkdir(parents=True)
+    shutil.copy2(ROOT / "packages/wordpress-mcp-bridge/src/index.ts", bridge)
+    (root / "node_modules").symlink_to(ROOT / "node_modules", target_is_directory=True)
+    python = root / ".venv/bin/python"
+    python.parent.mkdir(parents=True)
+    python.write_text(python_source, encoding="utf-8")
+    python.chmod(0o700)
+    return root
+
+
+def call_every_bridge_tool(root):
+    node = shutil.which("node")
+    assert node is not None
+    names = sorted(BRIDGE_TOOL_INPUTS)
+    messages = [
+        {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {"name": "pytest", "version": "1.0.0"},
+            },
+        },
+        {"jsonrpc": "2.0", "method": "notifications/initialized"},
+        {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
+        *(
+            {
+                "jsonrpc": "2.0",
+                "id": index + 3,
+                "method": "tools/call",
+                "params": {"name": name, "arguments": BRIDGE_TOOL_INPUTS[name]},
+            }
+            for index, name in enumerate(names)
+        ),
+    ]
+    completed = subprocess.run(
+        [node, "--experimental-strip-types", "packages/wordpress-mcp-bridge/src/index.ts"],
+        cwd=root,
+        input="\n".join(json.dumps(message) for message in messages) + "\n",
+        text=True,
+        capture_output=True,
+        check=True,
+        timeout=300,
+    )
+    responses = {
+        response["id"]: response
+        for response in map(json.loads, completed.stdout.splitlines())
+        if "id" in response
+    }
+    # Every tool the bridge exposes is called (a new tool needs an input here).
+    assert {tool["name"] for tool in responses[2]["result"]["tools"]} == set(names)
+    return {name: responses[index + 3]["result"] for index, name in enumerate(names)}
+
+
+FAKE_OPERATOR = """#!/usr/bin/python3
+import json, pathlib, sys
+here = pathlib.Path(__file__).parent
+json.load(sys.stdin)
+if sys.argv[-1] == "price-overlay-live-check":
+    code, out, err = json.loads((here / "check.json").read_text())
+    sys.stdout.write(out)
+    sys.stderr.write(err)
+    raise SystemExit(code)
+with (here / "dispatched.jsonl").open("a") as handle:
+    handle.write(json.dumps(sys.argv[3:]) + "\\n")
+print("{}")
+"""
+
+
+@pytest.mark.parametrize(
+    ("check", "expected"),
+    [
+        ((69, "", "WORDPRESS_MCP_PRICE_OVERLAY_LIVE\n"), "WORDPRESS_MCP_PRICE_OVERLAY_LIVE"),
+        (
+            (69, "", "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID\n"),
+            "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID",
+        ),
+        ((0, '{"price_overlay_live": true}\n', ""), "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"),
+        ((0, '{"price_overlay_live": 0}\n', ""), "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"),
+        ((0, "{}\n", ""), "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID"),
+        (
+            (0, '{"price_overlay_live": false, "run_ids": []}\n', ""),
+            "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID",
+        ),
+        ((0, '{"price_overlay_live": false}\n', ""), None),
+    ],
+    ids=["live", "state-invalid", "true", "falsy", "empty", "extra-key", "not-live"],
+)
+def test_the_bridge_checks_before_dispatching_any_tool(tmp_path, check, expected):
+    """The bridge entry itself refuses: the operator command is never spawned unless the
+    live check answers exactly {"price_overlay_live": false}."""
+    root = bridge_root(tmp_path, FAKE_OPERATOR)
+    (root / ".venv/bin/check.json").write_text(json.dumps(check))
+    results = call_every_bridge_tool(root)
+    dispatched = root / ".venv/bin/dispatched.jsonl"
+    if expected is None:
+        assert all(result.get("isError") is not True for result in results.values())
+        commands = sorted(json.loads(line)[0] for line in dispatched.read_text().splitlines())
+        assert commands == sorted(BRIDGE_TOOL_INPUTS)
+        return
+    assert {name: result["structuredContent"] for name, result in results.items()} == {
+        name: {"code": expected} for name in BRIDGE_TOOL_INPUTS
+    }
+    assert all(result["isError"] is True for result in results.values())
+    assert not dispatched.exists()
+
+
+def test_the_bridge_with_the_real_operator_refuses_every_tool_while_live(tmp_path):
+    """End to end from a separate checkout: bridge -> real operator CLI (its OWNER_CHECKOUT
+    pointed at the temporary owner) with every WordPress primitive and socket recorded."""
+    owner = plain_owner_checkout(tmp_path)
+    record_live_publish(owner)
+    guard = f"""#!{sys.executable}
+import importlib.util, json, pathlib, sys
+sys.dont_write_bytecode = True
+here = pathlib.Path(__file__).parent
+flag, operator_path, *arguments = sys.argv[1:]
+assert flag == "-B"
+sys.path.insert(0, str(pathlib.Path(operator_path).parent))
+spec = importlib.util.spec_from_file_location("raos_wordpress_deployment_operator", operator_path)
+operator = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = operator
+spec.loader.exec_module(operator)
+operator.OWNER_CHECKOUT = pathlib.Path({str(owner)!r})
+
+def wordpress(*_args, **_kwargs):
+    with (here / "wordpress-calls.jsonl").open("a") as handle:
+        handle.write(json.dumps(arguments) + "\\n")
+    operator.fail("SYNTHETIC_WORDPRESS_CALLED")
+
+operator.run = wordpress
+operator.request_json = wordpress
+
+def audit(event, _args):
+    if event in ("socket.connect", "socket.getaddrinfo"):
+        wordpress()
+
+sys.addaudithook(audit)
+raise SystemExit(operator.main(arguments))
+"""
+    root = bridge_root(tmp_path, guard)
+    (root / "scripts").mkdir()
+    shutil.copy2(ROOT / "scripts/raos_wordpress_deployment_operator.py", root / "scripts")
+    (root / "python").symlink_to(ROOT / "python", target_is_directory=True)
+    calls = root / ".venv/bin/wordpress-calls.jsonl"
+
+    results = call_every_bridge_tool(root)
+    assert {name: result["structuredContent"] for name, result in results.items()} == {
+        name: {"code": "WORDPRESS_MCP_PRICE_OVERLAY_LIVE"} for name in BRIDGE_TOOL_INPUTS
+    }
+    assert not calls.exists()
+
+    # Control: once nothing is live, the same harness records every tool reaching WordPress.
+    shutil.rmtree(owner / ".secrets/rakuten-price-refresh")
+    results = call_every_bridge_tool(root)
+    assert {name: result["structuredContent"] for name, result in results.items()} == {
+        name: {"code": "SYNTHETIC_WORDPRESS_CALLED"} for name in BRIDGE_TOOL_INPUTS
+    }
+    assert sorted(json.loads(line)[0] for line in calls.read_text().splitlines()) == sorted(
+        BRIDGE_TOOL_INPUTS
+    )
+
 
 # ---------------------------------------------------------------------------
 # A run is finished only when no local copy of its values remains

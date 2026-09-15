@@ -67,6 +67,10 @@ from raos.domain.editorial.rakuten_price_refresh import (  # noqa: E402
     validate_plan,
 )
 
+# Contract §8: the publisher and the deployment operator look for live runs in this fixed owner
+# checkout (and their own ROOT). A run store anywhere else would be invisible to them, so every
+# command that opens the store refuses any other --owner-checkout.
+OWNER_CHECKOUT = Path("/home/minami/rakuten")
 THEME_JS_RELATIVE = "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js"
 
 EXIT_OK = 0
@@ -576,6 +580,8 @@ def main(
     args = parser().parse_args(argv)
     now_clock = clock or (lambda: datetime.now(UTC))
     try:
+        if args.command != "plan" and args.owner_checkout != OWNER_CHECKOUT:
+            fail("OWNER_CHECKOUT_NOT_PINNED")
         if args.command == "plan":
             return command_plan(args)
         if args.command == "fetch":

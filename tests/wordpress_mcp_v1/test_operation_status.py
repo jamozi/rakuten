@@ -248,6 +248,9 @@ def bridge_calls(
     fake_python.write_text(
         "#!/usr/bin/python3\n"
         "import json, pathlib, sys\n"
+        "if sys.argv[-1] == 'price-overlay-live-check':\n"
+        "    print(json.dumps({'price_overlay_live': False}))\n"
+        "    raise SystemExit(0)\n"
         "record = {'argv': sys.argv[1:], 'inputs': json.load(sys.stdin)}\n"
         "pathlib.Path(__file__).with_name('operator-invoked.json').write_text(json.dumps(record))\n"
         f"print({json.dumps(receipt())!r})\n",

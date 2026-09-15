@@ -1595,19 +1595,11 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
     fail("WORDPRESS_MCP_COMMAND_REFUSED")
 
 
-# Commands that print WordPress state (theme tree and runtime revisions, documents, operation
-# and batch records): refused while a Rakuten price-overlay run may be live, because the
-# injected bodies and injected theme hashes are price-recoverable (price-refresh contract §8).
-PRICE_OVERLAY_LIVE_REFUSED: Final = frozenset(
-    {
-        "deployment-status",
-        "operation-status",
-        "publication-batch-status",
-        "owner-direct-status",
-        "owner-direct-document",
-        "owner-direct-operation-status",
-    }
-)
+# Price-refresh contract §8: while a Rakuten price-overlay run may be live, the CLI refuses every
+# command except these purely local ones. Every other command reaches WordPress and can print,
+# store or overwrite price-recoverable state (injected bodies, the injected theme tree hash), so a
+# command added later is refused by default until it is listed here.
+PRICE_OVERLAY_LOCAL_COMMANDS: Final = frozenset({"price-overlay-live-check"})
 PRICE_OVERLAY_RUNS: Final = ".secrets/rakuten-price-refresh"
 
 
@@ -1663,26 +1655,37 @@ def parser() -> argparse.ArgumentParser:
             "owner-direct-apply",
             "owner-direct-operation-status",
             "owner-direct-finish",
+            "price-overlay-live-check",
         ),
     )
     return result
+
+
+def price_overlay_live_check(owner: Path | None) -> dict[str, object]:
+    """The MCP bridge runs this before every tool (contract §8). Local only: never WordPress."""
+    refuse_while_price_overlay_live(owner)
+    exact_object(read_stdin(), set())
+    return {"price_overlay_live": False}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
         owner = validated_owner_checkout(arguments.owner_checkout)
-        if arguments.command in PRICE_OVERLAY_LIVE_REFUSED:
+        if arguments.command not in PRICE_OVERLAY_LOCAL_COMMANDS:
             refuse_while_price_overlay_live(owner)
         private_context_reset = _private_owner.set(owner)
         try:
-            if arguments.command == "owner-direct-theme-propose":
-                inputs = read_stdin(48 * 1024 * 1024)
-            elif arguments.command == "owner-direct-content-propose":
-                inputs = read_stdin(4 * 1024 * 1024)
+            if arguments.command == "price-overlay-live-check":
+                output = price_overlay_live_check(owner)
             else:
-                inputs = read_stdin()
-            output = run(arguments.command, inputs)
+                if arguments.command == "owner-direct-theme-propose":
+                    inputs = read_stdin(48 * 1024 * 1024)
+                elif arguments.command == "owner-direct-content-propose":
+                    inputs = read_stdin(4 * 1024 * 1024)
+                else:
+                    inputs = read_stdin()
+                output = run(arguments.command, inputs)
         finally:
             _private_owner.reset(private_context_reset)
         sys.stdout.buffer.write(canonical_json(output) + b"\n")

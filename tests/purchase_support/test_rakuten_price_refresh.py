@@ -18,6 +18,8 @@ import stat
 import subprocess
 from urllib.parse import parse_qsl, urlsplit
 
+import argparse
+
 import pytest
 
 from raos.adapters.rakuten_price_refresh_client import (
@@ -31,6 +33,7 @@ from raos.adapters.rakuten_price_refresh_client import (
 from raos.domain.editorial import rakuten_price_refresh as rpr
 from raos.domain.editorial.purchase_support import reference_price
 from scripts import raos_rakuten_price_refresh as cli
+from scripts import raos_wordpress_deployment_operator as operator
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = Path(__file__).parent / "fixtures/rakuten_price_refresh"
@@ -43,6 +46,8 @@ RUN_ID = "ks020-synthetic-0001"
 # Odd microseconds: the ISO strings derived from this instant appear in no tracked file.
 T0 = datetime(2026, 9, 15, 1, 2, 3, 456789, tzinfo=timezone.utc)
 CREDIT = '<p class="ps-note ps-media-credit">'
+# Captured before any fixture points the CLI at a temporary owner checkout.
+FIXED_OWNER_CHECKOUT = cli.OWNER_CHECKOUT
 
 
 @pytest.fixture(autouse=True)
@@ -577,6 +582,82 @@ def run(argv, capsys, **kwargs):
 
 def fetch_args(root, plan_path, *extra):
     return ["fetch", "--owner-checkout", root, "--plan", plan_path, *extra]
+
+
+@pytest.fixture(autouse=True)
+def pinned_owner_checkout(monkeypatch, tmp_path):
+    """The CLI accepts only the fixed owner checkout (contract §8): the temporary one here."""
+    monkeypatch.setattr(cli, "OWNER_CHECKOUT", (tmp_path / "owner").resolve())
+
+
+def owner_checkout_commands():
+    subcommands = next(
+        action
+        for action in cli.parser()._actions
+        if isinstance(action, argparse._SubParsersAction)
+    )
+    return sorted(
+        name
+        for name, command in subcommands.choices.items()
+        if any("--owner-checkout" in action.option_strings for action in command._actions)
+    )
+
+
+def test_the_run_store_is_pinned_where_the_publisher_and_operator_look():
+    assert FIXED_OWNER_CHECKOUT == operator.OWNER_CHECKOUT == Path("/home/minami/rakuten")
+
+
+@pytest.mark.parametrize("elsewhere_name", ["worktree-root", "other-clone"])
+@pytest.mark.parametrize("command", owner_checkout_commands())
+def test_a_run_store_outside_the_fixed_owner_checkout_is_refused(
+    owner, capsys, tmp_path, monkeypatch, command, elsewhere_name
+):
+    """A worktree ROOT or another clone is a valid checkout with credentials, yet the publisher
+    and operator never look there: refused before credentials, approvals or run directories."""
+    root, plan_path = owner
+    elsewhere = (tmp_path / elsewhere_name).resolve()
+    elsewhere.mkdir()
+    git(elsewhere, "init", "-q")
+    (elsewhere / ".gitignore").write_text(".secrets/\n")
+    (elsewhere / ".secrets").mkdir(mode=0o700)
+    write_credentials(elsewhere)
+    if elsewhere_name == "worktree-root":
+        monkeypatch.setattr(cli, "ROOT", elsewhere)
+    extra = {
+        "fetch": ["--plan", plan_path, "--owner-approved-run", RUN_ID],
+        "apply": ["--run-id", RUN_ID, "--plan", plan_path],
+        "gate": ["--run-id", RUN_ID, "--repository", elsewhere],
+        "purge-expired": ["--include-unexpired"],
+        "resolve-incident": [
+            "--run-id", RUN_ID, "--resolution", sorted(cli.INCIDENT_RESOLUTIONS)[0]
+        ],
+        "confirm-plugin-cleanup": ["--run-id", RUN_ID],
+    }
+    # A new command taking --owner-checkout must be added here (and is pinned by main()).
+    assert set(extra) == set(owner_checkout_commands())
+
+    def tree():
+        return sorted(
+            (str(p.relative_to(tmp_path)), p.stat().st_mtime_ns)
+            for p in tmp_path.rglob("*")
+            if ".git" not in p.parts
+        )
+
+    before = tree()
+    transport = FakeTransport([ok(body_for(row()))] * 3)
+    code, lines = run(
+        [command, "--owner-checkout", elsewhere, *extra[command]],
+        capsys,
+        transport=transport,
+        sleep=lambda _s: None,
+    )
+    assert (code, lines) == (
+        cli.EXIT_REFUSED,
+        [{"result": "REFUSED", "code": "OWNER_CHECKOUT_NOT_PINNED"}],
+    )
+    assert transport.calls == []
+    assert not (elsewhere / ".secrets/rakuten-price-refresh").exists()
+    assert tree() == before
 
 
 def test_fetch_refuses_to_run_without_owner_approved_run(owner, capsys):
