@@ -138,6 +138,63 @@ class ProjectionTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "LEDGER_IDENTITY_STALE"):
                     render_pages(changed, catalog, data, {})
 
+    def test_prepare_outage_is_a_paper_worksheet_with_worked_example(self):
+        from scripts.raos_reader_live_patch import Document
+
+        body = next(
+            b for p, b in builder.build().items() if p.name == "prepare-outage.html"
+        )
+        self.assertIn("記入式", body)
+        self.assertIn("自動で計算はしません", body)
+        for tag in ("<form", "<input", "<select", "<textarea"):
+            self.assertNotIn(tag, body)
+        doc = Document(body)
+        tables = [n for n in doc.nodes if n.tag == "table"]
+        self.assertEqual(len(tables), 1)
+        table = body[tables[0].start : tables[0].end]
+        headers = re.findall(r'<th scope="col"[^>]*>([^<]+)</th>', table)
+        self.assertEqual(
+            headers,
+            [
+                "使う機器",
+                "消費電力W・同時に使うか",
+                "必要時間",
+                "起動時の条件",
+                "動かす場所・手持ちの備え",
+            ],
+        )
+        rows = re.findall(r"<tr[^>]*>(.*?)</tr>", table, re.S)[1:]
+        cells = [
+            [
+                re.sub(r"<[^>]+>", "", c)
+                for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", r, re.S)
+            ]
+            for r in rows
+        ]
+        examples = [r for r in cells if r[0].startswith("記入例")]
+        self.assertEqual(len(examples), 2)
+        self.assertEqual(examples[0][1:3], ["10W扇風機と同時", "8時間"])
+        self.assertEqual(examples[1][1:3], ["40W合わせて50W", "4時間"])
+        # Five columns stay readable at 320px; the blank rule lives in the lead.
+        self.assertTrue(all(len(r) == 5 for r in cells))
+        self.assertIn("未確認なら空欄のままにします", body)
+        self.assertFalse(any("未確認なら空欄" in c for r in cells for c in r))
+        self.assertTrue(all(len(c) <= 16 for r in cells for c in r))
+        blank = [r for r in cells if all(set(c) <= set("＿W時間") for c in r)]
+        self.assertGreaterEqual(len(blank), 2)
+        self.assertIn("10W×8時間＋40W×4時間＝240Wh", body)
+        self.assertNotEqual(
+            next(
+                n.attrs.get("aria-label")
+                for n in doc.nodes
+                if n.attrs.get("role") == "region" and n.start < tables[0].start < n.end
+            ),
+            "確認項目の表",
+        )
+        self.assertIn('href="/portable-power-station-guide/#ps-decision-steps"', body)
+        self.assertIn("電源を買い足す必要はありません", body)
+        self.assertIn("定格1000W・1500Wなどの階級だけで起動を保証しません", body)
+
     def test_home_uses_short_links_without_card_metadata(self):
         result = builder.build()
         home = next(v for k, v in result.items() if k.name == "home.html")

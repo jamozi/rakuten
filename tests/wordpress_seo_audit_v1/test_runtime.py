@@ -27,7 +27,12 @@ def response(url: str, status: int, body: str, **headers: str) -> audit.HttpResp
     )
 
 
-def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
+def html(
+    item: audit.InventoryItem,
+    required: frozenset[str],
+    *,
+    policy_breadcrumb: bool = False,
+) -> str:
     del required
     origin = "https://kurashinoshirube.com"
     title = "Valid title"
@@ -80,6 +85,8 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
         "url": origin + "/",
     }
     policy = item.identifier in {"about-ad-policy", "comparison-policy", "privacy-policy"}
+    # Policy bodies have no visible breadcrumb; the theme emits none (KS-029-b3).
+    breadcrumb = not policy or policy_breadcrumb
     graph: list[dict[str, Any]] = []
     if item.role == "article":
         graph.append(
@@ -111,7 +118,6 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
             {
                 "@id": item.url + "#webpage",
                 "@type": page_type,
-                "breadcrumb": {"@id": item.url + "#breadcrumb"},
                 "description": description,
                 "inLanguage": "ja-JP",
                 "isPartOf": {"@id": website_id},
@@ -119,7 +125,9 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
                 "url": item.url,
             }
         )
-    if item.role != "home":
+        if breadcrumb:
+            graph[-1]["breadcrumb"] = {"@id": item.url + "#breadcrumb"}
+    if item.role != "home" and breadcrumb:
         crumbs = [
             {
                 "@type": "ListItem",
@@ -505,6 +513,25 @@ def test_article_json_ld_url_and_breadcrumb_are_required(
     report = run(contract, valid_responses)
 
     assert "structured_data_semantics" in failed_checks(report, item.identifier)
+
+
+@pytest.mark.parametrize("identifier", ["about-ad-policy", "comparison-policy", "privacy-policy"])
+def test_policy_page_json_ld_does_not_claim_an_invisible_breadcrumb(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+    identifier: str,
+) -> None:
+    """KS-029-b3: policy pages pass without BreadcrumbList and fail if one reappears."""
+    item = next(entry for entry in contract.items if entry.identifier == identifier)
+    assert item.role == "fixed_page"
+
+    assert failed_checks(run(contract, valid_responses), identifier) == set()
+
+    legacy = html(item, contract.required_types[item.role], policy_breadcrumb=True)
+    assert '"@type": "BreadcrumbList"' in legacy
+    valid_responses[item.url] = response(item.url, 200, legacy)
+
+    assert "structured_data_semantics" in failed_checks(run(contract, valid_responses), identifier)
 
 
 def test_json_ld_non_scalar_top_level_type_fails_closed_without_crashing(

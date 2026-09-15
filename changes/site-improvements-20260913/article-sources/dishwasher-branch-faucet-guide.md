@@ -22,6 +22,17 @@
 
 本文は公式情報の要約と購入前の確認項目。費用表の配送費、作業範囲、退去時復旧等は「請求される」という断定ではなく、見積もりに含まれるかを確かめる編集上のチェック項目。価格、部品の適合、水圧、住居の許可、具体的な施工費・保証・納期は読者の条件が未確認のためUNKNOWN。実機使用・施工経験や全機種の同一条件比較を示す表現は使わない。
 
+## 2026-09-16 の追記（KS-130）
+
+本文は `articles.v1.json` の `body_source` が指す `changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html` を直接編集する。`scripts/build_reader_purchase_support_v1.py` の `ARTICLE_OUTPUT_PATHS` にも `scripts/build_site_editorial_pages.py` の `OUTPUT_PATHS` にも含まれず、生成器はない（2026-09-16 に両ファイルで確認）。
+
+- `#branch-check` の手順の後に、適合を「本体側／水栓側／設置条件」の3行に分けた表を追加した。数値は書かず、確認先だけを示す。
+  - 本体側：比較表の仕様欄にある給水方式と、型番の説明書。例は既出の [SS-LH451説明書 p.26](https://www.siroca.co.jp/im/ss-lh451.pdf#page=26)（分岐水栓用給水ホースは別売）。550 の比較表には「給水」という列名がなく、給水方式は仕様セル内の表記（例：タンク／分岐水栓）なので「給水欄」とは書かない。
+  - 水栓側：既出の [パナソニック「蛇口の品番から分岐水栓を探す」](https://panasonic.jp/dish/branch-faucet.html)。他社機はそのメーカーの案内で確認する（パナソニックの検索を他社機の適合証明に使わない）。
+  - 設置条件：水圧・給湯接続・排水・電源とアースは、既出の [SS-MA251説明書 pp.21–24](https://www.siroca.co.jp/im/ss-ma251.pdf#page=21) と [SS-LH451説明書 pp.23–27](https://www.siroca.co.jp/im/ss-lh451.pdf#page=23)。数値は別機種へ流用しない。
+- `#branch-consult` の最後の段落の前に、容量別の比較表への導線を追加した：`/standard-dishwasher-comparison/#std-comparison`（「標準容量の比較（掲載機種は16〜28点）」。550 は標準を13〜29点と定義し、掲載機種が16〜28点なので区分の定義と読めない表記にした）と `/large-dishwasher-comparison/#large-compare`（6機種とも公称40点）。
+- 型番の列挙とヒーロー画像の差し替えは今回行わない（オーナー判断待ち）。「上記の機種名は条件の例示で、推奨順位を表しません。」の記載は維持する。
+
 ## 画像
 
 既存の所有者指示によるAI生成画像を、加工せず再利用する。メーカーの実物画像や汎用の施工写真は新規取得していない。画像上へ文字・型番を追加していない。

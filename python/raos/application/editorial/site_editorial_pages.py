@@ -124,9 +124,13 @@ def link(url: str, text: str) -> str:
     return f'<a href="{escape(url, quote=True)}">{escape(text)}</a>'
 
 
-def table(headers: list[str], rows: list[list[str]]) -> str:
+def table(
+    headers: list[str], rows: list[list[str]], label: str = "確認項目の表"
+) -> str:
     return (
-        '<div class="ks-editorial-table" role="region" aria-label="確認項目の表" tabindex="0"><table><thead><tr>'
+        '<div class="ks-editorial-table" role="region" aria-label="'
+        + escape(label, quote=True)
+        + '" tabindex="0"><table><thead><tr>'
         + "".join(f'<th scope="col">{escape(h)}</th>' for h in headers)
         + "</tr></thead><tbody>"
         + "".join(
@@ -414,7 +418,7 @@ def render_pages(
             raise ValueError("EDITORIAL_REPRESENTATIVE_INVALID: " + category)
         return article
 
-    def category_cards() -> str:
+    def category_cards(heading: str = "h3") -> str:
         out = ""
         for slug, cat in data["categories"].items():
             articles = category_articles(slug)
@@ -433,7 +437,7 @@ def render_pages(
             )
             summary = f"{cat['name']}の記事 {len(articles)}本（{'・'.join(kinds)}）"
             out += (
-                f'<article class="ks-editorial-card"><h3>{escape(cat["name"])}</h3><p>{escape(cat["lead"])}</p><ul>'
+                f'<article class="ks-editorial-card"><{heading}>{escape(cat["name"])}</{heading}><p>{escape(cat["lead"])}</p><ul>'
                 + "".join("<li>" + route + "</li>" for route in routes)
                 + f"</ul><details><summary>{escape(summary)}</summary><ul>"
                 + "".join(
@@ -612,7 +616,8 @@ def render_pages(
         elif slug == "categories":
             body = (
                 "<p>商品名が決まっていれば代表比較へ。まだ決まっていなければ、各カードの3つめのリンクから、条件で候補を絞る節へ進めます。</p>"
-                + category_cards()
+                # The page has no section heading above the cards (KS-028-d).
+                + category_cards(heading="h2")
             )
         elif slug == "purposes":
             body = (
@@ -1059,15 +1064,46 @@ def render_pages(
                 + "<p>重視する条件で候補を絞り、便の規定・収納・予算を最後に照合します。手持ちの鞄で足りるなら買い足さない選択もあります。</p>"
             )
         elif slug == "prepare-outage":
+            # KS-116: a paper worksheet; the worked example reuses article 28's
+            # recorded assumption (10W x 8h + 40W x 4h = 240Wh, 50W together).
             body = section(
                 "停電時に不足する用途を整理する",
-                table(
-                    ["使う機器", "必要時間", "動かす場所・手持ちの備え"],
+                "<p>この表は紙やメモに書き写して使う記入式です。ページ上で自動で計算はしません。記入例の2行を参考に、手元の機器に置き換えてください。起動時の条件は説明書で確かめ、未確認なら空欄のままにします。</p>"
+                + table(
                     [
-                        ["メモ：＿＿＿＿", "＿＿時間", "＿＿＿＿"],
-                        ["メモ：＿＿＿＿", "＿＿時間", "＿＿＿＿"],
+                        "使う機器",
+                        "消費電力W・同時に使うか",
+                        "必要時間",
+                        "起動時の条件",
+                        "動かす場所・手持ちの備え",
                     ],
+                    [
+                        [
+                            "記入例：照明",
+                            "10W<br>扇風機と同時",
+                            "8時間",
+                            "説明書で確認",
+                            "＿＿",
+                        ],
+                        [
+                            "記入例：扇風機",
+                            "40W<br>合わせて50W",
+                            "4時間",
+                            "説明書で確認",
+                            "＿＿",
+                        ],
+                        ["＿＿", "＿＿W", "＿＿時間", "＿＿", "＿＿"],
+                        ["＿＿", "＿＿W", "＿＿時間", "＿＿", "＿＿"],
+                    ],
+                    label="停電時の用途の記入表（記入式・自動計算なし）",
                 )
+                + "<p>記入例は説明用の仮定で、実測値や機器の対応を示すものではありません。例の合計は10W×8時間＋40W×4時間＝240Whです。変換で失われる分を含めた必要容量の考え方は"
+                + al(
+                    "portable-power-station-guide",
+                    "必要Whの計算例",
+                    "ps-decision-steps",
+                )
+                + "で確認できます。</p>"
                 + "<p>既に持つ充電手段や照明で必要な用途を満たせるなら、電源を買い足す必要はありません。住宅全体・医療機器への給電は対象外です。</p>",
             ) + section(
                 "不足する用途がある場合",
