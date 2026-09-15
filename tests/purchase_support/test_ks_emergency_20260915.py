@@ -286,3 +286,40 @@ def test_relative_claims_match_the_article_candidate_count(roots: dict[str, Elem
             if int(match.group(1)) != expected:
                 problems.append((key, match.group(0), f"expected {expected}"))
     assert problems == []
+
+
+THEME_RUNTIME = ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
+
+
+def test_rakuten_product_photos_carry_an_identifying_label() -> None:
+    """KS-018: every Rakuten photo names its product, so the theme alt text is not generic."""
+    runtime = json.loads(THEME_RUNTIME.read_text(encoding="utf-8"))
+    catalog = json.loads((ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json").read_text(encoding="utf-8"))
+    products = {p["product_id"]: p for p in catalog["products"]}
+    unlabeled, doubled = [], []
+    for article in runtime["articles"]:
+        for product_id, html in (article.get("media") or {}).items():
+            if "ps-rakuten-product-photo" not in html:
+                continue
+            match = re.search(r'<figure class="ps-product-image ps-rakuten-product-photo" aria-label="([^"]+)の商品画像"', html)
+            if not match:
+                unlabeled.append((article["slug"], product_id))
+                continue
+            label = match.group(1)
+            model = products[product_id]["exact_model"].split(" / ")[0]
+            if label.count(model) > 1:
+                doubled.append((article["slug"], product_id, label))
+    assert unlabeled == []
+    assert doubled == []
+
+
+def test_product_image_label_adds_the_model_only_when_missing() -> None:
+    from raos.application.editorial.purchase_support import product_image_label
+
+    assert product_image_label({"name": "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K", "exact_model": "NP-TMLK1-K"}) == \
+        "パナソニック 食器洗い乾燥機 SOLOTA（ソロタ） NP-TMLK1-K"
+    assert product_image_label({"name": "Anker Solix C1000 Portable Power Station", "exact_model": "A1761"}) == \
+        "Anker Solix C1000 Portable Power Station A1761"
+    # The KS-132 case: the name already carries the base model, so it is not repeated.
+    assert product_image_label({"name": "PROTECA エアロフレックスDX2 01521", "exact_model": "01521-09"}) == \
+        "PROTECA エアロフレックスDX2 01521"

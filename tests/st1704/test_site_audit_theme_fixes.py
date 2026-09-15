@@ -522,3 +522,26 @@ def test_home_hero_photo_is_preloaded_only_on_the_front_page(follow_up) -> None:
         },
     ]
     assert follow_up["preload_elsewhere"] == []
+
+
+ROW_FIGURE = (
+    '<figure class="ps-product-image ps-rakuten-product-photo" aria-label="シロカ 食器洗い乾燥機 SS-M171の商品画像">'
+    '<div class="raos-rakuten-image-300"><a href="https://hb.afl.rakuten.co.jp/ichiba/r/?pc=s">'
+    '<img src="https://hbb.afl.rakuten.co.jp/hgb/r/?s=300x300&t=pict" alt=""></a></div>'
+    "<figcaption>SS-M171／メタリックウォームグレー・本体単体（広告）</figcaption></figure>"
+)
+
+
+@pytest.fixture(scope="module")
+def rendered_row() -> dict[str, object]:
+    return run_theme_php(
+        RENDER_PROGRAM,
+        json.dumps({"content": '<div class="raos-editorial-v2">' + ROW_FIGURE + "</div>\n", "excerpt": "比較表の商品画像"}, ensure_ascii=False),
+    )
+
+
+def test_comparison_row_photo_alt_uses_the_figure_label_not_the_generic_fallback(rendered_row) -> None:
+    """KS-018: the "（広告）" row caption is not a shop caption, so the figure label must drive alt."""
+    decorated = str(rendered_row["decorated"])
+    assert 'alt="シロカ 食器洗い乾燥機 SS-M171 の商品画像（楽天市場）"' in decorated
+    assert "楽天市場の商品 の商品画像" not in decorated
