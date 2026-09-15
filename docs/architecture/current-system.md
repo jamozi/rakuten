@@ -92,45 +92,23 @@ RAOSのscoped CLI起動・inventory・必要runtimeの手順はこの節を正�
 
 Project設定は`.codex/config.toml`、workflowは`.agents/skills/`です。
 Global preference・Plugin install state・個人Memoryをrepositoryへコピーしません。
-GSDのdisable対象は現在ホストで発見したSKILL.md pathです。Codex 0.153.4には
-[project Skill filterの制約](https://github.com/openai/codex/issues/20210)があり、
-通常の起動ではこの設定をSkill一覧へ反映しません。RAOSでは実際のWSL checkoutから
-既存の`scripts/codex_harness.py run --`を使うscoped CLIを標準入口とします。
-この入口がprojectのSkill設定だけをsession overrideへ渡します。新しいlauncherは追加せず、
-Global GSDの設定・インストール状態と権限設定を維持します。
+GSD・Superpowersの通常時無効化はユーザー設定が所有します。Windows/WSLそれぞれの有効な
+Codex homeへ `[[skills.config]]` の `path` / `enabled=false` を設定し、配布元のスキルは編集しません。
+使う時は該当スキルの設定を `enabled=true` に戻して再起動します。プラグイン更新後はパスの失効を確認します。
+個人設定をこのrepositoryへ複製しません。
 
-以下のcheckout、Codex home、実行ファイルの絶対pathはこのホストの例です。別ホストでは
-実際のWSL checkoutと実行可能なWSL版Codexに置き換えます。`RAOS_CODEX_BIN`は明示した
-実行ファイルを選択し、未指定時だけPATH上の`codex`を使います。この例の実行ファイルは
-`--version`で`codex-cli 0.153.4`を確認しています。`CODEX_HOME`と`RAOS_CODEX_BIN`は
-起動processの環境として渡し、Global設定やshell profileへ保存しません。
-
-WSL shellでは、subshell内だけに環境を設定して起動します。
+既存のscoped CLIは、ユーザー設定と任意のproject Skill selectorをsession overrideへ渡す互換経路です。
+同じselectorではprojectを優先し、権限や承認設定は変更しません。通常起動とscoped起動の実ロード結果を
+比較して判断します。現在の版や実行pathは `codex --version` / `command -v codex` で確認します。
+`RAOS_CODEX_BIN` は明示した実行ファイルを選び、未指定時はPATH上のCodexを使います。
 
 ```sh
-(
-  cd /home/minami/.codex/worktrees/0449/rakuten || exit 1
-  export CODEX_HOME=/mnt/c/Users/naoki/.codex
-  export RAOS_CODEX_BIN=/mnt/c/Users/naoki/.codex/bin/wsl/b53f5e5f7452dd19/codex
-  test -x "$RAOS_CODEX_BIN" || exit 1
-  .venv/bin/python scripts/codex_harness.py run --
-)
+.venv/bin/python scripts/codex_harness.py run --
 ```
 
-Windows PowerShellからも、Windows側の見かけのworktree pathではなく、
-`--cd`に実在するWSL checkoutを指定します。
-
-```powershell
-wsl -d Ubuntu-22.04 --cd /home/minami/.codex/worktrees/0449/rakuten --exec env `
-  CODEX_HOME=/mnt/c/Users/naoki/.codex `
-  RAOS_CODEX_BIN=/mnt/c/Users/naoki/.codex/bin/wsl/b53f5e5f7452dd19/codex `
-  .venv/bin/python scripts/codex_harness.py run --
-```
-
-native DesktopでGSDを非表示にすることは、このscoped CLIの合意済み範囲に含めません。
-Desktopの制約を受け入れた上でCLIを使い、Global GSDは変更しません。
-既存会話への遡及適用も前提にしません。別ホストや上流更新時には、同じprocess環境で
-`inventory --runtime`の実ロードpathと通常起動・scoped起動の差を確認してproject設定を合わせます。
+Codex homeは現在のprocessの `CODEX_HOME`、未指定時はユーザーhomeの `.codex` です。
+WindowsとWSLのCodex homeを取り違えないでください。設定変更は新しい起動で確認し、
+既存会話への遡及適用やCLIでの結果をDesktopの確認済み証拠として扱いません。
 Instruction/Skillカタログ上限を削って情報を隠す方法は使いません。
 
 外部能力はGitHub appの必要toolと2つのbounded WordPress MCPに限定します。
@@ -138,8 +116,8 @@ MCPの保存済みcheckout起動先は資格情報を扱う既存境界であり
 設定されたtool、実際に公開されたtool、optional能力、接続不能は別々に診断します。
 live状態はMCP statusで確認し、過去の監査結果から推測しません。
 
-inventoryと構造検査は、上記subshell内で`run --`の代わりに次の既存コマンドを実行します。
-Windowsからは同じ`wsl ... --exec env ...`の末尾を置き換えます。
+inventoryと構造検査は、同じprocess環境で`run --`の代わりに次の既存コマンドを実行します。
+Windowsからは対象checkoutのあるWSL上で実行します。
 
 ```sh
 .venv/bin/python scripts/codex_harness.py inventory --host --runtime --output /tmp/raos-harness.json
@@ -202,8 +180,8 @@ PHP7.4互換性の専用CIは維持します。`live`・`external`・`raos_owner
 ## Cold-start evaluation
 
 ```sh
-.venv/bin/python scripts/codex_harness.py eval --ref <before-commit> --model <configured-model> --reasoning <configured-effort> --output /tmp/raos-before.json
-.venv/bin/python scripts/codex_harness.py eval --ref <after-commit> --model <same-model> --reasoning <same-effort> --output /tmp/raos-after.json
+.venv/bin/python scripts/codex_harness.py eval --ref <before-commit> --model <configured-model> --reasoning <configured-effort> --context /private/before-context.json --output /tmp/raos-before.json
+.venv/bin/python scripts/codex_harness.py eval --ref <after-commit> --model <same-model> --reasoning <same-effort> --context /private/after-context.json --output /tmp/raos-after.json
 .venv/bin/python scripts/codex_harness.py compare /tmp/raos-before.json /tmp/raos-after.json
 ```
 
@@ -228,3 +206,38 @@ controllerにも読み取り専用のホストmountを適用し、Home・PID・`
 `eval --regrade /tmp/raos-before.json --output /tmp/raos-before-regraded.json`はモデルを再実行せず、
 元の採点結果も保存します。task/fixtureが異なる結果や未固定worktreeは再採点できません。
 再採点が通っても、元のモデル実行がtimeoutなら受入成功にはなりません。
+
+### Global context and efficiency evidence
+
+`eval --context` は、非公開のJSONで共通指示とSkillの選択設定だけを固定します。
+全config、認証値、MCP定義、環境変数は受け付けません。入力形式は次のとおりです。
+
+```json
+{
+  "version": 1,
+  "global_agents": {"name": "AGENTS.md", "content": "固定する共通指示"},
+  "skills_config": [{"path": "/path/to/skill/SKILL.md", "enabled": false}]
+}
+```
+
+実際のglobal overrideが非空なら `name` は `AGENTS.override.md` とし、その内容を使います。
+空の `skills_config` は意図的な空設定であり、実行中の個人設定を継承しません。
+共通指示は使い捨てcontroller homeへ渡し、報告には内容ではなく入力の識別hashだけを残します。
+評価には同一CLI版・model・reasoning・task/fixture・採点基準・時間制限を使います。
+モデルに渡す共通設定はこの入力で固定し、評価中は参照元Skillのインストール・内容を変更しません。
+plugins/apps/memoryは隔離評価で無効なため、その削減効果やDesktop全体の費用を実測したことにはなりません。
+
+既存A–Eを各3回実行し、`compare` の `quality_status` と `efficiency` を別々に確認します。
+トップレベルの `status` は従来どおり品質判定です。採用には `efficiency.adoption_status=PASS` が必要です。
+input + outputのcase別中央値を等重みで平均し、品質低下・境界違反なく減少した時だけ採用可能とします。
+cached inputはinputの内数です。欠損・不正な値や旧計測方式は `UNAVAILABLE` とし、0へ変換しません。
+read量・tool数・時間と個別caseの悪化も併記します。3回の結果を一般的な性能保証にはしません。
+
+`--case F --case G --repetitions 1` はRAOSのsource/指示を含まない独立プロジェクトで、
+小規模Python修正と日本語の利用案内を確認する補助検証です。A–Eの効率比較に混ぜません。
+`inventory --host --runtime` は、指示の探索順・容量の推定、スキル設定と実ロードの差を報告します。
+`NOT_DISCOVERED` はselector失効・非対応scope・plugin不在を調べる入口であり、削減成功ではありません。
+
+設計根拠: [OpenAIの指示設計ガイド](https://learn.chatgpt.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)、
+[AGENTS.mdの探索規則](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、
+[Skillの段階的読み込みと無効化](https://learn.chatgpt.com/docs/build-skills)（2026-09-15確認）。

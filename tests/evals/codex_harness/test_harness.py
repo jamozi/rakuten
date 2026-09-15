@@ -108,6 +108,192 @@ def complete_evaluation():
     }
 
 
+def measured_evaluation():
+    report = complete_evaluation()
+    report.update(
+        efficiency_protocol=1,
+        context_supplied=True,
+        context_sha256="b" * 64,
+        codex_version="synthetic-version",
+    )
+    for row in report["runs"]:
+        row.update(
+            measurement_version=3,
+            usage={
+                "input_tokens": 1000,
+                "cached_input_tokens": 800,
+                "output_tokens": 100,
+            },
+            read_output_characters=2000,
+            commands=4,
+            tool_calls=[],
+            seconds=12,
+        )
+    return report
+
+
+@pytest.mark.parametrize("missing", ["usage", "input_tokens", "output_tokens"])
+def test_missing_usage_is_unavailable_not_zero_or_an_improvement(missing):
+    before = measured_evaluation()
+    after = deepcopy(before)
+    if missing == "usage":
+        after["runs"][0]["usage"] = None
+    else:
+        del after["runs"][0]["usage"][missing]
+    result = harness.compare(before, after)
+    assert result["quality_status"] == "PASS"
+    assert result["efficiency"]["status"] == "UNAVAILABLE"
+    assert result["efficiency"]["adoption_status"] == "NOT_PROVEN"
+
+
+def test_efficiency_uses_equal_case_weight_without_counting_cache_twice():
+    before = measured_evaluation()
+    after = deepcopy(before)
+    for row in after["runs"]:
+        row["usage"]["input_tokens"] = 900
+    result = harness.compare(before, after)["efficiency"]
+    assert result["status"] == "IMPROVED"
+    assert result["adoption_status"] == "PASS"
+    assert result["equal_weight_mean_case_median_tokens"] == {
+        "before": 1100,
+        "after": 1000,
+    }
+    assert result["cases"][0]["metrics"]["uncached_input_tokens"]["after"] == 100
+    after["runs"][0]["boundary_violations"] = ["unsafe"]
+    assert (
+        harness.compare(before, after)["efficiency"]["adoption_status"] == "NOT_PROVEN"
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["legacy", "context", "protocol", "negative", "boolean", "nan", "infinity"],
+)
+def test_invalid_or_legacy_measurements_cannot_prove_efficiency(mutation):
+    before = measured_evaluation()
+    after = deepcopy(before)
+    if mutation == "legacy":
+        for report in (before, after):
+            for row in report["runs"]:
+                row["measurement_version"] = 2
+    elif mutation == "context":
+        after["context_sha256"] = None
+    elif mutation == "protocol":
+        after["efficiency_protocol"] = 2
+    else:
+        after["runs"][0]["usage"]["input_tokens"] = {
+            "negative": -1,
+            "boolean": True,
+            "nan": float("nan"),
+            "infinity": float("inf"),
+        }[mutation]
+    assert harness.compare(before, after)["efficiency"]["status"] == "UNAVAILABLE"
+
+
+def test_context_contract_rejects_arbitrary_config_and_preserves_explicit_empty_controls(
+    tmp_path, monkeypatch
+):
+    home = tmp_path / "home"
+    home.mkdir()
+    (home / "config.toml").write_text(
+        '[[skills.config]]\npath="unrelated"\nenabled=false\n'
+    )
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    context = {
+        "version": 1,
+        "global_agents": {"name": "AGENTS.md", "content": "Brief instructions"},
+        "skills_config": [],
+    }
+    path = tmp_path / "context.json"
+    path.write_text(json.dumps(context))
+    loaded = harness.evaluation_context(path)
+    assert (
+        harness.project_skill_overrides(tmp_path, user_controls=loaded["skills_config"])
+        == {}
+    )
+    for key in ("api_key", "mcp_servers", "shell_environment_policy"):
+        path.write_text(json.dumps({**context, key: "SYNTHETIC_PRIVATE"}))
+        with pytest.raises(ValueError, match="unsupported evaluation context"):
+            harness.evaluation_context(path)
+    context["global_agents"]["name"] = "../outside"
+    path.write_text(json.dumps(context))
+    with pytest.raises(ValueError, match="invalid global instruction"):
+        harness.evaluation_context(path)
+
+
+def test_frozen_instructions_reach_only_disposable_controller_home(tmp_path):
+    root = tmp_path / "evaluation/repo"
+    root.mkdir(parents=True)
+    home = tmp_path / "original"
+    home.mkdir()
+    (home / "AGENTS.md").write_text("live instructions")
+    context = {
+        "version": 1,
+        "global_agents": {
+            "name": "AGENTS.override.md",
+            "content": "frozen instructions",
+        },
+        "skills_config": [],
+    }
+    harness.controller_command(root, ["/usr/bin/true"], user_home=home, context=context)
+    assert (
+        root.parent / "codex-home/AGENTS.override.md"
+    ).read_text() == "frozen instructions"
+    assert (home / "AGENTS.md").read_text() == "live instructions"
+    assert not (root.parent / "codex-home/AGENTS.md").exists()
+
+
+def test_instruction_discovery_precedence_fallback_and_budget(tmp_path):
+    home, repo = tmp_path / "home", tmp_path / "repo"
+    child = repo / "src"
+    home.mkdir()
+    child.mkdir(parents=True)
+    (home / "AGENTS.md").write_text("global")
+    (home / "AGENTS.override.md").write_text("   ")
+    (repo / "AGENTS.md").write_text("shadowed")
+    (repo / "AGENTS.override.md").write_text("repo")
+    (child / "TEAM.md").write_text("child")
+    result = harness.instruction_chain(
+        repo,
+        home,
+        {"project_doc_max_bytes": 12, "project_doc_fallback_filenames": ["TEAM.md"]},
+        cwd=child,
+    )
+    assert [Path(r["path"]).name for r in result["sources"]] == [
+        "AGENTS.md",
+        "AGENTS.override.md",
+        "TEAM.md",
+    ]
+    assert [r["included_bytes"] for r in result["sources"]] == [6, 4, 2]
+    assert result["sources"][-1]["truncated"] is True
+
+
+def test_skill_diagnostics_distinguish_disabled_missing_and_reenabled(tmp_path):
+    source = tmp_path / "skill/SKILL.md"
+    source.parent.mkdir()
+    source.write_text("synthetic")
+    controls = [
+        {"path": str(source.parent), "enabled": False},
+        {"name": "missing", "enabled": False},
+    ]
+    loaded = [{"name": "skill", "path": str(source), "enabled": True}]
+    assert [
+        r["status"]
+        for r in harness.skill_control_diagnostics(controls, loaded, tmp_path)
+    ] == ["MISMATCH", "NOT_DISCOVERED"]
+    loaded[0]["enabled"] = False
+    assert (
+        harness.skill_control_diagnostics(controls, loaded, tmp_path)[0]["status"]
+        == "MATCH"
+    )
+    controls[0]["enabled"] = True
+    loaded[0]["enabled"] = True
+    assert (
+        harness.skill_control_diagnostics(controls, loaded, tmp_path)[0]["status"]
+        == "MATCH"
+    )
+
+
 @pytest.mark.parametrize(
     "mutation",
     [
@@ -152,6 +338,42 @@ def test_compare_cannot_promote_incomplete_or_unsafe_runs_to_pass(mutation):
     else:
         before["runs"][0]["status"] = "TIMEOUT"
     assert harness.compare(before, after)["status"] == "FAIL"
+
+
+def test_common_code_grader_checks_zero_empty_and_unchanged_input(tmp_path):
+    harness.fixture_module().prepare(tmp_path, "F")
+
+    def grade():
+        return json.loads(
+            subprocess.check_output(
+                [sys.executable, str(harness.FIXTURES), "F"], cwd=tmp_path, text=True
+            )
+        )
+
+    assert grade()["zero_counts"] is False
+    source = tmp_path / "averages.py"
+    source.write_text(source.read_text().replace("if value]", "if value is not None]"))
+    assert all(grade().values())
+    assert not (tmp_path / "AGENTS.md").exists()
+
+
+def test_common_document_grader_rejects_repository_policy_leaks(tmp_path):
+    harness.fixture_module().prepare(tmp_path, "G")
+    (tmp_path / "README.md").write_text(
+        "python notes.py notes.txt\n標準45秒、最大180秒。読み取り専用。オフライン。公開できません。\n"
+    )
+
+    def grade():
+        return json.loads(
+            subprocess.check_output(
+                [sys.executable, str(harness.FIXTURES), "G"], cwd=tmp_path, text=True
+            )
+        )
+
+    assert all(grade().values())
+    with (tmp_path / "README.md").open("a") as stream:
+        stream.write("RAOSのmake fastも実行します。")
+    assert grade()["no_raos_leak"] is False
 
 
 def test_buffered_final_events_arrive_before_the_process_exits():

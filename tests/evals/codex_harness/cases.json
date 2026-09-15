@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "dimensions": [
     "objective",
     "architecture",
@@ -79,6 +79,32 @@
       "sources": [
         "changes/editorial-portfolio-v3/README.md",
         "changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
+      ]
+    },
+    {
+      "id": "F",
+      "suite": "common",
+      "complexity": "S",
+      "task": "この独立した小規模プロジェクトの averages.py を修正してください。average は None だけを除外し、0は件数に含めます。有効値がない場合はValueError、入力リストは変更しません。既存の動作を保って回帰テストを追加し、python -m unittest -v を実行してください。",
+      "allowed_changes": [
+        "averages.py",
+        "test_averages.py"
+      ],
+      "sources": [
+        "averages.py",
+        "test_averages.py"
+      ]
+    },
+    {
+      "id": "G",
+      "suite": "common",
+      "complexity": "S",
+      "task": "この独立した小規模プロジェクトの settings.json だけを根拠に、README.md を初めて使う人向けの短い日本語の利用案内にしてください。実行例、標準と最大の待ち時間、ファイルを書き換えるか、通信が必要か、公開できるかを明示してください。未記載の機能や設定を作らないでください。文書のみの変更でテスト実行は不要です。",
+      "allowed_changes": [
+        "README.md"
+      ],
+      "sources": [
+        "settings.json"
       ]
     }
   ]
