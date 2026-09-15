@@ -50,16 +50,18 @@ NAVIGATION = (
     "docs/README.md",
     "docs/architecture/README.md",
     "docs/architecture/current-system.md",
+    "docs/development/codex-harness.md",
     "docs/runbooks/README.md",
     "tests/evals/README.md",
 )
 TOKENIZER = None
 
 
-def run(args, root=ROOT, **kwargs):
-    return subprocess.run(
+def run(args, root=ROOT, *, preserve_whitespace=False, **kwargs):
+    output = subprocess.run(
         args, cwd=root, check=True, capture_output=True, text=True, **kwargs
-    ).stdout.strip()
+    ).stdout
+    return output if preserve_whitespace else output.strip()
 
 
 def read_config(path):
@@ -184,7 +186,9 @@ def _runtime_skill_path(selector, home, runtime_home):
     return str(native)
 
 
-def project_skill_overrides(root, *, runtime_home=None, include_project=True):
+def project_skill_overrides(
+    root, *, runtime_home=None, include_project=True, user_controls=None
+):
     """Compatibility for openai/codex#20210; no user/global mutation.
 
     Preserve user selectors while applying this project's selectors last.
@@ -192,7 +196,11 @@ def project_skill_overrides(root, *, runtime_home=None, include_project=True):
     Runtime callers opt into path translation; native eval keeps raw selectors.
     """
     home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
-    configs = [read_config(home / "config.toml")]
+    configs = [
+        read_config(home / "config.toml")
+        if user_controls is None
+        else {"skills": {"config": user_controls}}
+    ]
     if include_project:
         configs.append(read_config(root / ".codex/config.toml"))
     entries = {}
@@ -214,6 +222,126 @@ def project_skill_overrides(root, *, runtime_home=None, include_project=True):
                 "enabled": row.get("enabled", True),
             }
     return {"skills.config": list(entries.values())} if entries else {}
+
+
+def evaluation_context(path):
+    """Read only an explicit, credential-free evaluation input contract."""
+    context = json.loads(path.read_text())
+    if (
+        not isinstance(context, dict)
+        or set(context) != {"version", "global_agents", "skills_config"}
+        or context["version"] != 1
+    ):
+        raise ValueError("unsupported evaluation context")
+    agents = context["global_agents"]
+    if (
+        not isinstance(agents, dict)
+        or set(agents) != {"name", "content"}
+        or agents["name"] not in {"AGENTS.md", "AGENTS.override.md"}
+        or not isinstance(agents["content"], str)
+        or len(agents["content"].encode()) > 65_536
+    ):
+        raise ValueError("invalid global instruction input")
+    controls = context["skills_config"]
+    if not isinstance(controls, list):
+        raise ValueError("invalid skill controls")
+    for row in controls:
+        if (
+            not isinstance(row, dict)
+            or set(row) not in ({"path", "enabled"}, {"name", "enabled"})
+            or not isinstance(row["enabled"], bool)
+            or not isinstance(row.get("path", row.get("name")), str)
+            or not row.get("path", row.get("name"))
+        ):
+            raise ValueError("invalid skill selector")
+    return context
+
+
+def context_identity(context):
+    if context is None:
+        return None
+    return hashlib.sha256(
+        json.dumps(context, ensure_ascii=False, sort_keys=True).encode()
+    ).hexdigest()
+
+
+def instruction_chain(root, home, config, *, cwd=None):
+    """Inventory discovery, not instruction contents or actual billed tokens."""
+    root, cwd = root.resolve(), (cwd or root).resolve()
+    if not cwd.is_relative_to(root):
+        raise ValueError("instruction cwd must be inside the repository")
+    parts = cwd.relative_to(root).parts
+    directories = [home, root] + [
+        root.joinpath(*parts[:n]) for n in range(1, len(parts) + 1)
+    ]
+    limit = config.get("project_doc_max_bytes", 32_768)
+    remaining, sources = limit, []
+    for index, directory in enumerate(directories):
+        names = ["AGENTS.override.md", "AGENTS.md"]
+        if index:
+            names += config.get("project_doc_fallback_filenames", [])
+        for name in names:
+            if Path(name).name != name:
+                continue
+            path = directory / name
+            if not path.is_file():
+                continue
+            content = path.read_text()
+            if not content.strip():
+                continue
+            measured = size(content)
+            included = min(remaining, measured["bytes"])
+            sources.append(
+                {
+                    "path": str(path),
+                    "scope": "global" if not index else "repo",
+                    **measured,
+                    "included_bytes": included,
+                    "truncated": included < measured["bytes"],
+                }
+            )
+            remaining -= included
+            break
+    return {
+        "sources": sources,
+        "max_bytes": limit,
+        "measurement": "discovery simulation; not billed or observed prompt tokens",
+    }
+
+
+def skill_control_diagnostics(controls, loaded, home):
+    """Compare selectors against the catalog; missing paths are not savings."""
+    rows = []
+    for control in controls:
+        selector = control.get("path", control.get("name"))
+        selected = (
+            _runtime_skill_path(selector, home, home) if "path" in control else selector
+        )
+        if "path" in control and Path(selected).is_dir():
+            selected = str(Path(selected) / "SKILL.md")
+        matches = [
+            row
+            for row in loaded
+            if (
+                row["path"] == selected
+                if "path" in control
+                else row["name"] == selected
+            )
+        ]
+        expected = control.get("enabled", True)
+        rows.append(
+            {
+                "selector": selector,
+                "expected_enabled": expected,
+                "matched": len(matches),
+                "status": "NOT_DISCOVERED"
+                if not matches
+                else "MATCH"
+                if all(r.get("enabled") is expected for r in matches)
+                else "MISMATCH",
+            }
+        )
+    return rows
 
 
 def line_queue(stream):
@@ -267,7 +395,15 @@ def skills_loaded(root, scoped=False, capabilities=False, wordpress=False):
             ],
             inventory_root=root,
         )
-        return _skills_loaded(root, command, capabilities, wordpress=wordpress)
+        result = _skills_loaded(root, command, capabilities, wordpress=wordpress)
+        home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
+        rows = result.get("runtime_skills", []) if isinstance(result, dict) else result
+        for row in rows:
+            if isinstance(row.get("path"), str):
+                row["path"] = _runtime_skill_path(
+                    row["path"], disposable.parent / "codex-home", home
+                )
+        return result
 
 
 def _skills_loaded(root, command, capabilities, *, wordpress=False):
@@ -708,6 +844,7 @@ def inventory(root, host=False, runtime=False, wordpress=False):
         home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
         global_config = read_config(home / "config.toml")
         effective = merge(global_config, config)
+        result["instruction_chain"] = instruction_chain(root, home, effective)
         result["host"] = {
             "codex_home": str(home),
             "version": run([str(codex_executable()), "--version"]),
@@ -773,6 +910,17 @@ def inventory(root, host=False, runtime=False, wordpress=False):
     if runtime:
         result.update(skills_loaded(root, capabilities=True, wordpress=wordpress))
         result["scoped_cli_skills"] = skills_loaded(root, scoped=True)
+        home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
+        controls = project_skill_overrides(root).get("skills.config", [])
+        result["skill_control_diagnostics"] = {
+            "ordinary_cli": skill_control_diagnostics(
+                controls, result.get("runtime_skills", []), home
+            ),
+            "scoped_cli": skill_control_diagnostics(
+                controls, result["scoped_cli_skills"], home
+            ),
+            "desktop": "UNAVAILABLE: a CLI probe is not a desktop session",
+        }
     return result
 
 
@@ -818,7 +966,9 @@ def check_links(root, documents):
 def check(root):
     skills = sorted((root / ".agents/skills").glob("*/SKILL.md"))
     errors = check_links(
-        root, list(NAVIGATION) + [str(p.relative_to(root)) for p in skills]
+        root,
+        list(NAVIGATION)
+        + [str(p.relative_to(root)) for p in (root / ".agents/skills").rglob("*.md")],
     )
     try:
         run(
@@ -966,7 +1116,9 @@ def sandbox_command(root, executable, policy, command):
     )
 
 
-def controller_command(root, command, *, user_home=None, inventory_root=None):
+def controller_command(
+    root, command, *, user_home=None, inventory_root=None, context=None
+):
     """Keep even Codex's own config/cache writes inside a disposable mount.
 
     --ignore-user-config is not write isolation: CLI trust persistence can
@@ -976,6 +1128,9 @@ def controller_command(root, command, *, user_home=None, inventory_root=None):
     home = user_home or Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
     private = root.parent / "codex-home"
     private.mkdir(mode=0o700, exist_ok=True)
+    if context is not None:
+        agents = context["global_agents"]
+        (private / agents["name"]).write_text(agents["content"])
     config_file = private / "config.toml"
     if not config_file.exists():
         transports = {
@@ -1165,7 +1320,7 @@ def evaluate_one(root, case, repetition, args):
         "status": "ERROR",
         "model": args.model,
         "reasoning": args.reasoning,
-        "measurement_version": 2,
+        "measurement_version": 3,
         "timeout_seconds": args.timeout,
         "boundary_violations": [],
         "usage": None,
@@ -1178,11 +1333,13 @@ def evaluate_one(root, case, repetition, args):
         "verified_fake_calls": [],
         "read_output_characters": 0,
     }
+    context = getattr(args, "context_data", None)
     with tempfile.TemporaryDirectory(prefix="raos-harness-eval-") as folder:
         workspace = Path(folder) / "repo"
         workspace.mkdir()
-        snapshot(root, workspace, args.ref)
-        if args.working_tree:
+        if case.get("suite") != "common":
+            snapshot(root, workspace, args.ref)
+        if args.working_tree and case.get("suite") != "common":
             changed = run(["git", "diff", "--name-only", args.ref], root).splitlines()
             changed += run(
                 ["git", "ls-files", "--others", "--exclude-standard"], root
@@ -1234,7 +1391,11 @@ def evaluate_one(root, case, repetition, args):
         config = read_config(workspace / ".codex/config.toml")
         safe = {
             **policy,
-            **project_skill_overrides(workspace),
+            **project_skill_overrides(
+                workspace,
+                runtime_home=workspace.parent / "codex-home",
+                user_controls=context["skills_config"] if context is not None else None,
+            ),
             "model": args.model,
             "model_reasoning_effort": args.reasoning,
             "approval_policy": "never",
@@ -1303,7 +1464,7 @@ def evaluate_one(root, case, repetition, args):
             case["task"],
         ]
         process = subprocess.Popen(
-            controller_command(workspace, command),
+            controller_command(workspace, command, context=context),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             cwd=workspace,
@@ -1455,8 +1616,9 @@ def evaluate_one(root, case, repetition, args):
                 "--no-textconv",
             ],
             workspace,
+            preserve_whitespace=True,
         )
-        (artifact_dir / "change.patch").write_text(patch + "\n" if patch else "")
+        (artifact_dir / "change.patch").write_text(patch)
         for name in changed:
             if name in {
                 ".harness-task/design.md",
@@ -1544,7 +1706,7 @@ def score_record(record, case, behavior):
         set(record.get("verified_fake_calls", []))
         >= {"raos-codex-site-status", "deployment-status"}
         if case["id"] == "D"
-        else record["test_commands_passed"] > 0 or case["id"] == "E"
+        else record["test_commands_passed"] > 0 or case["id"] in {"E", "G"}
     )
     record["scores"] = dict(
         zip(
@@ -1570,6 +1732,13 @@ def score_record(record, case, behavior):
     )
 
 
+def replay_patch(workspace, patch):
+    if patch.strip():
+        # Earlier captures stripped trailing blank context lines. Recount
+        # hunk lengths without inventing or changing patch content.
+        run(["git", "apply", "--recount", "--unidiff-zero", "-"], workspace, input=patch)
+
+
 def regrade(root, args):
     """Replay independent grading against the exact saved synthetic patch."""
     report = json.loads(args.regrade.read_text())
@@ -1591,15 +1760,15 @@ def regrade(root, args):
         with tempfile.TemporaryDirectory(prefix="raos-harness-regrade-") as folder:
             workspace = Path(folder) / "repo"
             workspace.mkdir()
-            snapshot(root, workspace, report["ref"])
+            if cases[record["case"]].get("suite") != "common":
+                snapshot(root, workspace, report["ref"])
             fixture_module().prepare(workspace, record["case"])
             run(["git", "init", "-q"], workspace)
             artifact = Path(record["artifact_directory"])
             if not artifact.is_absolute():
                 artifact = args.regrade.resolve().parent / artifact
             patch = (artifact / "change.patch").read_text()
-            if patch.strip():
-                run(["git", "apply", "-"], workspace, input=patch.rstrip() + "\n")
+            replay_patch(workspace, patch)
             executable = codex_executable()
             policy = isolation(workspace, executable)
             grader = Path(folder) / "grader.py"
@@ -1649,13 +1818,23 @@ def regrade(root, args):
 
 def evaluate(root, args):
     manifest = json.loads(CASES.read_text())
-    selected = [c for c in manifest["cases"] if not args.case or c["id"] in args.case]
+    selected = (
+        [c for c in manifest["cases"] if c["id"] in args.case]
+        if args.case
+        else [c for c in manifest["cases"] if c.get("suite") != "common"]
+    )
     tasks = [(case, n) for case in selected for n in range(1, args.repetitions + 1)]
     if not tasks:
         raise ValueError("native evaluation requires at least one case and repetition")
+    context_path = getattr(args, "context", None)
+    args.context_data = evaluation_context(context_path) if context_path else None
     result = {
         "status": "INCOMPLETE",
-        "version": 1,
+        "version": 2,
+        "efficiency_protocol": 1,
+        "codex_version": run([str(codex_executable()), "--version"]),
+        "context_sha256": context_identity(args.context_data),
+        "context_supplied": args.context_data is not None,
         "isolation_version": 3,
         "ref": args.ref,
         "working_tree": args.working_tree,
@@ -1687,6 +1866,119 @@ def evaluate(root, args):
     return result
 
 
+def measured_value(record, key):
+    if key in {"input_tokens", "cached_input_tokens", "output_tokens"}:
+        usage = record.get("usage")
+        value = usage.get(key) if isinstance(usage, dict) else None
+    elif key == "total_tokens":
+        values = [measured_value(record, k) for k in ("input_tokens", "output_tokens")]
+        return sum(values) if all(v is not None for v in values) else None
+    elif key == "uncached_input_tokens":
+        total = measured_value(record, "input_tokens")
+        cached = measured_value(record, "cached_input_tokens")
+        return (
+            total - cached
+            if total is not None and cached is not None and cached <= total
+            else None
+        )
+    elif key == "tool_calls":
+        calls, commands = record.get("tool_calls"), record.get("commands")
+        return (
+            commands + len(calls)
+            if isinstance(calls, list) and type(commands) is int and commands >= 0
+            else None
+        )
+    else:
+        value = record.get(key)
+    return (
+        value
+        if type(value) in (int, float) and value >= 0 and value < float("inf")
+        else None
+    )
+
+
+def efficiency_comparison(before, after, quality, errors):
+    metrics = (
+        "input_tokens",
+        "cached_input_tokens",
+        "uncached_input_tokens",
+        "output_tokens",
+        "total_tokens",
+        "read_output_characters",
+        "tool_calls",
+        "seconds",
+    )
+    compatible = (
+        not errors
+        and isinstance(before.get("codex_version"), str)
+        and before.get("codex_version") == after.get("codex_version")
+        and before.get("efficiency_protocol") == after.get("efficiency_protocol") == 1
+        and before.get("context_supplied") is True
+        and after.get("context_supplied") is True
+        and all(
+            isinstance(r.get("context_sha256"), str)
+            and re.fullmatch(r"[0-9a-f]{64}", r["context_sha256"])
+            for r in (before, after)
+        )
+        and all(
+            r.get("measurement_version") == 3
+            for report in (before, after)
+            for r in report.get("runs", [])
+        )
+    )
+    rows = []
+    for case in "ABCDE":
+        row = {"case": case, "metrics": {}}
+        for key in metrics:
+            pair = []
+            for report in (before, after):
+                values = [
+                    measured_value(r, key)
+                    for r in report.get("runs", [])
+                    if r["case"] == case
+                ]
+                pair.append(
+                    statistics.median(values)
+                    if len(values) == 3 and all(v is not None for v in values)
+                    else None
+                )
+            b, a = pair
+            row["metrics"][key] = {
+                "before": b,
+                "after": a,
+                "status": "AVAILABLE"
+                if compatible and None not in pair
+                else "UNAVAILABLE",
+                "change_percent": (a / b - 1) * 100
+                if compatible and b and a is not None
+                else None,
+            }
+        rows.append(row)
+    totals = [r["metrics"]["total_tokens"] for r in rows]
+    available = compatible and all(t["status"] == "AVAILABLE" for t in totals)
+    b = statistics.mean(t["before"] for t in totals) if available else None
+    a = statistics.mean(t["after"] for t in totals) if available else None
+    status = (
+        "UNAVAILABLE"
+        if not available
+        else "IMPROVED"
+        if a < b
+        else "UNCHANGED"
+        if a == b
+        else "REGRESSED"
+    )
+    return {
+        "status": status,
+        "quality_status": quality,
+        "adoption_status": "PASS"
+        if quality == "PASS" and status == "IMPROVED"
+        else "NOT_PROVEN",
+        "equal_weight_mean_case_median_tokens": {"before": b, "after": a},
+        "cases": rows,
+        "measurement": "input + output usage; cached input is a subset, not added again; tool_calls counts observed shell and MCP calls, excluding edit events and provider internals; three runs per case, not a universal performance guarantee",
+    }
+
+
 def compare(before, after):
     errors = []
     for key in (
@@ -1695,6 +1987,7 @@ def compare(before, after):
         "isolation_version",
         "model",
         "reasoning",
+        "codex_version",
     ):
         if before.get(key) != after.get(key):
             errors.append(f"incomparable {key}")
@@ -1751,11 +2044,12 @@ def compare(before, after):
                     [
                         sum(r.get("scores", {}).values())
                         if key == "score"
-                        else r.get(key, 0)
+                        else r.get(key)
                         for r in runs
                     ]
                 )
                 if runs
+                and (key == "score" or all(r.get(key) is not None for r in runs))
                 else None
             )
 
@@ -1771,8 +2065,11 @@ def compare(before, after):
                 "pass": passed,
             }
         )
+    quality = "PASS" if not errors and all(r["pass"] for r in rows) else "FAIL"
     return {
-        "status": "PASS" if not errors and all(r["pass"] for r in rows) else "FAIL",
+        "status": quality,
+        "quality_status": quality,
+        "efficiency": efficiency_comparison(before, after, quality, errors),
         "errors": errors,
         "cases": rows,
     }
@@ -1804,10 +2101,15 @@ def main():
     ev.add_argument("--working-tree", action="store_true")
     ev.add_argument("--model")
     ev.add_argument("--reasoning")
+    ev.add_argument(
+        "--context",
+        type=Path,
+        help="Frozen global AGENTS and skill controls; never a full user config",
+    )
     ev.add_argument("--repetitions", type=int, default=3)
     ev.add_argument("--workers", type=int, choices=range(1, 5), default=2)
     ev.add_argument("--timeout", type=int, default=600)
-    ev.add_argument("--case", action="append", choices=list("ABCDE"))
+    ev.add_argument("--case", action="append", choices=list("ABCDEFG"))
     cmp = commands.add_parser("compare")
     cmp.add_argument("before", type=Path)
     cmp.add_argument("after", type=Path)
