@@ -51,7 +51,7 @@ def _source(product: Mapping[str, Any], field: str) -> str:
 
 def _prohibited_summary(product: Mapping[str, Any]) -> str:
     """Main items that must not go in, keeping the plastic exception; full list per model."""
-    limits = MATERIAL_LIMITS.get(product.get("exact_model"))
+    limits = MATERIAL_LIMITS.get(str(product.get("exact_model") or ""))
     if limits is None:
         return "未確認"
     limit, exception, _ = limits
