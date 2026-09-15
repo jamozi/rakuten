@@ -446,6 +446,31 @@ class PrivateStore:
 # values (no purge publish recorded), or the approval still names price-recoverable
 # candidate ids (a purge publish recorded after purge-expired). Both block fetch and gate.
 UNFINISHED_PURGE_STATUSES: Final = frozenset({"PUBLISHED_NOT_PURGED", "REDACTION_PENDING"})
+# The only other way out of PUBLISHED_NOT_PURGED: the owner records, after purge-expired,
+# that WordPress no longer serves the run's values although no purge publish was recorded
+# (for example the post was restored or withdrawn by hand). Contract §5.
+INCIDENT_RESOLUTION_SCHEMA: Final = "RAOS_RAKUTEN_PRICE_OVERLAY_INCIDENT_RESOLUTION_V1"
+INCIDENT_RESOLUTION_FILE: Final = "incident-resolution.v1.json"
+INCIDENT_RESOLUTIONS: Final = frozenset(
+    {"WORDPRESS_RESTORED_OUTSIDE_PUBLISHER", "WORDPRESS_POSTS_WITHDRAWN"}
+)
+
+
+def incident_resolution(store: PrivateStore, run_id: str) -> dict[str, Any] | None:
+    path = store.run_directory(run_id) / INCIDENT_RESOLUTION_FILE
+    if not path.exists():
+        return None
+    record = store.read_json(path)
+    if (
+        not isinstance(record, dict)
+        or set(record) != {"schema", "run_id", "resolution", "recorded_at"}
+        or record["schema"] != INCIDENT_RESOLUTION_SCHEMA
+        or record["run_id"] != run_id
+        or record["resolution"] not in INCIDENT_RESOLUTIONS
+    ):
+        fail("INCIDENT_RESOLUTION_INVALID")
+    parse_time(record["recorded_at"])
+    return record
 
 
 def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
@@ -467,6 +492,7 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
                 if (
                     approval.get("publish") is not None
                     and approval.get("purge_publish") is None
+                    and incident_resolution(store, run_id) is None
                 ):
                     return "PUBLISHED_NOT_PURGED", None
                 if redact_approval(approval) != approval:

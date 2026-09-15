@@ -11,6 +11,7 @@ import base64
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 import hashlib
+import importlib.util
 import io
 import json
 import os
@@ -20,6 +21,7 @@ import shutil
 import socket
 import stat
 import subprocess
+import sys
 import zipfile
 
 import pytest
@@ -242,6 +244,8 @@ class FakeWordPress:
         self.store_body = store_body
         self.store_tree = store_tree
         self.fail_apply_once = fail_apply_once
+        # What an owner-direct plugin with the price-overlay redaction reports on finalize.
+        self.finish_redaction = None
 
     def __call__(self, command, body):
         self.calls.append((command, deepcopy(body)))
@@ -306,6 +310,11 @@ class FakeWordPress:
                 **{k: body[k] for k in ("batch_token", "batch_manifest_sha256")},
                 "members": [],
                 "state": "FINALIZED",
+                **(
+                    {"price_overlay_redaction": deepcopy(self.finish_redaction)}
+                    if self.finish_redaction is not None
+                    else {}
+                ),
             }
         raise AssertionError(command)
 
@@ -652,11 +661,11 @@ def test_an_approval_covers_one_publish_only(owner, publisher):
     assert first["candidate_id"] != second["candidate_id"]
     (owner / BODY_SOURCE.format("synthetic-guide")).write_text(GUIDE)
     publish(owner, first_directory, first, server, price_overlay_run=RUN_ID)
-    writes = len(server.writes())
+    calls = len(server.calls)
     (owner / BODY_SOURCE.format("synthetic-guide")).write_text(GUIDE + "<p>別案</p>\n")
     with pytest.raises(direct.DirectFailure, match="APPROVAL_PUBLISH_ALREADY_USED"):
         publish(owner, second_directory, second, server, price_overlay_run=RUN_ID)
-    assert len(server.writes()) == writes, "refused before any WordPress write"
+    assert len(server.calls) == calls, "refused before any WordPress call, reads included"
     with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_APPROVAL_PUBLISH_ALREADY_USED"):
         direct.prepare_price_overlay(owner, KEYS, True, server, run=RUN_ID)
 
@@ -778,11 +787,20 @@ def test_purge_publish_restores_price_free_bytes_and_removes_local_copies(owner,
     assert server.tree == base["theme"]["descriptor"]["file_manifest_sha256"]
     assert rpr.price_free_violations(server.docs[101]["block_markup"], overlay) == []
     record = approval_record(owner)
-    assert record["purge_publish"]["candidate_id"] == purge["candidate_id"]
     assert record["purge_publish"]["before_expiry"] is True
     assert not directory.exists() and not frozen.exists()
     assert not (owner / direct.PRIVATE / purge["price_overlay"]["base_candidate_id"]).exists()
-    assert purge_directory.exists()
+    # The purge candidate froze the live injected pages as its baseline: the finished purge
+    # publish deletes it and forgets its ids (the publish ids wait for purge-expired).
+    assert not purge_directory.exists()
+    assert record["purge_publish"]["candidate_id"] == "PURGED"
+    assert record["purge_publish"]["base_candidate_id"] == "PURGED"
+    assert record["prepared_candidates"] == {
+        "PUBLISH": candidate["candidate_id"],
+        "PURGE": "PURGED",
+    }
+    assert record["publish"]["candidate_id"] == candidate["candidate_id"]
+    assert record["purge_publish"]["wordpress_redaction"] == "NOT_REPORTED"
     with pytest.raises(direct.DirectFailure, match="APPROVAL_PURGE_ALREADY_USED"):
         direct.prepare_price_overlay(owner, KEYS, True, server, purge=RUN_ID)
 
@@ -797,7 +815,8 @@ def test_purge_publish_restores_price_free_bytes_and_removes_local_copies(owner,
     assert redacted["purge_publish"]["candidate_id"] == "PURGED"
     assert redacted["purge_publish"]["base_candidate_id"] == "PURGED"
     assert not stray_directory.exists()
-    assert report["runs"][0]["candidate_directories_deleted"] == 2
+    assert report["runs"][0]["candidate_directories_deleted"] == 1
+    assert redacted["prepared_candidates"] == {"PUBLISH": "PURGED", "PURGE": "PURGED"}
     secrets_text = b"".join(
         p.read_bytes() for p in (owner / ".secrets").rglob("*") if p.is_file()
     )
@@ -892,7 +911,7 @@ assert.equal(readOffer(node({})).tax_included, null);
 # ---------------------------------------------------------------------------
 
 
-def test_purge_expired_without_purge_publish_keeps_blocking_and_sweeps_a_late_purge(
+def test_purge_expired_without_purge_publish_keeps_blocking_until_a_late_purge_publish(
     owner, publisher, capsys, monkeypatch
 ):
     from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs
@@ -906,28 +925,392 @@ def test_purge_expired_without_purge_publish_keeps_blocking_and_sweeps_a_late_pu
     purge_expired = ["purge-expired", "--owner-checkout", str(owner), "--run-id", RUN_ID]
     capsys.readouterr()
     assert refresh_cli.main(purge_expired, clock=lambda: expired) == 0
-    assert json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]["result"] == "PURGED"
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    # Local values are deleted, but the run is not reported (or treated) as purged.
+    assert (report["result"], report["published"], report["purge_publish_recorded"]) == (
+        "PURGE_PUBLISH_MISSING",
+        True,
+        False,
+    )
     assert rpr.ATTR_PRICE_YEN in server.docs[101]["block_markup"], "WordPress still serves values"
     assert expired_unpurged_runs(store, expired) == [RUN_ID], "local purge alone must not unblock"
     assert refresh_cli.main(purge_expired, clock=lambda: expired) == 0
     report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
     assert report["result"] == "PURGE_PUBLISH_MISSING"
+    assert expired_unpurged_runs(store, expired) == [RUN_ID]
 
-    # A late purge publish freezes the live injected page as the purge candidate's baseline.
+    # A late purge publish freezes the live injected page as the purge candidate's baseline;
+    # finishing it deletes that candidate and its ids, which ends the obligation.
     monkeypatch.setattr(price_overlay, "clock", lambda: expired + timedelta(hours=1))
     purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    assert f'{rpr.ATTR_PRICE_YEN}=\\"{PRICE}\\"'.encode() in (purge_directory / "candidate.json").read_bytes()
     publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
     assert server.docs[101]["block_markup"] == BODY
-    assert approval_record(owner)["purge_publish"]["before_expiry"] is False
-    assert f'{rpr.ATTR_PRICE_YEN}=\\"{PRICE}\\"'.encode() in (purge_directory / "candidate.json").read_bytes()
-    assert expired_unpurged_runs(store, expired) == [RUN_ID], "price-recoverable ids remain"
+    record = approval_record(owner)
+    assert record["purge_publish"]["before_expiry"] is False
+    assert record["purge_publish"]["candidate_id"] == "PURGED"
+    assert record["purge_publish"]["base_candidate_id"] == "PURGED"
+    assert not purge_directory.exists()
+    assert expired_unpurged_runs(store, expired + timedelta(hours=1)) == []
     capsys.readouterr()
     assert refresh_cli.main(purge_expired, clock=lambda: expired + timedelta(hours=2)) == 0
     report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
-    assert (report["result"], report["candidate_directories_deleted"]) == ("ALREADY_PURGED", 1)
-    assert not purge_directory.exists()
-    assert approval_record(owner)["purge_publish"]["candidate_id"] == "PURGED"
-    assert expired_unpurged_runs(store, expired + timedelta(hours=2)) == []
+    assert report == {"run_id": RUN_ID, "result": "ALREADY_PURGED"}
     secrets_text = b"".join(p.read_bytes() for p in (owner / ".secrets").rglob("*") if p.is_file())
     assert f'{rpr.ATTR_PRICE_YEN}=\\"{PRICE}\\"'.encode() not in secrets_text
     assert purge["candidate_id"].encode() not in secrets_text
+
+
+def test_an_interrupted_purge_cleanup_keeps_the_run_blocked_until_purge_expired(
+    owner, publisher, capsys, monkeypatch
+):
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    store = PrivateStore(owner)
+    later = T0 + timedelta(hours=25)
+    purge_expired = ["purge-expired", "--owner-checkout", str(owner), "--run-id", RUN_ID]
+    assert refresh_cli.main(purge_expired, clock=lambda: later) == 0
+    monkeypatch.setattr(price_overlay, "clock", lambda: later)
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+
+    def interrupted(_approval):
+        raise OSError("interrupted after the candidate directory was deleted")
+
+    with monkeypatch.context() as patched:
+        patched.setattr(price_overlay.rpr, "redact_purge_candidates", interrupted)
+        with pytest.raises(OSError):
+            publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    assert server.docs[101]["block_markup"] == BODY and not purge_directory.exists()
+    assert approval_record(owner)["purge_publish"]["candidate_id"] == purge["candidate_id"]
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, later) == [RUN_ID]
+    capsys.readouterr()
+    assert refresh_cli.main(purge_expired, clock=lambda: later) == 0
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    assert (report["result"], report["record_state"]) == ("ALREADY_PURGED", "REDACTION_PENDING")
+    assert approval_record(owner)["purge_publish"]["candidate_id"] == "PURGED"
+    assert approval_record(owner)["prepared_candidates"]["PURGE"] == "PURGED"
+    assert expired_unpurged_runs(store, later) == []
+
+
+# ---------------------------------------------------------------------------
+# Checks right before the first WordPress write
+# ---------------------------------------------------------------------------
+
+
+def test_publish_refuses_a_candidate_that_no_longer_matches_the_overlay(owner, publisher):
+    """The frozen candidate must equal checkpoint bytes + the overlay read right before writes."""
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    plan = rpr.build_plan(json.loads(CATALOG_BYTES), rpr.sha256_hex(CATALOG_BYTES))
+    entry = next(e for e in rpr.validate_plan(plan) if e.offer_id == "synthetic-single")
+    row = deepcopy(RESPONSES["row_single"])
+    for field in ("itemPrice", "itemPriceMin1", "itemPriceMax1", "itemPriceMin3", "itemPriceMax3"):
+        row[field] = PRICE + 1
+    body = json.dumps({"count": 1, "page": 1, "hits": 1, "items": [row]})
+    result = rpr.classify_observation(entry, 200, body, T0)
+    replaced = rpr.build_overlay(RUN_ID, "a" * 64, [result], T0 + timedelta(minutes=5))
+    assert replaced["entries"][0]["price_yen"] == PRICE + 1
+    store = PrivateStore(owner)
+    store.write_json(store.run_directory(RUN_ID) / "overlay.v1.json", replaced, replace=True)
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_INJECTION_MISMATCH"):
+        publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert server.writes() == []
+    assert approval_record(owner)["publish"] is None
+
+
+def test_purge_publish_rechecks_the_publish_record_and_price_free_bytes_before_writes(
+    owner, publisher, monkeypatch
+):
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    store = PrivateStore(owner)
+    path = store.run_directory(RUN_ID) / "approval.v1.json"
+    original = approval_record(owner)
+    writes = len(server.writes())
+
+    drifted = deepcopy(original)
+    drifted["publish"]["source_sha256"] = "0" * 64
+    store.write_json(path, drifted, replace=True)
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_PURGE_SOURCE_DRIFT"):
+        publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    assert len(server.writes()) == writes, "refused before any WordPress write"
+    store.write_json(path, original, replace=True)
+
+    # A consistently re-hashed purge candidate that would send the injected runtime.
+    theme_root = purge_directory / "theme"
+    runtime = theme_root / price_overlay.RUNTIME_RELATIVE
+    price_free_runtime = runtime.read_bytes()
+    runtime.write_bytes((directory / "theme" / price_overlay.RUNTIME_RELATIVE).read_bytes())
+    tampered = deepcopy(purge)
+    tampered["theme"]["descriptor"]["file_manifest"] = [
+        {
+            "path": f.relative_to(theme_root).as_posix(),
+            "size": f.stat().st_size,
+            "sha256": direct.digest(f.read_bytes()),
+        }
+        for f in sorted(theme_root.rglob("*"))
+        if f.is_file()
+    ]
+    tampered["candidate_id"] = direct.digest(
+        direct.encoded({k: v for k, v in tampered.items() if k != "candidate_id"})
+    )
+    direct.save(purge_directory / "candidate.json", tampered)
+    previewed(purge_directory, tampered)
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_PURGE_BODY_NOT_PRICE_FREE"):
+        publish(owner, purge_directory, tampered, server, price_overlay_purge=RUN_ID)
+    assert len(server.writes()) == writes, "refused before any WordPress write"
+    assert approval_record(owner)["purge_publish"] is None
+    runtime.write_bytes(price_free_runtime)
+    direct.save(purge_directory / "candidate.json", purge)
+    previewed(purge_directory, purge)
+
+    # A site that keeps the injected body is refused even when document readback passes.
+    monkeypatch.setattr(direct, "readback", lambda *a: {"status": "PASS"})
+    injected = candidate["articles"][0]["document"]["block_markup"]
+    server.store_body = lambda post_id, document: (
+        injected if post_id == POST_IDS["synthetic-comparison"] else document["block_markup"]
+    )
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_PURGE_READBACK_NOT_PRICE_FREE"):
+        publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    assert approval_record(owner)["purge_publish"] is None
+    assert purge_directory.exists(), "an unverified purge keeps its candidate for the retry"
+
+
+def test_the_checkpoint_scan_refuses_a_value_committed_by_prepare(owner, publisher, monkeypatch):
+    overlay = write_run(owner)
+    observed = next(e for e in overlay["entries"] if rpr.carries_values(e))["observed_at"]
+    (owner / BODY_SOURCE.format("synthetic-guide")).write_text(GUIDE + f"<p>{observed}</p>\n")
+    scanned = []
+    scan_revision = price_overlay.scan_revision_for_overlay
+    # Only the checkpoint commit scan may catch it: the working tree scan is disabled here.
+    monkeypatch.setattr(price_overlay, "scan_repository_for_overlay", lambda *a, **k: [])
+    monkeypatch.setattr(
+        price_overlay,
+        "scan_revision_for_overlay",
+        lambda *a, **k: scanned.append(scan_revision(*a, **k)) or scanned[-1],
+    )
+    server = FakeWordPress(owner)
+    # The observation time in a body also reads as an injected body (BODY_ALREADY_INJECTED).
+    with pytest.raises(direct.DirectFailure, match=r"GATE_REFUSED:[A-Z_,]*GIT_TRACKED_OVERLAY_VALUE"):
+        direct.prepare_price_overlay(owner, KEYS, True, server, run=RUN_ID)
+    frozen = [json.loads(p.read_text()) for p in (owner / direct.PRIVATE).rglob("candidate.json")]
+    # Only the price-free base exists; the gate refused before any injection.
+    assert [("price_overlay" in c, c["checkpoint"]["status"]) for c in frozen] == [(False, "created")]
+    assert scanned and scanned[0] == [
+        "OVERLAY_EXACT_VALUE:revision:"
+        + frozen[0]["checkpoint"]["commit"][:12]
+        + ":"
+        + BODY_SOURCE.format("synthetic-guide")
+    ]
+    assert "prepared_candidates" not in approval_record(owner)
+
+
+def test_publish_re_gates_findings_that_appear_after_prepare(owner, publisher):
+    overlay = write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    observed = next(e for e in overlay["entries"] if rpr.carries_values(e))["observed_at"]
+    note = owner / "notes" / "price-check.txt"
+    note.parent.mkdir()
+    note.write_text(observed + "\n")
+    with pytest.raises(direct.DirectFailure, match="GATE_REFUSED:GIT_TRACKED_OVERLAY_VALUE"):
+        publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert server.writes() == [] and approval_record(owner)["publish"] is None
+    note.unlink()
+    note.parent.rmdir()
+
+    other = "ks020-synthetic-0002"
+    store = PrivateStore(owner)
+    store.write_json(
+        store.run_directory(other) / "approval.v1.json",
+        rpr.new_approval(other, "a" * 64, T0 - timedelta(hours=30)),
+    )
+    with pytest.raises(direct.DirectFailure, match="GATE_REFUSED:EXPIRED_RUN_NOT_PURGED"):
+        publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert server.writes() == [] and approval_record(owner)["publish"] is None
+    with pytest.raises(direct.DirectFailure, match="GATE_REFUSED:EXPIRED_RUN_NOT_PURGED"):
+        direct.prepare_price_overlay(owner, KEYS, True, server, run=RUN_ID)
+
+
+def test_resuming_a_reserved_publish_near_expiry_is_refused_without_writes(
+    owner, publisher, monkeypatch
+):
+    write_run(owner)
+    server = FakeWordPress(owner, fail_apply_once=True)
+    candidate, directory = prepare_overlay(owner, server)
+    with pytest.raises(operator.OperatorFailure):
+        publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert approval_record(owner)["publish"]["candidate_id"] == candidate["candidate_id"]
+    writes = len(server.writes())
+    monkeypatch.setattr(price_overlay, "clock", lambda: T0 + timedelta(hours=22, seconds=1))
+    with pytest.raises(direct.DirectFailure, match="PRICE_OVERLAY_OVERLAY_VALUE_EXPIRING"):
+        publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    assert len(server.writes()) == writes
+    assert approval_record(owner)["publish"]["readback_verified_at"] is None
+
+
+# ---------------------------------------------------------------------------
+# Flag-free publisher equals origin/main
+# ---------------------------------------------------------------------------
+
+
+def origin_main_publisher(tmp_path, monkeypatch):
+    archive = subprocess.run(
+        ["git", "-C", str(ROOT), "archive", "origin/main", "scripts/raos_wordpress_direct_publish.py"],
+        capture_output=True,
+        check=False,
+    )
+    if archive.returncode != 0:
+        pytest.skip("origin/main is not available in this clone")
+    target = tmp_path / "origin-main-archive"
+    target.mkdir()
+    subprocess.run(["tar", "-x", "-C", str(target)], input=archive.stdout, check=True)
+    # The archived module prepends its own root to sys.path; keep the test's path intact.
+    monkeypatch.setattr(sys, "path", list(sys.path))
+    spec = importlib.util.spec_from_file_location(
+        "origin_main_raos_wordpress_direct_publish",
+        target / "scripts/raos_wordpress_direct_publish.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert not hasattr(module, "prepare_price_overlay"), "origin/main predates batch G"
+    return module
+
+
+def test_flag_free_prepare_and_publish_match_the_origin_main_publisher(
+    template, tmp_path, monkeypatch, capsys
+):
+    main_publisher = origin_main_publisher(tmp_path, monkeypatch)
+    source, _revision = template
+    runs = []
+    for name, module in (("origin-main", main_publisher), ("branch", direct)):
+        root = (tmp_path / name).resolve()
+        shutil.copytree(source, root, symlinks=True)
+        (root / ".secrets").mkdir(mode=0o700)
+        server = FakeWordPress(root)
+        synced = []
+        monkeypatch.setattr(module, "verify_preview", lambda *a: None)
+        monkeypatch.setattr(
+            module,
+            "sync_git",
+            lambda root, checkpoint, synced=synced: synced.append(checkpoint) or {"status": "noop"},
+        )
+        capsys.readouterr()
+        candidate, directory = module.prepare(root, KEYS, True, server)
+        previewed(directory, candidate)
+        journal = module.publish(root, directory, candidate["candidate_id"], server)
+        runs.append(
+            {
+                "candidate": candidate,
+                "files": tree_files(directory),
+                "calls": server.calls,
+                "docs": server.docs,
+                "packages": server.packages,
+                "journal": journal,
+                "synced": synced,
+                "stdout": capsys.readouterr().out,
+                "secrets": sorted(p.relative_to(root).as_posix() for p in (root / ".secrets").rglob("*")),
+            }
+        )
+    main_run, branch_run = runs
+    assert main_run["stdout"] and main_run["calls"]
+    for key in main_run:
+        assert main_run[key] == branch_run[key], key
+
+
+# ---------------------------------------------------------------------------
+# Output names price-overlay candidates by handle only
+# ---------------------------------------------------------------------------
+
+
+def test_cli_names_price_overlay_candidates_by_handle_only(owner, publisher, monkeypatch, capsys):
+    write_run(owner)
+    server = FakeWordPress(owner)
+    monkeypatch.setattr(direct, "ROOT", owner)
+    monkeypatch.setattr(
+        operator, "run", lambda name, body: server(name.removeprefix("owner-direct-"), body)
+    )
+    from scripts import raos_wordpress_direct_preview as preview_module
+
+    monkeypatch.setattr(
+        preview_module,
+        "prepare_candidate_preview",
+        lambda candidate, directory: {
+            "schema": "RAOSOwnerDirectPreviewV1",
+            "status": "PASS",
+            "candidate_id": candidate["candidate_id"],
+            "source_sha256": candidate["source_sha256"],
+            "runtime_sha256": "9" * 64,
+        },
+    )
+
+    def cli(*arguments):
+        assert direct.execute_cli(direct.parser().parse_args(list(arguments))) == 0
+        return capsys.readouterr().out
+
+    capsys.readouterr()
+    publish_handle = f"price-overlay:{RUN_ID}:publish"
+    purge_handle = f"price-overlay:{RUN_ID}:purge"
+    printed = cli("prepare", "--articles", ",".join(KEYS), "--theme", "--price-overlay-run", RUN_ID)
+    assert json.loads(printed) == {
+        "candidate": publish_handle,
+        "candidate_id": "REDACTED_PRICE_OVERLAY",
+        "price_overlay": {"mode": "PUBLISH", "run_id": RUN_ID},
+        "publication_ready": True,
+    }
+    publish_id = approval_record(owner)["prepared_candidates"]["PUBLISH"]
+    assert (owner / direct.PRIVATE / publish_id / "candidate.json").is_file()
+    outputs = [printed]
+    outputs.append(cli("preview", "--candidate", publish_handle))
+    assert json.loads((owner / direct.PRIVATE / publish_id / "preview.json").read_text())["candidate_id"] == publish_id
+    outputs.append(cli("status", "--candidate", publish_handle))
+    outputs.append(cli("publish", "--candidate", publish_handle, "--price-overlay-run", RUN_ID))
+    assert f'{rpr.ATTR_PRICE_YEN}="{PRICE}"' in server.docs[101]["block_markup"]
+    outputs.append(cli("prepare", "--articles", ",".join(KEYS), "--theme", "--price-overlay-purge", RUN_ID))
+    purge_id = approval_record(owner)["prepared_candidates"]["PURGE"]
+    outputs.append(cli("preview", "--candidate", purge_handle))
+    server.finish_redaction = [
+        {"state": "COMPLETE", "runs": [RUN_ID], "post_id": 101, "proposals": 2, "undo_options": 2, "skipped_active": 0}
+    ]
+    outputs.append(cli("publish", "--candidate", purge_handle, "--price-overlay-purge", RUN_ID))
+    assert server.docs[101]["block_markup"] == BODY
+    text = "".join(outputs)
+    assert re.findall(r"[0-9a-f]{64}", text) == [], text
+    assert publish_id not in text and purge_id not in text
+    assert all(json.loads(line)["candidate_id"] == "REDACTED_PRICE_OVERLAY" for line in text.splitlines())
+    record = approval_record(owner)
+    assert record["prepared_candidates"] == {"PUBLISH": publish_id, "PURGE": "PURGED"}
+    assert record["purge_publish"]["wordpress_redaction"] == "COMPLETE"
+    assert not (owner / direct.PRIVATE / purge_id).exists()
+
+    calls = len(server.calls)
+    for value, code in (
+        (purge_handle, "PRICE_OVERLAY_CANDIDATE_HANDLE_UNKNOWN"),
+        ("price-overlay:BAD:publish", "PRICE_OVERLAY_CANDIDATE_HANDLE_INVALID"),
+    ):
+        assert direct.execute_cli(direct.parser().parse_args(["status", "--candidate", value])) == 69
+        assert code in capsys.readouterr().err
+    assert len(server.calls) == calls
+
+
+def test_an_incomplete_plugin_redaction_is_recorded_with_the_purge_publish(owner, publisher):
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    server.finish_redaction = [
+        {"state": "COMPLETE", "runs": [RUN_ID], "post_id": 101, "proposals": 2, "undo_options": 2, "skipped_active": 0},
+        {"state": "INCOMPLETE", "runs": [RUN_ID], "post_id": 102, "proposals": 0, "undo_options": 0, "skipped_active": 1},
+    ]
+    publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    assert approval_record(owner)["purge_publish"]["wordpress_redaction"] == "INCOMPLETE"

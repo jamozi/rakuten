@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""KS-020 Rakuten price refresh: plan / fetch / apply / gate / purge-expired.
+"""KS-020 Rakuten price refresh: plan / fetch / apply / gate / purge-expired / resolve-incident.
 
 Only ``fetch`` talks to the network, and only with ``--owner-approved-run``.
 API price and availability values are written exclusively to
@@ -23,6 +23,9 @@ if str(ROOT / "python") not in sys.path:
     sys.path.insert(0, str(ROOT / "python"))
 
 from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
+    INCIDENT_RESOLUTION_FILE,
+    INCIDENT_RESOLUTION_SCHEMA,
+    INCIDENT_RESOLUTIONS,
     UNFINISHED_PURGE_STATUSES,
     PriceRefreshClient,
     PrivateStore,
@@ -98,6 +101,18 @@ def parser() -> argparse.ArgumentParser:
     purge.add_argument("--run-id")
     purge.add_argument("--include-unexpired", action="store_true")
     purge.add_argument("--now")
+    incident = sub.add_parser(
+        "resolve-incident",
+        help="offline, owner only: WordPress no longer serves a purged run's values "
+        "although no purge publish was recorded",
+    )
+    incident.add_argument("--owner-checkout", type=Path, required=True)
+    incident.add_argument("--run-id", required=True)
+    incident.add_argument("--owner-confirmed-price-free", dest="confirmed_run")
+    incident.add_argument(
+        "--resolution", choices=sorted(INCIDENT_RESOLUTIONS), required=True
+    )
+    incident.add_argument("--now")
     return root
 
 
@@ -422,10 +437,17 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
         if isinstance(approval, dict):
             purge_publish_recorded = approval.get("purge_publish") is not None
             store.write_json(approval_path, redact_approval(approval), replace=True)
+        # Local values are gone, but a publish without its purge publish leaves WordPress
+        # serving them: the run stays an obligation (fetch and gate keep refusing).
+        final_status, _expires = run_status(store, run_id)
         report.append(
             {
                 "run_id": run_id,
-                "result": "PURGED",
+                "result": (
+                    "PURGE_PUBLISH_MISSING"
+                    if final_status == "PUBLISHED_NOT_PURGED"
+                    else "PURGED"
+                ),
                 "record_state": status,
                 "raw_files_deleted": deleted,
                 "published": bool(
@@ -438,6 +460,39 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
             }
         )
     emit({"result": "PURGE_COMPLETE", "runs": report})
+    return EXIT_OK
+
+
+def command_resolve_incident(
+    args: argparse.Namespace, clock: Callable[[], datetime]
+) -> int:
+    run_id = require_run_id(args.run_id)
+    if args.confirmed_run != run_id:
+        fail("OWNER_CONFIRMATION_REQUIRED")
+    store = PrivateStore(args.owner_checkout)
+    status, _expires = run_status(store, run_id)
+    if status != "PUBLISHED_NOT_PURGED":
+        # Only after purge-expired deleted the local values, and only for a publish whose
+        # purge publish is missing. Everything else finishes through purge publish/purge.
+        fail("INCIDENT_RESOLUTION_NOT_APPLICABLE")
+    store.write_json(
+        store.run_directory(run_id) / INCIDENT_RESOLUTION_FILE,
+        {
+            "schema": INCIDENT_RESOLUTION_SCHEMA,
+            "run_id": run_id,
+            "resolution": args.resolution,
+            "recorded_at": iso(_now(args.now, clock)),
+        },
+    )
+    status, _expires = run_status(store, run_id)
+    emit(
+        {
+            "result": "INCIDENT_RESOLUTION_RECORDED",
+            "run_id": run_id,
+            "resolution": args.resolution,
+            "record_state": status,
+        }
+    )
     return EXIT_OK
 
 
@@ -461,6 +516,8 @@ def main(
             return command_apply(args, now_clock)
         if args.command == "gate":
             return command_gate(args, now_clock)
+        if args.command == "resolve-incident":
+            return command_resolve_incident(args, now_clock)
         return command_purge(args, now_clock)
     except RefreshError as error:
         emit({"result": "REFUSED", "code": error.code})

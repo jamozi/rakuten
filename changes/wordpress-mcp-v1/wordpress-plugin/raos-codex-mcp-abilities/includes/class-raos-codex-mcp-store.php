@@ -669,12 +669,8 @@ final class RAOS_Codex_MCP_Store
             || ! self::is_sha256($payload['publication_manifest_sha256'])) {
             return false;
         }
-        $before_hash = class_exists('RAOS_Codex_MCP_Content')
-            ? RAOS_Codex_MCP_Content::document_hash($payload['before'])
-            : false;
-        $after_hash = class_exists('RAOS_Codex_MCP_Content')
-            ? RAOS_Codex_MCP_Content::document_hash($payload['after'])
-            : false;
+        $before_hash = self::payload_document_hash($row, $payload, 'before');
+        $after_hash = self::payload_document_hash($row, $payload, 'after');
         if (! self::is_sha256($before_hash)
             || ! self::is_sha256($after_hash)
             || ! isset(
@@ -706,6 +702,30 @@ final class RAOS_Codex_MCP_Store
             && self::nullable_hash_matches($row['before_sha256'], $before_hash)
             && self::nullable_hash_matches($row['after_sha256'], $after_hash)
             && hash_equals($manifest_hash, (string) $payload['publication_manifest_sha256']);
+    }
+
+    /**
+     * Document hash of one proposal side. After a price-overlay purge publish the owner-direct
+     * plugin replaces a stored injected body by its sha256; such a side of a terminal row keeps
+     * its recorded document hash, bound to the redaction record.
+     */
+    private static function payload_document_hash($row, $payload, $side)
+    {
+        if (isset($payload['price_overlay_redaction']['sides'][$side])) {
+            $redaction = $payload['price_overlay_redaction']['sides'][$side];
+            $recorded = $payload[$side . '_sha256'] ?? null;
+            return in_array($row['state'] ?? null, array('APPLIED', 'FAILED', 'EXPIRED'), true)
+                && isset($payload['authorization_profile'])
+                && is_array($redaction)
+                && self::is_sha256($redaction['block_markup_sha256'] ?? null)
+                && ('sha256:' . $redaction['block_markup_sha256']) === ($payload[$side]['block_markup'] ?? null)
+                && self::is_sha256($recorded)
+                ? $recorded
+                : false;
+        }
+        return class_exists('RAOS_Codex_MCP_Content')
+            ? RAOS_Codex_MCP_Content::document_hash($payload[$side])
+            : false;
     }
 
     private static function code_payload_integrity($row, $payload)

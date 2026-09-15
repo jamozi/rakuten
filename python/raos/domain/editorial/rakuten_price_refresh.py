@@ -1247,8 +1247,15 @@ def validate_approval(approval: object, run_id: str) -> dict[str, Any]:
     }
     if (
         not isinstance(approval, Mapping)
-        or set(approval) != keys
+        or not keys <= set(approval) <= keys | {PREPARED_CANDIDATES_KEY}
         or approval["schema"] != APPROVAL_SCHEMA
+    ):
+        fail("APPROVAL_INVALID")
+    prepared = approval.get(PREPARED_CANDIDATES_KEY, {})
+    if (
+        not isinstance(prepared, Mapping)
+        or not set(prepared) <= set(PREPARED_CANDIDATE_MODES)
+        or not all(isinstance(v, str) for v in prepared.values())
     ):
         fail("APPROVAL_INVALID")
     if approval["run_id"] != run_id:
@@ -1309,26 +1316,48 @@ def record_purge_publish(
 # The purge candidate froze the live (injected) documents as its baseline, so its id and
 # the id of the price-free candidate it was derived from hash price-bearing bytes too.
 PURGE_PUBLISH_HASH_KEYS: Final = ("candidate_id", "base_candidate_id")
+# Candidate ids that prepare wrote here instead of printing them (publisher output shows a
+# ``price-overlay:<run_id>:<mode>`` handle). Both hash the injected or live injected bytes.
+PREPARED_CANDIDATES_KEY: Final = "prepared_candidates"
+PREPARED_CANDIDATE_MODES: Final = ("PUBLISH", "PURGE")
+REDACTED: Final = "PURGED"
 
 
-def redact_approval(approval: Mapping[str, Any]) -> dict[str, Any]:
-    """Drop injected hashes (price-recoverable by brute force) once values are purged."""
+def _redacted_prepared(record: dict[str, Any], modes: Sequence[str]) -> None:
+    prepared = record.get(PREPARED_CANDIDATES_KEY)
+    if isinstance(prepared, Mapping):
+        record[PREPARED_CANDIDATES_KEY] = {
+            mode: REDACTED if mode in modes else value
+            for mode, value in prepared.items()
+        }
+
+
+def redact_purge_candidates(approval: Mapping[str, Any]) -> dict[str, Any]:
+    """Drop the purge candidate ids once the purge publish finished and its directory is gone."""
     record = dict(approval)
     if isinstance(record.get("purge_publish"), Mapping):
         purge_publish = dict(record["purge_publish"])
         for key in PURGE_PUBLISH_HASH_KEYS:
             if key in purge_publish:
-                purge_publish[key] = "PURGED"
+                purge_publish[key] = REDACTED
         record["purge_publish"] = purge_publish
+    _redacted_prepared(record, ("PURGE",))
+    return record
+
+
+def redact_approval(approval: Mapping[str, Any]) -> dict[str, Any]:
+    """Drop injected hashes (price-recoverable by brute force) once values are purged."""
+    record = redact_purge_candidates(approval)
+    _redacted_prepared(record, PREPARED_CANDIDATE_MODES)
     if isinstance(record.get("publish"), Mapping):
         publish = dict(record["publish"])
         publish["injected_body_sha256"] = {
-            k: "PURGED" for k in publish.get("injected_body_sha256", {})
+            k: REDACTED for k in publish.get("injected_body_sha256", {})
         }
-        publish["runtime_sha256"] = "PURGED"
+        publish["runtime_sha256"] = REDACTED
         if "candidate_id" in publish:
             # The candidate hash covers the injected bodies, so it is price-recoverable too.
-            publish["candidate_id"] = "PURGED"
+            publish["candidate_id"] = REDACTED
         record["publish"] = publish
     return record
 
@@ -1396,6 +1425,11 @@ def leak_needles(
     if isinstance(purge_publish, Mapping):
         for key in PURGE_PUBLISH_HASH_KEYS:
             value = purge_publish.get(key)
+            if isinstance(value, str) and _SHA256.fullmatch(value):
+                needles.add(value)
+    prepared = approval.get(PREPARED_CANDIDATES_KEY) if approval else None
+    if isinstance(prepared, Mapping):
+        for value in prepared.values():
             if isinstance(value, str) and _SHA256.fullmatch(value):
                 needles.add(value)
     return sorted(needles)

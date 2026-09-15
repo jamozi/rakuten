@@ -791,7 +791,7 @@ def test_fetch_apply_gate_and_purge_keep_values_owner_private(owner, capsys, tmp
         report["result"],
         report["raw_files_deleted"],
         report["published"],
-    ) == (0, "PURGED", 3, True)
+    ) == (0, "PURGE_PUBLISH_MISSING", 3, True)
     redacted_approval = approval_path.read_text()
     assert "e" * 64 not in redacted_approval and "f" * 64 not in redacted_approval
     assert stat.S_IMODE(approval_path.stat().st_mode) == 0o600
@@ -1710,7 +1710,184 @@ def test_purge_publish_candidate_ids_are_leak_needles_until_redacted():
         published, candidate_id="9" * 64, now=T0 + timedelta(hours=2)
     )
     purged["purge_publish"]["base_candidate_id"] = "8" * 64
-    assert {"9" * 64, "8" * 64} <= set(rpr.leak_needles(overlay, purged))
+    purged[rpr.PREPARED_CANDIDATES_KEY] = {"PUBLISH": "7" * 64, "PURGE": "6" * 64}
+    assert rpr.validate_approval(purged, RUN_ID) == purged
+    assert {"9" * 64, "8" * 64, "7" * 64, "6" * 64} <= set(rpr.leak_needles(overlay, purged))
+    # After the purge publish only the purge-side ids go; publish ids wait for purge-expired.
+    partial = rpr.redact_purge_candidates(purged)
+    assert partial["purge_publish"]["candidate_id"] == "PURGED"
+    assert partial["purge_publish"]["base_candidate_id"] == "PURGED"
+    assert partial[rpr.PREPARED_CANDIDATES_KEY] == {"PUBLISH": "7" * 64, "PURGE": "PURGED"}
+    assert partial["publish"]["candidate_id"] == "d" * 64
     redacted = json.dumps(rpr.redact_approval(purged))
-    assert "9" * 64 not in redacted and "8" * 64 not in redacted
+    for value in ("9", "8", "7", "6", "d", "e", "f"):
+        assert value * 64 not in redacted
     assert rpr.redact_approval(purged)["purge_publish"]["before_expiry"] is True
+    for prepared in ({"OTHER": "7" * 64}, {"PUBLISH": 7}, ["7" * 64]):
+        with pytest.raises(rpr.RefreshError, match="APPROVAL_INVALID"):
+            rpr.validate_approval({**purged, rpr.PREPARED_CANDIDATES_KEY: prepared}, RUN_ID)
+
+
+def test_gate_and_fetch_refuse_until_the_purge_publish_or_an_owner_incident_resolution(
+    owner, capsys, tmp_path
+):
+    root, plan_path = owner
+    run(
+        fetch_args(root, plan_path, "--owner-approved-run", RUN_ID),
+        capsys,
+        transport=FakeTransport([ok(body_for(row()))] * 3),
+        sleep=lambda _s: None,
+    )
+    code, _lines = run(
+        ["apply", "--owner-checkout", root, "--run-id", RUN_ID, "--plan", plan_path,
+         "--now", rpr.iso(T0 + timedelta(minutes=10))],
+        capsys,
+    )
+    assert code == 0
+    run_dir = root / rpr.PRIVATE_ROOT_RELATIVE / RUN_ID
+    approval_path = run_dir / "approval.v1.json"
+    overlay = json.loads((run_dir / "overlay.v1.json").read_text())
+    published = rpr.record_publish(
+        json.loads(approval_path.read_text()),
+        overlay,
+        candidate_id="d" * 64,
+        article_keys=["synthetic-comparison"],
+        injected_body_sha256={"synthetic-comparison": "e" * 64},
+        runtime_sha256="f" * 64,
+        now=T0 + timedelta(hours=1),
+    )
+    approval_path.write_text(json.dumps(published))
+    later = T0 + timedelta(hours=25)
+    code, lines = run(["purge-expired", "--owner-checkout", root], capsys, clock=lambda: later)
+    assert (code, lines[-1]["runs"][0]["result"]) == (0, "PURGE_PUBLISH_MISSING")
+    assert not (run_dir / "raw").exists()
+
+    second = "ks020-synthetic-0002"
+    blocked = FakeTransport()
+    code, lines = run(
+        fetch_args(root, plan_path, "--owner-approved-run", second),
+        capsys,
+        transport=blocked,
+        clock=lambda: later,
+    )
+    assert (code, lines[-1]["code"], blocked.calls) == (2, "EXPIRED_RUN_NOT_PURGED", [])
+
+    store = PrivateStore(root)
+    observed = later - timedelta(minutes=30)
+    store.write_json(
+        store.run_directory(second) / "approval.v1.json",
+        rpr.new_approval(second, "a" * 64, observed - timedelta(minutes=1)),
+    )
+    store.write_json(
+        store.run_directory(second) / "overlay.v1.json",
+        rpr.build_overlay(
+            second, "a" * 64, [matched_entry(observed=observed)], observed + timedelta(minutes=5)
+        ),
+    )
+    body_path = tmp_path / "body.html"
+    body_path.write_text(BODY)
+    gate_args = [
+        "gate", "--owner-checkout", root, "--run-id", second, "--repository", root,
+        "--body", f"synthetic-comparison={body_path}",
+    ]
+    code, lines = run(gate_args, capsys, clock=lambda: later)
+    assert code == 3 and [(f["code"], f["subject"]) for f in lines[-1]["findings"]] == [
+        ("EXPIRED_RUN_NOT_PURGED", RUN_ID)
+    ]
+
+    resolve = [
+        "resolve-incident", "--owner-checkout", root, "--run-id", RUN_ID,
+        "--resolution", "WORDPRESS_POSTS_WITHDRAWN",
+    ]
+    for extra in ([], ["--owner-confirmed-price-free", second]):
+        code, lines = run([*resolve, *extra], capsys, clock=lambda: later)
+        assert (code, lines[-1]["code"]) == (2, "OWNER_CONFIRMATION_REQUIRED")
+    code, lines = run(
+        ["resolve-incident", "--owner-checkout", root, "--run-id", second,
+         "--owner-confirmed-price-free", second, "--resolution", "WORDPRESS_POSTS_WITHDRAWN"],
+        capsys,
+        clock=lambda: later,
+    )
+    assert (code, lines[-1]["code"]) == (2, "INCIDENT_RESOLUTION_NOT_APPLICABLE")
+    code, lines = run(gate_args, capsys, clock=lambda: later)
+    assert code == 3, "refusals recorded nothing"
+
+    code, lines = run([*resolve, "--owner-confirmed-price-free", RUN_ID], capsys, clock=lambda: later)
+    assert (code, lines[-1]) == (
+        0,
+        {
+            "result": "INCIDENT_RESOLUTION_RECORDED",
+            "run_id": RUN_ID,
+            "resolution": "WORDPRESS_POSTS_WITHDRAWN",
+            "record_state": "PURGED",
+        },
+    )
+    assert stat.S_IMODE((run_dir / "incident-resolution.v1.json").stat().st_mode) == 0o600
+    code, lines = run(gate_args, capsys, clock=lambda: later)
+    assert (code, lines[-1]["result"]) == (0, "GATE_PASS")
+    code, lines = run([*resolve, "--owner-confirmed-price-free", RUN_ID], capsys, clock=lambda: later)
+    assert (code, lines[-1]["code"]) == (2, "INCIDENT_RESOLUTION_NOT_APPLICABLE")
+
+
+def test_an_invalid_incident_resolution_keeps_the_run_blocked(owner, capsys):
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    published = rpr.record_publish(
+        approval(),
+        gate_overlay(),
+        candidate_id="d" * 64,
+        article_keys=["a"],
+        injected_body_sha256={"a": "e" * 64},
+        runtime_sha256="f" * 64,
+        now=T0 + timedelta(hours=1),
+    )
+    store.write_json(directory / "approval.v1.json", rpr.redact_approval(published))
+    store.write_json(
+        directory / "overlay.v1.json",
+        {"schema": rpr.PURGED_SCHEMA, "run_id": RUN_ID, "purged_at": rpr.iso(T0), "offer_ids": []},
+    )
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+    store.write_json(
+        directory / "incident-resolution.v1.json",
+        {"schema": "tampered", "run_id": RUN_ID, "resolution": "WORDPRESS_POSTS_WITHDRAWN",
+         "recorded_at": rpr.iso(T0)},
+    )
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+
+
+def test_standalone_gate_reads_the_theme_js_from_the_repository(owner, capsys, tmp_path):
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    store.write_json(directory / "approval.v1.json", approval())
+    store.write_json(directory / "overlay.v1.json", overlay_of(matched_entry(taxFlag=1)))
+    repository = (tmp_path / "repository").resolve()
+    repository.mkdir()
+    git(repository, "init", "-q")
+    body_path = tmp_path / "body.html"
+    body_path.write_text(BODY)
+    gate_args = [
+        "gate", "--owner-checkout", root, "--run-id", RUN_ID, "--repository", repository,
+        "--body", f"synthetic-comparison={body_path}", "--now", rpr.iso(T0 + timedelta(hours=1)),
+    ]
+    code, lines = run(gate_args, capsys)
+    assert code == 3 and {f["code"] for f in lines[-1]["findings"]} == {
+        "TAX_EXCLUDED_PRICE_UNSUPPORTED"
+    }, "no theme JS in --repository"
+    js = repository / cli.THEME_JS_RELATIVE
+    js.parent.mkdir(parents=True)
+    js.write_text(THEME_JS.read_text(encoding="utf-8"), encoding="utf-8")
+    code, lines = run(gate_args, capsys)
+    assert (code, lines[-1]["result"]) == (0, "GATE_PASS")
+    js.write_text(
+        THEME_JS.read_text(encoding="utf-8").replace(rpr.TAX_EXCLUDED_LABEL, "本体税込"),
+        encoding="utf-8",
+    )
+    code, lines = run(gate_args, capsys)
+    assert code == 3 and {f["code"] for f in lines[-1]["findings"]} == {
+        "TAX_EXCLUDED_PRICE_UNSUPPORTED"
+    }

@@ -11,6 +11,10 @@ final class RAOS_Codex_MCP_Owner_Direct
     const PUBLISHER_ROLE = 'raos_codex_owner_direct_publisher';
     const APP_NAME = 'RAOS Codex Owner Direct Publisher';
     const BINDING_OPTION = 'raos_codex_owner_direct_bound_user_id_v1';
+    /** KS-020 price overlay (changes/reader-purchase-support-v1/price-refresh-contract.md §10.1-3). */
+    const OVERLAY_RUN_PATTERN = '/data-ps-overlay-run="([a-z0-9][a-z0-9-]{7,63})"/';
+    const OVERLAY_REDACTION_KEY = 'price_overlay_redaction';
+    const OVERLAY_REDACTED_PREFIX = 'sha256:';
     private $plugin;
 
     public function __construct($plugin) { $this->plugin = $plugin; }
@@ -356,6 +360,106 @@ final class RAOS_Codex_MCP_Owner_Direct
             'public_before' => get_option('raos_codex_owner_direct_public_' . $document['id'], null));
         update_option($name, $undo, false);
         return get_option($name, null) === $undo ? true : self::error('undo_unavailable', 503);
+    }
+
+    /** Price-overlay run ids marked in a document body (none once the body is redacted). */
+    public static function overlay_runs($document)
+    {
+        $markup = is_array($document) ? ($document['block_markup'] ?? null) : null;
+        if (! is_string($markup) || preg_match_all(self::OVERLAY_RUN_PATTERN, $markup, $matches) < 1) {
+            return array();
+        }
+        $runs = array_values(array_unique($matches[1]));
+        sort($runs, SORT_STRING);
+        return $runs;
+    }
+
+    private static function redact_overlay_document($document, $runs)
+    {
+        if (! is_array($document) || empty(array_intersect(self::overlay_runs($document), $runs))) { return null; }
+        $markup_sha256 = hash('sha256', $document['block_markup']);
+        $document['block_markup'] = self::OVERLAY_REDACTED_PREFIX . $markup_sha256;
+        return array($document, $markup_sha256);
+    }
+
+    /**
+     * After a finalized purge publish (its before body carries price-overlay run markers and
+     * its after body none), keep only the sha256 of every stored copy of those runs' injected
+     * bodies for the same post: proposal payloads (before/after) of terminal rows and the
+     * owner-direct undo options (applied_document/public_before). Active rows (PENDING,
+     * MANUAL_REQUIRED, APPROVED, APPLYING) are never rewritten; they make the result INCOMPLETE.
+     * Returns null when the row is not a purge publish.
+     */
+    public static function redact_price_overlay_copies($row)
+    {
+        if (! self::is_direct($row) || 'CONTENT_RELEASE' !== ($row['kind'] ?? null)
+            || 'APPLIED' !== ($row['state'] ?? null)
+            || ! empty(self::overlay_runs($row['payload']['after'] ?? null))) {
+            return null;
+        }
+        $runs = self::overlay_runs($row['payload']['before'] ?? null);
+        $post_id = $row['payload']['after']['id'] ?? null;
+        if (empty($runs) || ! is_int($post_id)) { return null; }
+        global $wpdb;
+        $result = array('state' => 'INCOMPLETE', 'runs' => $runs, 'post_id' => $post_id,
+            'proposals' => 0, 'undo_options' => 0, 'skipped_active' => 0);
+        $table = RAOS_Codex_MCP_Store::table_name();
+        $candidates = $wpdb->get_results($wpdb->prepare(
+            'SELECT proposal_id, state, payload_json FROM ' . $table
+            . " WHERE kind = 'CONTENT_RELEASE' AND created_by = %d AND payload_json LIKE %s",
+            (int) $row['created_by'], '%' . $wpdb->esc_like('data-ps-overlay-run=') . '%'
+        ), ARRAY_A);
+        if (! is_array($candidates) || ! empty($wpdb->last_error)) { return $result; }
+        foreach ($candidates as $candidate) {
+            $payload = is_string($candidate['payload_json'] ?? null) ? json_decode($candidate['payload_json'], true) : null;
+            if (! is_array($payload) || ! isset($payload['authorization_profile'])
+                || ($payload['after']['id'] ?? null) !== $post_id) {
+                continue;
+            }
+            $sides = array();
+            foreach (array('before', 'after') as $side) {
+                $redacted = self::redact_overlay_document($payload[$side] ?? null, $runs);
+                if (null !== $redacted) {
+                    $payload[$side] = $redacted[0];
+                    $sides[$side] = array('block_markup_sha256' => $redacted[1]);
+                }
+            }
+            if (! empty($sides)) {
+                if (! in_array($candidate['state'], array('APPLIED', 'FAILED', 'EXPIRED'), true)) {
+                    $result['skipped_active']++;
+                    continue;
+                }
+                $record = $payload[self::OVERLAY_REDACTION_KEY] ?? array('runs' => array(), 'sides' => array());
+                if (! is_array($record) || ! is_array($record['runs'] ?? null) || ! is_array($record['sides'] ?? null)) { return $result; }
+                $record['runs'] = array_values(array_unique(array_merge($record['runs'], $runs)));
+                sort($record['runs'], SORT_STRING);
+                $record['sides'] = array_merge($record['sides'], $sides);
+                $payload[self::OVERLAY_REDACTION_KEY] = $record;
+                $json = RAOS_Codex_MCP_Store::canonical_json($payload);
+                $updated = is_string($json) ? $wpdb->query($wpdb->prepare(
+                    'UPDATE ' . $table . ' SET payload_json = %s WHERE proposal_id = %s AND state = %s AND payload_json = %s',
+                    $json, $candidate['proposal_id'], $candidate['state'], $candidate['payload_json']
+                )) : false;
+                if (1 !== $updated) { return $result; }
+                $result['proposals']++;
+            }
+            $name = 'raos_codex_owner_direct_undo_' . $candidate['proposal_id'];
+            $undo = get_option($name, null);
+            if (is_array($undo)) {
+                $changed = false;
+                foreach (array('applied_document', 'public_before') as $key) {
+                    $redacted = self::redact_overlay_document($undo[$key] ?? null, $runs);
+                    if (null !== $redacted) { $undo[$key] = $redacted[0]; $changed = true; }
+                }
+                if ($changed) {
+                    update_option($name, $undo, false);
+                    if (get_option($name, null) !== $undo) { return $result; }
+                    $result['undo_options']++;
+                }
+            }
+        }
+        $result['state'] = 0 === $result['skipped_active'] ? 'COMPLETE' : 'INCOMPLETE';
+        return $result;
     }
 
     /** A public projection is materialized only after the existing apply engine commits. */

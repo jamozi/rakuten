@@ -655,21 +655,21 @@ def finish_publication(root, directory, candidate, journal, call, binding=None):
     save(directory / "journal.json", journal)
     if binding is not None:
         binding.after_readback(root, directory, candidate, journal, call)
-    print(
-        json.dumps(
-            {
-                "candidate_id": candidate["candidate_id"],
-                "publication_status": journal["publication_status"],
-                "git_sync": "PENDING",
-            }
-        ),
-        flush=True,
-    )
+    summary = {
+        "candidate_id": candidate["candidate_id"],
+        "publication_status": journal["publication_status"],
+        "git_sync": "PENDING",
+    }
+    if binding is not None:
+        summary = price_overlay_output(candidate, summary)
+    print(json.dumps(summary), flush=True)
     try:
         journal["git_sync"] = sync_git(root, journal["checkpoint"])
     except Exception:
         journal["git_sync"] = {"status": "error", "error": "GIT_SYNC_FAILED"}
     save(directory / "journal.json", journal)
+    if binding is not None:
+        binding.after_publication(root, candidate)
     return journal
 
 
@@ -689,6 +689,13 @@ def price_overlay_binding(candidate, run=None, purge=None):
     from scripts import raos_wordpress_price_overlay as price_overlay
 
     return price_overlay.resolve_binding(sys.modules[__name__], candidate, run, purge)
+
+
+def price_overlay_output(candidate, result):
+    """Printed output of a price-overlay candidate: a handle instead of ids and hashes."""
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.public_output(candidate, result)
 
 
 def preview_candidate(candidate):
@@ -1074,14 +1081,10 @@ def execute_cli(args):
                 affiliate_config=args.affiliate_config,
                 affiliate_fetch=args.affiliate_fetch,
             )
-            result = {
-                "candidate_id": candidate["candidate_id"],
-                "candidate_directory": str(directory),
-                "publication_ready": candidate["publication_ready"],
-                "price_overlay": {
-                    key: candidate["price_overlay"][key] for key in ("mode", "run_id")
-                },
-            }
+            # The id stays in the private approval record; output shows the handle only.
+            result = price_overlay_output(
+                candidate, {"publication_ready": candidate["publication_ready"]}
+            )
         elif args.command == "prepare":
             candidate, directory = prepare(
                 ROOT, [x for x in args.articles.split(",") if x], args.theme,
@@ -1095,9 +1098,16 @@ def execute_cli(args):
                 "publication_ready": candidate["publication_ready"],
             }
         else:
-            operator.require_sha256(args.candidate)
-            directory = ROOT / PRIVATE / args.candidate
-            candidate = load_candidate(directory, args.candidate)
+            candidate_id = args.candidate
+            if candidate_id.startswith("price-overlay:"):
+                from scripts import raos_wordpress_price_overlay as price_overlay
+
+                candidate_id = price_overlay.resolve_handle(
+                    sys.modules[__name__], ROOT, candidate_id
+                )
+            operator.require_sha256(candidate_id)
+            directory = ROOT / PRIVATE / candidate_id
+            candidate = load_candidate(directory, candidate_id)
             if args.command == "preview":
                 from scripts.raos_wordpress_direct_preview import (
                     prepare_candidate_preview,
@@ -1107,7 +1117,7 @@ def execute_cli(args):
                 save(directory / "preview.json", result)
             elif args.command == "publish":
                 journal = publish(
-                    ROOT, directory, args.candidate,
+                    ROOT, directory, candidate_id,
                     price_overlay_run=args.price_overlay_run,
                     price_overlay_purge=args.price_overlay_purge,
                 )
@@ -1121,7 +1131,7 @@ def execute_cli(args):
                     read_json(journal_path)
                     if journal_path.exists()
                     else {
-                        "candidate_id": args.candidate,
+                        "candidate_id": candidate_id,
                         "publication_status": "PREPARED",
                         "publication_ready": candidate["publication_ready"],
                     }
@@ -1143,6 +1153,8 @@ def execute_cli(args):
                         ],
                     }
                 result = journal
+            if "price_overlay" in candidate:
+                result = price_overlay_output(candidate, result)
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except (DirectFailure, operator.OperatorFailure) as error:

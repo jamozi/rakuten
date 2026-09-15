@@ -2,7 +2,7 @@
   "artifacts": [
     {
       "artifact_id": "raos-codex-mcp-abilities-v1",
-      "package_sha256": "1b3c2d59c9871796df86f9bd549e226040ca4110610d2ee0fed30c0e443103ee",
+      "package_sha256": "5de10f4df2a1f5d8dd4c608b1b503ef4833912f5c0f2be61cf37640d12615998",
       "slug": "raos-codex-mcp-abilities",
       "version": "1.4.0"
     },

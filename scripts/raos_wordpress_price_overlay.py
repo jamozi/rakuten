@@ -55,6 +55,16 @@ JSON_REVISION_FIELDS = {
     "theme-contract.v1.json": (("runtime_evidence",), ("revision", "source_fingerprint")),
 }
 ARTICLE_KEY = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+# Output never names a price-overlay candidate by id (a hash of injected or live injected
+# bytes): prepare writes the id to the private approval record and prints this handle,
+# which preview/publish/status/sync accept as --candidate.
+HANDLE = re.compile(
+    r"price-overlay:(?P<run>[a-z0-9][a-z0-9-]{7,63}):(?P<mode>publish|purge)\Z"
+)
+HANDLE_PREFIX = "price-overlay:"
+REDACTED_ID = "REDACTED_PRICE_OVERLAY"
+PUBLIC_FIELDS = ("publication_ready", "publication_status", "status", "result_code")
+SHA256_ID = re.compile(r"[0-9a-f]{64}\Z")
 
 
 def clock():
@@ -103,6 +113,52 @@ def _approval_lock(store, run_id):
         except BlockingIOError:
             rpr.fail("APPROVAL_BUSY")
         yield
+
+
+def _remember_prepared(store, run_id, mode, candidate_id):
+    with _approval_lock(store, run_id):
+        path, approval = _approval(store, run_id)
+        prepared = dict(approval.get(rpr.PREPARED_CANDIDATES_KEY) or {})
+        prepared[mode] = candidate_id
+        approval[rpr.PREPARED_CANDIDATES_KEY] = prepared
+        store.write_json(path, approval, replace=True)
+
+
+def handle(candidate):
+    bound = candidate["price_overlay"]
+    return f"{HANDLE_PREFIX}{bound['run_id']}:{bound['mode'].lower()}"
+
+
+def resolve_handle(direct, root, value):
+    """``price-overlay:<run_id>:<publish|purge>`` -> the id prepare recorded privately."""
+    match = HANDLE.fullmatch(value)
+    if match is None:
+        direct.fail("PRICE_OVERLAY_CANDIDATE_HANDLE_INVALID")
+    with refusals(direct):
+        _path, approval = _approval(_store(root), match["run"])
+    prepared = approval.get(rpr.PREPARED_CANDIDATES_KEY) or {}
+    candidate_id = prepared.get(match["mode"].upper())
+    if not isinstance(candidate_id, str) or SHA256_ID.fullmatch(candidate_id) is None:
+        direct.fail("PRICE_OVERLAY_CANDIDATE_HANDLE_UNKNOWN")
+    return candidate_id
+
+
+def public_output(candidate, result):
+    """What prepare/preview/publish/status/sync print for a price-overlay candidate."""
+    view = {
+        "candidate": handle(candidate),
+        "candidate_id": REDACTED_ID,
+        "price_overlay": {
+            key: candidate["price_overlay"][key] for key in ("mode", "run_id")
+        },
+    }
+    view.update({key: result[key] for key in PUBLIC_FIELDS if key in result})
+    git_sync = result.get("git_sync")
+    if isinstance(git_sync, dict):
+        view["git_sync"] = {"status": git_sync.get("status")}
+    elif git_sync is not None:
+        view["git_sync"] = git_sync
+    return view
 
 
 def _overlay(store, run_id):
@@ -363,7 +419,9 @@ def prepare_publish(direct, root, keys, run_id, call):
         derived, bodies, theme, package = _derive_injected(
             direct, root, base, payloads, overlay, run_id
         )
-        return _materialize(direct, root, derived, payloads, bodies, theme, package)
+        prepared = _materialize(direct, root, derived, payloads, bodies, theme, package)
+        _remember_prepared(store, run_id, MODE_PUBLISH, prepared[0]["candidate_id"])
+        return prepared
 
 
 def prepare_purge(direct, root, keys, run_id, call):
@@ -407,9 +465,11 @@ def _derive_purge(direct, root, store, run_id, publish, base, base_directory):
         }
         derived["candidate_id"] = direct.digest(direct.encoded(derived))
         package = (base_directory / base["theme"]["package_file"]).read_bytes()
-        return _materialize(
+        prepared = _materialize(
             direct, root, derived, payloads, {}, _theme_payloads(payloads), package
         )
+        _remember_prepared(store, run_id, MODE_PURGE, prepared[0]["candidate_id"])
+        return prepared
 
 
 def preview_view(candidate):
@@ -488,6 +548,29 @@ class Binding:
                     self._verify_publish(root, candidate, journal, call)
                 else:
                     self._record_purge(root, candidate, journal, call)
+
+    def after_publication(self, root, candidate):
+        """A finished purge publish deletes its own candidate and forgets its ids.
+
+        The purge candidate froze the live injected documents as its baseline, so its
+        directory and ids (purge_publish.candidate_id / base_candidate_id and the prepared
+        id) are price-recoverable. Runs after readback, the purge record and git sync.
+        """
+        if self.mode != MODE_PURGE:
+            return
+        store = _store(root)
+        with refusals(self.direct):
+            with _approval_lock(store, self.run_id):
+                approval_path, approval = _approval(store, self.run_id)
+                purge = approval["purge_publish"]
+                if purge is None or purge.get("candidate_id") != candidate["candidate_id"]:
+                    rpr.fail("APPROVAL_PURGE_RECORD_MISSING")
+                # Directory first: an interrupted cleanup leaves ids (REDACTION_PENDING,
+                # finished by purge-expired), never a directory without its recorded id.
+                store.delete_owner_direct_candidate(candidate["candidate_id"])
+                store.write_json(
+                    approval_path, rpr.redact_purge_candidates(approval), replace=True
+                )
 
     # -- publish -----------------------------------------------------------
 
@@ -617,6 +700,9 @@ class Binding:
             approval["purge_publish"]["base_candidate_id"] = self.bound[
                 "base_candidate_id"
             ]
+            approval["purge_publish"]["wordpress_redaction"] = _wordpress_redaction(
+                journal
+            )
             store.write_json(approval_path, approval, replace=True)
         elif purge.get("candidate_id") != candidate["candidate_id"]:
             rpr.fail("APPROVAL_PURGE_ALREADY_USED")
@@ -624,6 +710,21 @@ class Binding:
             self.direct, root, store, approval["publish"].get("candidate_id")
         )
         store.delete_owner_direct_candidate(self.bound["base_candidate_id"])
+
+
+def _wordpress_redaction(journal):
+    """State of the plugin's price-overlay redaction reported by the batch finalize.
+
+    COMPLETE / INCOMPLETE come from owner-direct plugin builds that replace stored injected
+    bodies with their sha256 (contract §10.1-3); NOT_REPORTED means the site did not report
+    it (older plugin, or no batch was finalized by this publish).
+    """
+    finish = journal.get("batch_finish")
+    reports = finish.get("price_overlay_redaction") if isinstance(finish, dict) else None
+    if not isinstance(reports, list) or not reports:
+        return "NOT_REPORTED"
+    states = {r.get("state") if isinstance(r, dict) else None for r in reports}
+    return "COMPLETE" if states == {"COMPLETE"} else "INCOMPLETE"
 
 
 def delete_local_injected_copies(direct, root, store, candidate_id):
