@@ -300,7 +300,10 @@ def test_new_procedure_details_stay_together_before_other_topics(
     first = {**first, "text": "最初の作業手順"}
     other = {**other, "text": "別の確認事項"}
     later["text"] = "追加確認した作業手順"
-    product["guide_facts"] = [first, other, later]
+    # Keep the other fields: installation numbers must stay restated (KS-010).
+    product["guide_facts"] = [first, other, later] + [
+        f for f in product["guide_facts"] if f["field"] not in {primary, secondary}
+    ]
     html, _ = compile(catalog)
     section = next(
         n for n in fragment(html[slug]).walk() if n.attrs.get("id") == product["anchor"]
@@ -334,6 +337,9 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
     drainage.update(state="UNKNOWN", text="排水条件は未確認です。")
     clearance = next(f for f in product["guide_facts"] if f["field"] == "clearance")
     clearance.update(state="UNKNOWN", text="必要余白は追加確認中です。")
+    # A withdrawn clearance record cannot leave its numbers in the fit check (KS-010).
+    for key in ("above_mm", "left_mm", "right_mm", "rear_mm"):
+        product["installation"][key] = None
     html, _ = compile(catalog)
     for article in catalog["articles"]:
         if article["kind"] == "guide":
@@ -656,3 +662,247 @@ def test_rejects_overlap_between_primary_and_supplementary_identities(catalog):
     article["supplementary_product_ids"] = [article["product_ids"][0]]
     with pytest.raises(ValueError):
         validate_catalog(catalog)
+
+
+def _product(catalog, pid):
+    return next(p for p in catalog["products"] if p["product_id"] == pid)
+
+
+def _fact(product, label):
+    return next(f for f in product["facts"] if f["label"].startswith(label))
+
+
+def _guide(product, field):
+    return next(f for f in product["guide_facts"] if f["field"] == field)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "code"),
+    [
+        ("fact_width_text", "PURCHASE_DIMENSION_SOURCE_MISMATCH"),
+        ("guide_width_text", "PURCHASE_DIMENSION_SOURCE_MISMATCH"),
+        ("installation_width", "PURCHASE_DIMENSION_SOURCE_MISMATCH"),
+        ("installation_door_depth", "PURCHASE_DIMENSION_SOURCE_MISMATCH"),
+        ("installation_rear", "PURCHASE_DIMENSION_SOURCE_MISMATCH"),
+        ("guide_dimensions_removed", "PURCHASE_DIMENSION_SOURCE_REQUIRED"),
+        ("fact_dimensions_removed", "PURCHASE_DIMENSION_SOURCE_REQUIRED"),
+    ],
+)
+def test_installation_numbers_agree_with_dimension_facts_and_guide_facts(
+    catalog, mutation, code
+):
+    # installation is the numeric source; fact and guide texts restate it.
+    # Door and clearance use containment only (486 and 18 occur in no text).
+    product = _product(catalog, "PRD-PANASONIC-NP-TMLK1")
+    if mutation == "fact_width_text":
+        _fact(product, "本体寸法")["text"] = "311×225×435mm"
+    elif mutation == "guide_width_text":
+        _guide(product, "dimensions")["text"] = "本体は幅311×奥行225×高さ435mm。"
+    elif mutation == "installation_width":
+        product["installation"]["width_mm"] = 311
+    elif mutation == "installation_door_depth":
+        product["installation"]["door_depth_mm"] = 486
+    elif mutation == "installation_rear":
+        product["installation"]["rear_mm"] = 18
+    elif mutation == "guide_dimensions_removed":
+        product["guide_facts"].remove(_guide(product, "dimensions"))
+    else:
+        product["facts"].remove(_fact(product, "本体寸法"))
+    with pytest.raises(ValueError, match=code):
+        validate_catalog(catalog)
+
+
+def test_installation_consistency_checker_lists_every_mismatch_without_raising(
+    catalog,
+):
+    from raos.application.editorial.purchase_support import (
+        installation_consistency_mismatches,
+        validate_installation_consistency,
+    )
+
+    validate_catalog(catalog)
+    assert all(
+        installation_consistency_mismatches(p) == [] for p in catalog["products"]
+    )
+    product = _product(catalog, "PRD-PANASONIC-NP-TMLK1")
+    product["installation"]["width_mm"] = 311
+    product["installation"]["rear_mm"] = 18
+    # A model number digit next to ASCII letters is not a dimension token.
+    guide = _guide(_product(catalog, "PRD-THANKO-RAKUA-MINI-COLOR"), "dimensions")
+    assert "TDWS25SBL" in guide["text"]
+    rows = installation_consistency_mismatches(product)
+    assert {(r["group"], r["source"], tuple(r["keys"])) for r in rows} == {
+        ("dimensions", "facts", ("width_mm",)),
+        ("dimensions", "guide_facts", ("width_mm",)),
+        ("clearance", "facts", ("rear_mm",)),
+        ("clearance", "guide_facts", ("rear_mm",)),
+    }
+    assert {r["code"] for r in rows} == {"PURCHASE_DIMENSION_SOURCE_MISMATCH"}
+    assert all(r["product_id"] == "PRD-PANASONIC-NP-TMLK1" for r in rows)
+    with pytest.raises(ValueError, match="PURCHASE_DIMENSION_SOURCE_MISMATCH"):
+        validate_installation_consistency(product)
+
+
+def _conflict_door(catalog):
+    """In-memory CONFLICT fixture; the tracked NP-TSP1 record stays UNKNOWN."""
+    product = _product(catalog, "PRD-PANASONIC-NP-TSP1")
+    sources = [
+        {
+            "value": "開扉奥行 上386mm・下362mm",
+            "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+            "locator": "個別仕様の本体外形寸法",
+            "checked_at": "2026-09-13",
+        },
+        {
+            "value": "開閉時最大433mm",
+            "source_url": "https://panasonic.jp/dish/comparison.html",
+            "locator": "公式比較表の開閉時最大寸法",
+            "checked_at": "2026-09-13",
+        },
+    ]
+    for record in (_fact(product, "開扉時の寸法"), _guide(product, "door")):
+        record["state"] = "CONFLICT"
+        record["conflict_sources"] = deepcopy(sources)
+        record["conflict_installation_keys"] = ["door_depth_mm"]
+    return product
+
+
+@pytest.mark.parametrize(
+    ("mutation", "code"),
+    [
+        ("one_source", "PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED"),
+        ("duplicate_source", "PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED"),
+        ("http_source", "PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED"),
+        ("empty_value", "PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED"),
+        ("guide_one_source", "PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED"),
+        ("door_depth_433", "PURCHASE_CONFLICT_VALUE_ASSERTED"),
+        ("door_depth_400", "PURCHASE_CONFLICT_VALUE_ASSERTED"),
+        ("keys_missing", "PURCHASE_CONFLICT_INSTALLATION_KEYS_REQUIRED"),
+        ("keys_outside_group", "PURCHASE_CONFLICT_INSTALLATION_KEYS_INVALID"),
+        ("known_with_sources", "PURCHASE_FACT_CONFLICT_SOURCES_UNEXPECTED"),
+        ("known_with_keys", "PURCHASE_FACT_CONFLICT_SOURCES_UNEXPECTED"),
+        ("guide_state_invalid", "PURCHASE_FACT_SOURCE_REQUIRED"),
+    ],
+)
+def test_source_conflict_is_a_distinct_fact_state(catalog, mutation, code):
+    from raos.application.editorial.purchase_support import (
+        FACT_STATES,
+        UNSETTLED_FACT_STATES,
+    )
+
+    assert FACT_STATES == {"KNOWN", "PRESERVED", "UNKNOWN", "CONFLICT"}
+    assert UNSETTLED_FACT_STATES == {"UNKNOWN", "CONFLICT"}
+    product = _conflict_door(catalog)
+    validate_catalog(deepcopy(catalog))
+    fact, guide = _fact(product, "開扉時の寸法"), _guide(product, "door")
+    if mutation == "one_source":
+        fact["conflict_sources"].pop()
+    elif mutation == "duplicate_source":
+        fact["conflict_sources"][1].update(
+            source_url=fact["conflict_sources"][0]["source_url"],
+            locator=fact["conflict_sources"][0]["locator"],
+        )
+    elif mutation == "http_source":
+        fact["conflict_sources"][1]["source_url"] = "http://panasonic.jp/dish/"
+    elif mutation == "empty_value":
+        fact["conflict_sources"][0]["value"] = " "
+    elif mutation == "guide_one_source":
+        guide["conflict_sources"].pop()
+    elif mutation == "door_depth_433":
+        product["installation"]["door_depth_mm"] = 433
+    elif mutation == "door_depth_400":
+        product["installation"]["door_depth_mm"] = 400
+    elif mutation == "keys_missing":
+        del fact["conflict_installation_keys"]
+    elif mutation == "keys_outside_group":
+        guide["conflict_installation_keys"] = ["width_mm"]
+    elif mutation == "known_with_sources":
+        other = _fact(product, "本体寸法")
+        other["conflict_sources"] = deepcopy(fact["conflict_sources"])
+    elif mutation == "known_with_keys":
+        _guide(product, "dimensions")["conflict_installation_keys"] = ["width_mm"]
+    else:
+        guide["state"] = "SETTLED"
+    with pytest.raises(ValueError, match=code):
+        validate_catalog(catalog)
+
+
+def test_conflict_fact_state_reaches_markup_and_counts_as_unsettled(catalog):
+    _conflict_door(catalog)
+    water = next(
+        p
+        for p in catalog["products"]
+        if any(f["field"] == "water_supply" for f in p.get("guide_facts", []))
+        and p.get("installation")
+    )
+    supply = _guide(water, "water_supply")
+    supply.update(
+        state="CONFLICT",
+        text="給水条件の公式表記が2資料で異なる（テスト用の文）",
+        conflict_sources=[
+            {
+                "value": "資料Aの給水条件",
+                "source_url": supply["source_url"],
+                "locator": "資料A",
+                "checked_at": supply["checked_at"],
+            },
+            {
+                "value": "資料Bの給水条件",
+                "source_url": supply["source_url"],
+                "locator": "資料B",
+                "checked_at": supply["checked_at"],
+            },
+        ],
+    )
+    validate_catalog(catalog)
+    html, _ = compile(catalog)
+    main = fragment(html["countertop-dishwasher-for-small-households"])
+    cells = [
+        n
+        for n in main.walk()
+        if n.attrs.get("data-ps-product") == "PRD-PANASONIC-NP-TSP1"
+        and n.attrs.get("data-ps-fact-state") == "CONFLICT"
+    ]
+    assert cells and all("公式の個別仕様は開扉奥行" in n.text() for n in cells)
+    guide = fragment(html["dishwasher-water-supply-methods"])
+    row = next(n for n in guide.walk() if n.attrs.get("id") == water["anchor"])
+    group = next(
+        n for n in row.walk() if n.attrs.get("data-ps-guide-field") == "water_supply"
+    )
+    assert group.find(tag="dd")[0].text() == supply["text"]
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        (
+            "dimensions_reordered",
+            {("dimensions", "facts", ("width_mm", "depth_mm"))},
+        ),
+        ("model_name_before_dimensions", set()),
+        ("all_none_group_without_records", set()),
+    ],
+)
+def test_installation_consistency_order_model_names_and_withdrawn_groups(
+    catalog, mutation, expected
+):
+    from raos.application.editorial.purchase_support import (
+        installation_consistency_mismatches,
+    )
+
+    product = _product(catalog, "PRD-PANASONIC-NP-TMLK1")
+    if mutation == "dimensions_reordered":
+        # The same three numbers in another order: containment alone accepts it.
+        _fact(product, "本体寸法")["text"] = "225×310×435mm"
+    elif mutation == "model_name_before_dimensions":
+        # A digit joined to ASCII letters (NP-TMLK1) is not a dimension token.
+        _guide(product, "dimensions")["text"] = (
+            "NP-TMLK1の本体は幅310×奥行225×高さ435mm。"
+        )
+    else:
+        # A group whose keys are all None is skipped, so no record is required.
+        product["installation"].update(door_depth_mm=None, door_height_mm=None)
+        product["facts"].remove(_fact(product, "開扉時の寸法"))
+        product["guide_facts"].remove(_guide(product, "door"))
+    rows = installation_consistency_mismatches(product)
+    assert {(r["group"], r["source"], tuple(r["keys"])) for r in rows} == expected

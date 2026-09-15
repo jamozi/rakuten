@@ -1,6 +1,8 @@
 # Purchase-support GA4 activation
 
-Status: **OFF / OWNER_CONFIRMATION_PENDING**. Local synthetic checks pass; production activation, provider configuration readback, actual collection and DebugView are **NOT_EXECUTED**. Read credentials are not configured for this work. No Google property creation, credential access or live write was performed.
+Status (production readback 2026-09-15 20:06 JST): **ENABLED in production**. The anonymous `/kitchen/` HTML carries `raos-purchase-ga4-config` with `"enabled":true` and the `kurashinoshirube-purchase-analytics-js` script. When it was enabled is not recorded in this repository. GA4-side collection, custom dimension registration and DebugView remain **NOT_VERIFIED**. `scripts/raos_editorial_economics_v3.py` still labels the activation `OFF/OWNER_CONFIRMATION_PENDING`; that constant feeds generated economics outputs and is left for a separate change.
+
+Previous status (superseded by the readback above): **OFF / OWNER_CONFIRMATION_PENDING**. Local synthetic checks pass; production activation, provider configuration readback, actual collection and DebugView are **NOT_EXECUTED**. Read credentials are not configured for this work. No Google property creation, credential access or live write was performed.
 
 ## Collection boundary
 
