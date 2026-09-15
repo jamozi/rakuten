@@ -141,6 +141,10 @@
         {
           "date": "2026-09-13",
           "text": "SOLOTA説明書の離隔距離を反映。NP-TSP1の開扉奥行は個別仕様と比較表の表記差を記録し、数値による設置判定を保留"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "SOLOTAの余白の調査中表示を、説明書p.8と公式の設置案内（2026年9月15日確認）に合わせて解消。SOLOTAの後方のあきは、設置案内の図のとおり排水ホース外径分を含めて1.7cm以上と改めた。NP-TSP1の開扉奥行は、公式の個別仕様と比較表で値が異なる項目として記録"
         }
       ],
       "preserved_editorial_sections": [
@@ -498,7 +502,7 @@
         "重量",
         "本体寸法（幅×奥行×高さ）"
       ],
-      "intro": "使いたい機器の消費電力・起動電力と必要時間を先に整理し、容量帯ごとの候補と購入費用を確認します。異なる容量帯を性能順位にしません。",
+      "intro": "容量帯ごとの候補・比較表と購入費用を確認したうえで、使いたい機器の消費電力と使う時間から必要なWhを計算し、同時使用W・起動電力・端子は別に確認する例を示します。異なる容量帯を性能順位にしません。",
       "post_type": "post",
       "legacy_anchor_targets": {
         "blk-power-003-title": "ps-choose",
@@ -683,9 +687,13 @@
         {
           "date": "2026-09-13",
           "text": "SOLOTA説明書の離隔距離を反映。NP-TSP1の開扉奥行は個別仕様と比較表の表記差を記録し、数値による設置判定を保留"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "SOLOTAの余白を公式の設置案内（本体と壁の間に0.5cm以上のあき）と説明書p.8で再確認し、上方・左右の余白を未確認とした記載を削除。SOLOTAの後方のあきは、設置案内の図のとおり排水ホース外径分を含めて1.7cm以上と改め、図の記載を出典にした。NP-TSP1の開扉奥行は、公式の個別仕様と比較表で値が異なる項目として記録"
         }
       ],
-      "reader_unknowns_note": "SOLOTAの上・左右の必要余白は公式資料に数値がなく未確認です。SOLOTA・ラクアmini color・SS-MA251の開扉時の高さも未確認です。設置後の使い勝手は実機で確認していません。"
+      "reader_unknowns_note": "SOLOTA・ラクアmini color・SS-MA251の開扉時の高さは未確認です。設置後の使い勝手は実機で確認していません。"
     },
     {
       "article_id": "dishwasher-water-supply-methods",
@@ -849,6 +857,14 @@
         {
           "date": "2026-09-12",
           "text": "4機種を横断する洗剤の種類・量・試験条件の表を先頭に追加し、Panasonic 2機種で共通の洗えないものを1か所にまとめ、公表試験条件の洗剤量を追記"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "4機種の洗剤量を、通常量と汚れが多いときの量に分けて記録。汚れが多いときの量の記録がないラクアmini colorとSS-MA251は未確認と表示"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "冒頭の型番別の表に「使えないもの（主なもの）」の列を追加し、プラスチック食器の耐熱条件を型番ごとの取扱説明書に合わせて記載（NP-TSP1は耐熱60℃未満・表示なしは不可、SS-MA251は耐熱65℃未満・表示なしは不可）。公表試験条件の洗剤量の表の説明を、使用量の指示ではなく公表値の試験で使った洗剤量と明記"
         }
       ],
       "reader_unknowns_note": "洗剤の種類ごとの洗い上がりやにおいの違いは実使用で比較していません。ラクアmini colorとSS-MA251の公表試験条件の洗剤量は未確認です。"
@@ -905,6 +921,10 @@
         {
           "date": "2026-09-12",
           "text": "毎回・月1回程度・長く使わないときの3区分で4機種を横断する表を先頭に追加。NP-TSP1の残さいフィルター（週に1回）、本体（月に1回）、長期間使わないときの電源プラグと水抜きの案内を取扱説明書と公式FAQで確認し、未確認の区分は未確認と明記。保証・購入先の記述は比較記事へ集約"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "NP-TMLK1とNP-TSP1の手入れ手順を、毎回・定期・汚れが気になるとき・長期間使わないときの順に並べ替え（各手順の文言は変更なし）"
         }
       ],
       "reader_unknowns_note": "掃除のしやすさやにおいの変化は実機で評価していません。ラクアmini colorの長く使わないときの手順と、SOLOTAの保管前の手順は公式資料で未確認です。"
@@ -1166,6 +1186,10 @@
         {
           "date": "2026-09-13",
           "text": "通常時と拡張時を区別し、60524新仕様を公式で再確認。未照合画像を非掲載。"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "掲載画像の説明を、60524の販売ページの画像で確認した範囲（USBポートがないこと・背面のトラベルセントリーID）に合わせて訂正"
         }
       ],
       "legacy_anchor_targets": {
@@ -1390,19 +1414,20 @@
       "conditions": [
         {
           "id": "choice-1",
-          "label": "Roomba Home・2.4/5GHzを使う",
+          "label": "Roomba Homeアプリで使う（Wi-Fiは2.4GHz・5GHz）",
           "product_ids": [
             "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
           ]
         },
         {
           "id": "choice-2",
-          "label": "SwitchBot・2.4GHzを使う",
+          "label": "SwitchBotアプリで使う（Wi-Fiは2.4GHzのみ）",
           "product_ids": [
             "PRD-SWITCHBOT-K11-PRO"
           ]
         }
       ],
+      "choose_note": "Wi-Fiの周波数帯は選ぶ条件の1つで、これだけで機種は決めません。",
       "spec_labels": [
         "本体寸法（幅×奥行×高さ）",
         "本体重量",
@@ -1422,6 +1447,10 @@
         {
           "date": "2026-09-13",
           "text": "自動収集付き2機種とSlimを分離。K11の説明書で軸名なしと部品交換目安を確認。"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "SwitchBot K11+ ProのWi-Fi周波数帯（2.4GHz）の出典を日本語取扱説明書p.27・p.23に付け替え、Roomba Mini + AutoEmpty（F155260）の2.4GHz・5GHzを公式製品ページで再確認。条件別の結論の見出しを、アプリの系統を条件にして周波数帯を補足する形に変更。条件別の結論に、Wi-Fiの周波数帯は選ぶ条件の1つと明記し、5GHzに関する質問の答えで、F155260とF115060 / F115260の2.4GHz・5GHz対応を2026年9月15日に公式製品ページで再確認した日付に更新"
         }
       ],
       "legacy_anchor_targets": {
@@ -1529,6 +1558,10 @@
         {
           "date": "2026-09-13",
           "text": "mini Plusを別型番として共通化。公式の再入荷通知表示と代替候補への案内を整理。"
+        },
+        {
+          "date": "2026-09-15",
+          "text": "SOLOTAの余白の調査中表示を、説明書p.8と公式の設置案内（2026年9月15日確認）に合わせて解消。後方のあきは、設置案内の図のとおり排水ホース外径分を含めて1.7cm以上と改めた"
         }
       ],
       "legacy_anchor_targets": {
@@ -2057,11 +2090,11 @@
         },
         {
           "label": "必要な余白",
-          "text": "可燃物から上方50mm、左右・後方各5mm以上。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。後方は別にホース外径17mm分を確保。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
-          "locator": "取扱説明書P9901-20V10 p.8 設置場所の図・可燃物からの離隔距離。背面17mmは公式設置案内のホース外径",
-          "checked_at": "2026-09-13",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
+          "checked_at": "2026-09-15",
           "state": "KNOWN"
         },
         {
@@ -2111,11 +2144,11 @@
         },
         {
           "field": "clearance",
-          "text": "可燃物から上方50mm、左右・後方各5mm以上。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。後方は別にホース外径17mm分を確保。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
-          "locator": "取扱説明書P9901-20V10 p.8 設置場所の図・可燃物からの離隔距離。背面17mmは公式設置案内のホース外径",
-          "checked_at": "2026-09-13",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
+          "checked_at": "2026-09-15",
           "state": "KNOWN"
         },
         {
@@ -2228,24 +2261,6 @@
         },
         {
           "field": "maintenance",
-          "text": "タンクの汚れが気になるとき：取り外したタンクに食洗機専用の庫内クリーナー15gを入れ、39℃以下のぬるま湯をFULLまで注ぎます。キャップをしっかり閉めて振り溶かし、約60分つけ置きします。中の水を捨て、水道水をFULLまで入れてすすいでください。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.18 タンクの汚れが気になるとき",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
-          "text": "長期間使わず、排水溝のようなにおいがするとき：食器を入れず、食洗機専用の粉末・液体洗剤4g、または3cm未満のタブレット洗剤1個を使い、一度運転してから使用します。食器を洗う通常の準備・給水手順に従ってください。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.21 長期間使わなかった場合のにおい",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
           "text": "毎回：運転終了後30分以上待ち、電源プラグを抜きます。かごを上へ持ち上げて外し、残さいフィルターを取り外して水洗いします。フィルターは庫内の右側へすき間なく戻し、かごは側面の溝を奥側にして取り付けます。フィルター下の残水は異常ではありません。",
           "exact_model": "NP-TMLK1-K",
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
@@ -2269,6 +2284,24 @@
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
           "locator": "取扱説明書 p.18 タンク・給水フィルター、格子部・排水口・ヒーター周辺",
           "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "タンクの汚れが気になるとき：取り外したタンクに食洗機専用の庫内クリーナー15gを入れ、39℃以下のぬるま湯をFULLまで注ぎます。キャップをしっかり閉めて振り溶かし、約60分つけ置きします。中の水を捨て、水道水をFULLまで入れてすすいでください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "p.18 タンクの汚れが気になるとき",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "長期間使わず、排水溝のようなにおいがするとき：食器を入れず、食洗機専用の粉末・液体洗剤4g、または3cm未満のタブレット洗剤1個を使い、一度運転してから使用します。食器を洗う通常の準備・給水手順に従ってください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "p.21 長期間使わなかった場合のにおい",
+          "checked_at": "2026-09-10",
           "state": "KNOWN"
         }
       ],
@@ -2311,7 +2344,8 @@
         },
         "detergent": {
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
-          "1回分の目安": "通常約2g（油・色素汚れは約4g）",
+          "通常量": "約2g",
+          "汚れが多いときの量": "油・色素汚れは約4g",
           "タブレットの条件": "3cm未満を1個",
           "公表試験条件の洗剤量": "2g（公式仕様の脚注）",
           "投入位置": "食器を入れたかごの手前側から庫内へ（取扱説明書p.6の投入図）"
@@ -2583,7 +2617,8 @@
         },
         "detergent": {
           "使える洗剤の種類": "食洗機専用の粉末・液体・ジェル・タブレット（説明書p.14）",
-          "1回分の目安": "3〜5g",
+          "通常量": "約3〜5g",
+          "汚れが多いときの量": "未確認",
           "タブレットの条件": "未確認",
           "公表試験条件の洗剤量": "未確認",
           "投入位置": "開いたドア内側の洗剤投入場所（説明書p.14の図）"
@@ -2769,11 +2804,11 @@
         },
         {
           "field": "detergent",
-          "text": "粉末・液体の食洗機専用洗剤は約4gが標準量です。タブレットは1個を目安に洗剤の説明書も確認します。手洗い用洗剤は使いません。洗えないものには、強化ガラス、飛ばされやすい軽い物、木・漆器・アルミ・銅、傷やひびのある食器などがあります。プラスチックは耐熱表示を確認し、90℃未満は通常コースに入れません。ソフトコースで使えるのは耐熱65℃以上です。これは禁止品の全件一覧ではないため、食器側の表示と説明書p.8を照合してください。",
+          "text": "粉末・液体の食洗機専用洗剤は約4gが標準量です。タブレットは1個を目安に洗剤の説明書も確認します。手洗い用洗剤は使いません。洗えないものには、強化ガラス、飛ばされやすい軽い物、木・漆器・アルミ・銅、傷やひびのある食器などがあります。プラスチックは耐熱表示を確認し、90℃未満は通常コースに入れません。ソフトコースで使えるのは耐熱65℃以上です。耐熱表示のないプラスチック食器は洗えません。これは禁止品の全件一覧ではないため、食器側の表示と説明書p.8を照合してください。",
           "exact_model": "SS-MA251",
           "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
-          "locator": "説明書 p.8・14：洗えないもの、コース別耐熱条件、洗剤",
-          "checked_at": "2026-09-10",
+          "locator": "説明書 p.8・14：洗えないもの、コース別耐熱条件、洗剤。p.8「熱に弱いもの」は「耐熱90℃未満、および耐熱表示のないプラスチック食器（耐熱65℃以上のプラスチック食器は、ソフトコースで洗えます）」",
+          "checked_at": "2026-09-15",
           "state": "KNOWN"
         },
         {
@@ -2897,7 +2932,8 @@
         },
         "detergent": {
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
-          "1回分の目安": "約4g",
+          "通常量": "約4g",
+          "汚れが多いときの量": "未確認",
           "タブレットの条件": "1個（サイズの条件は洗剤の説明書で確認）",
           "公表試験条件の洗剤量": "未確認",
           "投入位置": "ドアを開けて庫内へ。タブレットはメッシュトレイ上（説明書p.14）"
@@ -2961,12 +2997,31 @@
         },
         {
           "label": "開扉時の寸法",
-          "text": "公式の個別仕様は開扉奥行が上386mm・下362mm、公式比較表は開閉時最大433mmと表記。高さは712mm。奥行の基準・条件の差が未解決のため、設置可否の数値判定は保留し、メーカーへ確認してください。",
+          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは712mm。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
-          "locator": "個別仕様の本体外形寸法と https://panasonic.jp/dish/comparison.html の開閉時最大寸法の表記を照合。条件差は未解決",
-          "checked_at": "2026-09-13",
-          "state": "UNKNOWN"
+          "locator": "個別仕様の本体外形寸法と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-15",
+          "state": "CONFLICT",
+          "conflict_sources": [
+            {
+              "label": "個別仕様",
+              "value": "上386mm・下362mm",
+              "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+              "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
+              "checked_at": "2026-09-15"
+            },
+            {
+              "label": "比較表",
+              "value": "433mm",
+              "source_url": "https://panasonic.jp/dish/comparison.html",
+              "locator": "比較表「本体外形寸法」行のNP-TSP1列",
+              "checked_at": "2026-09-15"
+            }
+          ],
+          "conflict_installation_keys": [
+            "door_depth_mm"
+          ]
         },
         {
           "label": "必要な余白",
@@ -3014,12 +3069,31 @@
         },
         {
           "field": "door",
-          "text": "公式の個別仕様は開扉奥行が上386mm・下362mm、公式比較表は開閉時最大433mmと表記。高さは712mm。奥行の基準・条件の差が未解決のため、設置可否の数値判定は保留し、メーカーへ確認してください。",
+          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは712mm。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
-          "locator": "個別仕様の本体外形寸法と https://panasonic.jp/dish/comparison.html の開閉時最大寸法の表記を照合。条件差は未解決",
-          "checked_at": "2026-09-13",
-          "state": "UNKNOWN"
+          "locator": "個別仕様の本体外形寸法と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-15",
+          "state": "CONFLICT",
+          "conflict_sources": [
+            {
+              "label": "個別仕様",
+              "value": "上386mm・下362mm",
+              "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+              "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
+              "checked_at": "2026-09-15"
+            },
+            {
+              "label": "比較表",
+              "value": "433mm",
+              "source_url": "https://panasonic.jp/dish/comparison.html",
+              "locator": "比較表「本体外形寸法」行のNP-TSP1列",
+              "checked_at": "2026-09-15"
+            }
+          ],
+          "conflict_installation_keys": [
+            "door_depth_mm"
+          ]
         },
         {
           "field": "clearance",
@@ -3149,15 +3223,6 @@
         },
         {
           "field": "maintenance",
-          "text": "長期間使わないときは、電源プラグをコンセントから抜きます。庫内に残った水を抜く方法は、卓上型共通の公式FAQで「乾燥」のみの運転（開始後1〜2分で排水の音が止まったら電源を切る）が案内されています。そのほかの保管前の手順は未確認です。",
-          "exact_model": "NP-TSP1-W",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/370/092/000000000370092/np-tsp1.pdf",
-          "locator": "p.2 安全上のご注意（長期間使わないときは電源プラグを抜く）",
-          "checked_at": "2026-09-12",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
           "text": "残さいフィルターは週1回が目安（1日2回使用の場合）。運転終了後に残さいがあればAをその都度掃除します。運転終了後30分以上待ち、プラグを抜いてから、フィルター上部を上げて回し、取り外します。Aを外してからBを取り外し、それぞれ柔らかいブラシ等で掃除します。逆の順序で戻し、「カチッ」と音がするまで回して固定します。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
@@ -3185,6 +3250,15 @@
         },
         {
           "field": "maintenance",
+          "text": "本体は月1回、かごを取り出してよく絞った柔らかい布で拭きます。パッキンを引っ張らず、本体外側に漂白剤・洗剤・クレンザー等を使いません。本体・給排水ホースの下部も月1回拭きます。庫内へ水や湯を注ぎません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.25 本体 月1回",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
           "text": "タンク清掃の例外手順：電源を入れ、付属カップ1杯の39℃以下のぬるま湯に専用庫内クリーナー約60gを溶かし、給水口から入れます。音が3回鳴るまで水を足し、ふたを閉じて電源を切り、約60分つけ置きします。電源を入れ「お手入れ」を5秒以上長押しし、「一時停止／スタート」で排水します。すすぎのため再度電源を入れ、音が3回鳴るまで水道水を注ぎ、同じ長押しとスタートで排水します。通常給水に洗剤を入れる案内ではありません。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
@@ -3194,11 +3268,11 @@
         },
         {
           "field": "maintenance",
-          "text": "本体は月1回、かごを取り出してよく絞った柔らかい布で拭きます。パッキンを引っ張らず、本体外側に漂白剤・洗剤・クレンザー等を使いません。本体・給排水ホースの下部も月1回拭きます。庫内へ水や湯を注ぎません。",
+          "text": "長期間使わないときは、電源プラグをコンセントから抜きます。庫内に残った水を抜く方法は、卓上型共通の公式FAQで「乾燥」のみの運転（開始後1〜2分で排水の音が止まったら電源を切る）が案内されています。そのほかの保管前の手順は未確認です。",
           "exact_model": "NP-TSP1-W",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
-          "locator": "取扱説明書 p.25 本体 月1回",
-          "checked_at": "2026-09-13",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/370/092/000000000370092/np-tsp1.pdf",
+          "locator": "p.2 安全上のご注意（長期間使わないときは電源プラグを抜く）",
+          "checked_at": "2026-09-12",
           "state": "KNOWN"
         }
       ],
@@ -3241,7 +3315,8 @@
         },
         "detergent": {
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
-          "1回分の目安": "通常約5g（汚れが多いときは約10g）",
+          "通常量": "約5g",
+          "汚れが多いときの量": "約10g",
           "タブレットの条件": "通常1個（3cm未満なら汚れが多いとき2個）",
           "公表試験条件の洗剤量": "5g（公表条件の試験）",
           "投入位置": "かごの専用洗剤入れ（取扱説明書p.8）"
@@ -3679,9 +3754,9 @@
           "text": "Roomba Homeアプリ / 2.4GHz・5GHz",
           "exact_model": "F155260",
           "source_url": "https://store.irobot-jp.com/item/F155260.html",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "製品仕様表「品番 F155260」の「無線通信」行（Wi-Fi 2.4GHz帯 / 5GHz帯）。Roomba Homeアプリの対応は公式サポート記事「ロボットをRoomba® Homeアプリでセットアップする」の対応表",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN"
         }
       ],
       "lead": "本体と自動ゴミ収集ステーションの設置面積を小さくしたい場合に。",
@@ -3795,10 +3870,10 @@
           "label": "アプリ / Wi-Fi",
           "text": "SwitchBotアプリ 2.4GHz Wi-Fi対応。初期設定にはBluetoothも使用",
           "exact_model": "K11+ Pro",
-          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+          "locator": "日本語取扱説明書 印刷p.27「製品仕様」本体欄の通信方式（2.4GHz Wi-Fi、Bluetooth4.2）、印刷p.23「困ったときは」Wi-Fiに接続できない（5GHzのWi-Fiネットワークに非対応）、印刷p.14「スマホと接続する」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN"
         }
       ],
       "lead": "小型の本体とステーションに、自動ゴミ収集を組み合わせたい場合に。",
@@ -11244,15 +11319,15 @@
       "product_id": "PRD-PANASONIC-NP-TMLK1",
       "topic": "上・左右の必要余白",
       "kind": "official_documents",
-      "status": "RESEARCHING",
-      "impact": "公式の設置案内は本体上方を「できるだけあける」とし、左右の数値は記載がありません。上・左右の必要余白は公式資料で未確認です（2026年9月12日確認）。",
+      "status": "RESOLVED",
+      "impact": "取扱説明書（P9901-20V10）p.8の可燃物からの離隔距離（上方5cm・側方0.5cm・後方0.5cm）と、公式の設置案内（パーソナルタイプ）の「本体と壁の間に0.5cm以上のあき」を2026年9月15日に確認し、機種別ガイドに反映済みです。",
       "target_url": "https://panasonic.jp/dish/installation.html",
       "target_label": "Panasonic 食洗機置き場のつくり方（パーソナルタイプの設置例）",
       "next_check_on": "2026-09-19",
       "alternative": "上棚や側壁が近い場所では設置可と決めず、メーカーへ確認してから購入を判断してください。",
       "unknown_reason": {
         "kind": "research_pending",
-        "impact": "公式の設置案内は本体上方を「できるだけあける」とし、左右の数値は記載がありません。上・左右の必要余白は公式資料で未確認です（2026年9月12日確認）。",
+        "impact": "取扱説明書（P9901-20V10）p.8の可燃物からの離隔距離（上方5cm・側方0.5cm・後方0.5cm）と、公式の設置案内（パーソナルタイプ）の「本体と壁の間に0.5cm以上のあき」を2026年9月15日に確認し、機種別ガイドに反映済みです。",
         "next_action": "対象型番の資料・選択中の販売構成を確認する",
         "owner": "暮らしのしるべ編集部"
       }

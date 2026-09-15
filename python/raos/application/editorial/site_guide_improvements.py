@@ -4,6 +4,36 @@ from collections.abc import Mapping, Sequence
 from html import escape
 from typing import Any
 
+# Plastic heat limit, its course exception and the finish-damage reason, per exact
+# manual. Shared by the answer-table summary and the per-model material table so
+# the two cannot diverge. Only these four manuals establish the restrictions.
+MATERIAL_LIMITS: dict[str, tuple[str, str, str]] = {
+    "NP-TMLK1-K": (
+        "80℃未満・表示なしは不可",
+        "80℃以上でも食器側の食洗機対応表示を確認",
+        "変色、塗装はがれ、白濁",
+    ),
+    "TDWS25SBL / TDWS25SRD": (
+        "75℃未満・表示なしは不可",
+        "75℃以上は使用可と記載。食器側の食洗機対応表示にも従う",
+        "変形など",
+    ),
+    # SS-MA251 manual p.8 bans plastic below 90℃ and plastic without a heat label,
+    # except 65℃ or higher in the soft course; p.25 bans plastic below 65℃.
+    "SS-MA251": (
+        "耐熱65℃未満・表示なしは不可",
+        "65℃以上90℃未満はソフトコースで洗う",
+        "変色など",
+    ),
+    # NP-TSP1 manual p.2 and p.7: plastic below 90℃ or without a heat label is banned,
+    # except 60℃ to below 90℃ in 低温ソフト; 90℃ or higher suits every course.
+    "NP-TSP1-W": (
+        "耐熱60℃未満・表示なしは不可",
+        "60℃以上90℃未満は低温ソフトで洗う",
+        "変色、塗装はがれ、白濁",
+    ),
+}
+
 
 def _source(product: Mapping[str, Any], field: str) -> str:
     facts = [f for f in product.get("guide_facts", []) if f["field"] == field]
@@ -19,9 +49,26 @@ def _source(product: Mapping[str, Any], field: str) -> str:
     )
 
 
+def _prohibited_summary(product: Mapping[str, Any]) -> str:
+    """Main items that must not go in, keeping the plastic exception; full list per model."""
+    limits = MATERIAL_LIMITS.get(product.get("exact_model"))
+    if limits is None:
+        return "未確認"
+    limit, exception, _ = limits
+    return (
+        "強化ガラス、飛ばされやすい軽いもの。プラスチック："
+        + escape(limit)
+        + "（"
+        + escape(exception)
+        + '）ほか。<a href="#'
+        + escape(product["anchor"], quote=True)
+        + '">全項目と例外</a>'
+    )
+
+
 def render_guide_intro(stage: str, products: Sequence[Mapping[str, Any]]) -> str:
     if stage == "cost":
-        return '<section class="ps-guide-answer" id="guide-cost-example"><h2>まず費用感を知る：仮の計算例</h2><p>以下は計算の説明用に置いた架空の条件で、特定機種の実測費用・推奨洗剤量・請求額ではありません。コースは特定しない計算練習です。</p><p>230Wh/回・2.5L/回、電気30円/kWh、上下水道300円/m³、洗剤5円/回、月30回と仮定すると、230÷1000×30＋2.5÷1000×300＋5＝<strong>12.65円/回</strong>、12.65×30＝<strong>379.5円/月</strong>です。</p><p>実際の試算は下の型番別の公表コースを選びます。電気代が未確認の機種は、水道・洗剤の小計だけが分かり、合計は不明です。入力せずに公表条件と式を読むこともできます。</p></section>'
+        return '<section class="ps-guide-answer" id="guide-cost-example"><h2>まず費用感を知る：仮の計算例</h2><p>以下は計算の説明用に置いた架空の条件で、特定機種の実測費用・推奨洗剤量・請求額ではありません。コースは特定しない計算練習です。</p><p>230Wh/回・2.5L/回、電気30円/kWh、上下水道300円/m³、洗剤5円/回、月30回と仮定すると、230÷1000×30＋2.5÷1000×300＋5＝<strong>12.65円/回</strong>、12.65×30＝<strong>379.5円/月</strong>です。</p><p><a href="/compact-dishwasher-comparison/#compact-cost">小型食洗機の比較</a>にあるSOLOTA・標準コースの計算例（約9.48円/回）は、電気31円/kWh・上下水道300円/m³・洗剤0.8円/g・2gという別の仮定による試算です。単価の仮定が違うため、この例の金額とは比べません。</p><p>実際の試算は下の型番別の公表コースを選びます。電気代が未確認の機種は、水道・洗剤の小計だけが分かり、合計は不明です。入力せずに公表条件と式を読むこともできます。</p></section>'
     if stage == "installation":
         return (
             '<section class="ps-guide-answer" id="guide-measurement-diagram"><h2>採寸する位置を3方向から確認</h2><p>編集者作成の模式図です。縮尺なし・実物の外観や設置実績を表す図ではありません。番号は下の採寸メモと対応し、機種の寸法・必要余白は比較表と公式出典で照合します。</p><div class="ps-guide-diagrams"><figure><figcaption>上面：①幅・②奥行・⑥背面余白・⑦左右余白</figcaption><pre>       壁\n    ↕ ⑥背面余白\n⑦ ↔ ┌────────┐ ↔ ⑦\n    │  本体  │ ↕②\n    └────────┘\n       ↔ ①幅\n       手前・扉側</pre></figure><figure><figcaption>正面：①幅・③高さ・⑤上方余白</figcaption><pre>     上棚\n     ↕⑤上方余白\n   ┌────────┐\n   │  本体  │ ↕③高さ\n   └────────┘\n   ━━━置き台━━━\n      ↔①幅</pre></figure><figure><figcaption>側面：④開扉時の必要範囲・⑧ホース経路</figcaption><pre>背面基準線\n│ ┌─────┐\n│ │本体 │  扉の動く範囲\n│ └─────┴ ┄ ┄ ┄\n│←───④開扉時奥行──→\n└⑧排水先への経路</pre></figure></div><p>④は背面から開いた扉の先端までの全体寸法で、本体奥行へもう一度足しません。上へ開く扉は開扉時高さも別に確認します。⑧の排水先・高さは型番ごとに異なります。</p><p><strong>NP-TSP1-W：</strong>メーカーの可燃物離隔は上115mm、別に設置面から720mm以上。本体600mmとの差120mmは入力照合用の計算値です。「メーカー指定120mm」ではありません。</p><p>'
@@ -39,6 +86,11 @@ def render_guide_intro(stage: str, products: Sequence[Mapping[str, Any]]) -> str
             position = d.get(
                 "投入位置", "当該型番の説明書の洗剤投入図を確認（下の出典）"
             )
+            amounts = (
+                ("通常", d.get("通常量", "未確認")),
+                ("汚れが多いとき", d.get("汚れが多いときの量", "未確認")),
+                ("タブレット", d.get("タブレットの条件", "未確認")),
+            )
             rows.append(
                 '<tr><th scope="row"><a href="#'
                 + escape(p["anchor"], quote=True)
@@ -46,16 +98,19 @@ def render_guide_intro(stage: str, products: Sequence[Mapping[str, Any]]) -> str
                 + escape(p["exact_model"])
                 + "</a></th><td>"
                 + escape(d.get("使える洗剤の種類", "未確認"))
-                + "</td><td>"
-                + escape(d.get("1回分の目安", "未確認"))
-                + "／タブレット："
-                + escape(d.get("タブレットの条件", "未確認"))
-                + "</td><td>"
+                + '</td><td><ul class="ps-detergent-amounts">'
+                + "".join(
+                    "<li>" + escape(label) + "：" + escape(value) + "</li>"
+                    for label, value in amounts
+                )
+                + "</ul></td><td>"
                 + escape(position)
+                + "</td><td>"
+                + _prohibited_summary(p)
                 + "</td></tr>"
             )
         return (
-            '<section class="ps-guide-answer" id="guide-detergent-answer"><h2>型番から、専用洗剤と入れる場所を確認</h2><p><strong>手洗い用の台所用洗剤は使いません。</strong>下洗いに使った場合も十分にすすぎます。試験時の洗剤量は通常量とは別に、下の型番別根拠で確認できます。</p><div class="ps-table-scroll" tabindex="0" role="region" aria-label="洗剤の最初の答え"><table><caption>通常使用の案内。投入場所は給水口と別です</caption><thead><tr><th scope="col">型番</th><th scope="col">専用洗剤の種類</th><th scope="col">通常量</th><th scope="col">入れる位置</th></tr></thead><tbody>'
+            '<section class="ps-guide-answer" id="guide-detergent-answer"><h2>型番から、専用洗剤と入れる場所を確認</h2><p><strong>手洗い用の台所用洗剤は使いません。</strong>下洗いに使った場合も十分にすすぎます。試験時の洗剤量は通常量とは別に、下の型番別根拠で確認できます。</p><div class="ps-table-scroll" tabindex="0" role="region" aria-label="洗剤の最初の答え"><table><caption>通常使用の案内。投入場所は給水口と別です</caption><thead><tr><th scope="col">型番</th><th scope="col">使える洗剤</th><th scope="col">1回の量</th><th scope="col">入れる位置</th><th scope="col">使えないもの（主なもの）</th></tr></thead><tbody>'
             + "".join(rows)
             + "</tbody></table></div><p>ラクアmini color（TDWS25SBL / TDWS25SRD）とmini Plus（TK-MDW22B / TK-STTDPSWH）は別機種です。色名・シリーズ名だけで説明書を共用しません。</p></section>"
         )
@@ -107,31 +162,9 @@ def render_model_handout(stage: str, product: Mapping[str, Any]) -> str:
 def render_material_table(product: Mapping[str, Any]) -> str:
     """Only the four exact manuals below establish these material restrictions."""
     model = product.get("exact_model")
-    limits = {
-        "NP-TMLK1-K": (
-            "80℃未満・表示なしは不可",
-            "80℃以上でも食器側の食洗機対応表示を確認",
-            "変色、塗装はがれ、白濁",
-        ),
-        "TDWS25SBL / TDWS25SRD": (
-            "75℃未満・表示なしは不可",
-            "75℃以上は使用可と記載。食器側の食洗機対応表示にも従う",
-            "変形など",
-        ),
-        "SS-MA251": (
-            "90℃未満・表示なしは通常コース不可",
-            "耐熱65℃以上はソフトコースで洗える",
-            "変色など",
-        ),
-        "NP-TSP1-W": (
-            "90℃未満・表示なしは通常コース不可",
-            "耐熱60℃以上90℃未満は低温ソフトで洗える",
-            "変色、塗装はがれ、白濁",
-        ),
-    }
-    if model not in limits:
+    if model not in MATERIAL_LIMITS:
         return ""
-    limit, exception, finish_reason = limits[model]
+    limit, exception, finish_reason = MATERIAL_LIMITS[model]
     rows = [
         (
             "強化ガラス",

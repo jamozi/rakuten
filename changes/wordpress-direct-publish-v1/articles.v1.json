@@ -529,7 +529,7 @@
           "question": "他ブランドも含めて比べる？",
           "target": "small-carry-on-suitcase-comparison",
           "anchor": "",
-          "status": "planned:J2"
+          "status": "live"
         }
       }
     },
@@ -911,7 +911,7 @@
           "question": "ほかの少量向けも見る？",
           "target": "compact-dishwasher-comparison",
           "anchor": "",
-          "status": "planned:J1"
+          "status": "live"
         }
       }
     },

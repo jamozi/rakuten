@@ -1,7 +1,7 @@
 <section aria-labelledby="production-privacy-overview">
   <h2 id="production-privacy-overview">運営者と適用範囲</h2>
   <p>暮らしのしるべ編集者は、本サイトの閲覧、お問い合わせ、外部リンクの利用に関して取り扱う情報を本ページに示します。取得項目や利用目的を変更する場合は、実装と本文を同時に更新します。運営者の氏名・所在地は、下記のお問い合わせ先への請求に応じて遅滞なく回答します。</p>
-  <p><strong>最終更新日：</strong><time datetime="2026-09-13">2026年9月13日</time>（改定内容：CookieYesによる同意管理と、統計目的への同意後にのみ読み込むGoogle Analytics 4の運用に本文を合わせ、外部送信先の一覧、Cookieの名称・保存期間、同意の撤回方法、楽天市場の商品画像に伴う通信を記載）</p>
+  <p><strong>最終更新日：</strong><time datetime="2026-09-15">2026年9月15日</time>（改定内容：購入先リンクの操作で送信するイベントoffer_clickの項目を列挙し、記事URLのクエリーを除く範囲を、購入先リンクの計測設定を読み込むページに限って記載。確認・訂正・削除とお問い合わせの見出しを節の先頭に移動）</p>
 </section>
 <section aria-labelledby="production-privacy-collected">
   <h2 id="production-privacy-collected">取得する情報と利用目的</h2>
@@ -15,7 +15,7 @@
 <section aria-labelledby="production-privacy-measurement">
   <h2 id="production-privacy-measurement">同意に基づく利用計測（Google Analytics 4）</h2>
   <p>記事の使われ方と購入先への案内を改善するため、統計目的への同意があった場合に限り、Google Analytics 4（Googleタグ GT-5TWW6GFS、測定ID G-7CV8F96487）を読み込みます。同意前、または統計目的を拒否した場合はGoogleタグを読み込みません。計測用の識別子の保存やイベントの送信も行いません。</p>
-  <p>計測する内容は、記事の閲覧と購入先リンクの操作（記事・商品・販売先・ボタン・掲載位置・公開版の識別子）、およびGoogleタグが扱う閲覧時刻、端末・ブラウザなどの技術情報です。記事URLのクエリー、外部リンクのクエリー、予算・測定・費用計算の入力値、氏名やメールアドレスは送信しません。クリックを購入や成果報酬の確定として記録しません。</p>
+  <p>計測する内容は、記事の閲覧と購入先リンクの操作、およびGoogleタグが扱う閲覧時刻、端末・ブラウザなどの技術情報です。購入先リンクの操作は、統計目的への同意がある場合に限り、イベント「offer_click」として、記事（article_id）・商品（product_id）・販売先（seller_id）・販売条件（offer_id）・ボタン（cta_id）・掲載位置（placement）・公開版（snapshot_id）の各識別子と、広告リンクか販売店への通常リンクかの区分（link_purpose）、広告リンクかどうか（affiliate）、動作確認用の送信かどうか（debug_mode）を送信します。このイベントではリンク先のURLは送信しません。購入先リンクの計測設定を読み込むページ（本ページを含む3つの方針ページと、対象の比較記事・ガイドなど）では、閲覧の計測で記事（article_id）と公開版（snapshot_id）の識別子と動作確認用の区分（debug_mode）を送り、送るページのURLから記事URLのクエリーを除きます。参照元のURLとページタイトルは空欄にします。それ以外のページでは、このクエリーの除去を行いません。予算・測定・費用計算の入力値、氏名やメールアドレスは送信しません。クリックを購入や成果報酬の確定として記録しません。</p>
 </section>
 <section aria-labelledby="production-privacy-consent">
   <h2 id="production-privacy-consent">Cookie、同意、拒否・撤回</h2>
@@ -39,7 +39,8 @@
   <p>メーカーや販売店など外部サイトへ移動した後は、遷移先の規約とプライバシーポリシーが適用されます。当サイトは遷移先で入力する氏名、住所、決済情報を受け取りません。送信後の取扱いは、<a href="https://policies.google.com/privacy?hl=ja" target="_blank" rel="noopener noreferrer">Googleのプライバシーポリシー</a>、<a href="https://www.cookieyes.com/privacy-policy/" target="_blank" rel="noopener noreferrer">CookieYesのプライバシーポリシー</a>、<a href="https://privacy.rakuten.co.jp/" target="_blank" rel="noopener noreferrer">楽天グループの個人情報保護方針</a>をご確認ください。</p>
 </section>
 <section aria-labelledby="production-privacy-rights">
-  <p>サーバーログと問い合わせ記録の具体的な保存期間、GA4のサーバー側保持期間は現在確認中です。標準Cookie期限から推定しません。削除や確認の相談は下記連絡先へ、対象の記事URLと相談内容をお知らせください。</p><h2 id="production-privacy-rights">確認・訂正・削除とお問い合わせ</h2>
+  <h2 id="production-privacy-rights">確認・訂正・削除とお問い合わせ</h2>
+  <p>サーバーログと問い合わせ記録の具体的な保存期間、GA4のサーバー側保持期間は現在確認中です。標準Cookie期限から推定しません。削除や確認の相談は下記連絡先へ、対象の記事URLと相談内容をお知らせください。</p>
   <p>本ポリシー、利用者情報の取扱い、確認・訂正・削除のご相談、運営者の氏名・所在地の請求は、<a href="mailto:contact@kurashinoshirube.com">contact@kurashinoshirube.com</a> までお知らせください。本人確認が必要な請求では、対象と必要な範囲を個別に案内します。</p>
   <p>取得した情報への不正アクセス、漏えい、改ざん、紛失を防ぐため、取扱う情報の性質に応じた安全管理を行います。</p>
   <p><a href="/about-ad-policy/">運営・広告方針を読む</a>／<a href="/comparison-policy/">比較・編集方針を読む</a></p>

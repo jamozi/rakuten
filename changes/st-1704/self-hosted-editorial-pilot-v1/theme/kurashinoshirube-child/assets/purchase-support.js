@@ -123,11 +123,26 @@
       counts.missing ? 'INPUT_MISSING' : counts.reference_unknown ? 'PARTIAL' : 'NUMERIC_MATCH';
     return { fields, counts, state };
   };
-  const installationSummary = assessment => {
+  // Site references withheld because official sources give different values (KS-009).
+  // Only the nine published keys are accepted; anything unreadable means no conflict.
+  const installationConflictKeys = raw => {
+    let parsed;
+    try { parsed = typeof raw === 'string' && raw ? JSON.parse(raw) : []; } catch (_) { return []; }
+    if (!Array.isArray(parsed)) return [];
+    const allowed = new Set(installationFields.map(([key]) => key));
+    return [...new Set(parsed.filter(key => typeof key === 'string' && allowed.has(key)))];
+  };
+  const installationReferenceText = (field, conflicts = []) =>
+    field.reference_state === 'INVALID' ? '基準データの不備があるため、この項目は照合できません。型番の公式資料で確認してください。' :
+      conflicts.includes(field.key) ? '公式資料で値が異なるため、この項目は照合しません。メーカーへ確認してください。' :
+        'サイト側の基準が未確認のため、この項目は照合できません。利用者の未入力ではありません。型番の公式資料で確認してください。';
+  const installationSummary = (assessment, conflicts = []) => {
     const c = assessment.counts;
+    const conflicted = assessment.fields.filter(f => f.reference_state === 'UNKNOWN' && conflicts.includes(f.key)).length;
     const parts = [`数値一致 ${c.matched}項目`, `不足 ${c.mismatched}項目`, `未入力 ${c.missing}項目`];
     if (c.invalid) parts.push(`入力形式の確認 ${c.invalid}項目`);
-    if (c.reference_unknown) parts.push(`サイト側の基準未確認 ${c.reference_unknown}項目`);
+    if (c.reference_unknown - conflicted) parts.push(`サイト側の基準未確認 ${c.reference_unknown - conflicted}項目`);
+    if (conflicted) parts.push(`公式資料で値が異なる ${conflicted}項目`);
     if (c.reference_invalid) parts.push(`基準データの不備 ${c.reference_invalid}項目`);
     return parts.join('／') + '。これは寸法の数値照合です。安全な設置・使用を保証しません。台の強度・水平、給排水、電源・アース、熱源、扉の動作経路は別に確認してください。';
   };
@@ -295,6 +310,7 @@
       let required;
       try { required = JSON.parse(container.dataset.psInstallation); } catch (_) { return; }
       if (!isRecord(required)) return;
+      const conflicts = installationConflictKeys(container.dataset.psInstallationConflicts);
       // An unknown reference key is a configuration error: no inputs, static notes stay.
       const initial = assessInstallation(required, {});
       const fieldset = create('fieldset', '');
@@ -309,8 +325,7 @@
           inputs[f.key] = create('input', '', { id, type: 'text', inputmode: 'decimal', autocomplete: 'off', 'aria-describedby': helpId });
           group.append(create('label', `${f.label}（mm）`, { for: id }), inputs[f.key], statuses[f.key]);
         } else {
-          statuses[f.key].textContent = f.reference_state === 'INVALID' ? '基準データの不備があるため、この項目は照合できません。型番の公式資料で確認してください。' :
-            'サイト側の基準が未確認のため、この項目は照合できません。利用者の未入力ではありません。型番の公式資料で確認してください。';
+          statuses[f.key].textContent = installationReferenceText(f, conflicts);
           group.append(create('p', f.label, { class: 'ps-installation-label' }), statuses[f.key]);
         }
         fieldset.append(group);
@@ -330,7 +345,7 @@
           statuses[f.key].textContent = `照合基準：${f.required_mm}mm。${f.input_state === 'INVALID' ? '0以上の数値で入力してください。' :
             f.match_state === 'MISMATCH' ? `不足：${f.shortfall_mm}mm。` : f.match_state === 'MATCH' ? '数値一致。' : '未入力。'}`;
         }
-        result.textContent = installationSummary(check);
+        result.textContent = installationSummary(check, conflicts);
       };
       fieldset.addEventListener('input', update);
       const reset = create('button', '測定値をクリア', { type: 'button' });
@@ -363,6 +378,6 @@
     });
     root.dataset.psMounted = '1';
   };
-  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationSummary, watchClock, mount };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationConflictKeys, installationReferenceText, installationSummary, watchClock, mount };
   if (typeof document !== 'undefined' && typeof window !== 'undefined') document.querySelectorAll('.ps-article').forEach(root => mount(root, document, window));
 })();

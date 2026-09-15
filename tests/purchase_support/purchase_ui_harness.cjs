@@ -197,6 +197,16 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
         await page.locator('#ps-install-0-width_mm').fill('1');
         assert.match(await page.locator('.ps-installation-result').first().textContent(), /不足 1項目/);
         assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 1項目/);
+        // Decision 3: an unset reference named in data-ps-installation-conflicts shows the conflict text.
+        const help = await page.evaluate(() => [...document.querySelectorAll('[data-ps-installation]')].flatMap((container, index) => {
+          const conflicts = JSON.parse(container.dataset.psInstallationConflicts || '[]');
+          const required = JSON.parse(container.dataset.psInstallation);
+          return Object.keys(required).filter(key => required[key] === null)
+            .map(key => ({ key, conflict: conflicts.includes(key), text: document.getElementById(`ps-install-${index}-${key}-help`).textContent }));
+        }));
+        assert.equal(help.filter(h => h.conflict).length, 1, JSON.stringify(help));
+        for (const h of help) assert.equal(h.text === '公式資料で値が異なるため、この項目は照合しません。メーカーへ確認してください。', h.conflict, JSON.stringify(h));
+        assert.ok((await page.locator('.ps-installation-result').allTextContents()).some(t => /公式資料で値が異なる 1項目/.test(t)));
       }
     }
     await noScript.close();

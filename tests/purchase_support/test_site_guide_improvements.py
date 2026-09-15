@@ -27,6 +27,70 @@ def test_detergent_does_not_infer_missing_type_or_amount():
     assert "3〜5g" not in html
 
 
+def test_detergent_answer_has_amount_lines_and_prohibition_summary():
+    from raos.application.editorial.reader_html import fragment
+
+    p = {
+        "exact_model": "NP-TSP1-W",
+        "anchor": "product-dish-np-tsp1",
+        "guide_summary": {
+            "detergent": {
+                "使える洗剤の種類": "専用洗剤",
+                "通常量": "約5g",
+                "汚れが多いときの量": "約10g",
+                "タブレットの条件": "通常1個",
+                "投入位置": "洗剤入れ",
+            }
+        },
+    }
+    root = fragment(render_guide_intro("detergent", [p]))
+    heads = [th.text() for th in root.find(tag="thead")[0].find(tag="th")]
+    assert heads == ["型番", "使える洗剤", "1回の量", "入れる位置", "使えないもの（主なもの）"]
+    cells = root.find(tag="tbody")[0].find(tag="td")
+    assert [li.text() for li in cells[1].find(tag="li")] == [
+        "通常：約5g",
+        "汚れが多いとき：約10g",
+        "タブレット：通常1個",
+    ]
+    assert "／" not in cells[1].text()
+    summary = cells[3].text()
+    assert summary.startswith("強化ガラス、飛ばされやすい軽いもの。")
+    assert (
+        "プラスチック：耐熱60℃未満・表示なしは不可（60℃以上90℃未満は低温ソフトで洗う）ほか。"
+        in summary
+    )
+    links = cells[3].find(tag="a")
+    assert [(a.attrs["href"], a.text()) for a in links] == [
+        ("#product-dish-np-tsp1", "全項目と例外")
+    ]
+    unknown = fragment(
+        render_guide_intro("detergent", [{"exact_model": "TK-MDW22B", "anchor": "x"}])
+    )
+    unknown_cells = unknown.find(tag="tbody")[0].find(tag="td")
+    assert unknown_cells[3].text() == "未確認" and not unknown_cells[3].find(tag="a")
+    assert [li.text() for li in unknown_cells[1].find(tag="li")] == [
+        "通常：未確認",
+        "汚れが多いとき：未確認",
+        "タブレット：未確認",
+    ]
+
+
+def test_material_summary_and_details_share_one_limits_record():
+    from raos.application.editorial.site_guide_improvements import MATERIAL_LIMITS
+
+    assert set(MATERIAL_LIMITS) == {
+        "NP-TMLK1-K",
+        "TDWS25SBL / TDWS25SRD",
+        "SS-MA251",
+        "NP-TSP1-W",
+    }
+    for model, (limit, exception, _reason) in MATERIAL_LIMITS.items():
+        details = render_model_handout("detergent", {"exact_model": model})
+        summary = render_guide_intro("detergent", [{"exact_model": model, "anchor": "a"}])
+        assert limit in details and exception in details
+        assert "プラスチック：" + limit + "（" + exception + "）" in summary
+
+
 def test_maintenance_handout_remains_inert_publishable_markup():
     p = {
         "exact_model": "model",
@@ -42,8 +106,8 @@ def test_material_limits_are_bound_to_the_exact_model():
     siroca = render_model_handout("detergent", {"exact_model": "SS-MA251"})
     panasonic = render_model_handout("detergent", {"exact_model": "NP-TSP1-W"})
     mini = render_model_handout("detergent", {"exact_model": "TDWS25SBL / TDWS25SRD"})
-    assert "耐熱65℃以上" in siroca and "耐熱60℃以上" not in siroca
-    assert "耐熱60℃以上90℃未満" in panasonic
+    assert "65℃以上90℃未満はソフトコースで洗う" in siroca and "60℃" not in siroca
+    assert "60℃以上90℃未満は低温ソフトで洗う" in panasonic and "65℃" not in panasonic
     assert "75℃以上は使用可" in mini and "乾燥のみモードは使わない" not in mini
     assert "<input" not in siroca and "<table>" in siroca
     assert render_model_handout("detergent", {"exact_model": "TK-MDW22B"}) == ""

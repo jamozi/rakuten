@@ -14,6 +14,7 @@
 - 数値・出典: DELTA 3 Classic の寸法 (記事 28) のみ変更。仕様表の出典 (公式仕様、確認 2026-09-11) と一致させた。他の数値・売り場・表示期限は不変。
 - 相対評価: 変更なし。
 - アンカー: 49 件の旧 id を現行 section の alias に移し、末尾 compat ブロックは全記事で空。記事 29 の `#blk-anker-015-title` は `ps-choose` 先頭へ到達。
+  - 追記 (2026-09-15、W2B・未公開): 判断 11 (KS-139) で記事 29 の nav「購入前の確認へ」(`#blk-anker-015-title`) を「購入費用と販売先へ」(`#blk-anker-007-title` → `ps-offers` 先頭の alias) に変更した。上の到達確認はバッチ A 公開時点の記録。
 - 可視テキスト: 内部語 (`UNKNOWN` / `UNAVAILABLE` / `本文候補作成`) 0 件。data-* 属性の機械状態は不変。
 - テーマ: CSS/JS の内容変更なし。`KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256` と theme runtime revision を投影に合わせて再束縛 (`build_st1704_self_hosted_theme.py --generate`、2026-09-13 と同じ手順)。
   初回候補 `1608e6cf…` は再束縛前だったため purchase-support / editorial-v2 CSS が読み込まれず、390px で計算機がはみ出した (FAIL)。再束縛後の候補で解消。
