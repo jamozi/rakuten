@@ -192,9 +192,9 @@ def test_main_comparison_section_order_and_single_slots(catalog):
     again, _ = compile(catalog)
     assert again[ps.MAIN_SLUG] == body
     article = next(a for a in catalog["articles"] if a["slug"] == ps.MAIN_SLUG)
-    assert article["title"] == "タンク式食洗機4モデルを1〜2人暮らし向けに比較"
-    assert article["intro"].startswith("食後の洗い物を減らしたい方へ。")
-    assert '<p class="ps-lead">食後の洗い物を減らしたい方へ。' in body
+    assert article["title"] == "タンク式食洗機4モデルの給水と設置を比較"
+    assert article["intro"].startswith("タンク式の4機種を、毎回の給水の手間と")
+    assert '<p class="ps-lead">タンク式の4機種を、毎回の給水の手間と' in body
     template_ids = ids_of(MAIN_TEMPLATE.read_text())
     assert template_ids <= ids_of(body)
 

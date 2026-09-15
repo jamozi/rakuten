@@ -413,6 +413,60 @@ def validate_installation_consistency(p: Mapping[str, Any]) -> None:
             raise ValueError(code)
 
 
+CAPACITY_ROUTE_HREF = re.compile(r"/([a-z0-9-]+)/")
+
+
+def validate_capacity_routes(routes: object, slugs: set[str]) -> None:
+    """Capacity routes link only to comparisons that exist in this catalog."""
+    if (
+        not isinstance(routes, dict)
+        or set(routes) != {"title", "intro", "links"}
+        or any(
+            not isinstance(routes[key], str) or not routes[key].strip()
+            for key in ("title", "intro")
+        )
+        or not isinstance(routes["links"], list)
+        or not 1 <= len(routes["links"]) <= 6
+        or any(
+            not isinstance(link, dict)
+            or set(link) != {"href", "label", "note"}
+            or any(
+                not isinstance(link[key], str) or not link[key].strip()
+                for key in ("href", "label", "note")
+            )
+            for link in routes["links"]
+        )
+        or len({link["href"] for link in routes["links"]}) != len(routes["links"])
+    ):
+        raise ValueError("PURCHASE_CAPACITY_ROUTES_INVALID")
+    for link in routes["links"]:
+        match = CAPACITY_ROUTE_HREF.fullmatch(link["href"])
+        if match is None or match.group(1) not in slugs:
+            raise ValueError("PURCHASE_CAPACITY_ROUTE_UNKNOWN")
+
+
+def capacity_routes_markup(routes: Mapping[str, Any]) -> str:
+    """Readers who choose by the amount of dishes go to the capacity comparisons."""
+    return (
+        '<section id="ps-capacity-routes"><h2>'
+        + escape(routes["title"])
+        + "</h2><p>"
+        + escape(tidy(routes["intro"]))
+        + "</p><ul>"
+        + "".join(
+            '<li><a href="'
+            + escape(link["href"], quote=True)
+            + '">'
+            + escape(link["label"])
+            + "</a>："
+            + escape(tidy(link["note"]))
+            + "</li>"
+            for link in routes["links"]
+        )
+        + "</ul></section>"
+    )
+
+
 def validate_catalog(catalog: Mapping[str, Any]) -> None:
     if (
         catalog.get("schema") != "RAOS_READER_PURCHASE_SUPPORT_V1"
@@ -474,6 +528,10 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
         note = article.get("choose_note")
         if note is not None and (not isinstance(note, str) or not note.strip()):
             raise ValueError("PURCHASE_CHOOSE_NOTE_INVALID")
+    slugs = {a["slug"] for a in articles}
+    for article in articles:
+        if "capacity_routes" in article:
+            validate_capacity_routes(article["capacity_routes"], slugs)
     for article in articles:
         if article["kind"] != "curated_comparison":
             continue
@@ -1685,6 +1743,8 @@ def render_comparison(
         + ('<a href="#ps-installation-context">設置の詳細</a>' if main else "")
         + '<a href="#ps-offers">購入費用と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
+    if article.get("capacity_routes"):
+        out.append(capacity_routes_markup(article["capacity_routes"]))
     decision_steps_html = ""
     decision_steps_placement = None
     if article.get("decision_steps"):

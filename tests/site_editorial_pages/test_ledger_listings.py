@@ -307,6 +307,10 @@ class LedgerListings(unittest.TestCase):
                 )
                 if not log:
                     continue
+                if 'class="ks-recent-image"' in card:
+                    # Home recent cards show no date at all, so they cannot disagree.
+                    self.assertNotIn("日：", card)
+                    continue
                 label = "内容更新日：" + max(e["date"] for e in log)
                 with self.subTest(page=name, slug=slugs[0]):
                     self.assertIn(label, card)
@@ -417,7 +421,10 @@ class LedgerListings(unittest.TestCase):
         )
         self.assertNotIn("主比較6製品", html)
         self.assertIn(
-            "公開日：2026-09-13", card_for(html, "compact-dishwasher-comparison")
+            "公開日：2026-09-13", card_for(html, "standard-dishwasher-comparison")
+        )
+        self.assertIn(
+            "内容更新日：2026-09-16", card_for(html, "compact-dishwasher-comparison")
         )
         record = self.meta["large-dishwasher-comparison"]
         self.assertEqual(

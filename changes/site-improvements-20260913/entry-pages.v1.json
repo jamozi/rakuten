@@ -133,7 +133,7 @@
         "next-step"
       ],
       "images": [],
-      "description": "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。"
+      "description": "手注ぎ・別売の給水補助ポンプ・本体が外部容器から吸い上げる方式を、水運び・容器の置き場所・設置条件で比べます。"
     },
     "easy-maintenance": {
       "title": "手入れを続けやすいものを選びたい",
@@ -305,6 +305,695 @@
     "in_use": [
       "easy-maintenance"
     ]
+  },
+  "purpose_evidence": {
+    "small-space": {
+      "figures": [
+        {
+          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "exact_model": "NP-TMLK1-K",
+          "caption": "食洗機の例：パナソニック SOLOTA NP-TMLK1-K（タテ置き）",
+          "diagram": [
+            "［壁］…起点",
+            "　↓本体と壁のあき1.7cm以上",
+            "［本体］奥行約22.5cm",
+            "［開いた扉の先端］",
+            "　↑壁からここまで",
+            "　　50.2cm以上",
+            "［水栓・蛇口］はこの先"
+          ],
+          "origin": {
+            "label": "起点",
+            "text": "壁。図から読み取った起点です。50.2cmの矢印は、開いた扉の先より外側の線から「壁」と書かれた線まで引かれています。図の文字に「壁から」とは書かれていません",
+            "state": "KNOWN",
+            "source_url": "https://panasonic.jp/dish/installation.html",
+            "locator": "「5．パーソナルタイプ」タテ置きの図（installation-30.png）",
+            "checked_at": "2026-09-16"
+          },
+          "facts": [
+            {
+              "label": "本体外形寸法",
+              "text": "約 幅310×高さ435×奥行225＜485＞mm（＜＞はドア開閉時の最大寸法）",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+              "locator": "仕様表「本体外形寸法」行と表末の注記",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "水栓・蛇口までの目安",
+              "text": "50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/installation.html",
+              "locator": "タテ置きの図（installation-30.png）",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "高さ",
+              "text": "49cm以上あればOK",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/installation.html",
+              "locator": "タテ置きの図（installation-30.png）",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "壁とのあき（タテ置き図）",
+              "text": "本体と壁面の間に1.7cm以上のあきが必要（排水ホース外径分を含む）",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/installation.html",
+              "locator": "タテ置きの図（space-35.png）",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "壁とのあき（案内本文の一般条件）",
+              "text": "本体と壁の間に0.5cm以上のあきが必要",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/installation.html",
+              "locator": "「5．パーソナルタイプ」本文の注記",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "上方（設置案内）",
+              "text": "本体上方の空間はできるだけあけて設置する",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/dish/installation.html",
+              "locator": "「5．パーソナルタイプ」の注記",
+              "checked_at": "2026-09-15"
+            },
+            {
+              "label": "上方（取扱説明書）",
+              "text": "可燃物からの離隔距離は上方5cm",
+              "state": "KNOWN",
+              "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
+              "locator": "取扱説明書 冊子p.8 離隔距離の表",
+              "checked_at": "2026-09-15"
+            }
+          ],
+          "calculation": {
+            "label": "検算",
+            "text": "開扉時奥行48.5cm＋1.7cm＝50.2cm。公式ページはこの内訳を書いていません",
+            "state": "CALCULATED"
+          },
+          "unknowns": [
+            {
+              "label": "扉を開いたときの高さ",
+              "text": "",
+              "state": "UNKNOWN"
+            },
+            {
+              "label": "水栓・蛇口の形と位置",
+              "text": "",
+              "state": "UNKNOWN"
+            },
+            {
+              "label": "タンクを水栓まで運ぶ動線",
+              "text": "",
+              "state": "UNKNOWN"
+            }
+          ],
+          "links": [
+            {
+              "article_key": "dishwasher-installation-measurement",
+              "anchor": "product-dish-np-tmlk1",
+              "text": "型番別の余白と開扉時の寸法 →"
+            },
+            {
+              "article_key": "compact-dishwasher-comparison",
+              "anchor": "",
+              "text": "小型の食洗機を比べる →"
+            }
+          ]
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "exact_model": "K11+ Pro",
+          "caption": "ロボット掃除機の例：SwitchBot K11+ Pro のゴミ収集ステーション",
+          "diagram": [
+            "━━━━━　壁　━━━━━",
+            "　　　　［台］",
+            "0.5m←　　　　→0.5m",
+            "　　　　　↓",
+            "　　　　前方1.5m",
+            "（上方にも1.5m）"
+          ],
+          "origin": {
+            "label": "起点",
+            "text": "台の両側・前方・上方。台の背面を壁側に置く向きは、説明書の「壁際に設置」と図から読み取った向きです",
+            "state": "KNOWN",
+            "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+            "locator": "取扱説明書 印刷p.12「ゴミ収集ステーションを設置する」手順1と図",
+            "checked_at": "2026-09-15"
+          },
+          "facts": [
+            {
+              "label": "周囲の空き",
+              "text": "両側に0.5m、前方および上方に1.5mのスペースがあることを確認する",
+              "state": "KNOWN",
+              "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+              "locator": "取扱説明書 印刷p.12 手順1",
+              "checked_at": "2026-09-15"
+            },
+            {
+              "label": "置き場所",
+              "text": "コンセントの近く、Wi-Fiの受信状態が良好な場所、固く平らな床の壁際に設置する",
+              "state": "KNOWN",
+              "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+              "locator": "取扱説明書 印刷p.12 手順1",
+              "checked_at": "2026-09-15"
+            },
+            {
+              "label": "台の底面",
+              "text": "ステーション底面240×180mm（幅と奥行の対応は未確認）",
+              "state": "KNOWN",
+              "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+              "locator": "製品説明「A4用紙以下の設置面積＋90日ごみ捨て不要」",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "台の高さ",
+              "text": "高さ約25cm",
+              "state": "KNOWN",
+              "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+              "locator": "「置き場所まで、小さく」の段落",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "サポート記事の案内（参考）",
+              "text": "左右は1メートルで前面は1.5メートル(上部は制限なし)の距離を置くことをお勧めいたします。説明書と数値が異なり、この図は説明書の値を使っています",
+              "state": "KNOWN",
+              "source_url": "https://support.switch-bot.com/hc/ja/articles/34719106569111",
+              "locator": "サポート記事「ロボット掃除機K11+本体がごみ収集ステーションで充電している時のサイズ」本文（適用製品はK11+。英語版はK11+ Proを関連製品に挙げています）",
+              "checked_at": "2026-09-15"
+            }
+          ],
+          "unknowns": [
+            {
+              "label": "背面側の空き",
+              "text": "説明書に数値の記載なし",
+              "state": "UNKNOWN"
+            },
+            {
+              "label": "紙パック交換でふたを開ける空間",
+              "text": "",
+              "state": "UNKNOWN"
+            },
+            {
+              "label": "部屋を走る経路",
+              "text": "",
+              "state": "UNKNOWN"
+            }
+          ],
+          "links": [
+            {
+              "article_key": "roomba-mini-vs-switchbot-k11-pro",
+              "anchor": "product-robot-k11-pro",
+              "text": "台の寸法と手入れで比べる →"
+            },
+            {
+              "article_key": "compact-robot-vacuum-shortlist",
+              "anchor": "ps-specs",
+              "text": "本体・台の寸法で絞る →"
+            }
+          ]
+        }
+      ]
+    },
+    "save-housework": {
+      "examples": [
+        {
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "exact_model": "SS-MA251",
+          "group": "食洗機",
+          "facts": [
+            {
+              "label": "給水",
+              "text": "タンク給水は毎回約6L（給水カップ4〜5杯分）",
+              "state": "KNOWN",
+              "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+              "locator": "取扱説明書 印刷p.12「給水する」",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "残さいフィルターとメッシュトレイ",
+              "text": "毎回手入れする",
+              "state": "KNOWN",
+              "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+              "locator": "取扱説明書 p.17〜18 残さいフィルターとメッシュトレイ",
+              "checked_at": "2026-09-13"
+            }
+          ]
+        },
+        {
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "exact_model": "K11+ Pro",
+          "group": "ロボット掃除機",
+          "facts": [
+            {
+              "label": "紙パック",
+              "text": "交換時期の目安は90日ごと",
+              "state": "KNOWN",
+              "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+              "locator": "取扱説明書 印刷p.17 お手入れの表",
+              "checked_at": "2026-09-16"
+            },
+            {
+              "label": "フィルター",
+              "text": "月に1回を目安に清掃、またはアプリの通知が来たときに清掃",
+              "state": "KNOWN",
+              "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+              "locator": "取扱説明書 印刷p.17 お手入れの表",
+              "checked_at": "2026-09-16"
+            }
+          ]
+        }
+      ],
+      "wet_mop_station": {
+        "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+        "exact_model": "N285060",
+        "facts": [
+          {
+            "label": "充電ステーション",
+            "text": "奥行き34.0×幅33.0×高さ48.5cm（公式の表記は「34.0 (奥行き) ×33.0 (幅) ×48.5 (高さ)」）",
+            "state": "KNOWN",
+            "source_url": "https://store.irobot-jp.com/item/N285060.html",
+            "locator": "製品仕様「充電ステーションサイズ(cm)」",
+            "checked_at": "2026-09-16"
+          },
+          {
+            "label": "残る手入れ",
+            "text": "ロボットのダスト容器の拭き取り、充電ステーションの給水・廃水タンクのすすぎ、充電端子やブラシの清掃",
+            "state": "KNOWN",
+            "source_url": "https://store.irobot-jp.com/item/N285060.html",
+            "locator": "よくあるご質問「どのようなお手入れが必要ですか？」",
+            "checked_at": "2026-09-16"
+          },
+          {
+            "label": "交換の目安",
+            "text": "モップパッド・エッジクリーニングブラシ・フィルターは3～6か月ごと、シングルアクションブラシは6～12か月ごと（使用状況により異なる）",
+            "state": "KNOWN",
+            "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+            "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+            "checked_at": "2026-09-16"
+          }
+        ]
+      }
+    },
+    "easy-maintenance": {
+      "groups": [
+        {
+          "label": "食洗機",
+          "rows": [
+            {
+              "product_id": "PRD-SIROCA-SS-MA251",
+              "exact_model": "SS-MA251",
+              "each": [
+                {
+                  "label": "残さいフィルターとメッシュトレイ",
+                  "text": "毎回。電源を切ってプラグを抜き、庫内が常温であることを確認してから",
+                  "state": "KNOWN",
+                  "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+                  "locator": "取扱説明書 p.17〜18 残さいフィルターとメッシュトレイ",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "ノズル（大）",
+                  "text": "月1回程度",
+                  "state": "KNOWN",
+                  "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+                  "locator": "取扱説明書 p.19 ノズル",
+                  "checked_at": "2026-09-13"
+                },
+                {
+                  "label": "本体",
+                  "text": "定期的に。ドアパッキンが汚れたらその都度",
+                  "state": "KNOWN",
+                  "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+                  "locator": "取扱説明書 p.20 本体・庫内洗浄コース",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換部品の品番",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            },
+            {
+              "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+              "exact_model": "TDWS25SBL / TDWS25SRD",
+              "each": [
+                {
+                  "label": "フィルター・メッシュトレイ・内部フィルター",
+                  "text": "毎回。電源を切ってプラグを抜き、庫内が常温になってから",
+                  "state": "KNOWN",
+                  "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+                  "locator": "説明書p.20〜21 フィルターとメッシュトレイ",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "ノズル",
+                  "text": "月1回以上、汚れに応じて",
+                  "state": "KNOWN",
+                  "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+                  "locator": "説明書p.22 ノズル",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換部品の品番",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            },
+            {
+              "product_id": "PRD-PANASONIC-NP-TSP1",
+              "exact_model": "NP-TSP1-W",
+              "each": [
+                {
+                  "label": "残さいフィルターA",
+                  "text": "運転終了後に残さいがあればその都度",
+                  "state": "KNOWN",
+                  "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+                  "locator": "取扱説明書 p.22〜23 タンク給水時の残さいフィルターA/B",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "残さいフィルター",
+                  "text": "週1回が目安（1日2回使用の場合）",
+                  "state": "KNOWN",
+                  "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+                  "locator": "取扱説明書 p.22〜23 タンク給水時の残さいフィルターA/B",
+                  "checked_at": "2026-09-13"
+                },
+                {
+                  "label": "排水口カバー",
+                  "text": "月1回が目安（庫内を定期的に手入れする場合）",
+                  "state": "KNOWN",
+                  "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+                  "locator": "取扱説明書 p.23 排水口カバー",
+                  "checked_at": "2026-09-13"
+                },
+                {
+                  "label": "本体",
+                  "text": "月1回",
+                  "state": "KNOWN",
+                  "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+                  "locator": "取扱説明書 p.25 本体 月1回",
+                  "checked_at": "2026-09-13"
+                },
+                {
+                  "label": "タンク",
+                  "text": "汚れが気になったら専用庫内クリーナーで手入れ",
+                  "state": "KNOWN",
+                  "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+                  "locator": "取扱説明書 p.25 タンクの汚れが気になったら",
+                  "checked_at": "2026-09-13"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換部品の品番",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "掃除機",
+          "rows": [
+            {
+              "product_id": "PRD-SWITCHBOT-K11-PRO",
+              "exact_model": "K11+ Pro",
+              "each": [
+                {
+                  "label": "ダストボックス",
+                  "text": "必要に応じて洗浄",
+                  "state": "KNOWN",
+                  "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+                  "locator": "取扱説明書 印刷p.17 お手入れの表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "お掃除シート",
+                  "text": "長時間水拭きをする場合は、約20分ほどを目安に交換",
+                  "state": "KNOWN",
+                  "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+                  "locator": "取扱説明書 印刷p.16 水拭き お知らせ②",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "フィルター",
+                  "text": "月に1回を目安に清掃、またはアプリの通知が来たときに清掃",
+                  "state": "KNOWN",
+                  "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+                  "locator": "取扱説明書 印刷p.17 お手入れの表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "前輪・サイドブラシ・メインブラシ",
+                  "text": "月に1回を目安に清掃。ペットの抜け毛が多い場合は頻度を増やす",
+                  "state": "KNOWN",
+                  "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+                  "locator": "取扱説明書 印刷p.17 お手入れの表",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換時期の目安",
+                  "text": "紙パック90日ごと、フィルター2~3カ月ごと、前輪・サイドブラシ・メインブラシ12カ月ごと",
+                  "state": "KNOWN",
+                  "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+                  "locator": "取扱説明書 印刷p.17 お手入れの表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "交換部品の品番",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            },
+            {
+              "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+              "exact_model": "F155260",
+              "each": [
+                {
+                  "label": "ダストビン・充電端子",
+                  "text": "必要に応じてダストビンを拭き取り、充電端子を清掃",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/F155260.html",
+                  "locator": "よくあるご質問「どのようなお手入れが必要ですか？」",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "ブラシ",
+                  "text": "定期的なクリーニング（頻度の数値は書かれていません）",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/F155260.html",
+                  "locator": "よくあるご質問「どのようなお手入れが必要ですか？」",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換時期の目安",
+                  "text": "フィルターは3～6か月ごとに交換",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/F155260.html",
+                  "locator": "よくあるご質問「どのようなお手入れが必要ですか？」",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "消耗品の品番",
+                  "text": "4849916 交換用紙パック（３枚）／4859242 フィルター（3個）／4859243 エッジクリーニングブラシ（3個）／4859244 シングルアクションブラシ／4860285 交換パーツキット",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/F155260.html",
+                  "locator": "「この製品のオプション・消耗品」",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "消耗品一覧に価格の表示なし",
+                  "state": "UNKNOWN"
+                }
+              ]
+            },
+            {
+              "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+              "exact_model": "N285060",
+              "each": [
+                {
+                  "label": "ダスト容器",
+                  "text": "必要に応じて洗浄",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "モップパッド",
+                  "text": "水拭き掃除後に自動で洗浄・乾燥",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "充電ステーション",
+                  "text": "給水・廃水タンクのすすぎ",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/N285060.html",
+                  "locator": "よくあるご質問「どのようなお手入れが必要ですか？」",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "フィルター",
+                  "text": "週に1回清掃（ペットのいるご家庭は週に2回）",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "シングルアクションブラシ",
+                  "text": "週に1回清掃",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "エッジクリーニングブラシ",
+                  "text": "2週間に1回、または必要に応じて清掃",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換時期の目安",
+                  "text": "モップパッド・エッジクリーニングブラシ・フィルターは3～6か月ごと、シングルアクションブラシは6～12か月ごと（使用状況により異なる）",
+                  "state": "KNOWN",
+                  "source_url": "https://prod-help-content.care.irobotapi.com/files/2026/OwnersGuides/515/OG515jaJP.pdf",
+                  "locator": "取扱説明書 印刷p.20「ロボットのお手入れ」の表",
+                  "checked_at": "2026-09-16"
+                },
+                {
+                  "label": "消耗品の品番",
+                  "text": "4860486 DualClean モップパッド（6個）／4860487 フィルター（3個）／4860682 交換パーツキット／4849916 交換用紙パック（３枚）／4860283 エッジクリーニングブラシ（3個）",
+                  "state": "KNOWN",
+                  "source_url": "https://store.irobot-jp.com/item/N285060.html",
+                  "locator": "「この製品のオプション・消耗品」",
+                  "checked_at": "2026-09-16"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "スーツケース",
+          "rows": [
+            {
+              "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+              "exact_model": "1-250",
+              "each": [
+                {
+                  "label": "使う前後の手入れ",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "periodic": [
+                {
+                  "label": "点検の目安",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "parts": [
+                {
+                  "label": "交換用タイヤ",
+                  "text": "交換用静音タイヤキット【1-623】（4輪FREQUENTERシリーズ専用）に対応",
+                  "state": "KNOWN",
+                  "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+                  "locator": "商品説明画像の代替テキスト",
+                  "checked_at": "2026-09-15"
+                },
+                {
+                  "label": "キットの適合・在庫・保証範囲",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ],
+              "price": [
+                {
+                  "label": "部品代",
+                  "text": "",
+                  "state": "UNKNOWN"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   },
   "publication_date_evidence": {
     "source": "public WordPress REST posts/pages, fields id,date,date_gmt,slug,link",

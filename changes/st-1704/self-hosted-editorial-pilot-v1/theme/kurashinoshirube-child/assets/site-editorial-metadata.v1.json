@@ -169,8 +169,8 @@
       "article_key": "countertop-dishwasher-for-small-households",
       "slug": "countertop-dishwasher-for-small-households",
       "post_id": 41,
-      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
-      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機4モデルを、本体寸法・食器点数・給水方式・乾燥方式で比較。開扉時の寸法や余白などの設置条件と、確認日つきの販売条件も整理します。",
+      "title": "タンク式食洗機4モデルの給水と設置を比較",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式4モデルを、毎回の給水の手順（タンクを外して蛇口で満たす／カップで給水口へ注ぐ）と、扉やタンクの出し入れに必要な空間で比較。SS-MA251とNP-TSP1は分岐水栓にも対応します。容量別の比較記事への入口と、確認日つきの販売条件も整理します。",
       "category": "kitchen",
       "role": "comparison",
       "short_title": "タンク式食洗機を比べる",
@@ -193,13 +193,18 @@
       "has_ads": true,
       "published_at": "2026-08-28T09:33:50Z",
       "published_on": "2026-08-28",
-      "updated_on": "2026-09-13",
-      "change_summary": "商品と確認理由を共通台帳に揃え、機種別の洗剤投入先を公式説明書から追記しました。",
+      "updated_on": "2026-09-16",
+      "change_summary": "毎回の給水の手順と、扉やタンクの出し入れに必要な空間から比べる構成に改め、容量別の比較記事への入口を追加しました。",
       "change_log": [
         {
           "date": "2026-09-13",
           "kind": "content",
           "summary": "商品と確認理由を共通台帳に揃え、機種別の洗剤投入先を公式説明書から追記しました。"
+        },
+        {
+          "date": "2026-09-16",
+          "kind": "content",
+          "summary": "毎回の給水の手順と、扉やタンクの出し入れに必要な空間から比べる構成に改め、容量別の比較記事への入口を追加しました。"
         }
       ],
       "specification_checked_on": null,
@@ -639,9 +644,15 @@
       "has_ads": true,
       "published_at": "2026-09-13T10:57:35Z",
       "published_on": "2026-09-13",
-      "updated_on": null,
-      "change_summary": null,
-      "change_log": [],
+      "updated_on": "2026-09-16",
+      "change_summary": "冒頭の選び方を3枚のカードに整理し、ラクアmini系3製品の置き場所に必要な空間を、説明書の設置余白・可燃物からの離隔・設置案内の図の寸法に分けた表を追加しました。",
+      "change_log": [
+        {
+          "date": "2026-09-16",
+          "kind": "content",
+          "summary": "冒頭の選び方を3枚のカードに整理し、ラクアmini系3製品の置き場所に必要な空間を、説明書の設置余白・可燃物からの離隔・設置案内の図の寸法に分けた表を追加しました。"
+        }
+      ],
       "specification_checked_on": null,
       "sales_checked_at": null
     },

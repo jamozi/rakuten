@@ -28,13 +28,16 @@
           "KS-129",
           "KS-015",
           "KS-017",
-          "KS-026"
+          "KS-026",
+          "KS-016",
+          "KS-201a"
         ],
-        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：冒頭カードを3枚（向く人1行・決め手2つ・注意1つ）にして購入枠を7から4へ、03のカードは内部リンクだけ、#compact-care に41への導線、#compact-space にラクアmini系3製品の必要空間の表（6列、出典の種類を列で分け、必要な奥行は4商品とも判定保留）。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",
-          "changes/site-improvements-20260913/article-sources/compact-dishwasher-comparison.md"
+          "changes/site-improvements-20260913/article-sources/compact-dishwasher-comparison.md",
+          "changes/reader-purchase-support-v1/purchase-support.v1.json"
         ],
         "publication_authorized": false
       }
@@ -88,9 +91,10 @@
         "tasks": [
           "KS-015",
           "KS-017",
-          "KS-026"
+          "KS-026",
+          "KS-121"
         ],
-        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",

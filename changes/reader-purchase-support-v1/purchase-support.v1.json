@@ -39,33 +39,33 @@
         "PRD-SIROCA-SS-MA251",
         "PRD-PANASONIC-NP-TSP1"
       ],
-      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
-      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機4モデルを、本体寸法・食器点数・給水方式・乾燥方式で比較。開扉時の寸法や余白などの設置条件と、確認日つきの販売条件も整理します。",
+      "title": "タンク式食洗機4モデルの給水と設置を比較",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式4モデルを、毎回の給水の手順（タンクを外して蛇口で満たす／カップで給水口へ注ぐ）と、扉やタンクの出し入れに必要な空間で比較。SS-MA251とNP-TSP1は分岐水栓にも対応します。容量別の比較記事への入口と、確認日つきの販売条件も整理します。",
       "conditions": [
         {
           "id": "one-person",
-          "label": "一食分が少なく、本体奥行を抑えたい",
+          "label": "タンクを外して蛇口で満たす。本体の奥行を抑えたい",
           "product_ids": [
             "PRD-PANASONIC-NP-TMLK1"
           ]
         },
         {
           "id": "small-warm",
-          "label": "小型で温風乾燥も使いたい",
+          "label": "本体上部の給水口へカップで注ぐ。温風乾燥も使いたい",
           "product_ids": [
             "PRD-THANKO-RAKUA-MINI-COLOR"
           ]
         },
         {
           "id": "two-way",
-          "label": "16点程度と給水2WAYを優先",
+          "label": "給水トレイからカップで注ぐか、分岐水栓で給水。扉が自動で開く乾燥を選びたい",
           "product_ids": [
             "PRD-SIROCA-SS-MA251"
           ]
         },
         {
           "id": "more-dishes",
-          "label": "大きめの食器量をまとめたい",
+          "label": "扉を閉めて給水口へカップで注ぐか、分岐水栓で給水。食器24点をまとめたい",
           "product_ids": [
             "PRD-PANASONIC-NP-TSP1"
           ]
@@ -82,7 +82,7 @@
         "開扉時の寸法",
         "必要な余白"
       ],
-      "intro": "食後の洗い物を減らしたい方へ。タンク式4機種を、食器の量・置き場所・毎回の作業で比べます。選ぶ理由と、給水・片付けなど残る手間を整理しました。",
+      "intro": "タンク式の4機種を、毎回の給水の手間と、置き場所で必要な動き（扉の開閉・タンクの出し入れ・注ぐ位置）で比べます。食器の量から広く探す場合は、下の容量別の比較から始めてください。",
       "post_type": "post",
       "legacy_anchor_targets": {
         "blk-dish-003-title": "ps-choose",
@@ -106,13 +106,13 @@
       },
       "comparison_scope": {
         "heading_id": "blk-dish-005-title",
-        "intro": "タンクから給水できる4モデルを、置き場所と一食分の食器に合うかで比較します。",
+        "intro": "タンク給水に対応する4モデルを、毎回の給水作業と、扉・タンク・注水に必要な動きで比較します。",
         "included": [
-          "メーカー公式情報で食器点数・本体寸法・公表水量を確認できる候補を扱います。",
+          "給水の手順を、同じ型番の取扱説明書・公式FAQで確認した範囲で比べます。",
           "設置面に加えて扉の開閉、給排水、電源・アースの条件を確認します。タンク式でも設置確認は必要です。"
         ],
         "excluded": [
-          "実機で測っていない洗浄力・乾き具合・運転音の順位は付けません。",
+          "実機で測っていない洗浄力・乾き具合・運転音・給水にかかる時間の順位は付けません。",
           "水量は機種ごとに公表条件が異なります。同じ食器量・コースでの実測比較ではありません。"
         ]
       },
@@ -153,6 +153,12 @@
       "commerce_presentation": "comparison_rows",
       "comparison_row_columns": [
         {
+          "heading": "給水方式",
+          "fact_labels": [
+            "給水方式"
+          ]
+        },
+        {
           "heading": "食器量・乾燥",
           "fact_labels": [
             "標準食器点数",
@@ -164,14 +170,29 @@
           "fact_labels": [
             "本体寸法（幅×奥行×高さ）"
           ]
-        },
-        {
-          "heading": "給水方式",
-          "fact_labels": [
-            "給水方式"
-          ]
         }
-      ]
+      ],
+      "capacity_routes": {
+        "title": "食器の量から探すなら、容量別の比較へ",
+        "intro": "この記事は、給水の手間と設置の動きで4機種を比べます。給水方法を問わず、食器の量から候補を広く見たい場合は次の比較が向いています。",
+        "links": [
+          {
+            "href": "/compact-dishwasher-comparison/",
+            "label": "少量（公称6〜12点）の比較",
+            "note": "SOLOTAとラクアmini系を、容量と扉を開いた奥行で比べます"
+          },
+          {
+            "href": "/standard-dishwasher-comparison/",
+            "label": "標準容量（16〜28点）の比較",
+            "note": "13機種を、食器量・本体寸法・給水・乾燥で比べます"
+          },
+          {
+            "href": "/large-dishwasher-comparison/",
+            "label": "大容量（30点以上）の比較",
+            "note": "食器点数と、鍋を入れたときの収納例を分けて比べます"
+          }
+        ]
+      }
     },
     {
       "article_id": "lightweight-carry-on-suitcase-under-3kg",
@@ -1765,18 +1786,6 @@
         {
           "key": "choice-2",
           "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-TK-MDW22W"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
         }
       ]
     },
@@ -2081,19 +2090,19 @@
         },
         {
           "label": "開扉時の寸法",
-          "text": "開扉時の奥行485mm（設置案内：蛇口までの奥行502mm・高さ490mm）",
+          "text": "開扉時の奥行485mm（ドア開閉時の最大寸法）",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA NP-TMLK1 の設置例",
-          "checked_at": "2026-09-10",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "仕様・スペック表「本体外形寸法」行の＜485＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
           "label": "必要な余白",
-          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。設置案内のタテ置き図では、50.2cm以上あればドアが水栓・蛇口に当たりにくいとしています。",
           "exact_model": "NP-TMLK1-K",
           "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図。50.2cmは同じタテ置き例の図の表記",
           "checked_at": "2026-09-15",
           "state": "KNOWN"
         },
@@ -2135,19 +2144,19 @@
         },
         {
           "field": "door",
-          "text": "開扉時の奥行は485mm。設置案内では蛇口までの奥行502mm、高さ490mmの確保を案内しています。",
+          "text": "開扉時の奥行は485mmです（仕様表の＜485＞。＜＞はドア開閉時の最大寸法）。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA NP-TMLK1 の設置例",
-          "checked_at": "2026-09-10",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "仕様・スペック表「本体外形寸法」行の＜485＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
           "field": "clearance",
-          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。設置案内のタテ置き図では、50.2cm以上あればドアが水栓・蛇口に当たりにくいとしています。",
           "exact_model": "NP-TMLK1-K",
           "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図。50.2cmは同じタテ置き例の図の表記",
           "checked_at": "2026-09-15",
           "state": "KNOWN"
         },
@@ -6174,6 +6183,15 @@
             "next_action": "対象コースの1回当たりWhの公表資料を確認する",
             "owner": "暮らしのしるべ編集部"
           }
+        },
+        {
+          "label": "必要な余白",
+          "text": "上面700mm以上、後面100mm以上、側面100mm以上を空けて設置し、ガスコンロなどの熱源から150mm以上離します。取扱説明書はTK-MDW22BとTK-STTDPSWHの共通版です。",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://data.thanko.jp/download/manual/tk-mdw22b_man_web_01.pdf",
+          "locator": "取扱説明書（型番:TK-MDW22B/TK-STTDPSWH、version1.00）p.7「設置場所について」の本文と図",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
         }
       ],
       "lead": "SOLOTAより一度に洗う食器を増やし、熱風乾燥を使いたい場合の候補。奥行と給水の手間を確認します。",
@@ -6184,7 +6202,7 @@
         "開扉時奥行594mmを確保できない人",
         "着脱タンクで蛇口から直接給水したい人"
       ],
-      "caution": "TK-MDW22Bの比較です。mini color TDWS25SBL / TDWS25SRDや白いTK-STTDPSWHへ仕様を読み替えません。",
+      "caution": "製品ページの仕様値は黒のTK-MDW22Bのもので、白のTK-STTDPSWHへは読み替えません。取扱説明書の設置・給水などの記載は、TK-MDW22BとTK-STTDPSWHの共通版によります。mini color TDWS25SBL / TDWS25SRDは別製品です。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -6252,6 +6270,15 @@
           "source_url": "https://www.thanko.jp/view/item/000000003922",
           "locator": "メーカー商品ページ 仕様・機能、compact作者確認記録",
           "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "上面700mm以上、後面100mm以上、側面100mm以上を空けて設置し、ガスコンロなどの熱源から150mm以上離します。",
+          "exact_model": "TK-MDW22W",
+          "source_url": "https://data.thanko.jp/download/manual/tk-mdw22w_man_web_01.pdf",
+          "locator": "取扱説明書（version2.0）p.7「設置場所について」の本文と図",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         }
       ],

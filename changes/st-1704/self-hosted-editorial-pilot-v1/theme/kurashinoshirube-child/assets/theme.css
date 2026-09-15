@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 01c4666d110a0d4b496bc51f71817ef1d359cbb383aa73cf1c7976d39f6b5035;
+  --raos-theme-runtime-revision-base: 590ba85d36dd21ee0dc157edd6b0b127582ab5dbe5c6c2990e2a97a9a8b72c8d;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4186,6 +4186,11 @@ body .ks-space-diagram span:nth-child(3){border-color:#7a682f}
 body .ks-space-diagram span:nth-child(4){border-color:#5d617f}
 body .ks-editorial-page img{max-width:100%;height:auto}
 body .ks-editorial-page figure{max-width:30rem;margin:2rem 0}
+body .ks-editorial-page .ks-purpose-diagrams{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1rem;margin:1.5rem 0}
+body .ks-editorial-page .ks-purpose-diagrams figure{max-width:none;min-width:0;margin:0;padding:1rem;border:1px solid #d7d3cb;box-sizing:border-box}
+body .ks-editorial-page .ks-purpose-diagrams pre{margin:.75rem 0;padding:0;background:none;white-space:pre-wrap;overflow-wrap:anywhere;font:.9em/1.6 ui-monospace,monospace}
+body .ks-editorial-page .ks-purpose-diagrams dt{margin-top:.5rem;font-weight:700}
+body .ks-editorial-page .ks-purpose-diagrams dd{margin:0}
 body .ks-anchor-alias{display:block;scroll-margin-top:6rem}
 body :where(section,h2,h3,details)[id]{scroll-margin-top:6rem}
 body .ks-editorial-page :focus-visible{outline:3px solid #8b3f2b;outline-offset:4px}

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "07cd22b96ac3099554b142535a5c0f3482e943873eca942171e5378742c0f4e8",
+          "sha256": "d06de1d2d14df0523329488d7ba48233fefc2e4a4e29f3272af5cec6ef62d37e",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1961,8 +1961,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 713880,
-          "sha256": "0fc2b69b5bfe9ae6e8e0da0a7f7f80cbc34fa27b520aef809d1faf18ef53aedc",
+          "bytes": 697071,
+          "sha256": "273ee6b52e50160f777907671ccf44b7f7a79aca5c402e70862a2a30b2d38d0d",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1986,8 +1986,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
-          "bytes": 40790,
-          "sha256": "c108be8d61765ab6aa31034f91a9189c89194385942896c9f7fae7a391ba3b72",
+          "bytes": 43688,
+          "sha256": "191bc48ed48273647c93257c10d8132815e149220134abb4498241aae5281594",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
         },
         {
@@ -2001,8 +2001,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 79796,
-          "sha256": "491c36173240d35144c8e727f4683aaf22816c52b56e62ff31511caa81a4c3ef",
+          "bytes": 81323,
+          "sha256": "1eaf01957241e669cebad50f38ee2e943672974f273ec0a2094d83c0e0b7e1d5",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
@@ -2016,8 +2016,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 33311,
-          "sha256": "a2daed7e1615a281f1210fd9ee24d15acb26ddd4195ea26ae2c31a86715a16a2",
+          "bytes": 33594,
+          "sha256": "6ca0278bde270e9d1418d48a5439c35e961f6848b70954ac578c6c17eaad4efc",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
@@ -2061,8 +2061,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
         },
         {
-          "bytes": 37973,
-          "sha256": "639cab143fc37706d63c27dd9085266a00b15b6171bddbab08e1ec819bbcead3",
+          "bytes": 38895,
+          "sha256": "ffc67bd1b60795553d18ae98e2c5cbc6f7ee72fbfdd8b254a9822741edd163b1",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
         }
       ],
@@ -2263,23 +2263,23 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 5769,
-          "sha256": "789d96588cf50c4a091586baf907a24b8a5f5cf1a4db3e6a6fdb8c1af8306c2a",
+          "bytes": 5896,
+          "sha256": "94eb34c9020841e56a27a18a7647908c6060ecb2300699276505598591ca4a39",
           "uri": "repo://changes/site-improvements-20260913/kitchen-template.html"
         },
         {
-          "bytes": 3827,
-          "sha256": "b7827461a097b1dfb2c8fe509a9b21d6e755f9c7642edec2940790fc50c64fa7",
+          "bytes": 3869,
+          "sha256": "34d7d3c27561abb5a13963f06053e80d433e23c8343afe8ee70d3ad23e039c0e",
           "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
         },
         {
-          "bytes": 33965,
-          "sha256": "e058b27a8ae938c057f6b7e102cedf85e1dda6c3d6b986884b466e86e19ad722",
+          "bytes": 35006,
+          "sha256": "bc7a2a671b7b42a164103c305843fb329107c1c5bb073ec7946b226a6463f30a",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
         },
         {
-          "bytes": 5936,
-          "sha256": "ca34d803736349767ed7d3adc0978d4ad32e8d697b1132bc5354bb716d455d6e",
+          "bytes": 5928,
+          "sha256": "a402d6ee8669874786388054a0562fe6a113f22edc61e3ae2fab1c355fb83c5c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/categories.html"
         },
         {
@@ -2293,13 +2293,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
         },
         {
-          "bytes": 11679,
-          "sha256": "04ae283de8b0c795df3e90891f5f4aa328f7a38e364eb1d865c1020012a577d8",
+          "bytes": 11812,
+          "sha256": "316069d0d56037251039cfd632c7b0f0679e7ac1a00a06ac0867ab80b3b261d3",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparisons.html"
         },
         {
-          "bytes": 7655,
-          "sha256": "52e9f3f13dc0c39b4bf24c05160a010074b0d23978d79159579c1bb93364b4b2",
+          "bytes": 18572,
+          "sha256": "da6593ebe4d4af78dc99f0684e7115d21a858385ebf172160afa79829e39343b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
         },
         {
@@ -2323,18 +2323,18 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/preparedness.html"
         },
         {
-          "bytes": 2793,
-          "sha256": "0501c9c686444d109f3fbd0ede3b0cf252d2b5c0594a3061164214a67d0ffc16",
+          "bytes": 2847,
+          "sha256": "19906fdeab350f8f71cd14f893475d8fe92a9ac7e6a1b00ac860b9126ae77549",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/purposes.html"
         },
         {
-          "bytes": 3982,
-          "sha256": "2c799b741867e143f35c171341aa39bfaeb10cc91062ee3ee48cb698caf4caeb",
+          "bytes": 11260,
+          "sha256": "7d0c2e2231512ccf268ddac28f6cfda8ec52ac39663792e69f30f6cc6504428c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/save-housework.html"
         },
         {
-          "bytes": 3424,
-          "sha256": "eb683bbb5becdee7ddfd23470d6d7ce861450c5494a2c212b3332fd2ad3ac1fa",
+          "bytes": 11960,
+          "sha256": "3e78de7525d57ab0d80ae2b483e64a447fcb54ec1d9890d5e1d73601c012d45d",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
         },
         {
@@ -2343,13 +2343,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
-          "bytes": 20223,
-          "sha256": "8fe5752f03294d3c156ce7c0b9017d236a6deb676dbb0b0a62cfff341f469821",
+          "bytes": 21412,
+          "sha256": "8c229f3c757b3afed225a1c11f35e1358b8208bcd922e80fc99e3ec55df88221",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/updates.html"
         },
         {
-          "bytes": 11744,
-          "sha256": "0bbf9876b0ffd100c9d7ea482f2870be20da8684211c36d65e4c0c06e931950d",
+          "bytes": 17184,
+          "sha256": "9800ea66f09add775718cb6b672a4da89e13f1163183c16073d3ad1499271ab2",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/without-installation.html"
         }
       ],
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "6f2fefd8e7fba98cce4369cc3ac4a109e4e3009362fe2d1b007c2e0296990a46",
+          "sha256": "d93afe28a4f7bb15687877c1e2d0af4667ad4fc52cf9b86b14c0809e44cfdde9",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "d6978954e8d5a6ba5980b3c418998b18b6062bf75f86e70285acdc944702f68e",
+          "sha256": "35d48cde77d8727a39e65dc1cf004b2c63e36a3b443b2be5130f81ba1861f708",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "6f91192f7dc7303284a12e412d65fe763e30aec6424e3fe6a023b18c102e51a5",
+          "sha256": "a5c52da41ea6499f4e0a69fcebf0abb558ddc2d179b37ca9eac5f5d93a9ae89b",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "c2eba465066ac9467c421b33ee385e2d009cf9e21726e571e190a5ada5757dc1",
+          "sha256": "e75da6adeba55181fe1f6c151e0b385266b3ea88d36ef569a3745df929f24473",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
