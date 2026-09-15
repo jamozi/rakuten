@@ -1885,7 +1885,7 @@
       "post_type": "post",
       "title": "標準容量の食洗機比較｜16〜28点の選び方",
       "slug": "standard-dishwasher-comparison",
-      "excerpt": "公称16〜28点の卓上食洗機を、食器量・本体寸法・給水方法で比較。開いた扉と周囲の余白、毎日の手入れ、購入後の費用まで確認します。",
+      "excerpt": "公称16〜28点の卓上食洗機を、食器量・本体寸法・給水方法で比較。開いた扉と周囲の余白、毎日の手間、購入後の費用まで確認します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/standard-dishwasher-comparison.html",
       "taxonomies": {
         "category": [
@@ -2069,8 +2069,8 @@
       "post_id": 553,
       "post_type": "post",
       "slug": "small-carry-on-suitcase-comparison",
-      "title": "小型・機内持ち込みスーツケース比較｜軽さ・開き方・移動で選ぶ",
-      "excerpt": "小型スーツケース12モデルを、軽さ・開き方・移動のしやすさから比較します。便ごとの持ち込み条件と、型番別の仕様・販売先を確認できます。",
+      "title": "小型・機内持ち込みスーツケース比較｜軽さ・開き方・車輪で選ぶ",
+      "excerpt": "小型スーツケース12モデルを、軽さ・開き方・車輪とストッパーから比較します。便ごとの持ち込み条件と、型番別の仕様・販売先を確認できます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html",
       "taxonomies": {
         "category": [
@@ -2109,7 +2109,7 @@
         "page_kind": "broad_comparison",
         "primary_intent": "小型・機内持ち込みスーツケースを広く比べたい",
         "reader": "条件がまだ1つに決まっていない人",
-        "decision_after_reading": "軽さ・開き方・移動のどれを優先するか",
+        "decision_after_reading": "軽さ・開き方・車輪のどれを優先するか",
         "main_cta": {
           "kind": "offer",
           "target": null,

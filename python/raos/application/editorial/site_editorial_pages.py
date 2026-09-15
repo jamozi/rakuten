@@ -611,7 +611,7 @@ def render_pages(
             )
         elif slug == "categories":
             body = (
-                "<p>商品名が決まっていれば代表比較へ。置き場所や条件が不安なら採寸・条件整理へ進めます。</p>"
+                "<p>商品名が決まっていれば代表比較へ。まだ決まっていなければ、各カードの3つめのリンクから、条件で候補を絞る節へ進めます。</p>"
                 + category_cards()
             )
         elif slug == "purposes":

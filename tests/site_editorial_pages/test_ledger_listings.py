@@ -467,26 +467,31 @@ class LedgerListings(unittest.TestCase):
                 )
         self.assertEqual(merged, 2)
 
-    def test_every_category_card_has_the_measurement_route_the_lead_promises(self):
+    def test_every_category_card_third_link_names_its_landing_heading(self):
         html = self.pages["categories"]
-        self.assertIn(
-            "採寸・条件整理へ", html[: html.index('<div class="ks-route-grid">')]
-        )
-        slugs = {r["article_key"]: r["slug"] for r in published_posts(self.registry)}
+        lead = re.search(r'<div id="category-cards"><p>([^<]+)</p>', html)[1]
+        self.assertNotIn("採寸", lead)
+        rows = {r["article_key"]: r for r in published_posts(self.registry)}
         names = {c["name"]: c for c in self.data["categories"].values()}
         found = cards(html)
         self.assertEqual(len(found), len(names))
         for card in found:
             name = re.search(r"<h3>([^<]+)</h3>", card)[1]
             choose = names[name]["choose"]
+            row = rows[choose["article_key"]]
             top = card[: card.index("<details")]
-            with self.subTest(category=name):
+            body = (ROOT / row["body_source"]).read_text()
+            landing = body[body.index(f' id="{choose["anchor"]}"') :]
+            heading = re.sub(
+                r"<[^>]+>", "", re.search(r"<h2[^>]*>(.*?)</h2>", landing, re.S)[1]
+            )
+            with self.subTest(category=name, heading=heading):
                 self.assertEqual(len(re.findall(r"<li>", top)), 3)
                 self.assertIn(
-                    f'href="/{slugs[choose["article_key"]]}/#{choose["anchor"]}">'
-                    "採寸・条件整理</a>",
+                    f'href="/{row["slug"]}/#{choose["anchor"]}">{choose["label"]}</a>',
                     top,
                 )
+                self.assertIn(choose["label"], heading)
 
     def test_small_suitcase_comparison_has_one_table_and_offers_link(self):
         row = next(
@@ -534,6 +539,41 @@ class LedgerListings(unittest.TestCase):
         )
         for word in ("軽さ", "開き", "車輪"):
             self.assertIn(word, text)
+
+    def test_hub_wording_uses_words_from_the_linked_body(self):
+        rows = {r["article_key"]: r for r in published_posts(self.registry)}
+
+        def body_text(key):
+            body = (ROOT / rows[key]["body_source"]).read_text()
+            return re.sub(
+                r"<[^>]+>", "", re.sub(r"<script.*?</script>", "", body, flags=re.S)
+            )
+
+        suitcase = rows["small-carry-on-suitcase-comparison"]
+        dishwasher = rows["standard-dishwasher-comparison"]
+        cleaning = self.data["categories"]["cleaning"]["decides"]
+        hub = suitcase["title"] + suitcase["excerpt"]
+        hub += suitcase["reader_role"]["decision_after_reading"]
+        self.assertNotIn("移動", hub)
+        self.assertNotIn("手入れ", dishwasher["excerpt"])
+        self.assertNotIn("任せる", cleaning)
+        cases = {
+            "small-carry-on-suitcase-comparison": (
+                hub,
+                ("軽さ", "開き方", "車輪", "ストッパー"),
+            ),
+            "standard-dishwasher-comparison": (dishwasher["excerpt"], ("毎日の手間",)),
+            "compact-robot-vacuum-shortlist": (
+                cleaning,
+                ("本体", "台", "置き場所", "自動ゴミ収集", "水拭き"),
+            ),
+        }
+        for key, (wording, words) in cases.items():
+            text = body_text(key)
+            for word in words:
+                with self.subTest(key=key, word=word):
+                    self.assertIn(word, wording)
+                    self.assertIn(word, text)
 
     def test_updates_lists_each_change_log_entry_with_its_own_date(self):
         """Regression: README 内容更新日の規則 (one card per change_log entry)."""

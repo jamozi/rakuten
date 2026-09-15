@@ -224,7 +224,7 @@
       "choose": {
         "article_key": "carry-on-suitcase-under-100-seats",
         "anchor": "ps-choose",
-        "label": "採寸・条件整理"
+        "label": "条件別の結論"
       },
       "checks": "通常時と拡張時の各辺・3辺合計、荷物込みの重さと個数、送料込みの総額、出発前の納期、保証を確認します。",
       "hold": "利用便が未定、拡張しないと荷物が収まらない、走行音や耐久性が最優先の場合は、運航会社の規定や実物・同条件の検証情報を確認してから決めましょう。",
@@ -238,7 +238,7 @@
       "choose": {
         "article_key": "dishwasher-installation-measurement",
         "anchor": "guide-measurement-steps",
-        "label": "採寸・条件整理"
+        "label": "購入前に測る順番"
       },
       "checks": "設置と給排水、洗いたい食器の適合、必要部品、送料込みの購入総額、洗剤と手入れを確認します。「工事不要」はすべての設置確認が不要という意味ではありません。",
       "hold": "置き場所やアースの条件が分からない、普段の食器が入るか不明、給水や手入れを続けにくい場合は、メーカーや適切な施工業者へ確認してください。",
@@ -252,12 +252,12 @@
       "choose": {
         "article_key": "compact-robot-vacuum-shortlist",
         "anchor": "ps-choose",
-        "label": "採寸・条件整理"
+        "label": "条件別の結論"
       },
       "checks": "本体と台の寸法に加え、帰還と部品交換の空間、床材、通信条件、セット構成、消耗品、販売元と保証を確認します。",
       "hold": "毛や砂の取り残し、障害物回避、段差の通過が最優先なら、寸法や公称吸引力だけでは決められません。同機種・似た住環境の比較可能な検証を確認してください。",
       "representative": "compact-robot-vacuum-shortlist",
-      "decides": "本体と台の置き場所と、任せる作業を決める"
+      "decides": "本体と台の置き場所と、自動ゴミ収集・水拭きのどれを使うかを決める"
     },
     "preparedness": {
       "post_id": 138,
@@ -266,7 +266,7 @@
       "choose": {
         "article_key": "portable-power-station-guide",
         "anchor": "ps-decision-steps",
-        "label": "採寸・条件整理"
+        "label": "必要なWhとWを分けて考える"
       },
       "checks": "起動時も含めた機器との対応、端子と必要付属品、使用・保管環境、重量、販売元と保証を確認。本体単体とパネルなどのセットは分けて総額を比べます。",
       "hold": "接続機器との対応や必要な時間を確認できない場合は推測で決めません。住宅全体の電源設計、生命維持・医療機器への給電は本比較の対象外です。",
