@@ -2370,12 +2370,16 @@ def test_navigation_script_keeps_the_home_hero_static() -> None:
     assert re.findall(r'href="([^"]+)"', feature) == [
         "/kitchen/",
         "/kitchen/",
+        "/standard-dishwasher-comparison/",
         "/travel/",
         "/travel/",
+        "/small-carry-on-suitcase-comparison/",
         "/cleaning/",
         "/cleaning/",
+        "/compact-robot-vacuum-shortlist/",
         "/preparedness/",
         "/preparedness/",
+        "/portable-power-station-guide/",
         "/purposes/",
         "/comparisons/#purchase-checks",
     ]

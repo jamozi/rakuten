@@ -36,31 +36,52 @@ class ProjectionTest(unittest.TestCase):
         data, registry, catalog = [
             json.loads((ROOT / p).read_text()) for p in builder.INPUT_PATHS[:3]
         ]
-        changed = copy.deepcopy(data)
-        changed["articles"]["41"]["published_on"] = None
-        changed["articles"]["41"]["updated_on"] = "2026-09-13"
-        changed["articles"]["41"]["change_summary"] = "比較対象の構成を整理しました。"
+        changed = copy.deepcopy(registry)
         slug = "countertop-dishwasher-for-small-households"
+        row = next(r for r in changed["articles"] if r["slug"] == slug)
+        row["listing"].update(
+            published_on=None,
+            published_at_gmt=None,
+            change_log=[
+                {
+                    "date": "2026-09-13",
+                    "kind": "content",
+                    "summary": "比較対象の構成を整理しました。",
+                }
+            ],
+        )
         record = metadata(
-            registry,
-            catalog,
             changed,
+            catalog,
+            data,
             {slug: '<a href="https://example.com" rel="sponsored">販売先</a>'},
         )[slug]
         self.assertTrue(record["has_ads"])
         self.assertIsNone(record["published_on"])
         self.assertEqual(record["updated_on"], "2026-09-13")
+        # Counts are the ledger listing's, which must agree with the catalog scope.
+        self.assertEqual(record["comparison_count"], row["listing"]["main_count"])
         self.assertEqual(
             record["comparison_count"],
             len(
                 next(a for a in catalog["articles"] if a["slug"] == slug)["product_ids"]
             ),
         )
-        pages, _, _ = render_pages(registry, catalog, changed, {})
+        pages, _, _ = render_pages(changed, catalog, data, {})
         self.assertIn("比較対象の構成を整理しました。", pages["updates"])
         self.assertNotIn("内容更新日：", pages["home"])
         self.assertIn("内容更新日：2026-09-13", pages["updates"])
         self.assertNotIn("新しく公開：2026-09-13", pages["updates"])
+        row["listing"]["change_log"].append(
+            {
+                "date": "2026-09-15",
+                "kind": "correction",
+                "summary": "寸法の表記を訂正しました。",
+            }
+        )
+        self.assertEqual(
+            metadata(changed, catalog, data, {})[slug]["updated_on"], "2026-09-15"
+        )
 
     def test_home_category_order(self):
         result = builder.build()
@@ -84,6 +105,11 @@ class ProjectionTest(unittest.TestCase):
             json.loads((ROOT / p).read_text()) for p in builder.INPUT_PATHS[:3]
         ]
         baseline = render_pages(registry, catalog, data, {})
+        listing = next(
+            r
+            for r in registry["articles"]
+            if r["slug"] == "dishwasher-branch-faucet-guide"
+        )["listing"]
         for post_id in (None, 123456):
             with self.subTest(post_id=post_id):
                 changed = copy.deepcopy(registry)
@@ -99,7 +125,17 @@ class ProjectionTest(unittest.TestCase):
                 )
                 self.assertEqual(render_pages(changed, catalog, data, {}), baseline)
                 changed["articles"][-1].update(mode="existing", post_id=123456)
-                with self.assertRaisesRegex(ValueError, "Missing editorial category"):
+                with self.assertRaisesRegex(ValueError, "Missing editorial listing"):
+                    render_pages(changed, catalog, data, {})
+                changed["articles"][-1]["listing"] = dict(
+                    copy.deepcopy(listing), state="draft"
+                )
+                self.assertEqual(render_pages(changed, catalog, data, {}), baseline)
+                changed["articles"][-1]["listing"]["state"] = "withdrawn"
+                self.assertEqual(render_pages(changed, catalog, data, {}), baseline)
+                changed["articles"][-1].update(mode="new", post_id=None)
+                changed["articles"][-1]["listing"]["state"] = "published"
+                with self.assertRaisesRegex(ValueError, "LEDGER_IDENTITY_STALE"):
                     render_pages(changed, catalog, data, {})
 
     def test_home_uses_short_links_without_card_metadata(self):

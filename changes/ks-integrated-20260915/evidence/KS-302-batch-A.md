@@ -30,6 +30,8 @@ make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rak
 | /large-dishwasher-comparison/ | `<h1>` 1 件 (テーマのタイトルのみ) |
 | /cleaning/ | 記事 30 / 85 へのリンク各 1 件 |
 
+注 (2026-09-15 追記、W2B・未公開): 記事 29 の nav は判断 11 (KS-139) で「購入費用と販売先へ」→ `#blk-anker-007-title` (`ps-offers` 先頭の alias) に変える。上の `#blk-anker-015-title` の照合はバッチ A 公開時点のもので、W2B 公開後に再照合する。
+
 REST `modified_gmt` が 2026-09-15T03:36:19Z〜03:37:01Z に更新された 13 件 = 対象と一致 (19, 28, 29, 41, 82, 84, 85, 86, 131, 266, 550, 551, 553)。対象外の 26 件は未変更。
 
 ## 復元

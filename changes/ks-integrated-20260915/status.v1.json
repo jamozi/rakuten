@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T20:13+09:00",
+  "updated_at": "2026-09-16T03:08+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -167,6 +167,95 @@
       "effort_hours": null,
       "cost_yen": null,
       "confirmed_reward_yen": null
+    },
+    "W2-F": {
+      "tasks": [
+        "KS-012",
+        "KS-013",
+        "KS-014",
+        "KS-101",
+        "KS-102",
+        "KS-103",
+        "KS-104",
+        "KS-105",
+        "KS-106"
+      ],
+      "commit": "8f254d84",
+      "candidate_id": "3fd06195c2ffb4a44abd83ded776b0d52af65e4206e100052629ff038fa711ed",
+      "published_at": "2026-09-15T17:55:11Z〜17:56:48Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "categories",
+        "compact-dishwasher-comparison",
+        "compact-robot-vacuum-shortlist",
+        "comparisons",
+        "dishwasher-branch-faucet-guide",
+        "easy-maintenance",
+        "guides",
+        "home",
+        "large-dishwasher-comparison",
+        "prepare-outage",
+        "purposes",
+        "save-housework",
+        "small-carry-on-suitcase-comparison",
+        "small-space",
+        "standard-dishwasher-comparison",
+        "updates"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
+    },
+    "W2-23": {
+      "tasks": [
+        "KS-009",
+        "KS-015",
+        "KS-017",
+        "KS-117",
+        "KS-118",
+        "KS-119",
+        "KS-124",
+        "KS-125",
+        "KS-126",
+        "KS-127",
+        "KS-128",
+        "KS-129",
+        "KS-133",
+        "KS-135",
+        "KS-137",
+        "KS-139"
+      ],
+      "commit": "d0985788",
+      "candidate_id": "0047560da579e1812925a80c71e24c23001d0b36c99d9ce71af8ebea94ee963b",
+      "published_at": "2026-09-15T18:04:47Z〜18:06:23Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "about-ad-policy",
+        "anker-solix-c300-c800-c1000-differences",
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "compact-robot-vacuum-shortlist",
+        "comparison-policy",
+        "countertop-dishwasher-for-small-households",
+        "dishwasher-cleaning-guide",
+        "dishwasher-detergent-guide",
+        "dishwasher-installation-measurement",
+        "dishwasher-running-cost",
+        "dishwasher-water-supply-methods",
+        "front-open-carry-on-suitcase-with-stopper",
+        "portable-power-station-guide",
+        "privacy-policy",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "small-carry-on-suitcase-comparison",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     }
   },
   "items": {
@@ -295,9 +384,10 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
         "evidence/KS-301-302-batch-E.md",
@@ -307,9 +397,10 @@
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
         "evidence/KS-301-302-batch-E.md",
@@ -328,11 +419,12 @@
     },
     "KS-133": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (内部語を解消、本番公開)。BERMAS 画像記述は編集判断",
+      "status": "完了 (BERMAS 60524 の画像の記述を確認範囲に合わせる、本番公開)",
       "note": "newPurchaseSku 3件を解消。検査の \\b 欠陥も修正"
     },
     "KS-110": {
@@ -353,11 +445,12 @@
     },
     "KS-009": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (候補数依存の相対表現を解消。「矛盾」状態を未確認と別に検証する仕組みを追加)。NP-TSP1 の分類と表示方法は後続バッチ"
+      "status": "一部完了 (候補数依存の相対表現を解消。矛盾状態の検証を追加し、NP-TSP1 の開扉奥行を公式資料間の食い違いとして表示、本番公開)"
     },
     "KS-134": {
       "priority": "P1",
@@ -369,35 +462,39 @@
     },
     "KS-137": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "完了 (本番公開 バッチD)"
+      "status": "完了 (Wi-Fi 帯域の出典を取扱説明書に付け替え、帯域は条件の 1 つとする一文、本番公開)"
     },
     "KS-119": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (ラベル不一致を訂正、本番公開)"
+      "status": "完了 (offer_click の送信項目・クエリーの範囲・見出し順、本番公開)"
     },
     "KS-117": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (期限後文言を実装に一致、本番公開)"
+      "status": "完了 (方針文の状態文言を実装に一致、本番公開)"
     },
     "KS-118": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (期限後文言を実装に一致、本番公開)。問い合わせ到達テストはオーナー承認"
+      "status": "一部完了 (広告表示の位置と楽天ウェブサービス段落の範囲、本番公開)。問い合わせ先の到達試験と名義はオーナー"
     },
     "KS-115": {
       "priority": "P1",
@@ -410,11 +507,12 @@
     },
     "KS-129": {
       "priority": "P1",
-      "batch": "D",
+      "batch": "W2-23",
       "evidence": [
+        "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (articleSection null を解消、本番公開)。単価・計算条件の明示は未実施"
+      "status": "一部完了 (266 側で SOLOTA の計算例と単価前提の違いを明記、本番公開)。549 側のリンクは承認済みレイアウトのバッチ"
     },
     "KS-018": {
       "priority": "P1",
@@ -476,9 +574,146 @@
     },
     "KS-015": {
       "priority": "P1",
-      "batch": "W2-1",
-      "status": "一部完了 (比較表の仕様グループにラベルを付ける仕組みを追加。出力は不変)。表への適用は後続バッチ",
-      "evidence": []
+      "batch": "W2-23",
+      "status": "一部完了 (553 の仕様グループのラベルと誤ったスクロール案内の削除、本番公開)。549〜551 は承認済みレイアウトのバッチ",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ]
+    },
+    "KS-012": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (549〜553 の分類・抜粋、本番公開 2026-09-16)",
+      "batch": "W2-F"
+    },
+    "KS-013": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (一覧・件数・新着を台帳から生成、本番公開 2026-09-16)",
+      "batch": "W2-F"
+    },
+    "KS-014": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "一部完了 (39 ページの役割と次の疑問を台帳に登録、本番公開)。planned の導線は後続バッチ (I・J1・J2)",
+      "batch": "W2-F"
+    },
+    "KS-101": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "一部完了 (ホームのリード・カテゴリカード・新着を台帳から生成、本番公開)。旧ガイドの呼び方などは後続",
+      "batch": "W2-F"
+    },
+    "KS-102": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (/categories/ の件数・広告件数の削除・3 本の導線、本番公開)",
+      "batch": "W2-F"
+    },
+    "KS-103": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "一部完了 (/purposes/ を購入前と使い始めてからの 2 群に分け件数を削除、本番公開)。カード文言と到着先の一致は目的ページのバッチ",
+      "batch": "W2-F"
+    },
+    "KS-104": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (分岐水栓ガイド 552 を /guides/ に追加、本番公開)",
+      "batch": "W2-F"
+    },
+    "KS-105": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (比較 14 件と記事ごとの anchor、本番公開)",
+      "batch": "W2-F"
+    },
+    "KS-106": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (/updates/ を内容更新・新規公開の 2 節に分け change_log から生成、本番公開)",
+      "batch": "W2-F"
+    },
+    "KS-125": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (SOLOTA の余白の未確認を解消し、NP-TSP1 の開扉奥行の公式資料間の食い違いを明示、本番公開)",
+      "batch": "W2-23"
+    },
+    "KS-126": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "一部完了 (SS-LH451 から大容量比較・分岐水栓ガイドへ導線、本番公開)。広告表示の位置は方針文で説明",
+      "batch": "W2-23"
+    },
+    "KS-127": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (答え表を量と使えないものに分割、本番公開)",
+      "batch": "W2-23"
+    },
+    "KS-128": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (手入れ手順を毎回→定期→汚れたとき→長期保管の順に、本番公開)",
+      "batch": "W2-23"
+    },
+    "KS-124": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (86 から小型比較 549 へ導線、本番公開)",
+      "batch": "W2-23"
+    },
+    "KS-135": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "完了 (19 から総合比較 553 へ導線、本番公開)",
+      "batch": "W2-23"
+    },
+    "KS-139": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-301-302-W2.md"
+      ],
+      "status": "一部完了 (近道の行き先を目次とそろえた、本番公開)。販売先説明への専用の着地点は未実施",
+      "batch": "W2-23"
+    },
+    "KS-021": {
+      "priority": "P1",
+      "evidence": [
+        "evidence/KS-021.md"
+      ],
+      "status": "一部完了 (提携状態と規約根拠を管理画面・公式ヘルプで確認。試行はバリューコマース / Yahoo!ショッピングのみ可、au PAY マーケットは不可)"
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"

@@ -1,10 +1,10 @@
 {
-  "contract_sha256": "0501092ac0e0e9c61b993023acf14382e615fa1f8d630a4e44a15eddf062e363",
+  "contract_sha256": "4e38d873fb428efd93e359c90978835fe38e481c9c9ad868bac0701809eb6eb6",
   "files": {
     "README.md": "3a7b788b61996d7e01303c2d1e4547d1d7d1f82f3cadec32c9da55c3b982baf6",
     "assets/reader-measurement.css": "11b2d24a67d8c350cbad567e5835f256246a6532a004b400939c8114b22abc8e",
     "assets/reader-measurement.js": "7a55675553ffeb94e1e23ef45bb4fbdd8652f39a99acd05ebf2f8511586260b8",
-    "config/reader-allowlist.v1.json": "0501092ac0e0e9c61b993023acf14382e615fa1f8d630a4e44a15eddf062e363",
+    "config/reader-allowlist.v1.json": "4e38d873fb428efd93e359c90978835fe38e481c9c9ad868bac0701809eb6eb6",
     "includes/class-reader-contract.php": "ec61bad6a0f30d4d9dd8c4d7c596636680d19cf8796e7f52fc453c478874fa31",
     "includes/class-reader-store.php": "2a776136fc5f8c1f3e1eca96df2be3ce7a02fec5161cb3948f48a2e0053465e1",
     "includes/reader-measurement-maintenance.php": "3f6a19c3b1f326545f685e7bd97edb2c1549b1192afee76d2d5ec8474c932beb",
@@ -13,6 +13,6 @@
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
   "policy_slug": "privacy-policy",
-  "revision": "40ade41628cc746eecc44687939e0134d9f04b95e42a0bbb060a98889497bf01",
+  "revision": "5e59b3bf39579ed6dbb399d6e5678a2306bf416f1766928abf2f74e220ce2826",
   "schema": "RAOS_READER_MEASUREMENT_RUNTIME_V1"
 }

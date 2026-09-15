@@ -620,7 +620,7 @@
     "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html": "6ce5b81a1cef0bcddc2bb7d154d7e07ae55faedfbec7a1083caa2f1afc3001dc",
     "python/raos/application/editorial/reader_components.py": "682751ffafd552ec0728fea0866c8c5d63f8dbdd9aa25ac4d9e6975eb61ce92a",
     "python/raos/application/editorial/reader_experience_projection.py": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
-    "python/raos/application/editorial/reader_experience_v1.py": "ff0e3bafaf5b830e5f26c82696ded3bd8bd0c23d2eeb2205c0db6da402a11bd2",
+    "python/raos/application/editorial/reader_experience_v1.py": "742a753f6c578b087ba4f661d3f776688444e26227bd9215b4dafe78c7316ad8",
     "python/raos/application/editorial/reader_html.py": "2a570565d06a687f1b8906d1b99c277f6385c6a313da5cb8985933e0830437f1"
   },
   "target_origin": "https://kurashinoshirube.com",

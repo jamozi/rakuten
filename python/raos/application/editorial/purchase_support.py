@@ -61,12 +61,8 @@ GUIDE_REQUIREMENTS = {
 # Rows of the four-model decision table placed under the first heading.
 GUIDE_TABLE_ROWS = {
     "water": ("給水方式", "1回の給水量と止める合図", "排水ホース"),
-    "detergent": (
-        "使える洗剤の種類",
-        "1回分の目安",
-        "タブレットの条件",
-        "公表試験条件の洗剤量",
-    ),
+    # Everyday amounts, tablets and prohibitions are in the answer table above it.
+    "detergent": ("公表試験条件の洗剤量",),
     "maintenance": ("毎回", "月1回程度", "長く使わないとき"),
     "cost": ("1回の消費電力量", "1回の使用水量", "洗剤の1回分", "計算できる費目"),
 }
@@ -219,6 +215,7 @@ def validate_fact_state(p: Mapping[str, Any], record: Mapping[str, Any]) -> None
             or not https(source.get("source_url"))
             or not text_value(source.get("locator"))
             or not text_value(source.get("checked_at"))
+            or ("label" in source and not text_value(source.get("label")))
             for source in sources
         )
         or len({(source["source_url"], source["locator"]) for source in sources})
@@ -242,6 +239,75 @@ def validate_fact_state(p: Mapping[str, Any], record: Mapping[str, Any]) -> None
         raise ValueError("PURCHASE_CONFLICT_INSTALLATION_KEYS_INVALID")
     if any(installation.get(key) is not None for key in keys):
         raise ValueError("PURCHASE_CONFLICT_VALUE_ASSERTED")
+
+
+def conflict_values(record: Mapping[str, Any]) -> str:
+    """Every official value of a CONFLICT record, each named by its source.
+
+    A source is named by its short label when the record has one, otherwise by
+    its locator. The values are listed side by side; none is chosen.
+    """
+    return "、".join(
+        (
+            tidy(source["label"]).strip() + " " + tidy(source["value"]).strip()
+            if source.get("label")
+            else locator_label(tidy(source["locator"]).strip())
+            + "："
+            + tidy(source["value"]).strip()
+        )
+        for source in record.get("conflict_sources") or []
+    )
+
+
+def conflict_note(record: Mapping[str, Any]) -> str:
+    """Reader sentence for a CONFLICT record (KS-009); empty for every other state."""
+    if record.get("state") != "CONFLICT":
+        return ""
+    # The manuals give no value that settles either conflict, so the reader is sent
+    # to the manufacturer (amended decision 1).
+    return (
+        "公式資料で値が異なります（"
+        + conflict_values(record)
+        + "）。どちらの値かはメーカー（相談窓口）へ確認してください。"
+    )
+
+
+def conflict_source_links(record: Mapping[str, Any]) -> str:
+    """Links to every source of a CONFLICT record (KS-009); empty for other states.
+
+    The caller renders the record's own source link; this adds one link per
+    conflicting source, named by its short label (or locator), so each official
+    value in the note stays reachable.
+    """
+    if record.get("state") != "CONFLICT":
+        return ""
+    return " ／ 値が異なる出典：" + "・".join(
+        '<a href="'
+        + escape(source["source_url"], quote=True)
+        + '">'
+        + escape(
+            tidy(source["label"]).strip()
+            if source.get("label")
+            else locator_label(tidy(source["locator"]).strip())
+        )
+        + "</a>"
+        for source in record.get("conflict_sources") or []
+    )
+
+
+def fact_text(record: Mapping[str, Any]) -> str:
+    """Visible text of a fact or guide fact; a CONFLICT record leads with its note."""
+    return conflict_note(record) + str(record["text"])
+
+
+def installation_conflicts(p: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    """Installation keys left out of the fit check because official sources differ."""
+    found: dict[str, Mapping[str, Any]] = {}
+    for record in [*p.get("facts", []), *p.get("guide_facts", [])]:
+        if record.get("state") == "CONFLICT":
+            for key in record.get("conflict_installation_keys") or []:
+                found.setdefault(key, record)
+    return found
 
 
 def installation_consistency_mismatches(p: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -404,6 +470,10 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
         ):
             raise ValueError("PURCHASE_MEDIA_EXCLUSION_INVALID")
         used.update(main_ids + extra_ids)
+    for article in articles:
+        note = article.get("choose_note")
+        if note is not None and (not isinstance(note, str) or not note.strip()):
+            raise ValueError("PURCHASE_CHOOSE_NOTE_INVALID")
     for article in articles:
         if article["kind"] != "curated_comparison":
             continue
@@ -687,8 +757,15 @@ def condition_product_links(
     return "、".join(links)
 
 
-def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str:
-    """Stage links for one model as a headed list, not a navigation landmark."""
+def route_links(
+    p: Mapping[str, Any], *, current_slug: str | None = None, heading: str = "h4"
+) -> str:
+    """Stage links for one model as a headed list, not a navigation landmark.
+
+    heading is one level below the model heading: h3 under an h2 model section.
+    """
+    if heading not in {"h3", "h4"}:
+        raise ValueError("PURCHASE_ROUTE_HEADING_INVALID")
     links = [
         f'<li><a href="/{slug}/#{p["anchor"]}">{label}</a></li>'
         for label, slug in STAGES.values()
@@ -697,9 +774,9 @@ def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str
     if not links:
         return ""
     return (
-        '<div class="ps-model-routes-block"><h4>ほかのガイドで'
+        f'<div class="ps-model-routes-block"><{heading}>ほかのガイドで'
         + escape(p["name"])
-        + 'を確認</h4><ul class="ps-model-routes">'
+        + f'を確認</{heading}><ul class="ps-model-routes">'
         + "".join(links)
         + "</ul></div>"
     )
@@ -1069,7 +1146,7 @@ def specification_table(
         cells = []
         for p in products:
             f = next((f for f in p["facts"] if f["label"] == label), None)
-            value = f["text"] if f else "未確認"
+            value = fact_text(f) if f else "未確認"
             source = ""
             if with_sources and f:
                 # Moved rows keep their own source and check date next to the value.
@@ -1080,6 +1157,7 @@ def specification_table(
                     + escape(locator_label(f["locator"]))
                     + "</a> ／ 仕様確認 "
                     + escape(jp_date(f["checked_at"]))
+                    + conflict_source_links(f)
                     + "</span>"
                 )
             if f and not with_sources:
@@ -1209,6 +1287,7 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     model, the items the official material does not give, and the page to check.
     """
     values = p.get("installation", {})
+    conflicts = installation_conflicts(p)
     known = [
         escape(INSTALLATION_LABELS[key]) + escape(f"{values[key]:g}") + "mm"
         for key in INSTALLATION_LABELS
@@ -1217,7 +1296,15 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     unknown = [
         escape(INSTALLATION_LABELS[key])
         for key in INSTALLATION_LABELS
-        if not money(values.get(key))
+        if not money(values.get(key)) and key not in conflicts
+    ]
+    differing = [
+        escape(INSTALLATION_LABELS[key])
+        + "（"
+        + escape(conflict_values(conflicts[key]))
+        + "）"
+        for key in INSTALLATION_LABELS
+        if not money(values.get(key)) and key in conflicts
     ]
     note = (
         '<p class="ps-installation-reference">'
@@ -1231,6 +1318,12 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
             "公式資料で数値を確認できていない項目："
             + "、".join(unknown)
             + "。この項目は数値で照合できないため、設置場所の実測と公式資料で個別に確認してください。"
+        )
+    if differing:
+        note += (
+            "公式資料で値が異なる項目："
+            + "、".join(differing)
+            + "。この項目も数値で照合しないため、どちらの値かはメーカー（相談窓口）へ確認してください。"
         )
     return (
         note
@@ -1472,7 +1565,7 @@ def condition_summary(
     )
     facts = {f["label"]: f for f in p["facts"]}
     parts = [
-        re.sub(r"（.*）$", "", label) + "：" + tidy(facts[label]["text"])
+        re.sub(r"（.*）$", "", label) + "：" + tidy(fact_text(facts[label]))
         for label in labels
         if label in facts
     ]
@@ -1616,7 +1709,13 @@ def render_comparison(
     if decision_steps_placement == "before_conditions":
         out.append(decision_steps_html)
     out.append(
-        '<section id="ps-choose"><h2>条件別の結論</h2><div class="ps-condition-grid">'
+        '<section id="ps-choose"><h2>条件別の結論</h2>'
+        + (
+            '<p class="ps-note">' + escape(tidy(article["choose_note"])) + "</p>"
+            if article.get("choose_note")
+            else ""
+        )
+        + '<div class="ps-condition-grid">'
     )
     for c in article["conditions"]:
         chosen = [
@@ -1875,7 +1974,7 @@ def render_comparison(
         out.append(installation_context(article, products))
     shared = common_alternatives(products, catalog)
     out.append(
-        '<section id="ps-offers"><h2>購入費用と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。確認日から24時間、または販売先の期限までを価格の表示期限とし、期限後は価格を表示せず再確認中と示します。</p>'
+        '<section id="ps-offers"><h2>購入費用と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。確認日から24時間、または販売先の期限までを価格の表示期限とし、期限後は価格を表示せず、「販売条件の表示期限切れ」または「価格は販売先で確認」と示します。</p>'
         + (
             '<p class="ps-note">'
             + "".join(escape(tidy(text)) for text in shared)
@@ -1942,6 +2041,7 @@ def render_comparison(
                 + escape(locator_label(f["locator"]))
                 + "</a> ／ 仕様確認 "
                 + escape(jp_date(f["checked_at"]))
+                + conflict_source_links(f)
                 + "</li>"
             )
         out.append("</ul>")
@@ -2047,9 +2147,14 @@ def guide_decision_table(stage: str, products: list[dict[str, Any]]) -> str:
         dims, doors, gaps, weights = [], [], [], []
         for p in products:
             v = p.get("installation", {})
+            conflicts = installation_conflicts(p)
 
             def mm(key: str) -> str:
-                return f"{v[key]:g}mm" if money(v.get(key)) else "未確認"
+                if money(v.get(key)):
+                    return f"{v[key]:g}mm"
+                if key in conflicts:
+                    return "公式資料で値が異なる（" + conflict_values(conflicts[key]) + "）"
+                return "未確認"
 
             dims.append(f"{mm('width_mm')}×{mm('depth_mm')}×{mm('height_mm')}")
             doors.append(f"奥行 {mm('door_depth_mm')}／高さ {mm('door_height_mm')}")
@@ -2096,12 +2201,27 @@ def guide_decision_table(stage: str, products: list[dict[str, Any]]) -> str:
         for label, cells in rows
     )
     label = STAGES[stage][0]
-    return (
-        '<div class="ps-table-scroll" tabindex="0" role="region" aria-label="4機種の'
-        + escape(label, quote=True)
-        + 'の比較"><table class="ps-comparison ps-guide-table"><caption>4機種の'
-        + escape(label)
+    region_label = "4機種の" + label + "の比較"
+    caption = (
+        "4機種の"
+        + label
         + "を決めるための表。値は下の機種別欄の出典から転記した公表条件で、同じ条件での実測比較ではありません。"
+    )
+    if stage == "installation":
+        # Fit-check inputs such as 490−435＝55mm are calculated from published conditions.
+        caption = (
+            "4機種の"
+            + label
+            + "を決めるための表。値は下の機種別欄の出典にある公表条件・公表寸法と、その条件から計算した照合用の値（根拠は機種別欄）で、同じ条件での実測比較ではありません。"
+        )
+    elif stage == "detergent":
+        region_label = "4機種の公表試験条件の洗剤量"
+        caption = "4機種の公表試験条件の洗剤量。使用量の指示ではなく、公表値の試験で使った洗剤量です。値は下の機種別欄の出典から転記した公表条件です。"
+    return (
+        '<div class="ps-table-scroll" tabindex="0" role="region" aria-label="'
+        + escape(region_label, quote=True)
+        + '"><table class="ps-comparison ps-guide-table"><caption>'
+        + escape(caption)
         + '</caption><thead><tr><th scope="col">比較項目</th>'
         + heads
         + "</tr></thead><tbody>"
@@ -2118,7 +2238,7 @@ def shared_guide_facts(
     for p in products:
         for f in p.get("guide_facts", []):
             if f["field"] in GUIDE_REQUIREMENTS[stage]:
-                groups.setdefault((f["field"], tidy(f["text"])), []).append((p, f))
+                groups.setdefault((f["field"], tidy(fact_text(f))), []).append((p, f))
     shared = {key: rows for key, rows in groups.items() if len(rows) >= 2}
     if not shared:
         return "", set()
@@ -2143,6 +2263,7 @@ def shared_guide_facts(
                 + escape(locator_label(f["locator"]))
                 + "</a> ／ 仕様確認 "
                 + escape(jp_date(f["checked_at"]))
+                + conflict_source_links(f)
                 + "</p>"
                 for p, f in rows
             )
@@ -2273,18 +2394,19 @@ def render_guide(
         ]
         shared_here = False
         for f in selected:
-            if (f["field"], tidy(f["text"])) in shared_keys:
+            if (f["field"], tidy(fact_text(f))) in shared_keys:
                 shared_here = True
                 continue
             out.append(
                 "<p>"
-                + escape(tidy(f["text"]))
+                + escape(tidy(fact_text(f)))
                 + '</p><p class="ps-source"><a href="'
                 + escape(f["source_url"], quote=True)
                 + '">'
                 + escape(locator_label(f["locator"]))
                 + "</a> ／ 仕様確認 "
                 + escape(jp_date(f["checked_at"]))
+                + conflict_source_links(f)
                 + "</p>"
             )
         if shared_here:
@@ -2316,17 +2438,25 @@ def render_guide(
                 + "の欄</a>）。</p>"
             )
         if stage == "installation":
+            installation_attrs = {
+                "data-ps-installation": json.dumps(
+                    p.get("installation", {}),
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                )
+            }
+            # Unset references withheld because official sources differ; the fit
+            # check names them as conflicts rather than as missing site data.
+            conflict_keys = [
+                key for key in INSTALLATION_LABELS if key in installation_conflicts(p)
+            ]
+            if conflict_keys:
+                installation_attrs["data-ps-installation-conflicts"] = json.dumps(
+                    conflict_keys, separators=(",", ":")
+                )
             out.append(
                 '<div class="ps-installation"'
-                + attrs(
-                    {
-                        "data-ps-installation": json.dumps(
-                            p.get("installation", {}),
-                            ensure_ascii=False,
-                            separators=(",", ":"),
-                        )
-                    }
-                )
+                + attrs(installation_attrs)
                 + '><div class="ps-installation-controls" hidden></div>'
                 + installation_reference_note(p)
                 + "</div>"
@@ -2338,7 +2468,11 @@ def render_guide(
                 + '">この機種の公表条件を計算フォームで選ぶ</a></p>'
             )
         out.append(
-            route_links(p, current_slug=article["slug"])
+            route_links(
+                p,
+                current_slug=article["slug"],
+                heading="h3" if model_heading == "h2" else "h4",
+            )
             + '<p><a href="/'
             + MAIN_SLUG
             + "/#"
@@ -2518,7 +2652,7 @@ def bind_water_table_facts(
             if len(values) != 1:
                 raise ValueError("PURCHASE_WATER_MODEL_SLOT_INVALID")
             values[0].children = [
-                escape(" ".join(tidy(f["text"]) for f in unknown))
+                escape(" ".join(tidy(fact_text(f)) for f in unknown))
                 if unknown
                 else "この型番の条件は未確認です。"
             ]
@@ -2534,7 +2668,7 @@ def bind_water_table_facts(
                 )
             )
         for fact in facts:
-            details.append(block("<p>" + escape(tidy(fact["text"])) + "</p>"))
+            details.append(block("<p>" + escape(tidy(fact_text(fact))) + "</p>"))
             details.append(
                 block(
                     '<p class="ps-source"><a href="'
@@ -2543,6 +2677,7 @@ def bind_water_table_facts(
                     + escape(locator_label(fact["locator"]))
                     + "</a> ／ 仕様確認 "
                     + escape(jp_date(fact["checked_at"]))
+                    + conflict_source_links(fact)
                     + "</p>"
                 )
             )
@@ -2986,7 +3121,7 @@ def row_fact_cell(product: Mapping[str, Any], labels: list[str]) -> str:
             + '"><span class="ps-row-fact-label">'
             + escape(label)
             + "</span>"
-            + escape(tidy(fact["text"] if fact else "未確認（追加調査中）"))
+            + escape(tidy(fact_text(fact) if fact else "未確認（追加調査中）"))
             + source
             + "</div>"
         )
@@ -3193,7 +3328,8 @@ def integrate_product_rows(
     offer_notes.attrs.pop("id")
     for heading in offer_notes.find(tag="h2"):
         heading.remove()
-    details = Element("details", {"class": "ps-row-price-notes"})
+    # A stable landing point for navigation to the price and seller explanation.
+    details = Element("details", {"class": "ps-row-price-notes", "id": "ps-price-notes"})
     details.append(block("<summary>参考価格と購入費用について</summary>"))
     details.append(offer_notes)
     offer_table = Element("section", {"id": "ps-offers"})

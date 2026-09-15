@@ -9,6 +9,10 @@ from scripts.raos_reader_live_patch import Document
 from scripts.raos_public_acceptance import Page
 
 ROOT = Path(__file__).resolve().parents[2]
+METADATA = (
+    ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
+)
 SOURCE = Path(
     os.environ.get(
         "KS_DIRECTORY_TEST_SOURCE",
@@ -77,16 +81,26 @@ class DirectoryTests(unittest.TestCase):
             for h, _, _ in doc.links
             if h.startswith("/") and h not in hubs and not h.startswith("/#")
         }
-        self.assertEqual(len(article_links), 10)
+        comparisons = {
+            slug: record
+            for slug, record in json.loads(METADATA.read_text())["articles"].items()
+            if record["comparison_count"]
+        }
+        self.assertEqual(article_links, {"/" + slug + "/" for slug in comparisons})
+        self.assertEqual(len(article_links), 14)
         hrefs = {h for h, _, _ in doc.links}
-        for route in article_links:
+        for slug, record in comparisons.items():
+            route = "/" + slug + "/"
             self.assertIn(route, hrefs)
-            self.assertIn(route + "#ps-specs", hrefs)
-            self.assertIn(route + "#ps-offers", hrefs)
+            self.assertIn(route + "#" + record["comparison_anchor"], hrefs)
+            if record["offers_anchor"]:
+                self.assertIn(route + "#" + record["offers_anchor"], hrefs)
+            else:
+                self.assertNotIn(route + "#ps-offers", hrefs)
         self.assertIn("/solota-vs-rakua-mini-plus/", article_links)
         self.assertIn("/anker-solix-c300-c800-c1000-differences/", article_links)
 
-    def test_guides_list_five_guides_and_representative_condition_sections(self):
+    def test_guides_list_ledger_guides_and_representative_condition_sections(self):
         # Guide articles have direct routes; the other three categories lead to
         # selected comparison sections that help readers establish conditions.
         doc = Page(self.text("guides"))
@@ -110,6 +124,7 @@ class DirectoryTests(unittest.TestCase):
                 "/dishwasher-detergent-guide/",
                 "/dishwasher-cleaning-guide/",
                 "/dishwasher-running-cost/",
+                "/dishwasher-branch-faucet-guide/",
             },
         )
         self.assertEqual(
@@ -147,7 +162,7 @@ class DirectoryTests(unittest.TestCase):
             self.assertIn("掲載順・評価は報酬条件と切り離しています", text)
             doc = Document(text)
             cards = [n for n in doc.nodes if n.tag == "article"]
-            self.assertEqual(len(cards), 8 if slug == "guides" else 10)
+            self.assertEqual(len(cards), 9 if slug == "guides" else 14)
             for card in cards:
                 content = text[card.start : card.end]
                 self.assertEqual(
@@ -155,12 +170,7 @@ class DirectoryTests(unittest.TestCase):
                     + content.count("広告リンクなし"),
                     1,
                 )
-                metadata = json.loads(
-                    (
-                        ROOT
-                        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
-                    ).read_text()
-                )["articles"]
+                metadata = json.loads(METADATA.read_text())["articles"]
                 target = urlsplit(Page(content).links[0][0]).path.strip("/")
                 expected = (
                     "PR・広告リンクあり"

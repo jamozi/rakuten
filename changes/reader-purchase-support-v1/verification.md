@@ -115,3 +115,26 @@ renderer（`python/raos/application/editorial/purchase_support.py`）、カタ�
 | item.rakuten.co.jp/panasonic-store/{np-tml1-w,np-tsp1-w} | WebFetch | 価格・在庫の文字列を抽出できず。既存offerは確認日のまま（期限切れ表示） |
 
 未確認のまま残した項目: SOLOTA上・左右余白（数値）、SOLOTA保管前手順、mini color長期不使用手順・洗剤種別・試験条件の洗剤量、SS-MA251試験条件の洗剤量、APPLITE現行販売条件、NP-TSP1再入荷、SOLOTA/NP-TSP1楽天店の現在価格。
+
+## 2026-09-15 の訂正記録（W2B、未公開）
+
+上の「2026-09-12 に確認した外部情報」の installation.html 行と「未確認のまま残した項目」の「SOLOTA上・左右余白（数値）」は、当時の記録として残す。2026-09-15 の再確認で次のとおり改めた（原典の値は `primary_sources.json`、別担当が再取得して一致）。
+
+| 確認先 | 取得 | 結果と対応 |
+|---|---|---|
+| https://panasonic.jp/dish/installation.html 「5．パーソナルタイプ」本文の注記と図 space-35.png | 2026-09-15 19:30〜19:36 JST | 「本体と壁の間に0.5cm以上のあきが必要です」、背面は「1.7cm以上（排水ホース外径分を含む）」。研究課題 PRD-PANASONIC-NP-TMLK1-clearance を RESOLVED にし、262 の reader_unknowns_note から上・左右の余白を未確認とする文を削除（41・86 の研究パネルにも反映）。SOLOTA の余白の本文から「別に」を削り、後方17mmが外径分を含むあきと読めるようにした |
+| np-tml1.pdf 取扱説明書 冊子p.8「設置のしかた 1」（PDF 5ページ目） | 2026-09-15 19:31 JST | 可燃物からの離隔距離 上方5・側方0.5・後方0.5（cm）。installation.above_mm=55 は設置面から49cm以上と本体高435mmからの計算値のまま（本文に計算式あり） |
+| https://panasonic.jp/dish/products/NP-TSP1/spec.html 「本体外形寸法」行 と https://panasonic.jp/dish/comparison.html 同じ行の NP-TSP1 列 | 2026-09-15 19:30 JST | 個別仕様は「奥行341＜上386,下362＞mm」、比較表は「341<433>」で、どちらも「＜＞はドア開閉時の最大寸法」。NP-TSP1 の開扉時の寸法を CONFLICT とし、conflict_sources に 2 件を記録。installation.door_depth_mm は null のまま（数値照合しない） |
+
+### 2026-09-15 夜の見直し（W2B レビュー反映、未公開）
+
+W2B レビューを受けて次のとおり再確認した。上の表の installation.html 行（背面は排水ホース外径分を含む1.7cm以上）は、最終的にもその読み方のままとした。
+
+| 確認先 | 取得 | 結果と対応 |
+|---|---|---|
+| https://panasonic.jp/dish/installation.html 「5．パーソナルタイプ」 | curl 2026-09-15 21:09 JST（図 space-35.png も取得して目視）、再取得 22:43 JST | 図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」（画像内は「本体と壁面の間に 1.7 cm** 以上のあきが必要」「** 排水ホース外径分を含む」）。同じ節の本文注記「＊＊ 設置の際は、排水ホース外径分約1.7 cmが追加となります。」は、本文「幅約31cm、奥行約22.5cmで、ほぼA4ファイルサイズのスペースに置けます＊＊。」の設置面積に付いた注記で、図のあきと食い違う記載ではない。21:09 の確認後にいったん CONFLICT（rear_mm を null）としたが、公開前に取り消した。最終状態：NP-TMLK1 の facts[必要な余白]・guide_facts[clearance] は KNOWN、source_url は installation.html、locator に図の代替テキストを原文どおり記載。本文は「設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。」に続けて取扱説明書p.8の離隔距離を記載。installation.rear_mm は 17（KS-010 の照合で本文に17の数値が要るため、本文に「（17mm）」を併記） |
+| np-tsp1.pdf・np-tsp1_guide.pdf（レビュー担当が同日再取得） | 2026-09-15 | 両冊子に開扉時の寸法（386・362・433）の記載はない。NP-TSP1 の開扉奥行の CONFLICT 表示の確認先を「取扱説明書」から「メーカー（相談窓口）」に改めた |
+| https://kurashinoshirube.com/ ・/compact-robot-vacuum-shortlist/ ・/privacy-policy/ ・/dishwasher-installation-measurement/（匿名 GET） | 2026-09-15 21:0x JST | 4ページとも editorial measurement の client（kurashinoshirube-measurement-v1、/wp-json/raos/v1/events）は読み込まれていない。home 以外の3ページは data-raos-analytics-profile="purchase-support-v1" と raos-purchase-ga4-config を持つ |
+| https://www.siroca.co.jp/im/ss-ma251.pdf | curl 2026-09-15 22:44 JST（sha256 83f9eb60… は既存の控えと一致） | PDF p.8「熱に弱いもの」に「耐熱90℃未満、および耐熱表示のないプラスチック食器（耐熱65℃以上のプラスチック食器は、ソフトコースで洗えます）」、p.25 に「耐熱温度65℃未満のプラスチック製の食器は、洗わないでください。耐熱温度65℃～90℃未満のプラスチック食器はソフトコースで洗ってください。」。264 の答え表・材質表の SS-MA251 を「耐熱65℃未満・表示なしは不可（65℃以上90℃未満はソフトコースで洗う）」に改め、guide_facts[detergent] に「耐熱表示のないプラスチック食器は洗えません。」を追加し、locator に p.8 の原文を記載 |
+| np-tsp1.pdf（取扱説明書） | curl 2026-09-15 22:44 JST（sha256 5a5a8a79… は控えと一致） | PDF p.2「耐熱90℃未満のプラスチック食器（耐熱表示のないものを含む）（「低温ソフト」の場合、耐熱温度60℃以上のものは洗えます）」、冊子p.7「耐熱温度が60℃～90℃未満のものは、「低温ソフト」で洗ってください。」「耐熱温度90℃以上のものは、どの運転内容でも洗えます。」。264 の NP-TSP1 を「耐熱60℃未満・表示なしは不可（60℃以上90℃未満は低温ソフトで洗う）」に改めた |
+| https://store.irobot-jp.com/category/ROOMBA/F115060.html ・ https://store.irobot-jp.com/item/F115260.html | curl 2026-09-15 22:43 JST・22:47 JST | 両ページの仕様表「無線通信」行が「Wi-Fi 2.4GHz帯 / 5GHz帯」（JAN 0885155053633・0885155053688）。85 の5GHzの質問の答えを「2026年9月15日に再確認した公式仕様では、F155260とF115060 / F115260が2.4GHz / 5GHz対応です。」にまとめた |

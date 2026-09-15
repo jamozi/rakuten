@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "17607e2228ac8a3b00647a2b5186a97d13e9ba058d4e7d6f690ae5a30d087162"
+    "24ce3d6d23b07d0913a17678f69a14c9eaa60b5274a73b7e2c535db9446c9876"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -283,6 +283,9 @@ PHP_INTEGRITY_BINDINGS: Final = {
     ),
     "KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_SHA256": (
         "assets/images/article-roomba-mini-k11-comparison.webp"
+    ),
+    "KURASHINOSHIRUBE_TRAVEL_SMALL_IMAGE_SHA256": (
+        "assets/images/travel-small-20260913.webp"
     ),
     "KURASHINOSHIRUBE_BRAND_MARK_SHA256": "assets/images/brand-mark.svg",
     "KURASHINOSHIRUBE_BRAND_LOGO_SHA256": "assets/images/brand-mark-512.png",

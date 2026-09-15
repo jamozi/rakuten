@@ -863,13 +863,17 @@ def test_conflict_fact_state_reaches_markup_and_counts_as_unsettled(catalog):
         if n.attrs.get("data-ps-product") == "PRD-PANASONIC-NP-TSP1"
         and n.attrs.get("data-ps-fact-state") == "CONFLICT"
     ]
-    assert cells and all("公式の個別仕様は開扉奥行" in n.text() for n in cells)
+    assert cells and all("どちらもドア開閉時の最大寸法と表記しています" in n.text() for n in cells)
     guide = fragment(html["dishwasher-water-supply-methods"])
     row = next(n for n in guide.walk() if n.attrs.get("id") == water["anchor"])
     group = next(
         n for n in row.walk() if n.attrs.get("data-ps-guide-field") == "water_supply"
     )
-    assert group.find(tag="dd")[0].text() == supply["text"]
+    # A CONFLICT record leads with the note naming both sources (KS-009, decision 12).
+    assert group.find(tag="dd")[0].text() == (
+        "公式資料で値が異なります（資料A：資料Aの給水条件、資料B：資料Bの給水条件）。"
+        "どちらの値かはメーカー（相談窓口）へ確認してください。" + supply["text"]
+    )
 
 
 @pytest.mark.parametrize(

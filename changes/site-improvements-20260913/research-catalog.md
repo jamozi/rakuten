@@ -6,7 +6,7 @@
 
 - **PG029-03：仕様の意味を確認、特設ページの説明不足は残る。** [Anker日本語A1763説明書](https://lp.ankerjapan.com/hubfs/aoos/manual/A1763Manual.pdf)を公式製品ページのリンクから取得し、印刷p16 FAQ1 / p17仕様（PDF18・19枚目）を読取。ACは単口1500W、複数口合計1550W。USB-C1=15W、C2/C3=各100W、USB-A+C1=合計20W。商品ページ1550Wと[特設仕様表](https://www.ankerjapan.com/pages/solix-c1000-gen2)1500Wは引き続き併記されるため、差を製品優位・適合保証にしない。今回の表は説明書の動作条件を明示した。メーカー回答を受けたという意味ではない。
 - **PG029-02：AC/USB-C/拡張を表へ追加。** [C300日本語説明書](https://lp.ankerjapan.com/hubfs/aoos/manual/A1722Manual.pdf) PDF2〜4・11〜12枚目：C1=15W、C2/C3=140W、C2のみ入出力、USB-A+C1合計20W、全出力360W/AC300W、C2とソーラー・車載入力の同時利用不可。[C800 Plus説明書](https://lp.ankerjapan.com/hubfs/aoos/manual/A1754Manual.pdf) PDF8枚目：100W/30WのUSB-C。[C1000説明書](https://lp.ankerjapan.com/hubfs/aoos/manual/A1761Manual.pdf) PDF7枚目：100W/30W、ACはインバーター1500W・パススルー1200W。AC口数・拡張は[公式比較表](https://www.ankerjapan.com/products/a1763)を確認。C800 Plus製品ページは説明書のソーラー充電ケーブル同梱記載を誤りと訂正しており、注意点に追加した。
-- **PG082-01：テキスト確認済み／画像はUNVERIFIEDで非掲載。** [BERMAS60524公式](https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1)で全体W34×H45×D20cm、新仕様のUSB廃止・内装変更・ID追加、PCポケットW27×H27×D4cmを再確認。公式写真の存在は転用権・旧60504を含む販売URL画像の同一性の証明ではない。未照合画像を停止し、正しい仕様と公式リンクを残した。
+- **PG082-01：テキスト確認済み／画像はUNVERIFIEDで非掲載。** [BERMAS60524公式](https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1)で全体W34×H45×D20cm、新仕様のUSB廃止・内装変更・ID追加、PCポケットW27×H27×D4cmを再確認。公式写真の存在は転用権・旧60504を含む販売URL画像の同一性の証明ではない。未照合画像を停止し、正しい仕様と公式リンクを残した。〔2026-09-15 追記：この非掲載は置き換え済み。2026-09-13 に60524の販売ページ画像（USBポートなし・背面のトラベルセントリーID）を照合し、recovered-product-images.v1.json の bermas-new（VERIFIED_VISUAL_MODEL_CONFIGURATION）として掲載した。〕
 - **PG019-02：部分確認。** [06316公式](https://store.ace.jp/shop/g/g06316-01/)で拡張部上部の隠しポケットに内外からアクセスできることを確認。メイン収納開閉形式の明記は未確認のため、これを確定的な選定理由にしない。[01471公式](https://store.ace.jp/shop/g/g01471-02)はPC収納33×24×2.5cm、フロントポケット内からメインへアクセスを再確認。拡張は仕様・機能一覧に記載を確認できず、機能なしと断定しない。
 - **PG084-01/02：部分確認。** [05721公式](https://store.ace.jp/shop/g/g05721-04)で前面/中央の2WAY、ふた90/180度、ハンドル下ボタンの横スライドON/OFFを確認。[01551公式](https://store.ace.jp/shop/g/g01551-11/)で手元のストッパーボタンを確認。[60561公式](https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561)で前面から仕切り経由でメインへアクセスを確認。INV50の指定公式URLはweb取得エラーで、検索でも対象の一次情報を補完できず旧確認値をPRESERVED。全4機種のPC収納内寸・停止車輪数/位置・必要床面積を確認できたわけではない。未確認を各セルで示し、外観を生成せずアクセス経路を文字図にした。
 - **PG030-02/PG085-01：軸名は未解決。** [K11+ Pro公式](https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro)の240×180×250mmと、リンクされた[日本語説明書2604-Q](https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900)印刷p27（PDF16枚目）を画像で目視確認。どちらにも幅/奥行/高さの軸名がなく、順番を推定しない。底面積や同縮尺の設置図を確定しない。
@@ -25,7 +25,7 @@
 |PG083-01|7kg/身の回り品1kgという仮定で残り3.9kg/3.3kgを併記|便の最新規定は利用者条件で確認|
 |PG083-02|通常外寸と拡張外寸の表、各辺規定の注記を追加|実機測定・搭乗可否は未確認|
 |PG083-03|取得障害を読者向け販売状況から外し、旧アンカー注記を維持|広告最終到達Q07は未実施|
-|PG082-01|公式新仕様を再確認し未照合画像停止|販売店画像の同一性・転用範囲未確認|
+|PG082-01|公式新仕様を再確認し未照合画像停止（2026-09-15 追記：同日後段に bermas-new で照合・掲載へ置き換え済み）|販売店画像の同一性・転用範囲未確認|
 |PG082-02/03|結論→主要表、拡張対象外を近くへ。実際の編集履歴追加|生成画面はrootで確認|
 |PG084-01/02|4候補のアクセス経路図・操作の確認済み差を追加|PC内寸・止まる車輪・実機開閉余白の一部未確認|
 |PG084-03|主要表と短い商品別理由へ移行|未照合画像の再掲載はしない。画面確認はroot|

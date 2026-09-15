@@ -77,9 +77,10 @@ class HubContracts(unittest.TestCase):
                     continue
                 checked += 1
                 self.assertEqual("ks-pr-badge" in html, records[match[1]]["has_ads"])
+                record = records[match[1]]
                 self.assertIn(
-                    "主比較" + str(records[match[1]]["comparison_count"]) + "製品"
-                    if records[match[1]]["comparison_count"]
+                    record["main_label"] + str(record["comparison_count"]) + "製品"
+                    if record["comparison_count"]
                     else "ガイド記事",
                     html,
                 )
@@ -101,24 +102,26 @@ class HubContracts(unittest.TestCase):
                 if n.tag == "a" and (n.attrs.get("href") or "").startswith("#"):
                     self.assertIn(n.attrs["href"][1:], doc.ids)
 
-    def test_guides_distinguish_five_tasks_from_three_category_procedures(self):
+    def test_guides_distinguish_ledger_tasks_from_three_category_procedures(self):
         doc = self.pages["guides"]
+        guides = [
+            r
+            for r in self.rows
+            if r["post_type"] == "post"
+            and (r.get("listing") or {}).get("state") == "published"
+            and r["listing"]["role"] == "guide"
+        ]
+        self.assertEqual(len(guides), 6)
         cards = [doc.text[n.start : n.end] for n in doc.nodes if n.tag == "article"]
-        self.assertEqual(len(cards), 8)
+        self.assertEqual(len(cards), len(guides) + 3)
         links = [
             re.search(r'<h3><a href="([^"]+)">([^<]+)</a>', c).groups() for c in cards
         ]
-        self.assertEqual(sum("#" not in h for h, _ in links), 5)
+        self.assertEqual(sum("#" not in h for h, _ in links), len(guides))
         self.assertEqual(sum("#" in h for h, _ in links), 3)
         self.assertEqual(
-            [t for _, t in links[:5]],
-            [
-                "置き場所を測る",
-                "給水作業を比べる",
-                "専用洗剤と量を確かめる",
-                "型番別の清掃を確かめる",
-                "1回・月額を試算する",
-            ],
+            [t for _, t in links[: len(guides)]],
+            [r["listing"]["task_label"] for r in guides],
         )
         for href, _ in links:
             url = urlsplit(href)
@@ -129,7 +132,7 @@ class HubContracts(unittest.TestCase):
                     Document((ROOT / target["body_source"]).read_text()).ids,
                 )
         self.assertIn("ガイド記事：", doc.text)
-        self.assertIn("比較記事の選び方：", doc.text)
+        self.assertIn("比較記事内の説明：", doc.text)
 
     def test_comparison_index_has_each_comparison_once_and_both_destinations(self):
         doc = self.pages["comparisons"]
@@ -141,10 +144,20 @@ class HubContracts(unittest.TestCase):
         self.assertEqual(len(headings), len(expected))
         for slug, a in META["articles"].items():
             if a["comparison_count"]:
+                body = Document(
+                    (ROOT / self.routes["/" + slug + "/"]["body_source"]).read_text()
+                )
                 self.assertIn(
                     'href="/' + slug + "/#" + a["comparison_anchor"] + '"', doc.text
                 )
-                self.assertIn('href="/' + slug + '/#ps-offers"', doc.text)
+                self.assertIn(a["comparison_anchor"], body.ids)
+                if a["offers_anchor"]:
+                    self.assertIn(
+                        'href="/' + slug + "/#" + a["offers_anchor"] + '"', doc.text
+                    )
+                    self.assertIn(a["offers_anchor"], body.ids)
+                else:
+                    self.assertNotIn('href="/' + slug + '/#ps-offers"', doc.text)
 
     def test_purposes_describe_different_questions_without_forced_first_read(self):
         doc = self.pages["purposes"]
@@ -152,7 +165,10 @@ class HubContracts(unittest.TestCase):
         self.assertEqual(len(cards), 6)
         for card in cards:
             self.assertIn("？", card)
-            self.assertRegex(card, r"関連 [1-9]記事")
+        self.assertNotRegex(doc.text, r"関連 ?[0-9]+記事")
+        for ident, heading in (("purpose-before", "購入前に"), ("purpose-in-use", "使い始めてからの手間で選ぶ")):
+            node = doc.ids[ident]
+            self.assertIn("<h2>" + heading + "</h2>", doc.text[node.start : node.end])
         self.assertIn("順番に全ページを読む必要はありません", doc.text)
         for slug in (
             "small-space",
@@ -165,16 +181,25 @@ class HubContracts(unittest.TestCase):
             self.assertIn('href="/' + slug + '/"', doc.text)
             self.assertGreater(len(re.sub("<[^>]+>", "", self.pages[slug].text)), 300)
 
-    def test_updates_cover_all_articles_using_substantive_change_records(self):
+    def test_updates_separate_new_articles_from_substantive_change_records(self):
         doc = self.pages["updates"]
-        cards = [doc.text[n.start : n.end] for n in doc.nodes if n.tag == "article"]
-        self.assertEqual(len(cards), 15)
-        dates = []
-        for card in cards:
-            slug = re.search(r'<h3><a href="/([^/]+)/', card)[1]
-            record = META["articles"][slug]
-            self.assertIn(record["change_summary"], card)
-            self.assertIn("内容更新日：" + record["updated_on"], card)
-            self.assertIn("公開日：" + record["published_on"], doc.text)
-            dates.append(record["updated_on"])
+        records = META["articles"]
+        node = doc.ids["new-articles"]
+        new = doc.text[node.start : node.end]
+        slugs = re.findall(r'<h3><a href="/([^/]+)/', new)
+        self.assertEqual(sorted(slugs), sorted(records))
+        dates = [records[s]["published_on"] for s in slugs]
         self.assertEqual(dates, sorted(dates, reverse=True))
+        for slug in slugs:
+            self.assertIn("公開日：" + records[slug]["published_on"], new)
+        node = doc.ids["updated-content"]
+        changed = doc.text[node.start : node.end]
+        entries = [e for r in records.values() for e in r["change_log"]]
+        self.assertEqual(len(re.findall(r"<h3><a ", changed)), len(entries))
+        for entry in entries:
+            reason = ("訂正：" if entry["kind"] == "correction" else "") + entry["summary"]
+            self.assertIn(reason, changed)
+            self.assertIn("内容更新日：" + entry["date"], changed)
+        self.assertNotIn("訂正日", doc.text)
+        found = re.findall(r"内容更新日：(\d{4}-\d{2}-\d{2})", changed)
+        self.assertEqual(found, sorted(found, reverse=True))

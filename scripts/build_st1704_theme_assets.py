@@ -221,7 +221,11 @@ ASSETS: Final = (
         video_filter="scale=900:675:flags=lanczos",
         created_on="2026-09-13",
         generation_intent="ANONYMOUS_CATEGORY_TRAVEL",
-        allowed_uses=("CATEGORY_EDITORIAL_ILLUSTRATION",),
+        allowed_uses=(
+            "CATEGORY_EDITORIAL_ILLUSTRATION",
+            "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
+            "SOCIAL_PREVIEW",
+        ),
     ),
     AssetSpec(
         source=ROOT
@@ -366,6 +370,7 @@ ASSETS: Final = (
         allowed_uses=(
             "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
             "ARTICLE_EDITORIAL_ILLUSTRATION",
+            "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
         ),
     ),
     AssetSpec(
@@ -383,6 +388,7 @@ ASSETS: Final = (
         allowed_uses=(
             "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
             "ARTICLE_EDITORIAL_ILLUSTRATION",
+            "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
         ),
     ),
     AssetSpec(
@@ -400,6 +406,7 @@ ASSETS: Final = (
         allowed_uses=(
             "CATEGORY_CAPACITY_EDITORIAL_ILLUSTRATION",
             "ARTICLE_EDITORIAL_ILLUSTRATION",
+            "HOMEPAGE_RECENT_ARTICLE_THUMBNAIL",
         ),
     ),
     AssetSpec(

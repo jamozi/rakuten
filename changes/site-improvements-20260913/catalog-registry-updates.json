@@ -25,7 +25,8 @@
       "baseline_source"
     ],
     "updated_on": "2026-09-13",
-    "update_summary": "通常時と拡張時を区別し、60524新仕様を公式で再確認。未照合画像を非掲載。"
+    "update_summary": "通常時と拡張時を区別し、60524新仕様を公式で再確認。未照合画像を非掲載。",
+    "superseded_note": "2026-09-15 追記：未照合画像を非掲載とした記載は置き換え済み。2026-09-13 に60524の販売ページ画像（USBポートなし・背面のトラベルセントリーID）を照合し、recovered-product-images.v1.json の bermas-new（VERIFIED_VISUAL_MODEL_CONFIGURATION）として掲載した。"
   },
   {
     "post_id": 84,

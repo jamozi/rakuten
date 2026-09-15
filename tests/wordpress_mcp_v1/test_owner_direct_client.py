@@ -757,3 +757,208 @@ def test_content_hash_uses_server_utf8_json_without_changing_candidate_encoding(
                                         separators=(",", ":")).encode()).hexdigest()
     assert direct.content_after_sha256(document, 15) == expected
     assert b"\\u30db" in direct.encoded(document)
+
+
+FULL_POST_TAXONOMIES = {"category": [5], "post_format": [], "post_tag": []}
+OWNER_DIRECT_CREATED_TARGETS = (
+    ("compact-dishwasher-comparison", 549),
+    ("standard-dishwasher-comparison", 550),
+    ("large-dishwasher-comparison", 551),
+    ("dishwasher-branch-faucet-guide", 552),
+    ("small-carry-on-suitcase-comparison", 553),
+)
+
+
+def committed_registry(tmp_path, rows):
+    import subprocess
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=tmp_path, capture_output=True, check=True)
+
+    git("init", "-b", "main")
+    git("config", "user.name", "Test")
+    git("config", "user.email", "test@example.invalid")
+    (tmp_path / "README.md").write_text("seed")
+    git("add", "README.md")
+    git("commit", "-m", "seed")
+    for row in rows:
+        source = tmp_path / row["body_source"]
+        source.parent.mkdir(parents=True, exist_ok=True)
+        source.write_text("reviewed " + row["article_key"] + " body")
+    direct.save(
+        tmp_path / direct.REGISTRY,
+        {
+            "schema": "RAOSOwnerDirectArticlesV1",
+            "profile": direct.PROFILE,
+            "articles": rows,
+        },
+    )
+
+
+def owner_direct_status(targets):
+    return {
+        "schema": "RAOSOwnerDirectStatusV1",
+        "profile": direct.PROFILE,
+        "enabled": True,
+        "allow_new_posts": True,
+        "profile_sha256": "a" * 64,
+        "theme": {"tree_sha256": "b" * 64},
+        "targets": targets,
+    }
+
+
+# Fail-before-fix: a partial taxonomy map was frozen, then applied, and only
+# failed as READBACK_MISMATCH because document() returns every taxonomy.
+@pytest.mark.parametrize(
+    "row_taxonomies",
+    [
+        {"category": [5]},
+        {"category": [5], "post_format": []},
+        {**FULL_POST_TAXONOMIES, "product_tag": []},
+        {},
+        [],
+    ],
+    ids=["category-only", "missing-post-tag", "extra-key", "empty-map", "php-empty"],
+)
+def test_prepare_refuses_taxonomies_whose_keys_differ_from_baseline(
+    tmp_path, row_taxonomies
+):
+    row = {
+        "article_key": "compact-dishwasher-comparison",
+        "mode": "existing",
+        "post_id": 549,
+        "post_type": "post",
+        "title": "Compact",
+        "slug": "compact-dishwasher-comparison",
+        "taxonomies": row_taxonomies,
+        "body_source": "changes/wordpress-direct-publish-v1/articles/"
+        "compact-dishwasher-comparison.html",
+    }
+    committed_registry(tmp_path, [row])
+    target = {key: row[key] for key in ("article_key", "post_id", "post_type", "slug")}
+    calls = []
+
+    def call(command, body):
+        calls.append((command, body))
+        if command == "status":
+            return owner_direct_status([target])
+        if command == "document":
+            return {
+                "id": 549,
+                "excerpt": "",
+                "taxonomies": {"category": [1], "post_format": [], "post_tag": []},
+                "media_ids": [],
+            }
+        pytest.fail("write command reached: " + command)
+
+    with pytest.raises(
+        direct.DirectFailure, match="^RAOS_WORDPRESS_DIRECT_TAXONOMIES_SHAPE_MISMATCH$"
+    ):
+        direct.prepare(tmp_path, [row["article_key"]], call=call)
+    assert calls == [("status", {}), ("document", {"id": 549})]
+    assert not (tmp_path / direct.PRIVATE).exists()
+
+
+# Regression (already passes): complete post maps and the PHP empty page map []
+# keep freezing, and the row values (not the baseline term IDs) are proposed.
+@pytest.mark.parametrize(
+    ("post_type", "row_taxonomies", "baseline_taxonomies"),
+    [
+        (
+            "post",
+            FULL_POST_TAXONOMIES,
+            {"category": [1], "post_format": [], "post_tag": []},
+        ),
+        ("page", [], []),
+    ],
+    ids=["post-complete", "page-empty"],
+)
+def test_prepare_accepts_taxonomies_with_the_baseline_key_set(
+    tmp_path, post_type, row_taxonomies, baseline_taxonomies
+):
+    row = {
+        "article_key": "reviewed",
+        "mode": "existing",
+        "post_id": 12,
+        "post_type": post_type,
+        "title": "Reviewed",
+        "slug": "reviewed",
+        "taxonomies": row_taxonomies,
+        "body_source": "changes/wordpress-direct-publish-v1/articles/reviewed.html",
+    }
+    committed_registry(tmp_path, [row])
+    target = {key: row[key] for key in ("article_key", "post_id", "post_type", "slug")}
+    baseline = {"id": 12, "excerpt": "", "taxonomies": baseline_taxonomies,
+                "media_ids": []}
+
+    def call(command, body):
+        return owner_direct_status([target]) if command == "status" else baseline
+
+    candidate, _ = direct.prepare(tmp_path, ["reviewed"], call=call)
+    assert candidate["publication_ready"] is True
+    assert candidate["articles"][0]["document"]["taxonomies"] == row_taxonomies
+
+
+# Regression (already passes): switching the five publisher-created posts from
+# mode new to existing matches the status target shape (article_key, int
+# post_id, post_type, slug) only when value and JSON type are identical.
+@pytest.mark.parametrize(
+    "target_post_id",
+    ["same-int", "float", "string", "bool-like"],
+)
+def test_prepare_existing_created_targets_compare_identity_by_type(
+    tmp_path, target_post_id
+):
+    rows = [
+        {
+            "article_key": key,
+            "mode": "existing",
+            "post_id": post_id,
+            "post_type": "post",
+            "title": key,
+            "slug": key,
+            "taxonomies": FULL_POST_TAXONOMIES,
+            "body_source": f"changes/wordpress-direct-publish-v1/articles/{key}.html",
+        }
+        for key, post_id in OWNER_DIRECT_CREATED_TARGETS
+    ]
+    targets = [
+        {key: row[key] for key in ("article_key", "post_id", "post_type", "slug")}
+        for row in rows
+    ]
+    if target_post_id == "float":
+        targets[0]["post_id"] = 549.0
+    elif target_post_id == "string":
+        targets[0]["post_id"] = "549"
+    elif target_post_id == "bool-like":
+        rows[0]["post_id"] = 1
+        targets[0]["post_id"] = True
+    committed_registry(tmp_path, rows)
+    calls = []
+
+    def call(command, body):
+        calls.append((command, body))
+        if command == "status":
+            return owner_direct_status(targets)
+        return {"id": body["id"], "excerpt": "", "media_ids": [],
+                "taxonomies": {"category": [1], "post_format": [], "post_tag": []}}
+
+    candidate, _ = direct.prepare(
+        tmp_path, [key for key, _ in OWNER_DIRECT_CREATED_TARGETS], call=call
+    )
+    documents = [body["id"] for command, body in calls if command == "document"]
+    first = candidate["articles"][0]
+    if target_post_id == "same-int":
+        assert documents == [549, 550, 551, 552, 553]
+        assert candidate["publication_ready"] is True
+        assert "baseline_unavailable_reason" not in first
+        assert [a["post_id"] for a in candidate["articles"]] == [
+            549, 550, 551, 552, 553
+        ]
+    else:
+        assert documents == [550, 551, 552, 553]
+        assert candidate["publication_ready"] is False
+        assert first["baseline"] is None
+        assert first["baseline_unavailable_reason"] == (
+            "TARGET_IDENTITY_MISMATCH:post_id"
+        )

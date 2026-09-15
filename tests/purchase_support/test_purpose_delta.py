@@ -296,11 +296,23 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
         assert text.startswith(
             p["exact_model"] + "の照合基準（公表値・条件を満たす計算値）："
         )
+        conflicts = ps.installation_conflicts(p)
         missing = [
             label
             for key, label in ps.INSTALLATION_LABELS.items()
-            if not ps.money(p["installation"].get(key))
+            if not ps.money(p["installation"].get(key)) and key not in conflicts
         ]
+        # KS-009: a key whose official sources differ is named with both values,
+        # not as an unconfirmed value.
+        for key, record in conflicts.items():
+            assert (
+                "公式資料で値が異なる項目："
+                + ps.INSTALLATION_LABELS[key]
+                + "（"
+                + ps.conflict_values(record)
+                + "）"
+            ) in text
+            assert "確認できていない項目：" + ps.INSTALLATION_LABELS[key] not in text
         if missing:
             assert "公式資料で数値を確認できていない項目：" + "、".join(missing) in text
             assert "利用者の未入力" not in text
