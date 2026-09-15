@@ -159,6 +159,8 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         )
     elif case == "G":
         text = (root / "README.md").read_text()
+        # Markdown labels and Japanese colons do not change a stated limitation.
+        plain = text.translate(str.maketrans("", "", "*_`：:"))
         check("source_command", lambda: "python notes.py notes.txt" in text)
         check("timeouts", lambda: "45" in text and "180" in text)
         check(
@@ -171,12 +173,14 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         check(
             "no_network",
             lambda: any(
-                v in text
+                v in plain
                 for v in (
                     "オフライン",
                     "ネットワーク不要",
                     "ネットワークは不要",
                     "ネットワーク通信は不要",
+                    "通信不要",
+                    "通信は不要",
                     "通信しません",
                     "通信しない",
                     "接続は不要",
@@ -186,11 +190,13 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         check(
             "no_publication",
             lambda: any(
-                v in text
+                v in plain
                 for v in (
                     "公開できません",
                     "公開機能はありません",
-                    "公開には対応",
+                    "公開には対応していません",
+                    "公開は対応していません",
+                    "公開対応していません",
                     "公開機能には対応していません",
                     "公開しません",
                     "公開機能なし",

@@ -380,6 +380,7 @@ def test_common_code_grader_checks_zero_empty_and_unchanged_input(tmp_path):
     [
         "読み取り専用。オフライン。公開できません。",
         "読み取り専用。ネットワーク通信は不要です。公開機能には対応していません。",
+        "読み取り専用。**通信**：不要です。**公開**：対応していません。",
     ],
 )
 def test_common_document_grader_rejects_repository_policy_leaks(tmp_path, limits):
@@ -399,7 +400,7 @@ def test_common_document_grader_rejects_repository_policy_leaks(tmp_path, limits
     with (tmp_path / "README.md").open("a") as stream:
         stream.write("RAOSのmake fastも実行します。")
     assert grade()["no_raos_leak"] is False
-    (tmp_path / "README.md").write_text("通信が必要です。公開できます。")
+    (tmp_path / "README.md").write_text("通信が必要です。公開には対応しています。")
     result = grade()
     assert result["no_network"] is False
     assert result["no_publication"] is False
