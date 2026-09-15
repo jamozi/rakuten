@@ -638,7 +638,7 @@ def finish_batch(journal, action, call):
     return result
 
 
-def finish_publication(root, directory, candidate, journal, call):
+def finish_publication(root, directory, candidate, journal, call, binding=None):
     journal["readback"] = readback(candidate, journal, call)
     if (
         journal.get("batch")
@@ -653,6 +653,8 @@ def finish_publication(root, directory, candidate, journal, call):
     journal.pop("pending_operation", None)
     journal.pop("result_code", None)
     save(directory / "journal.json", journal)
+    if binding is not None:
+        binding.after_readback(root, directory, candidate, journal, call)
     print(
         json.dumps(
             {
@@ -680,7 +682,42 @@ def verify_preview(candidate, directory, report):
         fail("PREVIEW_STALE")
 
 
-def publish(root, directory, candidate_id, call=invoke):
+def price_overlay_binding(candidate, run=None, purge=None):
+    """None for every candidate prepared without --price-overlay-run/--price-overlay-purge."""
+    if run is None and purge is None and "price_overlay" not in candidate:
+        return None
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.resolve_binding(sys.modules[__name__], candidate, run, purge)
+
+
+def preview_candidate(candidate):
+    if "price_overlay" not in candidate:
+        return candidate
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.preview_view(candidate)
+
+
+def prepare_price_overlay(root, keys, theme=False, call=invoke, *, run=None, purge=None,
+                          affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
+    """prepare with exactly one of --price-overlay-run / --price-overlay-purge."""
+    if bool(run) == bool(purge):
+        fail("PRICE_OVERLAY_FLAGS_EXCLUSIVE")
+    if not theme:
+        fail("PRICE_OVERLAY_THEME_REQUIRED")
+    if affiliate_plan is not None or affiliate_config is not None or affiliate_fetch:
+        fail("PRICE_OVERLAY_AFFILIATE_UNSUPPORTED")
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    module = sys.modules[__name__]
+    if run:
+        return price_overlay.prepare_publish(module, root, keys, run, call)
+    return price_overlay.prepare_purge(module, root, keys, purge, call)
+
+
+def publish(root, directory, candidate_id, call=invoke, *, price_overlay_run=None,
+            price_overlay_purge=None):
     safe_ancestors(directory)
     descriptor = os.open(
         directory / "operation.lock", os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o600
@@ -691,7 +728,8 @@ def publish(root, directory, candidate_id, call=invoke):
         except BlockingIOError:
             fail("OPERATION_BUSY")
         try:
-            return _publish(root, directory, candidate_id, call)
+            return _publish(root, directory, candidate_id, call,
+                            price_overlay_run, price_overlay_purge)
         except (
             DirectFailure,
             operator.OperatorFailure,
@@ -808,8 +846,12 @@ def affiliate_bounded_call(candidate, invoke_call):
     return call
 
 
-def _publish(root, directory, candidate_id, call):
+def _publish(root, directory, candidate_id, call, price_overlay_run=None,
+             price_overlay_purge=None):
     candidate = load_candidate(directory, candidate_id)
+    binding = price_overlay_binding(candidate, price_overlay_run, price_overlay_purge)
+    if binding is not None:
+        binding.precheck(root, candidate)
     path = directory / "journal.json"
     journal = (
         read_json(path)
@@ -832,7 +874,7 @@ def _publish(root, directory, candidate_id, call):
     if not set(journal.get("proposals", {})).issubset(identities):
         fail("JOURNAL_MISMATCH")
     if journal["publication_status"] in {"APPLIED", "PUBLISHED_AND_READBACK_VERIFIED"}:
-        return finish_publication(root, directory, candidate, journal, call)
+        return finish_publication(root, directory, candidate, journal, call, binding)
     call = affiliate_bounded_call(candidate, call)
     preview = read_json(directory / "preview.json")
     if (
@@ -841,7 +883,7 @@ def _publish(root, directory, candidate_id, call):
         or preview.get("source_sha256") != candidate["source_sha256"]
     ):
         fail("PREVIEW_REQUIRED")
-    verify_preview(candidate, directory, preview)
+    verify_preview(preview_candidate(candidate), directory, preview)
     validate_sources(root, candidate)
     if not candidate["publication_ready"]:
         fail("BASELINE_UNAVAILABLE_REPREPARE")
@@ -858,6 +900,9 @@ def _publish(root, directory, candidate_id, call):
         != candidate["baseline_theme_tree_sha256"]
     ):
         fail("THEME_CONFLICT")
+    if binding is not None:
+        # Gate, injection re-derivation and the one-publish approval record precede writes.
+        binding.before_writes(root, directory, candidate, journal)
     # Persist deterministic keys before any write, including first draft creation.
     save(path, journal)
     for article in candidate["articles"]:
@@ -974,7 +1019,7 @@ def _publish(root, directory, candidate_id, call):
         journal["apply_receipt"] = receipt
         journal["publication_status"] = "APPLIED"
     save(path, journal)
-    return finish_publication(root, directory, candidate, journal, call)
+    return finish_publication(root, directory, candidate, journal, call, binding)
 
 
 def parser():
@@ -988,9 +1033,14 @@ def parser():
     create.add_argument("--affiliate-plan", type=Path)
     create.add_argument("--affiliate-config", type=Path)
     create.add_argument("--affiliate-fetch", action="store_true")
+    create.add_argument("--price-overlay-run")
+    create.add_argument("--price-overlay-purge")
     for name in ("preview", "publish", "status", "sync"):
         command = commands.add_parser(name)
         command.add_argument("--candidate", required=name != "status")
+        if name == "publish":
+            command.add_argument("--price-overlay-run")
+            command.add_argument("--price-overlay-purge")
     return result
 
 
@@ -1014,6 +1064,24 @@ def execute_cli(args):
             result = import_existing(ROOT)
         elif args.command == "status" and args.candidate is None:
             result = invoke("status", {})
+        elif args.command == "prepare" and (
+            args.price_overlay_run or args.price_overlay_purge
+        ):
+            candidate, directory = prepare_price_overlay(
+                ROOT, [x for x in args.articles.split(",") if x], args.theme,
+                run=args.price_overlay_run, purge=args.price_overlay_purge,
+                affiliate_plan=args.affiliate_plan,
+                affiliate_config=args.affiliate_config,
+                affiliate_fetch=args.affiliate_fetch,
+            )
+            result = {
+                "candidate_id": candidate["candidate_id"],
+                "candidate_directory": str(directory),
+                "publication_ready": candidate["publication_ready"],
+                "price_overlay": {
+                    key: candidate["price_overlay"][key] for key in ("mode", "run_id")
+                },
+            }
         elif args.command == "prepare":
             candidate, directory = prepare(
                 ROOT, [x for x in args.articles.split(",") if x], args.theme,
@@ -1035,10 +1103,14 @@ def execute_cli(args):
                     prepare_candidate_preview,
                 )
 
-                result = prepare_candidate_preview(candidate, directory)
+                result = prepare_candidate_preview(preview_candidate(candidate), directory)
                 save(directory / "preview.json", result)
             elif args.command == "publish":
-                journal = publish(ROOT, directory, args.candidate)
+                journal = publish(
+                    ROOT, directory, args.candidate,
+                    price_overlay_run=args.price_overlay_run,
+                    price_overlay_purge=args.price_overlay_purge,
+                )
                 result = {
                     key: journal[key]
                     for key in ("candidate_id", "publication_status", "git_sync")

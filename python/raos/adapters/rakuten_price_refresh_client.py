@@ -14,7 +14,7 @@ from datetime import datetime
 import http.client
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import ssl
 import stat
@@ -27,18 +27,25 @@ from raos.domain.editorial.rakuten_price_refresh import (
     API_HOST,
     CREDENTIAL_PROFILE,
     CREDENTIAL_RELATIVE,
+    MAX_CACHE_AGE,
     MAX_RESPONSE_BYTES,
     MIN_REQUEST_INTERVAL_SECONDS,
     OBSERVATION_SCHEMA,
     PRIVATE_ROOT_RELATIVE,
+    PURGED_SCHEMA,
+    RUN_ID_PATTERN,
     UTC,
+    RefreshError,
     contextual_leaks,
     fail,
     iso,
     leak_needles,
+    parse_time,
     request_path,
     require_run_id,
     sha256_hex,
+    validate_approval,
+    validate_overlay,
 )
 
 USER_AGENT: Final = "RAOS-KS020-price-refresh/1"
@@ -47,6 +54,8 @@ MAX_CREDENTIAL_BYTES: Final = 4096
 MAX_PRIVATE_JSON_BYTES: Final = 8_000_000
 PRIVATE_DIRECTORY_MODE: Final = 0o700
 PRIVATE_FILE_MODE: Final = 0o600
+# scripts/raos_wordpress_direct_publish.py PRIVATE: candidate directories named by candidate_id.
+OWNER_DIRECT_CANDIDATE_RELATIVE: Final = ".secrets/wordpress-mcp/owner-direct-v1"
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -388,6 +397,90 @@ class PrivateStore:
             p.name for p in self.root.iterdir() if p.is_dir() and not p.is_symlink()
         )
 
+    def owner_direct_candidates_containing(self, needles: Sequence[str]) -> list[str]:
+        """Candidate ids whose candidate.json or journal.json carries any needle (raw or JSON-escaped)."""
+        base = self.owner_checkout / OWNER_DIRECT_CANDIDATE_RELATIVE
+        if base.is_symlink():
+            fail("PRIVATE_PATH_UNSAFE")
+        if not base.is_dir() or not needles:
+            return []
+        variants = {n.encode("utf-8") for n in needles} | {
+            json.dumps(n)[1:-1].encode("ascii") for n in needles
+        }
+        found = []
+        for directory in sorted(base.iterdir()):
+            if directory.is_symlink() or not directory.is_dir():
+                continue
+            for name in ("candidate.json", "journal.json"):
+                path = directory / name
+                if path.is_file() and not path.is_symlink():
+                    payload = path.read_bytes()
+                    if any(v in payload for v in variants):
+                        found.append(directory.name)
+                        break
+        return found
+
+    def delete_owner_direct_candidate(self, candidate_id: object) -> bool:
+        """Delete one publisher candidate directory (injected bodies, runtime, theme, journal)."""
+        if not isinstance(candidate_id, str) or len(candidate_id) != 64:
+            return False
+        if any(c not in "0123456789abcdef" for c in candidate_id):
+            return False
+        base = self.owner_checkout / OWNER_DIRECT_CANDIDATE_RELATIVE
+        current = self.owner_checkout
+        for part in PurePosixPath(OWNER_DIRECT_CANDIDATE_RELATIVE).parts:
+            current = current / part
+            if current.is_symlink():
+                fail("PRIVATE_PATH_UNSAFE")
+        directory = base / candidate_id
+        if directory.is_symlink():
+            fail("PRIVATE_PATH_UNSAFE")
+        if not directory.exists():
+            return False
+        shutil.rmtree(directory)
+        return True
+
+
+def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
+    """PURGED / EMPTY / DATED (with the earliest expiry) / UNDATED (records unreadable or invalid)."""
+    directory = store.run_directory(run_id)
+    has_raw = (directory / "raw").exists()
+    overlay_path, approval_path = (
+        directory / "overlay.v1.json",
+        directory / "approval.v1.json",
+    )
+    try:
+        overlay = store.read_json(overlay_path) if overlay_path.exists() else None
+        approval = store.read_json(approval_path) if approval_path.exists() else None
+        if isinstance(overlay, dict) and overlay.get("schema") == PURGED_SCHEMA:
+            return ("UNDATED", None) if has_raw else ("PURGED", None)
+        if overlay is not None:
+            validate_overlay(overlay)
+            return "DATED", parse_time(overlay["cache_expires_at"])
+        if approval is not None:
+            # No overlay yet: every observation is later than approval, so this expiry is earlier.
+            return "DATED", parse_time(
+                validate_approval(approval, run_id)["approved_at"]
+            ) + MAX_CACHE_AGE
+    except RefreshError, OSError, ValueError, KeyError, TypeError:
+        return "UNDATED", None
+    return ("UNDATED", None) if has_raw else ("EMPTY", None)
+
+
+def expired_unpurged_runs(
+    store: PrivateStore, now: datetime, *, exclude: str | None = None
+) -> list[str]:
+    stale = []
+    for run_id in store.run_ids():
+        if run_id == exclude or RUN_ID_PATTERN.fullmatch(run_id) is None:
+            continue
+        status, expires = run_status(store, run_id)
+        if status == "UNDATED" or (
+            status == "DATED" and expires is not None and now >= expires
+        ):
+            stale.append(run_id)
+    return stale
+
 
 # ---------------------------------------------------------------------------
 # Tracked-file leak scan
@@ -479,4 +572,48 @@ def scan_repository_for_overlay(
             for hit in _grep_paths(repository, exact, "history", runner, chunk):
                 revision, _separator, path = hit.partition(":")
                 findings.add(f"OVERLAY_EXACT_VALUE:history:{revision[:12]}:{path}")
+    return sorted(findings)
+
+
+def scan_revision_for_overlay(
+    repository: Path,
+    revision: str,
+    overlay: Mapping[str, Any],
+    approval: Mapping[str, Any] | None = None,
+    *,
+    runner: GitRunner = subprocess.run,
+) -> list[str]:
+    """Scan one commit (the publisher checkpoint) with exact and contextual needles."""
+    if (
+        len(revision) != 40
+        or any(c not in "0123456789abcdef" for c in revision)
+        or _git(
+            repository, "cat-file", "-e", f"{revision}^{{commit}}", runner=runner
+        ).returncode
+        != 0
+    ):
+        fail("REVISION_INVALID")
+    short = revision[:12]
+    findings: set[str] = set()
+    for hit in _grep_paths(
+        repository, leak_needles(overlay, approval), "history", runner, [revision]
+    ):
+        findings.add(f"OVERLAY_EXACT_VALUE:revision:{short}:{hit.partition(':')[2]}")
+    offers = sorted(
+        {
+            str(e["offer_id"])
+            for e in overlay.get("entries", [])
+            if isinstance(e, Mapping) and e.get("price_yen") is not None
+        }
+    )
+    if offers:
+        for hit in _grep_paths(repository, offers, "history", runner, [revision]):
+            path = hit.partition(":")[2]
+            shown = _git(repository, "show", f"{revision}:{path}", runner=runner)
+            if shown.returncode != 0:
+                continue
+            for code in contextual_leaks(
+                shown.stdout.decode("utf-8", "replace"), overlay
+            ):
+                findings.add(f"{code}:revision:{short}:{path}")
     return sorted(findings)

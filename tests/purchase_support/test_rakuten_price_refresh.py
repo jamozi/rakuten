@@ -1631,3 +1631,85 @@ def test_overlay_entries_must_bind_a_canonical_item_page():
     )
     with pytest.raises(rpr.RefreshError, match="OVERLAY_ENTRY_INVALID"):
         rpr.validate_overlay(overlay)
+
+
+# ---------------------------------------------------------------------------
+# Batch G publisher integration: sold-out CTA, tax-excluded label, purge ids
+# ---------------------------------------------------------------------------
+
+THEME_JS = (
+    ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js"
+)
+
+
+@pytest.mark.parametrize(
+    "observation",
+    [
+        lambda: matched_entry(availability=0),
+        lambda: rpr.classify_observation(entry("synthetic-single"), 404, None, T0),
+        lambda: rpr.classify_observation(
+            entry("synthetic-single"), 200, body_for(), T0
+        ),
+    ],
+    ids=["sold-out", "not-found-404", "not-found-empty"],
+)
+def test_gate_refuses_sold_out_or_missing_pages_that_keep_a_cta(observation):
+    result = observation()
+    assert result["status"] in {"SOLD_OUT", "NOT_FOUND_PENDING"}
+    overlay = overlay_of(result)
+    assert "SOLD_OUT_WITH_CTA" in run_gate(overlay)
+    without_cta = re.sub(r'<p><a class="ps-offer-link".*?</a></p>', "", BODY)
+    found = run_gate(overlay, bodies={"synthetic-comparison": without_cta})
+    assert "SOLD_OUT_WITH_CTA" not in found and "CTA_TARGET_UNVERIFIED" not in found
+    plain_link = BODY.replace('<a class="ps-offer-link"', "<a")
+    assert "SOLD_OUT_WITH_CTA" in run_gate(overlay, bodies={"a": plain_link})
+
+
+def test_gate_accepts_a_tax_excluded_price_only_for_a_theme_that_labels_it():
+    overlay = overlay_of(matched_entry(taxFlag=1))
+    js = THEME_JS.read_text(encoding="utf-8")
+    assert rpr.theme_labels_tax_excluded(js)
+    findings = codes(
+        rpr.gate(
+            overlay,
+            now=T0 + timedelta(hours=1),
+            bodies={"synthetic-comparison": BODY},
+            tracked_leaks=[],
+            approval=approval(),
+            theme_js=js,
+        )
+    )
+    assert findings == set()
+    old = js.replace(rpr.TAX_EXCLUDED_LABEL, "本体税込")
+    assert "TAX_EXCLUDED_PRICE_UNSUPPORTED" in codes(
+        rpr.gate(
+            overlay,
+            now=T0 + timedelta(hours=1),
+            bodies={"synthetic-comparison": BODY},
+            tracked_leaks=[],
+            approval=approval(),
+            theme_js=old,
+        )
+    )
+
+
+def test_purge_publish_candidate_ids_are_leak_needles_until_redacted():
+    overlay = gate_overlay()
+    published = rpr.record_publish(
+        approval(),
+        overlay,
+        candidate_id="d" * 64,
+        article_keys=["a"],
+        injected_body_sha256={"a": "e" * 64},
+        runtime_sha256="f" * 64,
+        now=T0 + timedelta(hours=1),
+    )
+    purged = rpr.record_purge_publish(
+        published, candidate_id="9" * 64, now=T0 + timedelta(hours=2)
+    )
+    purged["purge_publish"]["base_candidate_id"] = "8" * 64
+    assert {"9" * 64, "8" * 64} <= set(rpr.leak_needles(overlay, purged))
+    redacted = json.dumps(rpr.redact_approval(purged))
+    assert "9" * 64 not in redacted and "8" * 64 not in redacted
+    assert rpr.redact_approval(purged)["purge_publish"]["before_expiry"] is True

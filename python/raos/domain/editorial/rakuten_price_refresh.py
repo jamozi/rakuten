@@ -73,6 +73,9 @@ DISCLAIMER_HREF: Final = "/about-ad-policy/#production-about-rakuten-price"
 _PRICE_DATE_PARAGRAPH: Final = re.compile(
     r'<p class="ps-price-date">(?:(?!</p>).)*</p>', re.S
 )
+# The theme runtime labels a tax-excluded price only when it reads data-ps-tax-included
+# and has the tax-excluded label (batch G). Older theme bytes label every price 本体税込.
+TAX_EXCLUDED_LABEL: Final = "本体税別"
 _RAKUTEN_CREDIT: Final = re.compile(
     r'<p class="[^"]*\bps-media-credit\b[^"]*">(?:(?!</p>).)*?'
     r'<a href="https://developers\.rakuten\.com/"[^>]*>Supported by Rakuten Developers</a>',
@@ -1303,9 +1306,20 @@ def record_purge_publish(
     return record
 
 
+# The purge candidate froze the live (injected) documents as its baseline, so its id and
+# the id of the price-free candidate it was derived from hash price-bearing bytes too.
+PURGE_PUBLISH_HASH_KEYS: Final = ("candidate_id", "base_candidate_id")
+
+
 def redact_approval(approval: Mapping[str, Any]) -> dict[str, Any]:
     """Drop injected hashes (price-recoverable by brute force) once values are purged."""
     record = dict(approval)
+    if isinstance(record.get("purge_publish"), Mapping):
+        purge_publish = dict(record["purge_publish"])
+        for key in PURGE_PUBLISH_HASH_KEYS:
+            if key in purge_publish:
+                purge_publish[key] = "PURGED"
+        record["purge_publish"] = purge_publish
     if isinstance(record.get("publish"), Mapping):
         publish = dict(record["publish"])
         publish["injected_body_sha256"] = {
@@ -1378,6 +1392,12 @@ def leak_needles(
         ]:
             if isinstance(value, str) and _SHA256.fullmatch(value):
                 needles.add(value)
+    purge_publish = approval.get("purge_publish") if approval else None
+    if isinstance(purge_publish, Mapping):
+        for key in PURGE_PUBLISH_HASH_KEYS:
+            value = purge_publish.get(key)
+            if isinstance(value, str) and _SHA256.fullmatch(value):
+                needles.add(value)
     return sorted(needles)
 
 
@@ -1416,6 +1436,21 @@ def contextual_leaks(text: str, overlay: Mapping[str, Any]) -> list[str]:
     return sorted(codes)
 
 
+def theme_labels_tax_excluded(theme_js: str | None) -> bool:
+    """True when the purchase-support.js being published distinguishes tax-excluded prices."""
+    return (
+        theme_js is not None
+        and ATTR_TAX_INCLUDED in theme_js
+        and TAX_EXCLUDED_LABEL in theme_js
+    )
+
+
+# Statuses whose values tell the reader not to buy from this page right now.
+NO_CTA_STATUSES: Final = frozenset(
+    {Status.SOLD_OUT.value, Status.NOT_FOUND_PENDING.value}
+)
+
+
 def gate(
     overlay: Mapping[str, Any],
     *,
@@ -1423,7 +1458,13 @@ def gate(
     bodies: Mapping[str, str],
     tracked_leaks: Sequence[str],
     approval: Mapping[str, Any] | None,
+    theme_js: str | None = None,
 ) -> list[GateFinding]:
+    """Refusals before a publish that carries overlay values.
+
+    ``theme_js`` is the purchase-support.js that will serve the injected bodies; a
+    tax-excluded price is refused unless it labels 本体税別.
+    """
     findings: list[GateFinding] = []
     if now.tzinfo is None:
         fail("TIMESTAMP_NAIVE")
@@ -1460,8 +1501,12 @@ def gate(
                 findings.append(GateFinding("OVERLAY_VALUE_EXPIRING", offer_id))
         if entry["price_yen"] is not None and type(entry["tax_included"]) is not bool:
             findings.append(GateFinding("TAX_INCLUDED_MISSING", offer_id))
-        if entry["price_yen"] is not None and entry["tax_included"] is False:
-            # The theme labels every price as tax-included until batch G adds the distinction.
+        if (
+            entry["price_yen"] is not None
+            and entry["tax_included"] is False
+            and not theme_labels_tax_excluded(theme_js)
+        ):
+            # Older theme bytes label every price as tax-included.
             findings.append(GateFinding("TAX_EXCLUDED_PRICE_UNSUPPORTED", offer_id))
         escaped = escape(offer_id, quote=True)
         for key, body in bodies.items():
@@ -1472,6 +1517,12 @@ def gate(
                 findings.append(
                     GateFinding("IDENTITY_MISMATCH_WITH_CTA", f"{key}:{offer_id}")
                 )
+            if entry["status"] in NO_CTA_STATUSES and (
+                ctas or entry["item_url"] in linked_item_urls(body)
+            ):
+                # Injection never removes a CTA, so a sold-out or missing page would
+                # keep a purchase link next to its own state (no UI change in batch G).
+                findings.append(GateFinding("SOLD_OUT_WITH_CTA", f"{key}:{offer_id}"))
             if not carries_values(entry):
                 continue
             targeted = (
@@ -1480,7 +1531,10 @@ def gate(
             )
             if targeted:
                 # Values were observed for the plan's item page; the CTA must still lead there.
-                if not ctas:
+                # A sold-out or missing page must have no CTA at all (SOLD_OUT_WITH_CTA above).
+                if not ctas and entry["status"] in NO_CTA_STATUSES:
+                    pass
+                elif not ctas:
                     findings.append(
                         GateFinding("CTA_TARGET_UNVERIFIED", f"{key}:{offer_id}")
                     )

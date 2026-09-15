@@ -27,15 +27,17 @@ from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
     PrivateStore,
     SystemHttpsTransport,
     Transport,
+    expired_unpurged_runs,
     observation_record,
     read_refresh_credentials,
+    run_status,
     scan_repository_for_overlay,
 )
 from raos.domain.editorial.rakuten_price_refresh import (  # noqa: E402
-    MAX_CACHE_AGE,
     MAX_REQUESTS_PER_RUN,
     OBSERVATION_SCHEMA,
     PURGED_SCHEMA,
+    PURGE_PUBLISH_HASH_KEYS,
     RUN_ID_PATTERN,
     UTC,
     GateFinding,
@@ -47,15 +49,17 @@ from raos.domain.editorial.rakuten_price_refresh import (  # noqa: E402
     fail,
     gate,
     iso,
+    leak_needles,
     new_approval,
     parse_time,
     redact_approval,
     require_run_id,
     sha256_hex,
     validate_approval,
-    validate_overlay,
     validate_plan,
 )
+
+THEME_JS_RELATIVE = "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js"
 
 EXIT_OK = 0
 EXIT_REFUSED = 2
@@ -109,47 +113,6 @@ def _read_optional(store: PrivateStore, path: Path) -> Any:
         return None
 
 
-def _run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
-    """PURGED / EMPTY / DATED (with the earliest expiry) / UNDATED (records unreadable or invalid)."""
-    directory = store.run_directory(run_id)
-    has_raw = (directory / "raw").exists()
-    overlay_path, approval_path = (
-        directory / "overlay.v1.json",
-        directory / "approval.v1.json",
-    )
-    try:
-        overlay = store.read_json(overlay_path) if overlay_path.exists() else None
-        approval = store.read_json(approval_path) if approval_path.exists() else None
-        if isinstance(overlay, dict) and overlay.get("schema") == PURGED_SCHEMA:
-            return ("UNDATED", None) if has_raw else ("PURGED", None)
-        if overlay is not None:
-            validate_overlay(overlay)
-            return "DATED", parse_time(overlay["cache_expires_at"])
-        if approval is not None:
-            # No overlay yet: every observation is later than approval, so this expiry is earlier.
-            return "DATED", parse_time(
-                validate_approval(approval, run_id)["approved_at"]
-            ) + MAX_CACHE_AGE
-    except RefreshError, OSError, ValueError, KeyError, TypeError:
-        return "UNDATED", None
-    return ("UNDATED", None) if has_raw else ("EMPTY", None)
-
-
-def _expired_unpurged_runs(
-    store: PrivateStore, now: datetime, *, exclude: str | None = None
-) -> list[str]:
-    stale = []
-    for run_id in store.run_ids():
-        if run_id == exclude or RUN_ID_PATTERN.fullmatch(run_id) is None:
-            continue
-        status, expires = _run_status(store, run_id)
-        if status == "UNDATED" or (
-            status == "DATED" and expires is not None and now >= expires
-        ):
-            stale.append(run_id)
-    return stale
-
-
 def command_plan(args: argparse.Namespace) -> int:
     if args.output.resolve() == args.catalog.resolve():
         fail("SEPARATE_OUTPUT_REQUIRED")
@@ -190,7 +153,7 @@ def command_fetch(
     directory = store.run_directory(run_id)
     if directory.exists():
         fail("RUN_ALREADY_EXISTS")
-    if _expired_unpurged_runs(store, clock()):
+    if expired_unpurged_runs(store, clock()):
         fail("EXPIRED_RUN_NOT_PURGED")
     credentials = read_refresh_credentials(args.owner_checkout)
     approval = new_approval(run_id, sha256_hex(plan_bytes), clock())
@@ -312,12 +275,21 @@ def command_gate(args: argparse.Namespace, clock: Callable[[], datetime]) -> int
             for leak in scan_repository_for_overlay(repository, overlay, approval)
         )
     now = _now(args.now, clock)
+    theme_js_path = args.repository.resolve() / THEME_JS_RELATIVE
+    theme_js = (
+        theme_js_path.read_text(encoding="utf-8") if theme_js_path.is_file() else None
+    )
     findings = gate(
-        overlay, now=now, bodies=bodies, tracked_leaks=leaks, approval=approval
+        overlay,
+        now=now,
+        bodies=bodies,
+        tracked_leaks=leaks,
+        approval=approval,
+        theme_js=theme_js,
     )
     findings.extend(
         GateFinding("EXPIRED_RUN_NOT_PURGED", r)
-        for r in _expired_unpurged_runs(store, now, exclude=run_id)
+        for r in expired_unpurged_runs(store, now, exclude=run_id)
     )
     findings.sort(key=lambda f: (f.code, f.subject))
     emit(
@@ -340,7 +312,7 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
     )
     report = []
     for run_id in run_ids:
-        status, expires = _run_status(store, run_id)
+        status, expires = run_status(store, run_id)
         if status == "PURGED":
             report.append({"run_id": run_id, "result": "ALREADY_PURGED"})
             continue
@@ -391,6 +363,30 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
             replace=True,
         )
         purge_publish_recorded = False
+        # Publisher candidate directories hold injected bodies, runtime, theme.zip, journals
+        # and baselines frozen from live injected pages: the ids recorded by the publisher,
+        # plus any candidate whose records still carry this run's markers or values.
+        candidate_ids: set[str] = set()
+        if isinstance(approval, dict):
+            for record, keys in (
+                (approval.get("publish"), ("candidate_id",)),
+                (approval.get("purge_publish"), PURGE_PUBLISH_HASH_KEYS),
+            ):
+                if isinstance(record, dict):
+                    candidate_ids.update(
+                        str(record[key]) for key in keys if record.get(key)
+                    )
+        if isinstance(overlay, dict) and overlay.get("run_id") == run_id:
+            try:
+                needles = leak_needles(
+                    overlay, approval if isinstance(approval, dict) else None
+                )
+            except KeyError, TypeError:
+                needles = []
+            candidate_ids.update(store.owner_direct_candidates_containing(needles))
+        candidates_deleted = sum(
+            store.delete_owner_direct_candidate(c) for c in sorted(candidate_ids)
+        )
         if isinstance(approval, dict):
             purge_publish_recorded = approval.get("purge_publish") is not None
             store.write_json(approval_path, redact_approval(approval), replace=True)
@@ -404,6 +400,7 @@ def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> in
                     isinstance(approval, dict) and approval.get("publish")
                 ),
                 "purge_publish_recorded": purge_publish_recorded,
+                "candidate_directories_deleted": candidates_deleted,
                 "approval_unreadable": approval_path.exists()
                 and not isinstance(approval, dict),
             }

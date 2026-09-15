@@ -4,8 +4,10 @@
   - domain: `python/raos/domain/editorial/rakuten_price_refresh.py`（純関数。ファイル・通信・時計・認証値に触れない）
   - adapter: `python/raos/adapters/rakuten_price_refresh_client.py`（唯一の通信、認証ファイルの読み取り、0600 の保存、tracked file の走査）
   - CLI: `scripts/raos_rakuten_price_refresh.py`（`plan` / `fetch` / `apply` / `gate` / `purge-expired`）
-  - テスト: `tests/purchase_support/test_rakuten_price_refresh.py`（fixture はすべて合成値）
-- 現状: publisher（`scripts/raos_wordpress_direct_publish.py`）への組み込みは**未実装**です。別バッチの merge 後に、§6〜§8 のとおり実装します。それまで `fetch` は実行できますが、公開はできません。
+  - publisher 組み込み: `scripts/raos_wordpress_price_overlay.py`（`scripts/raos_wordpress_direct_publish.py` の `prepare` / `publish` に明示の `--price-overlay-run` / `--price-overlay-purge` を足す）
+  - テスト: `tests/purchase_support/test_rakuten_price_refresh.py`、`tests/purchase_support/test_rakuten_price_overlay_publish.py`（fixture はすべて合成値。WordPress は offline の fake）
+- 現状（2026-09-16、バッチ G）: publisher への組み込み（§6〜§8）、candidate ディレクトリの purge、テーマの税別表示、`SOLD_OUT_WITH_CTA` を実装しました。**初回の実値公開の前提条件として §10.1-3（WordPress のリビジョンとページキャッシュの実測）が残っています。**それを満たすまで値を公開しません。
+- フラグを付けない `prepare` / `publish` の挙動は変わりません（同じ fixture で candidate.json、candidate ディレクトリ、WordPress への呼び出しがバイト単位で一致することをテストで確認）。
 
 ## 1. オーナー決定（計画より優先）
 
@@ -121,10 +123,11 @@
   - 形式は `[a-z0-9][a-z0-9-]{7,63}`。
   - 既存の run ディレクトリがあれば `RUN_ALREADY_EXISTS` で拒否します（承認の使い回しを防ぐ）。
 - 公開時: publisher が `record_publish()` で `publish` を 1 回だけ書きます。
-  - 書く内容: candidate_id、article_keys、注入後本文の sha256、runtime sha256、`purge_publish_due_by` = overlay の `cache_expires_at`。
-  - 2 回目は `APPROVAL_PUBLISH_ALREADY_USED`、残りが 2 時間未満なら `OVERLAY_VALUE_EXPIRING` です。
-- purge 公開時: `record_purge_publish()` で `purge_publish` を 1 回だけ書き、期限前に済んだかを `before_expiry` に残します。
-- `purge-expired` は、公開の記録から注入後の hash を消します（`redact_approval()`）。
+  - 書く時点: gate と注入の再導出を通した後、**WordPress への最初の書き込みの直前**（予約）。書き込みが失敗して rollback されても、承認は使用済みです（別の candidate での再公開は新しい承認が要ります）。同じ candidate の再開（resume）は通します。
+  - 書く内容: candidate_id、article_keys、注入後本文の sha256、runtime sha256、`purge_publish_due_by` = overlay の `cache_expires_at`、git の `source_sha256`、`readback_verified_at`（readback と注入後 hash の照合が通った時刻。通るまで null）。
+  - 2 回目は `APPROVAL_PUBLISH_ALREADY_USED`、残りが 2 時間未満なら `OVERLAY_VALUE_EXPIRING` です。publisher は、使用済みの承認を WordPress への最初の呼び出しより前に拒否します。
+- purge 公開時: `record_purge_publish()` で `purge_publish` を 1 回だけ書き、期限前に済んだかを `before_expiry` に残します。publisher は purge 用 candidate の元になった価格なし candidate の id（`base_candidate_id`）も書きます（live の注入後本文を baseline に持つため、価格と同じ扱い）。
+- `purge-expired` は、公開の記録から注入後の hash を消します（`redact_approval()`。`purge_publish.candidate_id` と `base_candidate_id` も `PURGED` にします）。
 
 ## 5. コマンドと応答の判定
 
@@ -204,13 +207,15 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
 - `data-ps-price-state` は変えません。静的 HTML は CURRENT を出さず、閲覧時の時計（theme JS）が `min(valid_until, checked_at + 24h)` で判定します。
 - **読める金額は静的 HTML に書きません。** 金額の文字列は、JS が有効期限内に限り表示します。
 - CTA（`<a class="ps-offer-link">`）とリンク系の属性は変えません。
-- `data-ps-tax-included` の表示分けは、バッチ G の JS 変更が前提です。それまでの JS は `price_yen` を「本体税込」と表示するので、**税別（false）の offer を含む overlay は、G の merge まで公開しません**。
+- `data-ps-tax-included` の表示分け（バッチ G で実装）: theme の `purchase-support.js` は `data-ps-tax-included="false"` の価格を「本体税別：N円（税別のため小計・総額に含めません）」と表示し、「税込」とは書きません。小計・購入総額・予算判定には含めません（状態は `INCOMPLETE`、予算は `UNKNOWN`）。属性が無い既存の手動観測は従来どおり「本体税込」です。
+- gate は、税別の価格を持つ overlay を、**送るテーマの `purchase-support.js` がこの表示分けを持つ場合だけ**通します（`theme_labels_tax_excluded()`。持たなければ `TAX_EXCLUDED_PRICE_UNSUPPORTED`）。
 
 ### 6.2 参考価格 `<p class="ps-reference-price" role="status">`
 
 - overlay に `reference_price` がある offer だけが対象です。次のどちらかの位置に、`data-ps-reference-price="<canonical JSON を HTML エスケープ>"` と `data-ps-overlay-run="<run_id>"` を付けます。
-  1. 明示の目印: `data-ps-reference-offer="<offer_id>"` を持つ placeholder（バッチ G で renderer に追加する推奨形）。
+  1. 明示の目印: `data-ps-reference-offer="<offer_id>"` を持つ placeholder。
   2. 現行の比較行: `価格は販売先で確認</p>` の直後に、`<p><a class="ps-offer-link" … data-raos-offer-id="<offer_id>"` が続く placeholder。
+- バッチ G の判断: renderer に 1 の目印は**追加しません**（静的出力は不変）。2 の隣接形で注入先が一意に決まり、隣接しない placeholder には注入しない（価格なしのまま）ので、目印は必須ではありません。2026-09-16 時点の `wordpress-direct-publish-v1/articles` では、参考価格の placeholder はすべて手動観測の `data-ps-reference-price` を持つか、比較行で CTA に隣接しています。
 - canonical JSON は `json.dumps(sort_keys=True, ensure_ascii=False, separators=(",", ":"))` で、purchase-support の `canonical()` と同じです。
 - JSON は `raos.domain.editorial.purchase_support.reference_price()` と theme JS の `referencePricePresentation()` の検査を通る形です（テストで確認済み）。
 - 既に `data-ps-reference-price`（手動観測）を持つ placeholder には注入しません。
@@ -229,7 +234,8 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
    - 注入した slug の `body_sha256` だけを置き換え、同じ直列化で再出力します。戻り値は `(bytes, sha256)` です。
    - 注入しない記事の `body_sha256` は git の値のままです。20 件の上限で分けて公開する場合も、runtime は全記事分を 1 つにまとめて束縛します（§2.2）。
 3. **PHP 定数**: `rebind_runtime_constant(functions_php, runtime_sha256)` で `const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '<hex>';` をちょうど 1 か所だけ置き換えます。
-4. **テーマの fingerprint**: `build_st1704_self_hosted_theme.py` の `_fingerprint_from_payloads()` は `assets/purchase-support.v1.json` と `functions.php` を入力に含みます。注入後の payload で `KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT` と `KURASHINOSHIRUBE_THEME_RUNTIME_REVISION` を計算し直します（あの生成器が正規化するのはこの 2 定数だけ）。
+4. **テーマの fingerprint**: `build_st1704_self_hosted_theme.py` の `_fingerprint_from_payloads()` は `assets/purchase-support.v1.json` と `functions.php` を入力に含みます。注入後の payload で revision を計算し直し、生成器（`render_theme_stamp_payloads()`）が同じ値を書くテーマ内の場所をすべて置き換えます: `functions.php` の `KURASHINOSHIRUBE_THEME_RUNTIME_REVISION` と `KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT`、`assets/theme.css` と `assets/editorial-v2.css` の revision sentinel、`raos-assets.v1.json` の `theme_runtime_revision` / `theme_source_fingerprint`、`theme-contract.v1.json` の `runtime_evidence.revision` / `source_fingerprint`。
+   - 前提の検査: git 側で、注入する slug の runtime `body_sha256` が価格なし本文と一致し（`RUNTIME_BODY_UNBOUND`）、`PHP_INTEGRITY_BINDINGS` の定数がすべて payload と一致し（`THEME_BINDING_STALE`）、revision が fingerprint と一致すること（`THEME_STAMP_STALE`）。置換後に旧 revision がテーマ内に 1 つでも残れば `THEME_STAMP_INCOMPLETE`。
 5. **パッケージ**: `package_theme(root, paths, commit, payloads)` に、注入後の runtime と functions.php を差し替えた `payloads` を渡します。
    - `theme.zip` と `descriptor.file_manifest_sha256` は candidate ディレクトリにだけ置きます。
    - `sources` / `source_sha256` は git のバイト列のままです。
@@ -240,6 +246,22 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
 7. **git に書かないもの**: 上の 1〜6 の値（価格入りバイト列の hash）はすべて、journal と candidate（.secrets 内）にだけ置きます。`sync_git()` が push するのは checkpoint の commit（価格なしのソース）だけです。
 
 ## 8. 公開と purge の順序
+
+publisher のコマンド（`--owner-checkout` は既存どおり。値を扱うのはフラグを付けたときだけ）:
+
+```
+prepare --articles <keys> --theme --price-overlay-run <run_id>     # checkpoint（価格なし）→ gate → 注入 → §7 → 注入 candidate
+preview --candidate <candidate_id>
+publish --candidate <candidate_id> --price-overlay-run <run_id>    # 再 gate・注入の再導出 → 承認の予約 → 書き込み → readback → 注入後 hash の照合
+prepare --articles <keys> --theme --price-overlay-purge <run_id>   # 同じ記事キー・同じ source_sha256 の価格なし candidate
+preview --candidate <candidate_id>
+publish --candidate <candidate_id> --price-overlay-purge <run_id>  # readback → price_free_violations → record_purge_publish → 注入 candidate の削除
+```
+
+- `--price-overlay-run` と `--price-overlay-purge` は `--theme` 必須、affiliate 系の引数・patch 行とは併用できません（`PRICE_OVERLAY_THEME_REQUIRED` / `PRICE_OVERLAY_AFFILIATE_UNSUPPORTED` / `PRICE_OVERLAY_PATCH_SOURCE_UNSUPPORTED`）。
+- 注入 candidate の publish はフラグが無いと `PRICE_OVERLAY_FLAG_REQUIRED`、価格なし candidate にフラグを付けると `PRICE_OVERLAY_CANDIDATE_UNBOUND`、run や種別が違えば `PRICE_OVERLAY_RUN_MISMATCH` です。
+- 何も注入されない overlay（本文に値を持つ offer が無い）は `PRICE_OVERLAY_NOTHING_INJECTED` で、承認を消費しません。
+- `prepare` / `publish` が出す `candidate_id` は注入後本文の hash なので、証跡（KS-020.md など）に写しません（run_id と結果コードだけ）。
 
 1. `plan` → Before/After 用の差分を確認する（値は .secrets の overlay から読み、画面キャプチャを git に置かない）。
 2. オーナーが `<run_id>` を承認する → `fetch --owner-approved-run <run_id>` → `apply`
@@ -256,7 +278,9 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
    - `--include-unexpired` を付けると、purge 公開の直後に期限を待たず消せます。
    - raw 応答を削除し、overlay を `RAOS_RAKUTEN_PRICE_OVERLAY_PURGED_V1`（offer_id と purged_at だけ）に置き換え、承認記録から注入後の hash（candidate_id、本文、runtime）を消します。
    - overlay や承認記録が壊れていて期限が読めない run は、期限を待たずに消します（保持は安全側に倒す）。
-   - **publisher 組み込みの必須条件**: candidate ディレクトリ（`.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/`）の注入後本文・runtime・theme.zip・manifest、および journal に残る注入後の hash も、同じ期限までに削除または `PURGED` に置き換えます。この CLI はまだそれらを消しません。
+   - candidate ディレクトリ（`.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/`）: 注入後本文・runtime・theme.zip・manifest・journal を持つので、ディレクトリごと削除します。
+     - purge 公開の成功時: publisher が注入 candidate、purge 用の元 candidate（`base_candidate_id`）、preview が凍結した注入テーマの複製（`.secrets/wordpress-direct-preview/theme-<tree>`）を削除します。
+     - `purge-expired`: 承認記録にある candidate（公開・purge 公開・`base_candidate_id`）と、`candidate.json` / `journal.json` にこの run の目印・観測時刻・注入後 hash が残る candidate（値の公開中に別途 prepare した candidate など）を削除します（`candidate_directories_deleted`）。
    - 引数なしの `purge-expired` は、期限を過ぎた全 run を掃除します。
 7. 公開後の確認
    - ブラウザで JS を実行した後の状態を照合します（静的 HTML の `data-ps-price-state` は CURRENT にならない）。
@@ -272,7 +296,8 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
 | `TAX_INCLUDED_MISSING` | `price_yen` があるのに `tax_included` が bool でない |
 | `IDENTITY_MISMATCH_WITH_CTA` | IDENTITY_MISMATCH の offer に、送る本文の `ps-offer-link` CTA、または同じ商品ページへのリンクが残っている |
 | `CTA_TARGET_MISMATCH` / `CTA_TARGET_UNVERIFIED` | 値を持つ offer の CTA が overlay の `item_url` 以外を指す / 本文にその offer の CTA が無く照合できない（plan 作成後のカタログ変更対策） |
-| `TAX_EXCLUDED_PRICE_UNSUPPORTED` | `tax_included=false` の価格。テーマが税別表示を区別できるまで（バッチ G）は公開しない |
+| `SOLD_OUT_WITH_CTA` | `SOLD_OUT` または `NOT_FOUND_PENDING` の offer に、送る本文の `ps-offer-link` CTA、または同じ商品ページへのリンクが残っている（注入は CTA を消さないため。UI は変えない）。CTA が無ければ `CTA_TARGET_UNVERIFIED` にもしない |
+| `TAX_EXCLUDED_PRICE_UNSUPPORTED` | `tax_included=false` の価格で、送るテーマの `purchase-support.js` が税別表示を持たない（CLI の `gate` は `--repository` のテーマ JS を、publisher は checkpoint のテーマ JS を渡す） |
 | `GIT_TRACKED_OVERLAY_VALUE` | tracked file（作業ツリーと index）か、ignore されていない未追跡ファイルに overlay の値がある（下記） |
 | `BODY_NOT_PRICE_FREE` / `BODY_ALREADY_INJECTED` | 送る本文が価格なしでない / 注入済み |
 | `RAKUTEN_CREDIT_MISSING` | 値を注入する本文の `ps-media-credit` 段落に、`https://developers.rakuten.com/` への「Supported by Rakuten Developers」リンクが無い |
@@ -280,6 +305,8 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
 | `EXPIRED_RUN_NOT_PURGED` | 別の run が期限切れのまま purge されていない |
 | `APPROVAL_MISSING` / `APPROVAL_RUN_MISMATCH` / `APPROVAL_PLAN_MISMATCH` / `APPROVAL_PUBLISH_ALREADY_USED` | 承認の 1 組が無い / 一致しない / 公開済み |
 | `BODIES_REQUIRED` | 本文が 1 件も渡されていない |
+
+publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFUSED:<code,...>` として返し、ほかの domain の拒否も `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_<code>` で返します。publisher の gate は、下記の走査に加えて **checkpoint の commit** も `scan_revision_for_overlay()`（完全一致と文脈一致）で走査します。
 
 漏出の走査（`scan_repository_for_overlay()`）は、`--owner-checkout`（publisher が commit する場所）と `--repository` の両方に対して、`git grep --untracked`、`git grep --cached`、およびどの remote にも無い commit（`git rev-list HEAD --not --remotes`、完全一致のみ）で次を探します。
 
@@ -297,22 +324,17 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
 
 ### 10.1 公開前に必要なこと（満たすまで値を公開しない）
 
-1. **publisher 組み込み**: `prepare` / `publish` への組み込み（§6〜§8）は未実装です。それまで `fetch` は実行できますが、公開はできません。
-2. **candidate ディレクトリと journal の purge**
-   - `purge-expired` が消すのは、`.secrets/rakuten-price-refresh/<run_id>/` の raw 応答と overlay、承認記録の注入後 hash だけです。
-   - candidate ディレクトリ（`.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/`）の注入後本文・runtime・theme.zip・manifest と、journal に残る注入後 hash は消しません。
-   - 同じ期限までに削除するか `PURGED` に置き換える処理を、publisher 組み込みで実装します（§8-6）。
-3. **WordPress のリビジョンとページキャッシュ**
+1. ~~**publisher 組み込み**~~ **済（2026-09-16、バッチ G）**: `prepare` / `publish` の `--price-overlay-run` / `--price-overlay-purge`（§8）。checkpoint 後の注入、§7 の再計算（private の candidate だけ）、公開直前の再 gate と注入の再導出、承認の予約、readback と注入後 hash の照合、purge 公開の記録。テスト: `test_rakuten_price_overlay_publish.py`（git の全 ref・index・作業ツリー・checkpoint commit に値が無いこと、hash の整合、readback、purge、期限切れ、承認の再利用、フラグ無しのバイト一致）。
+2. ~~**candidate ディレクトリと journal の purge**~~ **済（2026-09-16）**: §8-5・§8-6 のとおり、purge 公開の成功時と `purge-expired` で candidate ディレクトリ（journal を含む）を削除します。残る限界:
+   - purge 公開をせず `purge-expired` だけを実行しても、WordPress 上の値は消えません（期限前の purge 公開は運用で行う）。
+   - preview のローカル WordPress（docker のデータベース）に取り込まれた注入後本文は消しません。値を含む preview の後にローカル環境を消す手順は、初回の実値公開までに別途決めます。
+   - `purge-expired` の目印検索は `candidate.json` と `journal.json` だけを見ます。candidate ディレクトリ以外（`.secrets` 外のコピーなど）は対象外です。
+   - purge 用 candidate は、公開時と同じ `source_sha256` を要求します（`PURGE_SOURCE_DRIFT`）。公開後に git の本文を変えた場合は、checkpoint の内容に戻してから purge します。
+3. **WordPress のリビジョンとページキャッシュ**（未解決。**初回の実値公開の前提条件**）
    - purge 公開の後も注入本文が残るかは、未実測です。
    - 実測し、残る設定なら同じ期限までに消す手順を先に用意します（§8-7）。
-4. **税別価格の表示（theme JS）**
-   - 現行の JS は `price_yen` を「本体税込」と表示します。
-   - `data-ps-tax-included` の表示分けが入るまで、gate は税別価格を `TAX_EXCLUDED_PRICE_UNSUPPORTED` で拒否します。
-   - JS の表示分けと、renderer の `data-ps-reference-offer` 目印（§6.2）は、どちらも未実装です。
-5. **SOLD_OUT と CTA**
-   - 注入は CTA を消しません。現行の renderer は SOLD_OUT の offer に CTA を出さないので、注入した本文と食い違います。
-   - 「JS が売り切れ表示中の CTA を補助表示にする」か「gate に `SOLD_OUT_WITH_CTA` を足す」かを決めます。
-   - 現状はどちらも未実装で、gate は SOLD_OUT の offer に残る CTA を拒否しません。
+4. ~~**税別価格の表示（theme JS）**~~ **済（2026-09-16）**: §6.1 のとおり、JS は税別価格を「本体税別」と表示し、合計に含めません。gate は送るテーマ JS が表示分けを持つときだけ税別価格を通します。renderer の `data-ps-reference-offer` 目印は不要と判断し、追加していません（§6.2）。
+5. ~~**SOLD_OUT と CTA**~~ **済（2026-09-16）**: gate に `SOLD_OUT_WITH_CTA` を追加しました（`SOLD_OUT` と `NOT_FOUND_PENDING`。UI は変えない）。CTA を残したまま売り切れ・未発見の状態を注入する公開は拒否され、カタログ側で CTA を外してから再度 plan・fetch します。
 6. **`multi_sku=false` の offer の単一 SKU 確認**
    - API に SKU 単位の出力が無いため、§5 の判定は title と価格幅からの推定です。次の 2 つは MATCHED になり、別の色の価格や販売可能情報が付きえます。
      - 同じ価格の色違いを 1 ページで売り、title に色を書かない（または編集上の色だけを書く）商品ページ
@@ -336,7 +358,7 @@ overlay に値を持つ entry（`carries_values()`: price / tax / state / refere
    - `apply` の出力には、`status_counts`（SOLD_OUT などの状態別件数）と `purge_publish_due_by` が含まれます。価格は出しません。
    - 対象の offer が 1 件だと、件数から販売可能情報が分かります。
    - 証跡（KS-020.md など）には、run_id と結果コードだけを写します。
-10. **テストの穴（minor）**: 次の 2 つには専用テストがありません。
+10. **テストの穴（minor、未対応）**: 次の 2 つには専用テストがありません。
     - gate 側の `EXPIRED_RUN_NOT_PURGED`（fetch 側はテスト済み）
     - `.secrets/rakuten-price-refresh` 経路の symlink 拒否
 
