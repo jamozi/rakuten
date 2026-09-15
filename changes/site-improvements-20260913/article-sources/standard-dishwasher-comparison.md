@@ -89,3 +89,8 @@
 - 1366px全体と390pxの寸法図を目視。スマホの機種比較は縦並び。実WordPress描画ではなく単体HTMLとしての確認。
 - 共有WordPress/DBへの書込、共有catalog/registry/generator/theme更新、Git stage/commit/branch操作、production/write/publicationは未実行。
 - 統合ownerでの取り込み、相対画像URLの解決、記事の登録、ローカルWordPressのPC/スマートフォン確認、ユーザーレビューは残る。ユーザーのレビュー完了をこの技術確認で代替しない。
+
+## 2026-09-16 W3 変更（承認済みレイアウト。オーナーのBefore/After確認前、公開は未承認）
+
+- KS-015/017：テーマで非表示だった `p.std-scroll-hint`（#std-daily、#std-more）の2件を削除。大容量の非表示の案内と同じ扱いにそろえた。
+- KS-026：本文末尾の訂正依頼の連絡先1行はレンダラーが付ける。履歴の項目は追加していない。

@@ -14,11 +14,11 @@ const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = 'e058b27a8ae938c057f6b7e102cedf85e1dda6c3d6b986884b466e86e19ad722';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'a69d85f6180af29dddacf583a860eed715ba3a291d991029620e401a8751fd3b';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'a8eb3fe2e2342217bc53650e284d48fce908164ed992b08cacd4ac1c5b0767c3';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'cb0d37be0686d3f0388ab780ba7c73d9be1ce4918f8ab62e9eb63bc2ee5ef270';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '24ce3d6d23b07d0913a17678f69a14c9eaa60b5274a73b7e2c535db9446c9876';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '24ce3d6d23b07d0913a17678f69a14c9eaa60b5274a73b7e2c535db9446c9876';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2053848feba3e82d7cf891048566bc8efd329b34886b1b7573d90d44ddf8c7aa';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2053848feba3e82d7cf891048566bc8efd329b34886b1b7573d90d44ddf8c7aa';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -1641,7 +1641,11 @@ function kurashinoshirube_public_article_identity(int $post_id): ?array
             }
         }
         if (isset(kurashinoshirube_published_reader_guides()[$direct['slug']])) {
-            return array('article_id' => $direct['slug'], 'section' => '家事', 'slug' => $direct['slug']);
+            return array(
+                'article_id' => $direct['slug'],
+                'section' => kurashinoshirube_reader_category_label($direct['slug']) ?? '記事',
+                'slug' => $direct['slug'],
+            );
         }
         return array('article_id' => 'owner-direct-' . $post_id, 'section' => '記事', 'slug' => $direct['slug']);
     }
@@ -5643,6 +5647,7 @@ function kurashinoshirube_emit_json_ld(): void
         $nodes[0]['image'] = array($image);
     }
     $hub_head = null;
+    $is_policy = false;
     if ($context['kind'] === 'fixed_page') {
         $page_id = (int) get_queried_object_id();
         $page_slug = get_post_field('post_name', $page_id, 'raw');
@@ -5667,8 +5672,12 @@ function kurashinoshirube_emit_json_ld(): void
             'name' => $context['title'],
             'url' => $canonical,
         );
+        if ($is_policy) {
+            // Policy bodies have no visible breadcrumb, so the graph does not claim one.
+            unset($nodes[count($nodes) - 1]['breadcrumb']);
+        }
     }
-    if (in_array($context['kind'], array('article', 'fixed_page'), true)) {
+    if (in_array($context['kind'], array('article', 'fixed_page'), true) && ! $is_policy) {
         $breadcrumbs = array(array('@type' => 'ListItem', 'item' => $schema_origin . '/', 'name' => 'ホーム', 'position' => 1));
         $parent = null;
         if ($context['kind'] === 'article') {

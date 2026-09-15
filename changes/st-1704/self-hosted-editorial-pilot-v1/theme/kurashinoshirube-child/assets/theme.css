@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 24ce3d6d23b07d0913a17678f69a14c9eaa60b5274a73b7e2c535db9446c9876;
+  --raos-theme-runtime-revision-base: 2053848feba3e82d7cf891048566bc8efd329b34886b1b7573d90d44ddf8c7aa;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4171,6 +4171,7 @@ body .ks-editorial-page :where(p,ul,ol){max-width:46rem}
 body .ks-editorial-page>section{margin-block:2.5rem}
 body .ks-editorial-page h2{border-top:1px solid #d7d3cb;padding-top:1rem;line-height:1.45}
 body .ks-editorial-page h3{line-height:1.55;font-size:1.15rem}
+body .ks-editorial-page .ks-editorial-card h2{border-top:0;padding-top:0;font-size:1.15rem;line-height:1.55;margin-block:1em}
 body .ks-editorial-page .ks-route-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1.25rem}
 body .ks-editorial-card{min-width:0;border:1px solid #d7d3cb;padding:1.25rem;background:#faf9f6}
 body .ks-card-meta,body .ks-card-kind{font-size:.85rem;color:#5c5953}
@@ -4703,7 +4704,6 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-large-guide .lg-next{line-height:2.5;margin-top:24px}
 @media(max-width:640px){.ks-large-guide{font-size:15px}.ks-large-guide section{margin:36px 0}.ks-large-guide .lg-picks{gap:0 18px}.ks-large-guide .lg-picks h3{font-size:1.15rem}.ks-large-guide .lg-picks p:not(.lg-choice){font-size:.8rem}.ks-large-guide .lg-choice{font-size:.78rem}.ks-large-guide .lg-loading{gap:8px}.ks-large-guide .lg-loading>div{padding:15px 10px}.ks-large-guide .lg-loading strong{font-size:.8rem}.ks-large-guide .lg-loading p{font-size:.72rem}.ks-large-guide .lg-depth{padding:20px 16px}.ks-large-guide .lg-hero img{min-height:0}.ks-large-guide th,.ks-large-guide td{padding:12px 13px}.ks-large-guide .lg-hero{margin:20px 0}.ks-large-guide .lg-lead{font-size:1rem}}
 @media print{.ks-large-guide .lg-table{overflow:visible}.ks-large-guide table{min-width:0}.ks-large-guide details{display:block}.ks-large-guide section{break-inside:auto}.ks-large-guide .lg-hero img{max-height:220px}}
-@media(max-width:640px){.ks-large-guide .lg-table:before{content:"表は左右にスクロールできます";display:block;font-size:.72rem;color:#59685f;margin-bottom:8px}}
 
 /* dishwasher-branch-faucet-guide: 2026-09-13 authored article layout. */
 /* Page-specific proposal only. Integration owner decides the canonical stylesheet. */

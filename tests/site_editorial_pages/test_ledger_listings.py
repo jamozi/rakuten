@@ -495,7 +495,7 @@ class LedgerListings(unittest.TestCase):
         names = {c["name"]: c for c in self.data["categories"].values()}
         merged = 0
         for card in cards(html):
-            name = re.search(r"<h3>([^<]+)</h3>", card)[1]
+            name = re.search(r"<h2>([^<]+)</h2>", card)[1]
             category = names[name]
             top = card[: card.index("<details")]
             main = slugs[category["representative"]]
@@ -518,7 +518,7 @@ class LedgerListings(unittest.TestCase):
         found = cards(html)
         self.assertEqual(len(found), len(names))
         for card in found:
-            name = re.search(r"<h3>([^<]+)</h3>", card)[1]
+            name = re.search(r"<h2>([^<]+)</h2>", card)[1]
             choose = names[name]["choose"]
             row = rows[choose["article_key"]]
             top = card[: card.index("<details")]

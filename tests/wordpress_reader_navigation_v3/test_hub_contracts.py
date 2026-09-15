@@ -41,7 +41,7 @@ class HubContracts(unittest.TestCase):
                 html = doc.text[nav.start : nav.end]
                 self.assertIn('<a href="/">ホーム</a>', html)
                 self.assertIn(
-                    'aria-current="page">' + {'travel': 'スーツケース', 'cleaning': 'ロボット掃除機', 'preparedness': 'ポータブル電源', 'without-installation': '工事なし'}.get(slug, self.routes['/' + slug + '/']['title']),
+                    'aria-current="page">' + {'travel': 'スーツケース', 'cleaning': 'ロボット掃除機', 'preparedness': 'ポータブル電源'}.get(slug, self.routes['/' + slug + '/']['title']),
                     html,
                 )
                 if slug in DATA["categories"]:
@@ -53,10 +53,17 @@ class HubContracts(unittest.TestCase):
                     "comparisons",
                     "updates",
                 ):
-                    self.assertIn('href="/kitchen/"' if slug == "without-installation" else 'href="/purposes/"', html)
+                    # KS-029-b2: the visible parent matches the purpose kind in JSON-LD.
+                    self.assertIn('<a href="/purposes/">悩み・目的から探す</a>', html)
+                    self.assertNotIn('href="/kitchen/"', html)
                 self.assertNotIn(
                     "<h1", doc.text
                 )  # WordPress page template owns the title.
+
+    def test_changed_breadcrumbs_use_the_unified_label(self):
+        doc = self.pages["without-installation"]
+        navs = [n for n in doc.nodes if n.tag == "nav" and "ホーム" in doc.text[n.start : n.end]]
+        self.assertEqual([n.attrs.get("aria-label") for n in navs[:1]], ["パンくずリスト"])
 
     def test_public_policy_explains_actual_advertising_without_release_markers(self):
         for slug, doc in self.pages.items():
@@ -72,7 +79,7 @@ class HubContracts(unittest.TestCase):
         for doc in self.pages.values():
             for card in (n for n in doc.nodes if n.tag == "article" and "ks-editorial-card" in (n.attrs.get("class") or "").split()):
                 html = doc.text[card.start : card.end]
-                match = re.search(r'<h3><a href="/([^/]+)/', html)
+                match = re.search(r'<h[23]><a href="/([^/]+)/', html)
                 if not match or match[1] not in records:
                     continue
                 checked += 1

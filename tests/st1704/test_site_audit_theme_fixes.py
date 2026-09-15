@@ -545,3 +545,152 @@ def test_comparison_row_photo_alt_uses_the_figure_label_not_the_generic_fallback
     decorated = str(rendered_row["decorated"])
     assert 'alt="シロカ 食器洗い乾燥機 SS-M171 の商品画像（楽天市場）"' in decorated
     assert "楽天市場の商品 の商品画像" not in decorated
+
+
+# KS W3 (2026-09-16): structured data sections, policy breadcrumbs and theme CSS.
+
+NAVIGATION_HUBS = json.loads((THEME / "assets/editorial-navigation.v3.json").read_text(encoding="utf-8"))[
+    "reader_navigation"
+]["hubs"]
+
+GUIDE_SECTION_PROGRAM = r"""
+$hubs = json_decode($argv[2], true, 16, JSON_THROW_ON_ERROR);
+class RAOS_Codex_MCP_Owner_Direct {
+    public static function public_article_snapshot($post_id) { return $GLOBALS['raos_direct'][$post_id] ?? null; }
+}
+foreach ($hubs as $index => $hub) {
+    $page = new WP_Post();
+    foreach (array('ID' => 700 + $index, 'post_type' => 'page', 'post_status' => 'publish', 'post_password' => '',
+        'post_name' => $hub['slug'], 'post_title' => $hub['label'], 'post_excerpt' => '', 'post_content' => '') as $key => $value) {
+        $page->$key = $value;
+    }
+    $GLOBALS['pages'][$hub['slug']] = $page;
+}
+$GLOBALS['raos_state']['singular'] = 'post';
+$fields = array('ID' => 264, 'post_type' => 'post', 'post_status' => 'publish', 'post_password' => '',
+    'post_name' => 'dishwasher-detergent-guide', 'post_title' => 'Guide fixture title',
+    'post_excerpt' => 'Guide fixture excerpt', 'post_content' => '<p>Guide fixture</p>');
+$GLOBALS['page'] = new WP_Post();
+foreach ($fields as $key => $value) { $GLOBALS['page']->$key = $value; }
+$GLOBALS['raos_direct'] = array(264 => array('id' => 264, 'post_type' => 'post', 'slug' => $fields['post_name'],
+    'title' => $fields['post_title'], 'excerpt' => $fields['post_excerpt'], 'block_markup' => $fields['post_content']));
+kurashinoshirube_flush_reader_hub_page_cache();
+echo json_encode(array('identity' => kurashinoshirube_public_article_identity(264)),
+    JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+"""
+
+
+def test_reader_guide_article_section_uses_category_hub_label() -> None:
+    """KS-029-a: a published reader guide takes its category hub label, not the legacy 家事."""
+    kitchen = next(hub for hub in NAVIGATION_HUBS if hub["kind"] == "category" and hub["slug"] == "kitchen")
+    actual = run_theme_php(GUIDE_SECTION_PROGRAM, json.dumps(NAVIGATION_HUBS, ensure_ascii=False))
+    assert actual["identity"] == {
+        "article_id": "dishwasher-detergent-guide",
+        "section": kitchen["label"],
+        "slug": "dishwasher-detergent-guide",
+    }
+    assert kitchen["label"] == "キッチン・家事"
+
+
+POLICY_GRAPH_PROGRAM = r"""
+$others = json_decode($argv[2], true, 16, JSON_THROW_ON_ERROR);
+$cases = array();
+foreach (kurashinoshirube_policy_page_head_map() as $slug => $head) {
+    $cases[$slug] = array('ID' => 501, 'post_type' => 'page', 'post_status' => 'publish', 'post_password' => '',
+        'post_name' => $slug, 'post_title' => $head['title'], 'post_excerpt' => $head['description'],
+        'post_content' => '<p>Policy fixture</p>');
+}
+$cases['kitchen'] = $others['kitchen'];
+$cases['kitchen']['ID'] = 501;
+$out = array();
+foreach ($cases as $name => $fields) {
+    kurashinoshirube_flush_reader_hub_page_cache();
+    $GLOBALS['raos_state']['singular'] = 'page';
+    $GLOBALS['pages'] = array();
+    foreach ($others as $slug => $other) {
+        if ($slug === $fields['post_name']) { continue; }
+        $page = new WP_Post();
+        foreach ($other as $key => $value) { $page->$key = $value; }
+        $GLOBALS['pages'][$slug] = $page;
+    }
+    $GLOBALS['page'] = new WP_Post();
+    foreach ($fields as $key => $value) { $GLOBALS['page']->$key = $value; }
+    ob_start(); kurashinoshirube_emit_json_ld(); $out[$name] = ob_get_clean();
+}
+echo json_encode($out, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+"""
+
+
+def _json_ld_nodes(markup: str) -> list[dict[str, object]]:
+    match = re.fullmatch(
+        r'<script id="raos-structured-data" type="application/ld\+json">(.*)</script>\n', markup, re.S
+    )
+    assert match is not None, markup
+    return json.loads(match[1])["@graph"]
+
+
+def test_policy_pages_do_not_emit_breadcrumb_without_visible_nav() -> None:
+    """KS-029-b3: policy bodies have no visible breadcrumb, so JSON-LD must not claim one."""
+    others = {
+        hub["slug"]: {
+            "ID": 600 + index, "post_type": "page", "post_status": "publish", "post_password": "",
+            "post_name": hub["slug"], "post_title": hub["label"], "post_excerpt": hub["description"],
+            "post_content": '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' + hub["slug"] + '"]<!-- /wp:shortcode -->',
+        }
+        for index, hub in enumerate(NAVIGATION_HUBS)
+    }
+    graphs = run_theme_php(POLICY_GRAPH_PROGRAM, json.dumps(others, ensure_ascii=False))
+    policies = ("about-ad-policy", "comparison-policy", "privacy-policy")
+    assert sorted(graphs) == sorted((*policies, "kitchen"))
+    for slug in policies:
+        nodes = _json_ld_nodes(graphs[slug])
+        types = [node["@type"] for node in nodes]
+        assert "BreadcrumbList" not in types, slug
+        page = next(node for node in nodes if node["@type"] in ("AboutPage", "WebPage"))
+        assert page["url"] == f"{ORIGIN}/{slug}/"
+        assert "breadcrumb" not in page, slug
+    hub_nodes = _json_ld_nodes(graphs["kitchen"])
+    hub_page = next(node for node in hub_nodes if node["@type"] == "CollectionPage")
+    assert hub_page["breadcrumb"] == {"@id": f"{ORIGIN}/kitchen/#breadcrumb"}
+    crumbs = next(node for node in hub_nodes if node["@type"] == "BreadcrumbList")
+    assert crumbs["@id"] == f"{ORIGIN}/kitchen/#breadcrumb"
+    assert len(crumbs["itemListElement"]) == 3
+
+
+CSS_SCROLL_CLAIM = re.compile(r"content\s*:\s*(['\"])[^'\"]*(?:スクロール|左右に動かせ)[^'\"]*\1")
+
+
+def test_theme_stylesheets_do_not_generate_scroll_instructions() -> None:
+    """KS-015/017: generated content claimed horizontal scrolling on tables that never scroll."""
+    offenders = {
+        path.name: [match.group(0) for match in CSS_SCROLL_CLAIM.finditer(path.read_text(encoding="utf-8"))]
+        for path in sorted((THEME / "assets").glob("*.css"))
+    }
+    assert offenders.get("theme.css") is not None
+    assert {name: found for name, found in offenders.items() if found} == {}
+    theme_css = (THEME / "assets/theme.css").read_text(encoding="utf-8")
+    assert ".ks-large-guide .lg-table:before" not in theme_css
+    assert ".ks-large-guide .lg-table{overflow-x:auto;" in theme_css
+
+
+def _declarations(css: str, selector: str) -> dict[str, str]:
+    blocks = re.findall(re.escape(selector) + r"\{([^{}]*)\}", css)
+    assert len(blocks) == 1, (selector, blocks)
+    pairs = (item.split(":", 1) for item in blocks[0].split(";") if item.strip())
+    return {name.strip(): value.strip() for name, value in pairs}
+
+
+def test_editorial_card_h2_keeps_the_card_heading_look() -> None:
+    """KS-028-d: hub cards move from h3 to h2 without the section rule line or a larger size."""
+    css = (THEME / "assets/theme.css").read_text(encoding="utf-8")
+    section_h2 = _declarations(css, "body .ks-editorial-page h2")
+    card_h3 = _declarations(css, "body .ks-editorial-page h3")
+    card_h2 = _declarations(css, "body .ks-editorial-page .ks-editorial-card h2")
+    assert section_h2["border-top"].startswith("1px solid")
+    assert card_h2["border-top"] == "0"
+    assert card_h2["padding-top"] == "0"
+    assert card_h2["font-size"] == card_h3["font-size"]
+    assert card_h2["line-height"] == card_h3["line-height"]
+    # h3 keeps the UA 1em block margin; h2 would otherwise use 0.83em.
+    assert card_h2["margin-block"] == "1em"
+    assert css.index("body .ks-editorial-page h2{") < css.index("body .ks-editorial-page .ks-editorial-card h2{")
