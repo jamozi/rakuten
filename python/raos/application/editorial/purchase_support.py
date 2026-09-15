@@ -3520,6 +3520,22 @@ def responsive_comparison_markup(html: str) -> str:
     return root.html()
 
 
+def ensure_rakuten_credit(html: str) -> str:
+    """Show the Rakuten Web Service credit on every body that displays its media.
+
+    The product-grid path appends the credit inline, but comparison-row and guide
+    articles bind their photos through a different path and were left without it.
+    The credit is normalised here so it follows the media placeholder, whichever
+    path produced it (KS-006: Rakuten Developers branding guideline).
+    """
+    if "ps-media-credit" in html or "data-ps-media-product" not in html:
+        return html
+    for marker in ('<section id="ps-evidence"', '<section id="guide-evidence"'):
+        if marker in html:
+            return html.replace(marker, RAKUTEN_CREDIT + marker, 1)
+    return html + RAKUTEN_CREDIT
+
+
 def compile_articles(
     catalog: Mapping[str, Any],
     templates: Mapping[str, str],
@@ -3626,6 +3642,7 @@ def compile_articles(
                 html = matrix_comparison_markup(html)
         if a.get("responsive_layout") != "authored":
             html = readable_tables(html)
+        html = ensure_rakuten_credit(html)
         rendered = "<!-- wp:html -->\n" + html + "\n<!-- /wp:html -->\n"
         final_snapshot = (
             "ps-"

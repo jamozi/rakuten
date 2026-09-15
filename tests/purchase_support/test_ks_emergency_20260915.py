@@ -208,3 +208,42 @@ def test_cross_page_numeric_consistency(roots: dict[str, Element]) -> None:
                 if not rule["must"].search(window):
                     failures.append((key, subject, "missing", rule["must"].pattern))
     assert failures == []
+
+
+def test_ledger_titles_and_excerpts_have_no_internal_tokens() -> None:
+    """KS-008: the excerpt reaches readers as meta description, og/twitter and the standfirst.
+
+    A body-only scan misses it, which is how "比較対象の範囲はレビュー中です。" stayed live
+    on post 549 until the 2026-09-15 whole-site production check.
+    """
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    production_wording = re.compile(r"レビュー中|本文候補|執筆中|作成中|検討中|仮題|TODO|FIXME")
+    leaks = [
+        (row["article_key"], field, row[field])
+        for row in ledger["articles"]
+        for field in ("title", "excerpt")
+        if row.get(field) and (INTERNAL_TOKENS.search(row[field]) or production_wording.search(row[field]))
+    ]
+    assert leaks == []
+
+
+def test_rakuten_media_pages_carry_the_api_credit(bodies: dict[str, str]) -> None:
+    """KS-006: Rakuten Web Service branding appears wherever its media is displayed.
+
+    The theme injects the photos into every `ps-product-media` placeholder, so the
+    credit has to follow the placeholder rather than one renderer path.
+    """
+    missing = [
+        key for key, html in bodies.items()
+        if "data-ps-media-product" in html and "ps-media-credit" not in html
+    ]
+    assert missing == []
+
+
+def test_api_credit_only_where_media_is_shown(bodies: dict[str, str]) -> None:
+    """The same guideline forbids the branding on pages that do not use the service."""
+    stray = [
+        key for key, html in bodies.items()
+        if "ps-media-credit" in html and "data-ps-media-product" not in html
+    ]
+    assert stray == []
