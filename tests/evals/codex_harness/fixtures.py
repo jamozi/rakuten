@@ -161,6 +161,9 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         text = (root / "README.md").read_text()
         # Markdown labels and Japanese colons do not change a stated limitation.
         plain = text.translate(str.maketrans("", "", "*_`：:"))
+        publication_text = plain.replace("公開機能", "公開").replace(
+            "サポートされて", "対応して"
+        )
         check("source_command", lambda: "python notes.py notes.txt" in text)
         check("timeouts", lambda: "45" in text and "180" in text)
         check(
@@ -190,16 +193,15 @@ def grade(case: str, root: Path) -> dict[str, bool]:
         check(
             "no_publication",
             lambda: any(
-                v in plain
+                v in publication_text
                 for v in (
                     "公開できません",
-                    "公開機能はありません",
+                    "公開はありません",
                     "公開には対応していません",
                     "公開は対応していません",
                     "公開対応していません",
-                    "公開機能には対応していません",
                     "公開しません",
-                    "公開機能なし",
+                    "公開なし",
                     "公開はできません",
                 )
             ),

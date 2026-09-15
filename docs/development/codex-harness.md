@@ -150,7 +150,8 @@ plugins/apps/memoryは隔離評価で無効なため、その削減効果やDesk
 トップレベルの `status` は従来どおり品質判定です。採用には `efficiency.adoption_status=PASS` が必要です。
 input + outputのcase別中央値を等重みで平均し、品質低下・境界違反なく減少した時だけ採用可能とします。
 cached inputはinputの内数です。欠損・不正な値や旧計測方式は `UNAVAILABLE` とし、0へ変換しません。
-read量・tool数・時間と個別caseの悪化も併記します。3回の結果を一般的な性能保証にはしません。
+read量・tool数・時間と個別caseの悪化も併記します。tool数は観測できたshell実行とMCP呼出の合計で、
+編集eventやprovider内部の呼出数は含みません。3回の結果を一般的な性能保証にはしません。
 
 `--case F --case G --repetitions 1` はRAOSのsource/指示を含まない独立プロジェクトで、
 小規模Python修正と日本語の利用案内を確認する補助検証です。A–Eの効率比較に混ぜません。

@@ -1975,7 +1975,7 @@ def efficiency_comparison(before, after, quality, errors):
         else "NOT_PROVEN",
         "equal_weight_mean_case_median_tokens": {"before": b, "after": a},
         "cases": rows,
-        "measurement": "input + output usage; cached input is a subset, not added again; three runs per case, not a universal performance guarantee",
+        "measurement": "input + output usage; cached input is a subset, not added again; tool_calls counts observed shell and MCP calls, excluding edit events and provider internals; three runs per case, not a universal performance guarantee",
     }
 
 
