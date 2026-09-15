@@ -21,8 +21,12 @@ ARTICLES = ROOT / "changes/wordpress-direct-publish-v1/articles"
 LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
 
 # Internal enums and production-time wording that must never reach a reader.
+# `\b` cannot be used here: Python treats Japanese characters as word characters, so
+# `\bnewPurchaseSku\b` does not match "newPurchaseSkuというフィールド名". That gap let the
+# field name stay live on post 82 until the 2026-09-15 audit. Guard on ASCII neighbours.
 INTERNAL_TOKENS = re.compile(
-    r"\b(?:UNKNOWN|UNAVAILABLE|SOLD_OUT|PREORDER|RECHECK_REQUIRED|newPurchaseSku)\b"
+    r"(?<![A-Za-z0-9_])(?:UNKNOWN|UNAVAILABLE|SOLD_OUT|PREORDER|RECHECK_REQUIRED|newPurchaseSku)"
+    r"(?![A-Za-z0-9_])"
     r"|レビュー中|本文候補|TODO|FIXME|lorem ipsum",
     re.IGNORECASE,
 )
@@ -247,3 +251,38 @@ def test_api_credit_only_where_media_is_shown(bodies: dict[str, str]) -> None:
         if "ps-media-credit" in html and "data-ps-media-product" not in html
     ]
     assert stray == []
+
+
+def test_internal_token_pattern_matches_japanese_neighbours() -> None:
+    """A Japanese character next to the token must not hide it (the 2026-09-15 gap)."""
+    assert INTERNAL_TOKENS.search("販売先の内部項目名newPurchaseSkuという値")
+    assert INTERNAL_TOKENS.search("状態はUNKNOWNです")
+    assert INTERNAL_TOKENS.search("newPurchaseSku")
+    # An ASCII-adjacent identifier is a different symbol and stays allowed.
+    assert not INTERNAL_TOKENS.search("data-ps-newPurchaseSkuState")
+    assert not INTERNAL_TOKENS.search("MY_UNKNOWN_FIELD")
+
+
+def test_section_numbers_do_not_reach_published_bodies(bodies: dict[str, str]) -> None:
+    """Production-time section numbering is an authoring aid, not reader content."""
+    leaks = {key: html.count('class="section-number"') for key, html in bodies.items()
+             if 'class="section-number"' in html}
+    assert leaks == {}
+
+
+def test_relative_claims_match_the_article_candidate_count(roots: dict[str, Element]) -> None:
+    """A phrase like "3モデルで最軽量" must agree with how many products the article compares."""
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    catalog = json.loads((ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json").read_text(encoding="utf-8"))
+    counts = {a["slug"]: len(a.get("product_ids", [])) for a in catalog["articles"]}
+    slugs = {row["article_key"]: row["slug"] for row in ledger["articles"]}
+    problems = []
+    for key, root in roots.items():
+        expected = counts.get(slugs.get(key))
+        if not expected:
+            continue
+        text = visible_text(root)
+        for match in re.finditer(r"([0-9]{1,2})\s*(?:モデル|機種|候補|製品)(?=で最|中で|のうち|で最も)", text):
+            if int(match.group(1)) != expected:
+                problems.append((key, match.group(0), f"expected {expected}"))
+    assert problems == []

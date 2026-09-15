@@ -14,11 +14,11 @@ const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '917e6fbad859dde1e806138cff9961561af1769ee87ee4b49a402c6119762c80';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '78dd288ac21db3b1605c9f8dae4e7bf9dc6bf9fb24c34a1cb9bc8b1050e791d3';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '55fa12aa526a00733d0c277f5b265a0a1b21110db67068cab9bccaa97dedc21e';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '4777d50e776fc809f4c586936d1b7f158da1e19d433a7247895501fd93c1bc25';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '4777d50e776fc809f4c586936d1b7f158da1e19d433a7247895501fd93c1bc25';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'b3474102c268cac615fe552b7bd29185317fdfc4c73f93d5ed9fb5647a9ae51c';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'b3474102c268cac615fe552b7bd29185317fdfc4c73f93d5ed9fb5647a9ae51c';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -1624,7 +1624,7 @@ function kurashinoshirube_public_article_identity(int $post_id): ?array
     if ($direct !== null) {
         foreach (kurashinoshirube_article_bindings() as $article_id => $binding) {
             if (($binding['slug'] ?? null) === $direct['slug']) {
-                return array('article_id' => $article_id, 'section' => $binding['category_label'], 'slug' => $direct['slug']);
+                return array('article_id' => $article_id, 'section' => $binding['section'], 'slug' => $direct['slug']);
             }
         }
         if (isset(kurashinoshirube_published_reader_guides()[$direct['slug']])) {

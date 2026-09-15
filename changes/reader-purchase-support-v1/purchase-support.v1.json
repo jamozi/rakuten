@@ -4601,7 +4601,7 @@
         "電車やバスで転がりを抑えるストッパーを重視する人"
       ],
       "avoid": [
-        "3モデルで最軽量の本体を求める人",
+        "比較した候補の中で最軽量の本体を求める人",
         "拡張状態で機内へ持ち込みたい人"
       ],
       "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
@@ -8381,7 +8381,7 @@
       "warranty": "UNKNOWN",
       "delivery": "1〜2営業日以内発送予定※日付指定無の場合",
       "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
-      "condition_note": "通常販売枠を確認したが、新品・中古の明示フィールドは取得できていない。newPurchaseSkuというフィールド名を新品の根拠にしない。",
+      "condition_note": "通常販売枠を確認したが、新品・中古の明示は取得できていない。販売先の内部項目名を新品の根拠にしない。",
       "shipping_note": "公開ページの各SKUに送料込み・個別送料0円。届け先未選択、追加地域条件は注文時に確認。",
       "observation_source": "/home/minami/rakuten/changes/site-improvements-20260913/page-drafts/carry-on-suitcase-under-100-seats/offers.public-candidate.json",
       "observation_sha256": "1101f9a3f8a5316fdbfd61534210c32823dcaefa883cd777a6ab493ef768624f",
@@ -8437,7 +8437,7 @@
       "warranty": "UNKNOWN",
       "delivery": "1〜2営業日以内発送予定※日付指定無の場合",
       "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
-      "condition_note": "通常販売枠を確認したが、新品・中古の明示フィールドは取得できていない。newPurchaseSkuというフィールド名を新品の根拠にしない。",
+      "condition_note": "通常販売枠を確認したが、新品・中古の明示は取得できていない。販売先の内部項目名を新品の根拠にしない。",
       "shipping_note": "公開ページの各SKUに送料込み・個別送料0円。届け先未選択、追加地域条件は注文時に確認。",
       "observation_source": "/home/minami/rakuten/changes/site-improvements-20260913/page-drafts/carry-on-suitcase-under-100-seats/offers.public-candidate.json",
       "observation_sha256": "1101f9a3f8a5316fdbfd61534210c32823dcaefa883cd777a6ab493ef768624f",
@@ -8493,7 +8493,7 @@
       "warranty": "UNKNOWN",
       "delivery": "1〜2営業日以内発送予定※日付指定無の場合",
       "price_scope": "税込本体の観測値。届け先の送料・必要な追加品を含む総額は未確認。",
-      "condition_note": "通常販売枠を確認したが、新品・中古の明示フィールドは取得できていない。newPurchaseSkuというフィールド名を新品の根拠にしない。",
+      "condition_note": "通常販売枠を確認したが、新品・中古の明示は取得できていない。販売先の内部項目名を新品の根拠にしない。",
       "shipping_note": "公開ページの各SKUに送料込み・個別送料0円。届け先未選択、追加地域条件は注文時に確認。",
       "observation_source": "/home/minami/rakuten/changes/site-improvements-20260913/page-drafts/carry-on-suitcase-under-100-seats/offers.public-candidate.json",
       "observation_sha256": "1101f9a3f8a5316fdbfd61534210c32823dcaefa883cd777a6ab493ef768624f",
