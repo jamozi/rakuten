@@ -676,6 +676,10 @@ def offer_panel(
             + "</time>"
             + "／"
             + escape(tidy(o.get("price_scope", "本体と記載した費目の範囲")))
+            # Rakuten Web Service terms: the update time and a disclaimer (or a link to it)
+            # sit next to price and availability information. The clock script rewrites
+            # `.ps-price-status`, so the link lives in this static line instead.
+            + '／<a href="/about-ad-policy/#production-about-rakuten-price">価格・販売可能情報の注意</a>'
             + "</p>"
         )
         rows += (

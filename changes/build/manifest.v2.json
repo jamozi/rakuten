@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "5ca4b1443fa2015d834faa9f3add21ea34e4da42579a4824d98404cb47e0d221",
+          "sha256": "a218ff1db2e9b09dc355551b13c3584d76072451a9ed14052df02d85155e4982",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,27 +1962,27 @@
       "outputs": [
         {
           "bytes": 704882,
-          "sha256": "e98dda66bf5690986bf0a6fa8b434cec0fc31a9656bb3ddba42908c482691fd0",
+          "sha256": "f08b57c31d62c85cb6d2a375ec898d36bf966fa5a66ff25702eb3eed46685a77",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
-          "bytes": 7505,
-          "sha256": "9fb8074b284ed63f8da61c4dbad6c5e0cb83c6a17d0f3343474b96f9710021eb",
+          "bytes": 8171,
+          "sha256": "3c6474220d903baee25138cd5573f8fcdf94f8eb7787948f41d4e99e98e71fc5",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/about-ad-policy.html"
         },
         {
-          "bytes": 63282,
-          "sha256": "5b1e12977baf26446f86db26de0c0343400680b9f6bf42a95d5190fd449ad30c",
+          "bytes": 64098,
+          "sha256": "5580b118f8b492a20313bdfbdfdd6eeb08cab625a42dd9e80e5f00d23118a7c5",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html"
         },
         {
-          "bytes": 44801,
-          "sha256": "7e5b20a2697cb23d8d8c3162baa379bc4695d8ac3513fe678690b66bee05ff32",
+          "bytes": 45413,
+          "sha256": "78c43d77950e2a33a4195c771112f25f3e6d4ca2b0ab83e5a62399aabb3582e6",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html"
         },
         {
-          "bytes": 52416,
-          "sha256": "c84cbba48d49ead0849c47c753cc877e961096db2a19194d6b0d1e6eaa0c2dde",
+          "bytes": 53130,
+          "sha256": "c7507745f26f78a083743cbc784c58194025044ab94d99f6d95cf0f6e06751f6",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
@@ -2001,8 +2001,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 78257,
-          "sha256": "c85a29e3a5a9fe29f758d27b72100e7b73772324ec5b8d20a177da450ebb9f27",
+          "bytes": 79073,
+          "sha256": "728fa7bd5c921dcfc2a99ec099d131867dc79da7cad2f53ffe510770d36fe73e",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
@@ -2031,8 +2031,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 62708,
-          "sha256": "2b610382145f3e9bada9a6ec7a2e373b3de6207b1e6921526509bcf0a6befba9",
+          "bytes": 63422,
+          "sha256": "c86a28fd8d9637498a15833f05fb2884428d5629d134bfb99b90f346cce60357",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
         },
         {
@@ -2046,8 +2046,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html"
         },
         {
-          "bytes": 57133,
-          "sha256": "2cc454e9445ad2373d8fd87733c343d6aeda988223f9779e3081899ab0828a52",
+          "bytes": 57949,
+          "sha256": "330ff55b654ed8d432fb1fb48803676cbc3481cfdda8f2f5ae3fbc46eebbb4a5",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html"
         },
         {
@@ -2056,13 +2056,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/privacy-policy.html"
         },
         {
-          "bytes": 50643,
-          "sha256": "7c65f161eafe7da6907a57c46702b5763777aaa652048d73ee23d3a5c5cf24e6",
+          "bytes": 51255,
+          "sha256": "836d38ab0e915b6f51ace9bcde5ac6a15272dd81bfca7df3c3398a42f53fb62e",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
         },
         {
-          "bytes": 37407,
-          "sha256": "1056e73406b8358e8b3f6fdad830af3840ea73d6e9f590325b988ced32e7c045",
+          "bytes": 37815,
+          "sha256": "a2e82062857553539ade3a91bb26c310e30176c5c61ac25a7e87d28ee721ed59",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
         }
       ],
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "d7fda73f8a3724a0485bc1c9cae194ac1f2717bad6bef4a430d2d929421217d6",
+          "sha256": "47f02ae1a5b5fc8e430564ec7b6799f9df440466ee480e3c8b878d1d3a0c7304",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "fad438204aba6cc6f27ce8703b6febfcaf6eacdc0a95c2b1a854b59802bb0883",
+          "sha256": "b0bd8e0ee079b5f0e67bf99db13a01cfbf843e1afb186b41abae9b1068fb02c2",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "a48a03ac0a94710c153acd56007bacc744e3cf0578ea9bb31f53ed8043debd99",
+          "sha256": "a1da57446e61af813b4a5505767717fcff95f3941c1f087bd69c59c4b1977208",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "cc8fe33f57731e4a9dd96ca9b7bbd464afccc991cd8da74b1f06259e3f79bd96",
+          "sha256": "97848436488292d7484f62dbd1bba559aa8127c34a2475bf10b83efdfc791484",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
