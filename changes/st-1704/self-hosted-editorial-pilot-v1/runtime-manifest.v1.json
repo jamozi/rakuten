@@ -64,7 +64,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "ff6b65c98b17780222d7b8883dbfdfb965343d0a010bc965ad258a2946278cb7"
+      "sha256": "0db7e7d039fc1fb7651f5c47361c15a1434a7d6883995a4b774c28831a7e5d1e"
     },
     {
       "bytes": 2528,
@@ -79,7 +79,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "7a88e73b32927f854b812610b85fec954dee046b29c06ac2c89264cd953da068"
+      "sha256": "34a5f62b0ff40b77719419ecfc704a9632618da2564f0be55aedfda1bc39d494"
     },
     {
       "bytes": 2486,
@@ -189,7 +189,7 @@
     {
       "bytes": 42754,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "ca2b65efc2aedc7fbac52a60ac71bf2c4b8dd13ff8ba86a6682ec61aec73a42a"
+      "sha256": "9a1b57b2c44a1b00ba52d105c2f1be714619cbde249dfc081917fc4a8e9de0a5"
     },
     {
       "bytes": 94902,
@@ -234,12 +234,12 @@
     {
       "bytes": 200521,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "feb8a82608343b9656330522c8d678abef86632304c0e0ecc62ab879fe030c45"
+      "sha256": "0315f59f7e20323b2d4b4676d1be849f2eb7b004b5ae828aadb0f17bb485e52c"
     },
     {
       "bytes": 266874,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "af15ad900e84e4b31fedafc7fb77de5e52631859dbabce081a644d790d0cfaf2"
+      "sha256": "23d18971b43af2997da526c73a785e4f66060ffc2947c1aef085e3904d5360bd"
     },
     {
       "bytes": 2447,
@@ -254,7 +254,7 @@
     {
       "bytes": 55946,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
-      "sha256": "ac4194cedb8b119b3cde78ecb28908e671daf428fb78846910868fb75b8cf3c3"
+      "sha256": "cfe5da18c2c1859dd05fde320752d86d38036a873d6cbf70a0c40be9535a2708"
     },
     {
       "bytes": 274,
@@ -289,7 +289,7 @@
     {
       "bytes": 25499,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
-      "sha256": "eef14dad8cab182c5b01bbd65cbf3b50bdeb1d85c6192364fd59f8abafadc5e9"
+      "sha256": "2996474d07e8a665316c6f903d6d1062b407ea97b9dc6824f7520e7a76f9e288"
     },
     {
       "bytes": 2440,
@@ -1974,7 +1974,7 @@
     {
       "bytes": 60715,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "3ee76f4385552a98705a59ded8a3e7e4b515e1fbad1032c592523bc3c1b1fbec"
+      "sha256": "60b853a0087bb6698aa6867f06943976b5a4f81286507b34e97295698e279554"
     },
     {
       "bytes": 35056,
