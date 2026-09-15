@@ -88,6 +88,22 @@ RAKUTEN_CREDIT = (
 MEDIA_WITHHELD = (
     '<p class="ps-product-media-note">商品写真：販売先を照合できるまで未掲載。</p>'
 )
+FACT_STATES = frozenset({"KNOWN", "PRESERVED", "UNKNOWN", "CONFLICT"})
+# A fact in either state is not settled enough for a reader to act on its value.
+UNSETTLED_FACT_STATES = frozenset({"UNKNOWN", "CONFLICT"})
+# installation keys, fact label prefix, guide_facts field, ordered restatement.
+INSTALLATION_FACT_GROUPS: tuple[tuple[tuple[str, ...], str, str, bool], ...] = (
+    (("width_mm", "depth_mm", "height_mm"), "本体寸法", "dimensions", True),
+    (("door_depth_mm", "door_height_mm"), "開扉時の寸法", "door", False),
+    (("above_mm", "left_mm", "right_mm", "rear_mm"), "必要な余白", "clearance", False),
+)
+# ASCII-bounded decimal numbers. A digit run preceded by an ASCII letter or digit
+# (model names such as TDWS25SBL or NP-TSP1) is not a dimension token; a unit
+# such as "mm" may follow directly. No \b, because it misreads Japanese text.
+NUMBER_TOKEN = re.compile(r"(?<![A-Za-z0-9_.])[0-9]+(?:\.[0-9]+)?(?![0-9]|\.[0-9])")
+DECISION_STEPS_PLACEMENTS = frozenset(
+    {"before_conditions", "after_conditions", "after_specs"}
+)
 
 
 def canonical(value: object) -> str:
@@ -156,6 +172,179 @@ def current_time(now: datetime | None) -> datetime:
     if now.tzinfo is None:
         raise ValueError("PURCHASE_NOW_TIMEZONE_REQUIRED")
     return now
+
+
+def installation_fact_group(
+    record: Mapping[str, Any],
+) -> tuple[tuple[str, ...], str, str, bool] | None:
+    """Return the installation group a fact (by label) or guide fact (by field) restates."""
+    for group in INSTALLATION_FACT_GROUPS:
+        _, label, field, _ = group
+        if "label" in record:
+            if str(record["label"]).startswith(label):
+                return group
+        elif record.get("field") == field:
+            return group
+    return None
+
+
+def validate_fact_state(p: Mapping[str, Any], record: Mapping[str, Any]) -> None:
+    """Keep a source conflict distinct from an unresearched value.
+
+    CONFLICT needs at least two structured sources with distinct (source_url,
+    locator) pairs. A CONFLICT record that restates an installation group of a
+    product with installation values must name the contradicted keys in
+    conflict_installation_keys, and each named key must stay None so that no
+    contradicted value reaches the numeric fit check. Which keys are contradicted
+    is an editorial record; keys that are not named are not checked here.
+    """
+    state = record.get("state")
+    if state not in FACT_STATES:
+        raise ValueError("PURCHASE_FACT_SOURCE_REQUIRED")
+    if state != "CONFLICT":
+        if "conflict_sources" in record or "conflict_installation_keys" in record:
+            raise ValueError("PURCHASE_FACT_CONFLICT_SOURCES_UNEXPECTED")
+        return
+    sources = record.get("conflict_sources")
+
+    def text_value(value: object) -> bool:
+        return isinstance(value, str) and bool(value.strip())
+
+    if (
+        not isinstance(sources, list)
+        or len(sources) < 2
+        or any(
+            not isinstance(source, dict)
+            or not text_value(source.get("value"))
+            or not https(source.get("source_url"))
+            or not text_value(source.get("locator"))
+            or not text_value(source.get("checked_at"))
+            for source in sources
+        )
+        or len({(source["source_url"], source["locator"]) for source in sources})
+        != len(sources)
+    ):
+        raise ValueError("PURCHASE_FACT_CONFLICT_SOURCES_REQUIRED")
+    group = installation_fact_group(record)
+    installation = p.get("installation") or {}
+    keys = record.get("conflict_installation_keys")
+    if group is None or not installation:
+        if keys is not None:
+            raise ValueError("PURCHASE_CONFLICT_INSTALLATION_KEYS_INVALID")
+        return
+    if not isinstance(keys, list) or not keys:
+        raise ValueError("PURCHASE_CONFLICT_INSTALLATION_KEYS_REQUIRED")
+    if (
+        not all(isinstance(key, str) for key in keys)
+        or len(set(keys)) != len(keys)
+        or not set(keys) <= set(group[0])
+    ):
+        raise ValueError("PURCHASE_CONFLICT_INSTALLATION_KEYS_INVALID")
+    if any(installation.get(key) is not None for key in keys):
+        raise ValueError("PURCHASE_CONFLICT_VALUE_ASSERTED")
+
+
+def installation_consistency_mismatches(p: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """List where fact and guide texts do not restate the installation numbers.
+
+    installation is the numeric source used by the fit check; facts (label
+    prefix) and guide_facts (field) of the same group must restate it.
+
+    - 本体寸法 / dimensions: the first three ASCII number tokens of every text
+      must equal (width_mm, depth_mm, height_mm) in that order.
+    - 開扉時の寸法 / door and 必要な余白 / clearance: containment only. Every
+      non-null value must occur among the text's number tokens. This is a smoke
+      check: it cannot detect a value that drifts to a number already present in
+      the same text (for example NP-TMLK1 door_depth_mm 485 to 502 or 490,
+      above_mm 55 to 50, left_mm 5 to 50; NP-TSP1 above_mm 120 to 115).
+    - A group whose keys are all None is skipped, whatever the record state.
+    - Digits joined to ASCII letters (model names) are not tokens; numbers written
+      in another form (full-width digits, cm) are not recognised and are reported.
+    - Only the catalog is read; non-live copies of the same dimensions in other
+      files are not checked.
+
+    Rows are ordered by group, then facts before guide_facts. Nothing is raised.
+    """
+    installation = p.get("installation") or {}
+    if not installation:
+        return []
+    rows: list[dict[str, Any]] = []
+    for keys, label, field, ordered in INSTALLATION_FACT_GROUPS:
+        values: dict[str, float | None] = {
+            key: None if installation.get(key) is None else float(installation[key])
+            for key in keys
+        }
+        asserted = [key for key in keys if values[key] is not None]
+        if not asserted:
+            continue
+        sources = (
+            (
+                "facts",
+                "label",
+                label,
+                [
+                    f
+                    for f in p.get("facts", [])
+                    if str(f.get("label", "")).startswith(label)
+                ],
+            ),
+            (
+                "guide_facts",
+                "field",
+                field,
+                [f for f in p.get("guide_facts", []) if f.get("field") == field],
+            ),
+        )
+        base = {"product_id": p.get("product_id"), "group": field}
+        for source, _, name, records in sources:
+            if not records:
+                rows.append(
+                    {
+                        **base,
+                        "source": source,
+                        "name": name,
+                        "keys": asserted,
+                        "code": "PURCHASE_DIMENSION_SOURCE_REQUIRED",
+                    }
+                )
+        for source, name_key, _, records in sources:
+            for record in records:
+                numbers = [
+                    float(token)
+                    for token in NUMBER_TOKEN.findall(str(record.get("text", "")))
+                ]
+                if ordered:
+                    head = numbers[: len(keys)]
+                    missing = [
+                        key
+                        for index, key in enumerate(keys)
+                        if values[key] is not None
+                        and (index >= len(head) or head[index] != values[key])
+                    ]
+                else:
+                    missing = [key for key in asserted if values[key] not in numbers]
+                if missing:
+                    rows.append(
+                        {
+                            **base,
+                            "source": source,
+                            "name": record.get(name_key),
+                            "keys": missing,
+                            "code": "PURCHASE_DIMENSION_SOURCE_MISMATCH",
+                        }
+                    )
+    return rows
+
+
+def validate_installation_consistency(p: Mapping[str, Any]) -> None:
+    """Raise the first problem found by installation_consistency_mismatches."""
+    codes = {row["code"] for row in installation_consistency_mismatches(p)}
+    for code in (
+        "PURCHASE_DIMENSION_SOURCE_REQUIRED",
+        "PURCHASE_DIMENSION_SOURCE_MISMATCH",
+    ):
+        if code in codes:
+            raise ValueError(code)
 
 
 def validate_catalog(catalog: Mapping[str, Any]) -> None:
@@ -236,12 +425,13 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
             if f.get("exact_model") != p["exact_model"]:
                 raise ValueError("PURCHASE_FACT_MODEL_MISMATCH")
             if (
-                f["state"] not in {"KNOWN", "PRESERVED", "UNKNOWN"}
+                f.get("state") not in FACT_STATES
                 or not https(f["source_url"])
                 or not f["locator"]
                 or not f["checked_at"]
             ):
                 raise ValueError("PURCHASE_FACT_SOURCE_REQUIRED")
+            validate_fact_state(p, f)
         for f in p.get("guide_facts", []):
             if (
                 f["exact_model"] != p["exact_model"]
@@ -250,6 +440,7 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
                 or not f["checked_at"]
             ):
                 raise ValueError("PURCHASE_GUIDE_MODEL_SOURCE_MISMATCH")
+            validate_fact_state(p, f)
         for key, field in p.get("installation", {}).items():
             if key not in {
                 "width_mm",
@@ -265,6 +456,7 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
                 raise ValueError("PURCHASE_INSTALLATION_KEY_INVALID")
             if field is not None and (not money(field) or field > 10000):
                 raise ValueError("PURCHASE_INSTALLATION_VALUE_INVALID")
+        validate_installation_consistency(p)
     offers = catalog.get("offers", [])
     if len({o["offer_id"] for o in offers}) != len(offers):
         raise ValueError("PURCHASE_DUPLICATE_OFFER")
@@ -1355,9 +1547,7 @@ def contain_editorial_tables(html: str) -> str:
                     "class": "ps-table-scroll",
                     "tabindex": "0",
                     "role": "region",
-                    "aria-label": captions[0].text()
-                    if captions
-                    else "比較表（左右にスクロールできます）",
+                    "aria-label": captions[0].text() if captions else "比較表",
                 },
             )
             table.insert_before(region)
@@ -1403,11 +1593,14 @@ def render_comparison(
         + '<a href="#ps-offers">購入費用と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
     decision_steps_html = ""
-    decision_steps_placement = "before_conditions"
+    decision_steps_placement = None
     if article.get("decision_steps"):
         steps = article["decision_steps"]
-        decision_steps_placement = steps.get("placement", "before_conditions")
-        if decision_steps_placement not in {"before_conditions", "after_conditions"}:
+        # No implicit default: the declared position is the rendered position.
+        if "placement" not in steps:
+            raise ValueError("PURCHASE_DECISION_STEPS_PLACEMENT_REQUIRED")
+        decision_steps_placement = steps["placement"]
+        if decision_steps_placement not in DECISION_STEPS_PLACEMENTS:
             raise ValueError("PURCHASE_DECISION_STEPS_PLACEMENT_INVALID")
         decision_steps_html = (
             '<section id="ps-decision-steps"><h2>'
@@ -1420,6 +1613,8 @@ def render_comparison(
             + escape(steps["source_label"])
             + "</a></p></section>"
         )
+    if decision_steps_placement == "before_conditions":
+        out.append(decision_steps_html)
     out.append(
         '<section id="ps-choose"><h2>条件別の結論</h2><div class="ps-condition-grid">'
     )
@@ -1467,6 +1662,8 @@ def render_comparison(
             )
             + '></div><p class="ps-note">条件や予算を入力した場合も、その内容は保存・送信しません。購入総額を確認できない候補は、理由を付けて残します。ポイントや条件付きクーポンを一律に差し引きません。</p></section>'
         )
+    if decision_steps_placement == "after_conditions":
+        out.append(decision_steps_html)
     method_parts = []
     if article.get("preserved_method_heading"):
         method_id = article["preserved_method_heading"]
@@ -1540,7 +1737,7 @@ def render_comparison(
             '<p class="ps-note">本体寸法だけでは設置可否を判断しません。<a href="#ps-installation-context">開扉時の寸法と必要な余白</a>を、同じ型番の公表条件で確認してください。</p>'
         )
     out.append("</section>")
-    if decision_steps_html:
+    if decision_steps_placement == "after_specs":
         out.append(decision_steps_html)
     for heading_id in article.get("preserved_editorial_sections", []):
         matches = [
@@ -2314,7 +2511,7 @@ def bind_water_table_facts(
             if field not in {"water_supply", "drainage"}:
                 continue
             selected = [f for f in facts if f["field"] == field]
-            unknown = [f for f in selected if f.get("state") == "UNKNOWN"]
+            unknown = [f for f in selected if f.get("state") in UNSETTLED_FACT_STATES]
             if selected and not unknown:
                 continue
             values = group.find(tag="dd")
@@ -3395,7 +3592,13 @@ def consolidate_comparison_details(html: str) -> str:
 
 
 def matrix_comparison_markup(html: str) -> str:
-    """Keep each product row and combine its middle specification cells only."""
+    """Keep each product row and combine its middle specification cells only.
+
+    Opt-in group labels: when a table with more than three columns has a middle
+    header carrying data-ps-matrix-label, each row's group for that column starts
+    with span.ps-row-fact-label holding the attribute text, unless the cell
+    already contains a .ps-row-fact-label. Without the attribute nothing is added.
+    """
     root = fragment(html)
     for table in root.find(tag="table"):
         if not (
@@ -3410,6 +3613,10 @@ def matrix_comparison_markup(html: str) -> str:
         if len(header_rows) != 1 or not 3 <= len(headers) <= 6:
             raise ValueError("PURCHASE_ROW_COLUMNS_INVALID")
         original_columns = len(headers)
+        group_labels = [
+            (header.attrs.get("data-ps-matrix-label") or "").strip()
+            for header in headers
+        ]
         for row in table.find(tag="tr"):
             if row is header_rows[0]:
                 continue
@@ -3428,7 +3635,7 @@ def matrix_comparison_markup(html: str) -> str:
             if original_columns > 3:
                 combined = Element("td", {"class": "ps-matrix-specs"})
                 cells[1].insert_before(combined)
-                for cell in cells[1:-1]:
+                for index, cell in enumerate(cells[1:-1], start=1):
                     if cell.attrs.get("id"):
                         combined.append(
                             Element("span", {"id": cell.attrs["id"], "tabindex": "-1"})
@@ -3442,6 +3649,14 @@ def matrix_comparison_markup(html: str) -> str:
                             ).strip()
                         },
                     )
+                    if group_labels[index] and not cell.find(cls="ps-row-fact-label"):
+                        group.append(
+                            Element(
+                                "span",
+                                {"class": "ps-row-fact-label ps-matrix-spec-label"},
+                                [escape(group_labels[index])],
+                            )
+                        )
                     for child in list(cell.children):
                         group.append(child)
                     combined.append(group)

@@ -360,7 +360,7 @@
         ],
         "source_url": "/roomba-mini-vs-switchbot-k11-pro/#robot-connectivity-title",
         "source_label": "2機種の通信・設置条件と、公式仕様・日本語説明書の出典を確認する",
-        "placement": "after_conditions"
+        "placement": "after_specs"
       },
       "comparison_scope": {
         "heading_id": "blk-robot-005-title",
@@ -527,7 +527,8 @@
           "手元の機器のWと時間に置き換えて再計算してください。定格以内でも動作保証にはならず、停電中に充電できることを前提にしません。医療機器・住宅全体への給電は比較対象外です。"
         ],
         "source_url": "https://www.ankerjapan.com/blogs/magazine/power-electric-fan",
-        "source_label": "計算の考え方：Anker公式「ポータブル電源で扇風機は何時間使える？」（2026年9月10日確認）"
+        "source_label": "計算の考え方：Anker公式「ポータブル電源で扇風機は何時間使える？」（2026年9月10日確認）",
+        "placement": "after_specs"
       },
       "comparison_scope": {
         "heading_id": "blk-power-005-title",

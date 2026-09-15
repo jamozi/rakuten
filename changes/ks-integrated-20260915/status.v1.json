@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-15T17:05+09:00",
+  "updated_at": "2026-09-15T20:13+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -34,7 +34,10 @@
       "before_origin": "http://127.0.0.1:41398",
       "published_at": "2026-09-15T03:36:19Z〜03:37:01Z",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
-      "git_sync": "noop (push/PR なし。main への反映は PR で別途)"
+      "git_sync": "noop (push/PR なし。main への反映は PR で別途)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     },
     "B": {
       "tasks": [
@@ -59,7 +62,10 @@
       "theme": true,
       "preview_origin": "http://127.0.0.1:42429",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
-      "git_sync": "noop (push/PR なし。main へは PR #285)"
+      "git_sync": "noop (push/PR なし。main へは PR #285)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     },
     "C": {
       "tasks": [
@@ -86,7 +92,10 @@
       "candidate_id": "382d985d07ca23badc322ee7c754542d97b9559efa4e0fa72ef0a941bfe0b136",
       "published_at": "2026-09-15T07:07:34Z〜07:08:16Z",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
-      "trigger": "evidence/production-audit-20260915.md (39ページ横断検査)"
+      "trigger": "evidence/production-audit-20260915.md (39ページ横断検査)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     },
     "D": {
       "tasks": [
@@ -119,7 +128,10 @@
       "candidate_id": "db7367e840c0a683cea3301283c8f6c1c1f6dff9a39081d8f20f69c2ef1e2dd5",
       "published_at": "2026-09-15T07:27:43Z〜07:28:13Z",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
-      "trigger": "並列監査ワークフロー ks-remaining-audit (67 タスク)"
+      "trigger": "並列監査ワークフロー ks-remaining-audit (67 タスク)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     },
     "E": {
       "tasks": [
@@ -151,7 +163,10 @@
       "published_at": "2026-09-15T07:56:06Z〜07:57:01Z",
       "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
       "trigger": "バッチ D 公開後の横断検査 (楽天商品画像 126 枚の一律代替テキスト) と KS-115 の残り",
-      "not_published": "candidate 15725baa… (テスト失敗の commit ad002aa2 から作成、公開せず破棄)"
+      "not_published": "candidate 15725baa… (テスト失敗の commit ad002aa2 から作成、公開せず破棄)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     }
   },
   "items": {
@@ -192,9 +207,11 @@
     },
     "KS-005": {
       "priority": "P1",
-      "status": "未着手",
-      "batch": null,
-      "evidence": [],
+      "status": "一部完了 (指標ごとの分母・取得元・期間・欠落時の扱いを記録)。費用・工数・確定報酬はオーナー入力待ち",
+      "batch": "W2-1",
+      "evidence": [
+        "evidence/KS-005.md"
+      ],
       "note": "基準値: GSC 28日 表示241/クリック7/CTR2.9%/順位9.1、楽天 30日 クリック25/売上0、GA4 表示0 (内部除外)"
     },
     "KS-006": {
@@ -340,7 +357,7 @@
       "evidence": [
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (候補数依存の相対表現を解消)。CONFLICT 状態の追加は未実施"
+      "status": "一部完了 (候補数依存の相対表現を解消。「矛盾」状態を未確認と別に検証する仕組みを追加)。NP-TSP1 の分類と表示方法は後続バッチ"
     },
     "KS-134": {
       "priority": "P1",
@@ -406,6 +423,62 @@
         "evidence/KS-301-302-batch-E.md"
       ],
       "status": "一部完了 (楽天商品画像 126 枚の代替テキストに商品名を付与、本番公開)。意思決定用の図の整備は編集判断"
+    },
+    "KS-025": {
+      "priority": "P0",
+      "batch": "W2-1",
+      "status": "一部完了 (全8プロファイルの手計算記録と、結果行・表セルの照合テストを追加)。ローカル WordPress での DOM 照合は未実施",
+      "evidence": [
+        "evidence/KS-025.md"
+      ]
+    },
+    "KS-017": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "記録済み (幅7・文字拡大3・39ページ・キーボード6ページ)。実際にはスクロールしない案内文の削除は承認ゲート待ち",
+      "evidence": [
+        "evidence/KS-017.md"
+      ]
+    },
+    "KS-030": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "記録済み (4ページ×2幅×3回×4状態の lab 計測)。INP とフィールドデータは未取得。HTML の圧縮はホスティング側の設定",
+      "evidence": [
+        "evidence/KS-030.md"
+      ]
+    },
+    "KS-303": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "記録済み。判断は継続観察 (比較できる期間がまだ無い)。続行・修正・停止の判断はオーナー",
+      "evidence": [
+        "evidence/KS-303.md"
+      ]
+    },
+    "KS-304": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "一部完了 (保守レポートのモジュールと読み取り専用 CLI を追加)。価格再取得と次回確認日の繰り越し廃止は後続バッチ",
+      "evidence": []
+    },
+    "KS-010": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "一部完了 (本体寸法・扉・余白の数値が facts・guide_facts・installation で食い違うとビルドを止める検査を追加)",
+      "evidence": []
+    },
+    "KS-138": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "一部完了 (計算例の配置を明示宣言にする仕組みを追加。出力は不変)。並べ替えか導入文の修正かは後続バッチ",
+      "evidence": []
+    },
+    "KS-015": {
+      "priority": "P1",
+      "batch": "W2-1",
+      "status": "一部完了 (比較表の仕様グループにラベルを付ける仕組みを追加。出力は不変)。表への適用は後続バッチ",
+      "evidence": []
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"

@@ -126,3 +126,69 @@ def test_native_supporting_table_keeps_full_width_group_headings():
     assert fragment(result).text() == fragment(source).text()
     assert len(fragment(result).find(cls="ks-readable-table")) == 1
     assert readable_tables(result) == result
+
+
+def test_matrix_label_attribute_becomes_one_group_label():
+    from raos.application.editorial.purchase_support import matrix_comparison_markup
+
+    def table(size_head, fit_cell):
+        return (
+            '<div class="ps-table-scroll" aria-label="比較"><table class="ps-row-comparison"><thead><tr><th>商品</th>'
+            + size_head
+            + '<th>容量</th><th data-ps-matrix-label="使い方">使い方</th><th>購入</th></tr></thead><tbody>'
+            '<tr id="model-a"><th><strong>A</strong></th><td><strong>6点</strong><br>31×22.5cm</td><td><p>3L</p></td>'
+            + fit_cell
+            + '<td><a href="https://example.com/a">購入</a></td></tr>'
+            '<tr><td colspan="5">注記</td></tr></tbody></table></div>'
+        )
+
+    labelled = table(
+        '<th data-ps-matrix-label="寸法&amp;容量">寸法</th>',
+        '<td><span class="ps-row-fact-label">既存ラベル</span>着脱タンク</td>',
+    )
+    result = matrix_comparison_markup(labelled)
+    groups = fragment(result).find(cls="ps-matrix-spec-group")
+    assert len(groups) == 3
+    first = [n for n in groups[0].children if hasattr(n, "tag")][0]
+    assert first.tag == "span" and first.has("ps-row-fact-label")
+    assert first.has("ps-matrix-spec-label")
+    assert first.text() == "寸法&容量"
+    assert "寸法&amp;容量" in result
+    # A header without the attribute adds nothing.
+    assert not groups[1].find(cls="ps-row-fact-label")
+    assert groups[1].text() == "3L"
+    # A cell that already carries a label is not labelled twice.
+    assert len(groups[2].find(cls="ps-row-fact-label")) == 1
+    assert groups[2].find(cls="ps-row-fact-label")[0].text() == "既存ラベル"
+    assert "data-ps-matrix-label" not in result
+    assert matrix_comparison_markup(result) == result
+    # Without the attribute the output is unchanged apart from the label span.
+    plain = table(
+        "<th>寸法</th>",
+        '<td><span class="ps-row-fact-label">既存ラベル</span>着脱タンク</td>',
+    )
+    plain = plain.replace(' data-ps-matrix-label="使い方"', "")
+    unlabelled = matrix_comparison_markup(plain)
+    assert "ps-matrix-spec-label" not in unlabelled
+    stripped = fragment(result)
+    for span in stripped.find(cls="ps-matrix-spec-label"):
+        span.remove()
+    assert stripped.html() == unlabelled
+
+
+def test_uncaptioned_editorial_table_region_does_not_claim_scrolling():
+    from raos.application.editorial.purchase_support import contain_editorial_tables
+
+    root = fragment(
+        contain_editorial_tables(
+            "<section><table><tr><th>A</th><td>1</td></tr></table></section>"
+        )
+    )
+    region = root.find(cls="ps-table-scroll")[0]
+    assert region.attrs["aria-label"] == "比較表"
+    captioned = fragment(
+        contain_editorial_tables(
+            "<table><caption>容量の比較</caption><tr><th>A</th></tr></table>"
+        )
+    )
+    assert captioned.find(cls="ps-table-scroll")[0].attrs["aria-label"] == "容量の比較"

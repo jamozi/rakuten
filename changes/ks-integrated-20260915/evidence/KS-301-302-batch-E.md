@@ -94,3 +94,17 @@
 - 記事 30 `/compact-robot-vacuum-shortlist/`: 「SwitchBot（スイッチボット）ロボット掃除機 K11+ Pro の商品画像（楽天市場）」
 
 照合は、記事・固定ページ 39 件の匿名 HTML 取得と REST API の `modified_gmt` で行った。
+## 追記 (2026-09-15 夕方): PHP テストの実行
+
+公開前ゲートの pytest 結果 `2176 passed, 1 skipped` の skip は、テーマの PHP テストがこの環境で php を見つけられずに skip したものだった。
+上の「再発防止テスト」に挙げた `test_comparison_row_photo_alt_uses_the_figure_label_not_the_generic_fallback` は、ゲートでは**実行されていなかった**。
+
+その後、Docker の `php:8.3-cli` を呼ぶ一時ラッパーを PATH に置いて、main と同じ tree で実行した:
+
+```
+tests/st1704/test_site_audit_theme_fixes.py
+19 passed in 1.41s
+```
+
+本番の匿名照合 (代替テキストの一律表記 126 → 0) と合わせて、テーマ側の代替テキストの決め方がテストでも確認できた。
+以後のゲートでは `-rs` で skip 理由を出し、PHP テストの skip を失敗として扱う。
