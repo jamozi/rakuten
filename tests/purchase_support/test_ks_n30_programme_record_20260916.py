@@ -16,6 +16,9 @@ import json
 import re
 from pathlib import Path
 
+from raos.application.editorial.reader_html import fragment
+from scripts import build_site_editorial_pages as projection
+
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = ROOT / "changes/next30-20260916"
 README = PACKAGE / "README.md"
@@ -394,3 +397,87 @@ def test_each_deferral_quotes_wording_the_named_file_really_carries() -> None:
             assert path in row["where"], (row["id"], path)
             text = (ROOT / path).read_text(encoding="utf-8")
             assert quote in text, (row["id"], path, quote)
+
+
+# --- the record answers to the artifact ------------------------------------
+# Three ways the record drifted from what the files hold: a deferral that named
+# the sentence it defers but not every page that prints it, the reader's unit
+# 「分野」 written as the working word 「群」, and a row of the wave table that
+# counted two links in an article that has one.
+UNIT_WORD = "群"
+# The only place the record may still use it: quoting the note it removed.
+UNIT_WORD_QUOTED_IN = ("reader_note_changes",)
+HUB_LINK_ROW = re.compile(
+    r"^\| `(?P<slug>[a-z0-9-]+)` \| \d+ \| [^|]+ \| `/(?P<hub>kitchen|cleaning)/` "
+    r"[^|]*?リンク (?P<count>\d+) 本の文言 \|$",
+    re.M,
+)
+
+
+def test_a_deferral_lists_every_document_its_quoted_wording_reaches() -> None:
+    """DF02 quoted a source file whose sentence prints on a page it never listed."""
+    documents = projection.reader_documents()
+    for row in deferrals():
+        listed = row.get("documents", [])
+        for path, quote in row.get("where_quote", {}).items():
+            reached = sorted(key for key, body in documents.items() if quote in body)
+            assert reached, (row["id"], path, quote)
+            for key in reached:
+                assert key in listed, (row["id"], path, key, listed)
+
+
+# The card source that prints somewhere other than the page a deferral names.
+SHARED_CARD_SOURCE = "changes/site-improvements-20260913/entry-pages.v1.json"
+
+
+def test_a_deferral_that_defers_the_shared_cards_quotes_them() -> None:
+    """entry-pages.v1.json prints on /categories/ and home, not on the hub it names.
+
+    DF02 named the file and quoted only the hub's own sentence, so the reach
+    check above had nothing to catch: the two pages that really carry the
+    deferred wording stayed off its documents list.
+    """
+    for row in deferrals():
+        if SHARED_CARD_SOURCE not in row["where"] or not row.get("where_quote"):
+            continue
+        assert SHARED_CARD_SOURCE in row["where_quote"], row["id"]
+
+
+def strings_with_paths(node, path=()):
+    if isinstance(node, dict):
+        for key, value in node.items():
+            yield from strings_with_paths(value, (*path, key))
+    elif isinstance(node, list):
+        for value in node:
+            yield from strings_with_paths(value, path)
+    elif isinstance(node, str):
+        yield path, node
+
+
+def test_the_record_counts_the_declared_fields_the_way_the_page_counts_them() -> None:
+    """One unit for one subject: the policy page says 分野, so the record does too."""
+    assert UNIT_WORD not in README.read_text(encoding="utf-8")
+    leaked = [
+        path
+        for path, text in strings_with_paths(decisions())
+        if UNIT_WORD in text and not any(key in UNIT_WORD_QUOTED_IN for key in path)
+    ]
+    assert leaked == [], leaked
+
+
+def test_the_wave_zero_table_counts_the_hub_links_it_says_it_rewrote() -> None:
+    """The table said 「2 本」 for an article whose body links the hub once."""
+    rows = HUB_LINK_ROW.findall(README.read_text(encoding="utf-8"))
+    assert len(rows) == 12, rows
+    for slug, hub, count in rows:
+        body = (
+            ROOT / f"changes/wordpress-direct-publish-v1/articles/{slug}.html"
+        ).read_text(encoding="utf-8")
+        links = [
+            anchor
+            for anchor in fragment(body).find(tag="a")
+            if (anchor.attrs.get("href") or "").split("#")[0].rstrip("/").endswith(
+                f"/{hub}"
+            )
+        ]
+        assert len(links) == int(count), (slug, hub, count, len(links))

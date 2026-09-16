@@ -102,8 +102,26 @@ def test_every_article_calls_a_hub_by_the_name_the_hub_answers_to(
             assert ledger[hub]["title"] in anchor.text(), (key, hub, anchor.text())
 
 
-def test_no_published_body_quotes_a_retired_page_title(documents) -> None:
+def test_only_the_revision_note_still_quotes_a_retired_page_title(documents) -> None:
+    """One exception, and it is the point: the note tells the reader what changed.
+
+    Everywhere else a retired title is a stale name for a live URL. In the
+    revision note it is the名前 the reader had bookmarked, quoted once beside the
+    name that replaced it, which is the only way that record means anything.
+    """
+    policy = documents["about-ad-policy"]
+    note = [
+        block.text()
+        for block in fragment(policy).find(tag="p")
+        if "最終更新日" in block.text()
+    ]
+    assert len(note) == 1, policy[:400]
+    for title in RETIRED_TITLES:
+        assert note[0].count(title) == 1, (title, note)
+        assert policy.count(title) == 1, (title, "quoted outside the revision note")
     for key, body in documents.items():
+        if key == "about-ad-policy":
+            continue
         for title in RETIRED_TITLES:
             assert title not in body, (key, title)
 
@@ -209,4 +227,4 @@ def test_the_rename_is_announced_once_where_the_site_records_revisions(
 ) -> None:
     """The reader is told the links were renamed — on the policy page, not per article."""
     policy = documents["about-ad-policy"]
-    assert "リンクの文言も同じ名前にした" in policy, policy[:400]
+    assert "戻るリンクの文言は新しいページ名に合わせた" in policy, policy[:400]

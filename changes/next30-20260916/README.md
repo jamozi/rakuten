@@ -4,7 +4,7 @@
 検証済みの商品カタログ・波計画の記録。**この directory に記事本文はない。** 状態の一次情報は `decisions.v1.json`、
 商品は `products.candidate.v1.json`（まだどこにも接続していない候補データ）。
 
-対象は水切りラック・衣類乾燥除湿機・ノンフライヤー（熱風調理器）・軽量コードレス掃除機の 4 群。
+対象は水切りラック・衣類乾燥除湿機・ノンフライヤー（熱風調理器）・軽量コードレス掃除機の 4 分野。
 波 0 は**新記事を 1 本も含まない**。新記事より先に、サイトが自分について書いている記述（方針ページの「扱う領域」と
 カテゴリの表示名）を実態に合わせる波である。
 
@@ -118,7 +118,7 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 
 | article_key | post_id | 変わったフィールド | 読者に見える変化 |
 | --- | --- | --- | --- |
-| `about-ad-policy` | 10 | block_markup | 扱う領域を 8 分野に（準備中の 4 群を明示）、根拠の確認手順を 3 つに分割、参考価格の確認日時を販売条件を記録した商品に限定、最終更新日 2026-09-16 |
+| `about-ad-policy` | 10 | block_markup | 扱う領域を 8 分野に（準備中の 4 分野を明示）、根拠の確認手順を 3 つに分割、参考価格の確認日時を販売条件を記録した商品に限定、改定内容に 2 ページの改称を旧名と新名で記載、最終更新日 2026-09-16 |
 | `home` | 15 | block_markup | カテゴリカードとリード文の表示名、カードの説明と CTA を商品 1 種類の言い方から外す |
 | `categories` | 130 | excerpt・block_markup | リード文・カード見出し・「…の記事 N本」 |
 | `cleaning` | 131 | title・excerpt・block_markup | ページ名を「掃除の道具の選び方・比較」に、パンくずの現在地、見出しに掲載中の商品 |
@@ -126,7 +126,7 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 | `guides` | 135 | block_markup | カテゴリ別のジャンプナビ |
 | `kitchen` | 136 | title・excerpt・block_markup | ページ名を「台所の道具の選び方・比較」に、パンくずの現在地、見出しに掲載中の商品、広告の断りを「広告リンクを含む記事は…」に |
 | `compact-robot-vacuum-shortlist` | 30 | block_markup | `/cleaning/` へ戻るリンク 2 本の文言 |
-| `countertop-dishwasher-for-small-households` | 41 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `countertop-dishwasher-for-small-households` | 41 | block_markup | `/kitchen/` へ戻るリンク 1 本の文言 |
 | `roomba-mini-vs-switchbot-k11-pro` | 85 | block_markup | `/cleaning/` へ戻るリンク 2 本の文言 |
 | `solota-vs-rakua-mini-plus` | 86 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
 | `dishwasher-installation-measurement` | 262 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
@@ -159,6 +159,15 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 「食洗機の比較はこちら」「ロボット掃除機の比較はこちら」→「台所の道具の比較はこちら」
 「掃除の道具の比較はこちら」に直した。どちらも公開候補は増えない。
 
+方針ページの「広告を含まない記事は、その旨を記事側で明示する運用にしています。」は、本文ではなく
+テーマが守っている: `templates/single.html` の `[kurashinoshirube_article_disclosure]` が、広告リンクを
+持たない記事のタイトル直下に「この記事にアフィリエイトリンクはありません。」を刷る（方針ページのこの一文と
+同じコミット 47ed499a で入った）。広告リンクを持つ 15 本は本文の `ps-disclosure` を最初の広告リンクより前に
+刷り、そのときテーマは自分の一文を出さないので、読者に届く断りは 1 記事につき 1 つである。
+本文側にも同じ断りを足す案は採らなかった: 552 はランタイムに無くテーマが本文を検証できないため断りが 2 回出て、
+残る 4 本は読者に見える本文変更として `/updates/` のカードが要り、候補が上限を超える。
+測り方は `tests/site_editorial_pages/test_ks_n30_w0_advertising_notice_20260916.py` が持つ。
+
 触っていないもの: 既存記事の `listing.category`、記事本文の中身、洗濯・乾燥カテゴリ、
 画像の alt（商品種別ではなく画像そのものの説明）、テーマの記事パンくずのハブ label（「キッチン・家事」「掃除・時短」）。
 
@@ -171,10 +180,10 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 | ID | 先送りした作業 | 波 | 強制するもの |
 | --- | --- | --- | --- |
 | DF01 | `/categories/` と `home` のリードに「洗濯・乾燥」を足す | W0-B | `laundry` の固定ページ公開と委譲 |
-| DF02 | `/kitchen/` のハブ本文と `excerpt` を水切りラックまで広げる | W1-B | A01〜A03 が `kitchen` で published になる |
+| DF02 | `/kitchen/` のハブ本文と `excerpt`、`/categories/`・`home` のカード文を水切りラックまで広げる | W1-B | A01〜A03 が `kitchen` で published になる |
 | DF03 | 方針ページの「扱う領域」から準備中の断りを 1 分野ずつ外す | W1-B（以後 W3・W5・W7） | 各分野の最初の公開 |
 | DF04 | カード画像が無い記事の alt フォールバックがカテゴリ表示名を差し込む | W1-B | `listing.card_image` が null の新着カード |
-| DF06 | `/cleaning/` のハブ本文と `excerpt` を軽量コードレス掃除機まで広げる | W7-B | A25〜A30 が `cleaning` で published になる |
+| DF06 | `/cleaning/` のハブ本文と `excerpt`、`/categories/`・`home` のカード文を軽量コードレス掃除機まで広げる | W7-B | A25〜A30 が `cleaning` で published になる |
 
 `later_waves` を持つ先送り（DF02 の W2・W5・W6、DF03 の W3・W5・W7）は、その波の候補に
 対象 document の枠が無いと落ちる。枠が無かった 4 候補にこの波で足した:
@@ -194,8 +203,11 @@ W6-B に `kitchen`（7→8）、W3-B・W5-B・W7-B に `about-ad-policy`（7→8
 - 本番プロファイルの `allow_new_posts` の現在値（W1-A の前にオーナー確認が要る）
 - `approved-layout-baselines.v1.json` の Before/After 了承（W0-A の公開前提）
 - `/categories/` のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。そろえ方はオーナー判断
-- カテゴリページのパンくずの区切り記号が 4 ページで不揃い（＞ ／ /）。揃えると travel・preparedness が公開候補に増える
-- `/guides/` のジャンプ先 3 つが、カテゴリ名を書いた見出しではなく記事カードに着地する
+- カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は候補内なので揃えても候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには別の候補が要る
+- `/guides/` のジャンプ先 3 つが、カテゴリ名を書いた見出しではなく記事カードに着地する（W0 はラベルだけを改称した）
+- `/easy-maintenance/`（134）の棚見出しが「食洗機」「掃除機」のまま。候補に無い本文なので、直すと上限を超える
+- ハブの編集方針の一文が 2 通り（`/kitchen/` の「広告リンクを含む記事は…」と、共通文「記事ごとの広告表示は実際のリンクに基づきます。」を刷る 12 本）。どちらに寄せるかは編集判断
+- `tests/purchase_support/test_ks_w4b_round7_20260916.py` の `_batch_shipped` は本文のバイト一致で公開済みを判定するので、W0-A を公開すると W4b の 2 件が再び発火する（`origin/main` は squash merge で祖先関係も使えない）
 - AF04 / YCW-C120 のハンドル質量とパンくずトレイの帰属、食洗機対応（いずれも公式に印字がない）
 - DH03 / F-YEX90D のケア「衣類」22W の条件と、「※50cm以上（ルーバーを閉じて使うとき）」の方向
 - DH01 / CV-U71 の衣類乾燥モード名（取扱説明書・仕様ページ・商品ページで不一致）

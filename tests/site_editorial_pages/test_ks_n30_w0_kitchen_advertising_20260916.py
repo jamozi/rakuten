@@ -1,18 +1,22 @@
 """Wave 0 of next30: the advertising sentence on /kitchen/ has to hold for the
 eleven articles the shelf actually carries.
 
-Base 9fa8ee45 said 「比較記事には広告を含みます。」 — true, because every article with
-an advertising link was a comparison. The wave replaced it with 「広告の有無は記事
-ごとに、記事の中で示します。」, which claims both halves: that an article says when
-it carries advertising *and* when it does not. The second half is not rendered
-anywhere — five of the six kitchen guides print no sentence about advertising at
-all — so the wave turned a true sentence into a false one.
+Base 9fa8ee45 said 「比較記事には広告を含みます。」 — false since the 給水方法 guide
+started carrying advertising links of its own, so the wave replaced it. The
+first replacement, 「広告の有無は記事ごとに、記事の中で示します。」, claimed both halves
+for the body, and the body carries only one of them: an article with advertising
+prints its 断り there before the first link, an article without one prints
+nothing in its body at all. (The reader is still told — the theme prints
+「この記事にアフィリエイトリンクはありません。」 under the title of a post with no
+affiliate link; that half is pinned, with the theme, in
+test_ks_n30_w0_advertising_notice_20260916.py.) So the hub says only what its
+own articles' bodies say: 「広告リンクを含む記事は、記事の中でその旨を示します。」
 
 What the renderer really emits, read back below from the published bodies: an
 article carries a disclosure naming 広告 before its first advertising link
-exactly when it has one, and says nothing when it has none. The sentence on the
-hub is pinned to that, and the pin reads the rendered bodies so the claim cannot
-drift when an article gains or loses its advertising links.
+exactly when it has one, and adds nothing to its body when it has none. The
+sentence on the hub is pinned to that, and the pin reads the rendered bodies so
+the claim cannot drift when an article gains or loses its advertising links.
 """
 
 from __future__ import annotations
@@ -32,7 +36,8 @@ CATEGORY = "kitchen"
 # The sentence the hub prints, and the claim it is allowed to make.
 NOTE = "広告リンクを含む記事は、記事の中でその旨を示します。"
 FORBIDDEN_NOTES = (
-    # Not true of the five guides that carry no advertising link at all.
+    # 「記事の中」 is the body, and the body of the five guides without advertising
+    # links says nothing; their notice is the theme's, above the content.
     "広告の有無は記事ごとに",
     # Not true of the guide that does carry advertising links.
     "比較記事には広告を含みます",
@@ -107,7 +112,7 @@ def test_every_kitchen_article_with_advertising_says_so_inside_the_article(
 def test_a_kitchen_article_without_advertising_carries_no_disclosure(
     documents, ledger
 ) -> None:
-    """The hub may not claim the silent half: nothing renders it."""
+    """Its notice is the theme's; a body 断り here would be the second one."""
     for key in kitchen_articles(ledger):
         body = documents[key]
         if carries_advertising(body):

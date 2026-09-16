@@ -211,10 +211,53 @@ def test_the_revision_note_counts_the_scope_the_way_the_page_counts_it(roots) ->
     assert f"4{SCOPE_UNIT}" in pending[0], pending
 
 
-def test_the_revision_note_says_what_the_category_pages_were_renamed_to(roots) -> None:
-    """「名前を表示名にそろえ」 told the reader nothing; the names have to appear."""
+# What this wave did to the two category pages, and the sentence a reader needs
+# in order to recognise the page they had bookmarked. 「名前を…そろえ」 named only
+# the destination; 「メニューやカードで使っている名前」 named a standard that did not
+# exist — the cards were renamed by this same wave, and the menus never carried
+# either page at all.
+RENAMED_PAGES = (
+    ("食洗機の選び方・比較", "台所の道具の選び方・比較"),
+    ("ロボット掃除機の選び方・比較", "掃除の道具の選び方・比較"),
+)
+MENU_PARTS = (
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme"
+    "/kurashinoshirube-child/parts/header.html",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme"
+    "/kurashinoshirube-child/parts/footer.html",
+)
+
+
+def test_the_revision_note_names_the_old_and_the_new_page_names(roots) -> None:
+    """A reader who bookmarked the old name has to find it in the note."""
     note = revision_note(roots["about-ad-policy"])
-    renamed = [s for s in sentences(note) if "そろえ" in s]
+    renamed = [s for s in sentences(note) if "改称" in s]
     assert len(renamed) == 1, note
+    for before, after in RENAMED_PAGES:
+        assert before in renamed[0], (before, renamed)
+        assert after in renamed[0], (after, renamed)
+
+
+def test_the_revision_note_claims_no_menu_that_never_carried_these_pages(
+    roots,
+) -> None:
+    """The menus hold five links, and neither category page is one of them."""
+    note = revision_note(roots["about-ad-policy"])
+    assert "メニュー" not in note, note
+    menus = "".join(
+        (ROOT / part).read_text(encoding="utf-8") for part in MENU_PARTS
+    )
+    for before, after in RENAMED_PAGES:
+        assert before not in menus, before
+        assert after not in menus, after
     for label in ("台所", "掃除"):
-        assert label in renamed[0], (label, renamed)
+        assert f'"label":"{label}"' not in menus, label
+
+
+def test_the_revision_note_covers_both_pages_the_wave_rewrote(roots) -> None:
+    """/cleaning/ changed its lead and its headings too, not only /kitchen/."""
+    note = revision_note(roots["about-ad-policy"])
+    headings = [s for s in sentences(note) if "見出し" in s]
+    assert len(headings) == 1, note
+    for label in ("台所", "掃除"):
+        assert label in headings[0], (label, headings)
