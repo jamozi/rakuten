@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "5010ca28841fe8c5603ce45efe0afae494f82e4d7eb089eb043974f4e26a5b6b",
+          "sha256": "d5e349171f6fa16a5ef889fc238bf7c307065b3a27d32b2bba5acdd6294a7975",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1847,22 +1847,22 @@
       "outputs": [
         {
           "bytes": 4771,
-          "sha256": "790adeca904fc7dd9fd68cc914d7a93104c488a259bc244809c16cc7402a6954",
+          "sha256": "df88cf43ad781714db6c2a133dc727489f20d96ddfc32204eabb4b9c73c4c1ea",
           "uri": "repo://changes/reader-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 2132,
-          "sha256": "4327711f850d5460e279a43b358700a1de8a7f7fe1966f099599a816441c9699",
+          "sha256": "ea76daa6e25d7a837b59d9b9521014bee9417269a2f5804da6fd93d7ac3f18f0",
           "uri": "repo://changes/reader-measurement-v1/theme-runtime-binding.v1.json"
         },
         {
           "bytes": 23683,
-          "sha256": "4e38d873fb428efd93e359c90978835fe38e481c9c9ad868bac0701809eb6eb6",
+          "sha256": "0e6847e47f13b39089a3953472da7542015463f06d2d7b826cbad3c5da9b4084",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-allowlist.v1.json"
         },
         {
           "bytes": 1232,
-          "sha256": "99c854a5bd8cab15e20cf4f0e3d0e6bb4a0eb6712914064907a7050ebf6b757a",
+          "sha256": "46c423e605b85c0073f03b4a75739253f6362d3bb549097ba5759b938e1d6564",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-runtime.v1.json"
         }
       ],
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 697071,
-          "sha256": "d5f74c277b748464b1a757e9e6e03cea5b02f91be7e0db1371f30685fce540f8",
+          "sha256": "465a2a7d6fb13748f698359faa7420de7cd1ca6d87a6df250e9933780f74d5fb",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1976,13 +1976,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html"
         },
         {
-          "bytes": 45950,
-          "sha256": "295354c27616076bec300c51e231f3590fd47dea8f13954ccabb0f07568fd0a2",
+          "bytes": 46442,
+          "sha256": "6b8e2ea30b7f853b6a1200cf0205102ba92fb1f5267171f8bf7e9319815aaed1",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.html"
         },
         {
-          "bytes": 53740,
-          "sha256": "ee5c5a6a090ae165877d2f83eb8f608dd07692baab7cfd91869f9ed58b897f43",
+          "bytes": 54231,
+          "sha256": "3671d7e1e685d204d18ad2df954698f96a4d4322eddd1cc70cbf9b41c35b7403",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
@@ -1991,8 +1991,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
         },
         {
-          "bytes": 38648,
-          "sha256": "c285cd141b61e131d1a8b585ff093dd60e1602d1f871929cc2dfb56dcdb1ccd7",
+          "bytes": 47454,
+          "sha256": "7c1e18a789dd7b4a54d3188934c8304b288e46be2c556facf16241de22aa8d00",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html"
         },
         {
@@ -2031,8 +2031,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 63740,
-          "sha256": "df9197e925b87d473d2b0b7234bc2d02338f7ef3f46314391962e19780a56710",
+          "bytes": 64117,
+          "sha256": "c198d60cc592fcc6475e423b33683186f7f7861b0ff93aaae08a79f0701f1c54",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.html"
         },
         {
@@ -2041,8 +2041,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
-          "bytes": 49541,
-          "sha256": "72e2d95c3de2674a78b70170200fabc3e496d398a9d717f766ae2c5095a8e126",
+          "bytes": 50642,
+          "sha256": "304caa2a89b0df58354be2490ca209f3ec1a2028492538fffad4e80e3a0423e0",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html"
         },
         {
@@ -2056,8 +2056,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/privacy-policy.html"
         },
         {
-          "bytes": 53374,
-          "sha256": "9a135ed21b36f4502974f327375e6e3a463d16db57de55514f6d7a2b7bc38577",
+          "bytes": 54288,
+          "sha256": "db04d0a92d6c1cc06cbac9a8352c8921587bbb95de98e0cbeb7b9bfd3f9e0a92",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
         },
         {
@@ -2273,8 +2273,8 @@
           "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
         },
         {
-          "bytes": 39532,
-          "sha256": "9cf389c83783e311c6f92211713b6ba7a915634322da0eb3f85603ead5d33490",
+          "bytes": 45682,
+          "sha256": "06bec80f0d28f1d53e637489c9fc74d05f71c281492672aafe911f55054bf2b0",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
         },
         {
@@ -2293,18 +2293,18 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
         },
         {
-          "bytes": 11824,
-          "sha256": "90a6dd0b97ad1445b5c2072bf59360921c2228eb6963a445b44e5dc526e8b64c",
+          "bytes": 11815,
+          "sha256": "0a9f9485571600042e9fe253761734ec1994970f6fedf3c46fa43dfe442f7e19",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparisons.html"
         },
         {
           "bytes": 18668,
-          "sha256": "0714430c352eca4c4ef0ef2200c2c35ccb07e6bffacf660956f225348d49a903",
+          "sha256": "cb60ba0dc641e8e6ef054a3b8c0f7fa754472e40f5f6917411dc0c11634d6baa",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
         },
         {
           "bytes": 6079,
-          "sha256": "954cd96f9596e3f94a32a31ca1ceda3c0fb0f3819499d877ae8e753bb2490994",
+          "sha256": "280490d627198c3b0f7613d91f634b194acbcc31bc53a79c9e601e1a4c731b90",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/guides.html"
         },
         {
@@ -2329,12 +2329,12 @@
         },
         {
           "bytes": 11421,
-          "sha256": "47c0c12375c37aeb7543e1fd0e40822954fa8ef3e29b3a551ad14b8babc106bd",
+          "sha256": "6acf4741b5e34b8e91ea34993b3a4cbac88dcc86b381e063b490680f4f0698dd",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/save-housework.html"
         },
         {
           "bytes": 12463,
-          "sha256": "659b8d4f0e89b05db50020883f772feb43d6aa5c860f0c9db278f895ad0a25fa",
+          "sha256": "b9e2e07c1715ee84b1cf15be3d5b54c4d2d7b8a1f690235732f37e7c01aa0941",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
         },
         {
@@ -2343,8 +2343,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
-          "bytes": 24965,
-          "sha256": "73db974c3a5ea20c99bb22415a1452765d1d6d6746ee8353fce894aa6275748f",
+          "bytes": 30522,
+          "sha256": "6629217da2a7178de3c5bf878059b8bde79eaa195403a08283393912c72a4edd",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/updates.html"
         },
         {
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "a6a3f22f1ed7c6956bdaeda71c147350827e5d21648be0c295a8561a84622384",
+          "sha256": "bc7650c3dcc5f9375593cd3a8e0cc3084b266d7f1cec0e9bc64ab60d25e50516",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "e9396887143d5f6f2ef9fca29056250a95e42d8de0563065e5e48145ac3e4fce",
+          "sha256": "4dcb95177337da690e0c6e1cec4b9d639553c8329dc75e08eea6f69679c2467c",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30301,12 +30301,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "a9781f8d887d8d37a3634d4809f2a388f70261b8dbbef20c6ea273d5bcaf310b",
+          "sha256": "5b27192199b0404a4c13a1c497c4e6a01c1c651d94e8ef857dcae322afd41cc2",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 28259,
-          "sha256": "378503e4407f16b15bf1aeda032ed677fdb34f6e5c2f9cf32eb217e4e4d502bf",
+          "sha256": "739d58a634fc923605a2e2174efff1821c7c5b7d02116683bb64a5e58694cd56",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "b4a22d6d9fe81cfb4854b64165539f149862de5948b38341c81f4632e154391e",
+          "sha256": "2128e2583194a5eb4bdee536d36a3b9a712ebaac9b8a2628af220e9567343041",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

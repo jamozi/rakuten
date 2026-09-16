@@ -27,7 +27,7 @@ LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
 INTERNAL_TOKENS = re.compile(
     r"(?<![A-Za-z0-9_])(?:UNKNOWN|UNAVAILABLE|SOLD_OUT|PREORDER|RECHECK_REQUIRED|newPurchaseSku)"
     r"(?![A-Za-z0-9_])"
-    r"|レビュー中|本文候補|TODO|FIXME|lorem ipsum",
+    r"|レビュー中|本文候補|担当記事|公式検索本文|直接取得は失敗|TODO|FIXME|lorem ipsum",
     re.IGNORECASE,
 )
 SKIPPED_TAGS = frozenset({"script", "style", "template", "code", "pre", "kbd", "samp"})

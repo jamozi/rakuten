@@ -546,7 +546,11 @@ def test_data_bermas_history_keeps_withheld_entry_and_appends_verification():
         {
             "date": "2026-09-15",
             "text": "掲載画像の説明を、60524の販売ページの画像で確認した範囲（USBポートがないこと・背面のトラベルセントリーID）に合わせて訂正",
-        }
+        },
+        {
+            "date": "2026-09-16",
+            "text": "航空会社の上限45×35×20cm・3辺合計100cm以内から、公式が書いていない軸名（幅・奥行・高さ）を外した表記に訂正し、100席以上の便向けの比較記事への入口を追加",
+        },
     ]
     registry = json.loads(
         (DATA_EVIDENCE / "catalog-registry-updates.json").read_text(encoding="utf-8")
@@ -586,7 +590,8 @@ def test_data_histories_record_the_2026_09_15_catalog_corrections():
         "carry-on-suitcase-under-100-seats",
     ):
         dates = [e["date"] for e in _data_article(catalog, slug)["history"]]
-        assert dates[-1] == "2026-09-15", slug
+        # Later corrections (W4, 2026-09-16) may follow the 2026-09-15 entry.
+        assert "2026-09-15" in dates, slug
     for article in catalog["articles"]:
         dates = [e["date"] for e in article.get("history", [])]
         assert dates == sorted(dates), article["slug"]

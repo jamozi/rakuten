@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-16T03:08+09:00",
+  "updated_at": "2026-09-16T12:00+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -393,7 +393,8 @@
         "evidence/KS-301-302-batch-E.md",
         "evidence/KS-301-batch-A.md",
         "evidence/KS-301-batch-B.md"
-      ]
+      ],
+      "note": "553 を公開するたびに航空会社の持ち込み規定 (catalog の carry_on_fit.rules) を公式ページで再確認する (evidence/KS-131.md)"
     },
     "KS-302": {
       "priority": "P0",
@@ -601,7 +602,7 @@
       "evidence": [
         "evidence/KS-301-302-W2.md"
       ],
-      "status": "一部完了 (39 ページの役割と次の疑問を台帳に登録、本番公開)。planned の導線は後続バッチ (I・J1・J2)",
+      "status": "一部完了 (39 ページの役割と次の疑問を台帳に登録、本番公開)。planned の導線は後続バッチ (I・J1・J2)。W4b (未公開): 19・82・83・84 から 553 への本文リンクを追加し、82・83・84 の next_question を live に (J2 分の planned は 0 件。残る planned 5 件は I の 4 件と J1 の 1 件)",
       "batch": "W2-F"
     },
     "KS-101": {
@@ -720,6 +721,85 @@
       "batch": "W3 (未公開、オーナーの Before/After 待ち)",
       "status": "一部完了 (source)。KS-028-d: categories のカード見出しを h2 にし、theme.css でカードの見た目を維持。purposes と updates は節見出し h2 の下に h3 のカードがあり見出しレベルが飛ばないため変更なし。266 の費用ルート見出しは W2 時点で h3 (飛びなし)。83 (lightweight-carry-on-suitcase-under-3kg) の表内 h4 は承認済みレイアウトのため記録のみで変更しない",
       "evidence": []
+    },
+    "KS-131": {
+      "priority": "P1",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "一部完了 (source)。553 の冒頭に便の条件の要点と近道、#carry-on-rules を比較表の後ろへ移動、APPLITE・LIEVE の「約」と無印良品の本体重量・最大積載量を反映、制作工程の語を読者向けの文に。具体作業 3 の対応状況は evidence に記録",
+      "evidence": [
+        "evidence/KS-131.md"
+      ]
+    },
+    "KS-201": {
+      "priority": "P1",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "一部完了 (source)。KS-201b: 553 に適合表。外寸に車輪を含むと確認できたのは 12 モデル中 2 (Samsonite は高さのみ記載) のため、事前に決めた代わりの問い「各社の上限を超える型番 (通常時・拡張時)」に切り替え。KS-201a (549) は未着手",
+      "evidence": [
+        "evidence/KS-131.md"
+      ]
+    },
+    "KS-136": {
+      "priority": "P1",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "一部完了 (source)。30 に #robot-space (4 機種 × 本体の高さ・台の周囲の空間・出し入れ)。515 の寸法の幅と奥行の取り違えを訂正、K11+ Pro の台に高さ約25cm・底面240×180mm を追記 (30・85)。editorial-portfolio v3 の 83 の comparison_scope「5モデル」は本文・カード (4モデル) と食い違うが未反映。build_editorial_portfolio_v3.py:404 が editorial-identities.v1.json と market-candidate-audit.v1.json の comparison_scope の一致を要求し、後者は build_st1704_reader_claim_coverage.py の独立レビュー済みハッシュ (REVIEWED/DEVELOPMENT_READER_LEDGER_SHA256) で内容が固定されているため、2つを同時に直すにはそのレビューをやり直す必要がある。読者に出る文言ではない。85 (F115060→F155260) は audit の選定品・販売状態の記録と整合させる必要があり未反映",
+      "evidence": []
+    },
+    "KS-031": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "一部完了 (判定台帳を作成、オーナー確認待ち)。update 4 (553・549・41・86)、keep 16、統合 0、新規 0。再判定は 2026-10-14 以降",
+      "evidence": [
+        "evidence/KS-031-content-treatment.v1.json"
+      ]
+    },
+    "KS-203": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "保留 (開始条件 C1〜C6 と再評価日 2026-10-14 を判定台帳に記録)",
+      "evidence": [
+        "evidence/KS-031-content-treatment.v1.json",
+        "evidence/KS-P2-deferrals.md"
+      ]
+    },
+    "KS-024": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "保留 (必要性の判定 KS-031 がオーナー確認待ち、試行の承認なし)",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ]
+    },
+    "KS-202": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "不採用 (現時点。接続済み ASP に該当案件なし、新規申請はしない方針)",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ]
+    },
+    "KS-204": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "保留 (24 時間以内の価格再取得の仕組みが無い、KS-022 未評価)",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ]
+    },
+    "KS-205": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "保留 (投稿先の SNS と自前の図解素材が無い)",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ]
+    },
+    "KS-206": {
+      "priority": "P2",
+      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
+      "status": "保留 (上限工数の承認なし、成果の基準値が未整備)",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ]
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"

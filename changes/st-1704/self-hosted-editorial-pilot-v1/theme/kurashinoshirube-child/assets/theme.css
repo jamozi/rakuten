@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 54d61c3d41098ba0b5f0587f34d2895a477d03777306805426a0b60a60a27e34;
+  --raos-theme-runtime-revision-base: 86fdd5359581341d71f1fe61c88a86f2028f247e026c1d03070b523a2966d06e;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4786,7 +4786,7 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .sc-breadcrumb{display:flex;gap:16px;flex-wrap:wrap;font-size:13px}.sc-ad{font-size:12px;color:#687373;border-bottom:1px solid #e3e8e6;padding:12px 0}.sc-kicker{font-size:13px;letter-spacing:.08em;color:#637b79}.sc-intro{margin-top:28px!important}.sc-intro>p{max-width:800px!important}
 .sc-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}.sc-choices a{display:flex;flex-direction:column;padding:20px;border:1px solid #dce5df;border-radius:8px;background:#f3f6f2;text-decoration:none}.sc-choices strong{font-size:19px;margin-bottom:6px}.sc-choices span{font-size:13px;line-height:1.7;color:#4f5e60}.sc-nav{display:flex;flex-wrap:wrap;gap:12px 26px;font-size:14px}
 .sc-flight{padding:20px 24px;background:#f8f6f0;border-left:3px solid #8a986c;font-size:13px}.sc-flight strong{font-size:15px}.sc-note{font-size:12px;color:#596869}.sc-scroll-note{font-size:12px;color:#566e6b}.sc-table-scroll{overflow:auto;max-width:100%;border:1px solid #dce3de;border-radius:6px}.sc-table{width:100%;min-width:1000px;border-collapse:collapse;font-size:13px;margin:0!important;table-layout:fixed}.sc-table caption{text-align:left;padding:10px 14px;background:#f2f5f2;font-size:12px}.sc-table th,.sc-table td{padding:15px 13px;vertical-align:top;border:0;border-bottom:1px solid #e2e6e1;text-align:left;line-height:1.7}.sc-table thead th{background:#e9eeea;font-size:12px;font-weight:600}.sc-table th:first-child{width:24%;background:#fafbf8}.sc-table th:nth-child(2){width:18%}.sc-table th:nth-child(3){width:13%}.sc-table th:nth-child(4){width:24%}.sc-table th:nth-child(5){width:21%}.sc-table tbody th a{text-decoration:none;display:flex;flex-direction:column}.sc-table small{display:block;font-size:11px;color:#626f71}.sc-brand{display:block;font-size:11px;color:#627570;letter-spacing:.035em}.sc-table tr:last-child>*{border-bottom:0}
-.sc-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.sc-product{display:grid;grid-template-columns:136px 1fr;gap:18px;border:1px solid #dde4de;padding:20px;border-radius:8px;background:#fff;scroll-margin-top:24px}.sc-product-media{display:flex;justify-content:center;align-items:center;min-width:0;align-self:start;background:#f6f7f3;min-height:145px;overflow:hidden;border-radius:4px}.sc-media-pending{font-size:11px;color:#6b7571;text-align:center}.sc-product-media img{max-width:100%;height:auto;object-fit:contain}.sc-product h3{font-size:15px;line-height:1.6;margin:0!important}.sc-product h3 small{display:block;font-size:11px;font-weight:400;color:#60706e}.sc-fit{font-size:13px;font-weight:600}.sc-caution{font-size:12px;color:#5f6c6c}.sc-product-copy>p:last-of-type{font-size:12px}.sc-price{font-size:12px;font-weight:600;color:#646453}.small-carry-on-comparison details{font-size:12px;margin-top:12px;line-height:1.8}.small-carry-on-comparison summary{cursor:pointer;color:#3d6460;padding:8px 0}.sc-purchase{background:#f5f6f1;padding:25px;font-size:14px;border-radius:8px}.sc-additional li{margin:14px 0}.sc-related{display:flex;flex-wrap:wrap;gap:12px 20px;border-top:1px solid #dde4df;padding-top:25px;margin-top:40px;font-size:13px}.sc-related h2{width:100%}.sc-editor{font-size:12px;color:#7b8582;margin-top:26px!important}
+.sc-products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.sc-product{display:grid;grid-template-columns:136px 1fr;gap:18px;border:1px solid #dde4de;padding:20px;border-radius:8px;background:#fff;scroll-margin-top:24px}.sc-product-media{display:flex;justify-content:center;align-items:center;min-width:0;align-self:start;background:#f6f7f3;min-height:145px;overflow:hidden;border-radius:4px}.sc-media-pending{font-size:11px;color:#6b7571;text-align:center}.sc-product-media img{max-width:100%;height:auto;object-fit:contain}.sc-product h3{font-size:15px;line-height:1.6;margin:0!important}.sc-product h3 small{display:block;font-size:11px;font-weight:400;color:#60706e}.sc-fit{font-size:13px;font-weight:600}.sc-caution{font-size:12px;color:#5f6c6c}.sc-product-copy>p:last-of-type{font-size:12px}.sc-price{font-size:12px;font-weight:600;color:#646453}.small-carry-on-comparison details{font-size:12px;margin-top:12px;line-height:1.8}.small-carry-on-comparison summary{cursor:pointer;color:#3d6460;padding:8px 0}.sc-purchase{background:#f5f6f1;padding:25px;font-size:14px;border-radius:8px}.sc-additional li{margin:14px 0}.sc-shortcuts{display:flex;flex-wrap:wrap;gap:4px 20px;margin-top:16px;font-size:14px}.sc-shortcuts a{display:inline-flex;align-items:center;min-height:44px}.sc-related{display:flex;flex-wrap:wrap;gap:12px 20px;border-top:1px solid #dde4df;padding-top:25px;margin-top:40px;font-size:13px}.sc-related h2{width:100%}.sc-editor{font-size:12px;color:#7b8582;margin-top:26px!important}
 @media(max-width:700px){.small-carry-on-comparison{font-size:14px}.small-carry-on-comparison section{margin:32px 0}.sc-choices{grid-template-columns:1fr;gap:8px;margin:18px 0}.sc-choices a{padding:13px 16px}.sc-choices strong{font-size:16px}.sc-choices span{font-size:12px}.sc-flight{padding:16px}.sc-flight p{line-height:1.8}.sc-products{grid-template-columns:1fr;gap:14px}.sc-product{grid-template-columns:92px 1fr;gap:12px;padding:16px}.sc-product-media{min-height:108px}.sc-product h3{font-size:14px}.sc-table{font-size:12px}.sc-table th,.sc-table td{padding:12px}.sc-table tbody th{position:sticky;left:0;z-index:1}.sc-table th:first-child{width:205px}.sc-purchase{padding:18px}.sc-nav{gap:12px 20px}}
 .raos-editorial-v2.small-carry-on-comparison{max-width:1120px!important;width:100%!important}
 .raos-editorial-v2.small-carry-on-comparison>section{max-width:none!important;width:100%!important}
@@ -4890,6 +4890,14 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .compact-draft .ps-table-scroll > table#compact-space-table { min-width:44rem!important; }
 .compact-draft #compact-space-table th:first-child { position:sticky!important; left:0; z-index:2; }
 .compact-draft #compact-space-table thead th:first-child { z-index:5; }
+/* The fit matrix keeps readable column widths and scrolls inside .sc-table-scroll; the model column stays in view. */
+.small-carry-on-comparison table.sc-fit-table { width:100%; min-width:52rem; table-layout:fixed; border-collapse:collapse; margin:0; font-size:15px; line-height:1.7; }
+.small-carry-on-comparison table.sc-fit-table caption { caption-side:top; padding:10px 14px; text-align:left; font-size:12px; background:#f2f5f2; }
+.small-carry-on-comparison table.sc-fit-table :is(th, td) { padding:10px 12px; vertical-align:top; text-align:left; border-bottom:1px solid #e2e6e1; overflow-wrap:break-word; word-break:normal; }
+.small-carry-on-comparison table.sc-fit-table :is(thead th:first-child, tbody th) { position:sticky; left:0; z-index:2; width:9.5rem; max-width:none; background:#fafbf8; }
+.small-carry-on-comparison table.sc-fit-table thead th { background:#eef3ed; font-weight:600; }
+.small-carry-on-comparison table.sc-fit-table thead th:first-child { z-index:3; }
+.small-carry-on-comparison table.sc-fit-table small { display:block; font-size:12.5px; }
 
 /* Large article only. Preserve the common body, original media and commerce bindings. */
 .ks-large-guide .lg-integrated-comparison .lg-scroll-hint{display:none}
@@ -5329,9 +5337,23 @@ table.ks-readable-table td::before { display:none!important; content:none!import
   .ks-no-plumbing .np-table > table#np-method-table :is(th,td):first-child { width:5rem!important; }
   .ks-no-plumbing .np-table > table#np-model-table { min-width:22.25rem!important; }
   .ks-no-plumbing .np-table > table#np-model-table :is(th,td):first-child { width:6rem!important; }
+  /* An article body scrolls inside .ps-table-scroll / .sc-table-scroll, which sits
+     inside .raos-article-shell (padding-inline:1rem) and draws a 1px border: the
+     frame is the viewport minus 34px, so 286px at 320px. The sticky first column
+     plus one data column has to fit in that. */
+  .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table { min-width:39rem!important; table-layout:fixed!important; }
+  .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table :is(thead th:first-child, tbody th) { width:7rem!important; }
+  .small-carry-on-comparison table.sc-fit-table :is(thead th:first-child, tbody th) { width:9rem!important; }
 }
 
 /* With border-collapse the cell background stops at the middle of the collapsed
    border, so a 1px strip of the scrolled columns shows at the sticky first
    column's left edge. Cover that strip from inside the cell. */
 body .ks-editorial-page :is(#space-zones-table,#housework-record-table,#housework-time-table,#housework-route-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table) th:first-child::before { content:""; position:absolute; top:0; bottom:0; left:-1px; width:3px; box-sizing:border-box; border-left:1px solid #d7d3cb; background:#f0eee8; }
+
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table { border-collapse:collapse; width:100%; min-width:44rem; margin:0; font-size:14px; line-height:1.75; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table > caption { caption-side:top; padding:10px 12px; text-align:left; font-size:13px; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table :is(th,td) { padding:12px; vertical-align:top; text-align:left; border-bottom:1px solid var(--ps-line); }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table tbody th { width:9rem; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table :is(thead th:first-child, tbody th) { position:sticky; left:0; z-index:1; background:#f4f6f8; }
+.ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table thead th:first-child { z-index:3; }

@@ -141,8 +141,12 @@ def cards(html):
     ]
 
 
-def card_for(html, slug):
-    return next(c for c in cards(html) if f'<h3><a href="/{slug}/' in c)
+def card_for(html, slug, date=None):
+    """One card. A slug with several change_log entries has one card per entry."""
+    found = [c for c in cards(html) if f'<h3><a href="/{slug}/' in c]
+    if date is not None:
+        found = [c for c in found if f"内容更新日：{date}" in c]
+    return next(iter(found))
 
 
 class LedgerListings(unittest.TestCase):
@@ -268,8 +272,9 @@ class LedgerListings(unittest.TestCase):
         )
         for slug, entry in corrections.items():
             self.assertEqual(entry["kind"], "correction")
-            self.assertIn("訂正：" + entry["summary"], card_for(updated, slug))
-            self.assertIn("内容更新日：2026-09-15", card_for(updated, slug))
+            card = card_for(updated, slug, "2026-09-15")
+            self.assertIn("訂正：" + entry["summary"], card)
+            self.assertIn("内容更新日：2026-09-15", card)
         self.assertIn("価格だけの再取得では内容更新日を進めません", html)
 
     def test_updated_content_cards_carry_their_own_publication_date(self):
@@ -308,8 +313,12 @@ class LedgerListings(unittest.TestCase):
                 if not log:
                     continue
                 if 'class="ks-recent-image"' in card:
-                    # Home recent cards show no date at all, so they cannot disagree.
-                    self.assertNotIn("日：", card)
+                    # The 新着記事 cards are image + title only and carry no
+                    # date label, so they cannot show a different date.
+                    with self.subTest(page=name, slug=slugs[0], card="recent"):
+                        self.assertNotIn("日：", card)
+                        self.assertNotIn("内容更新日", card)
+                        self.assertNotIn("公開日", card)
                     continue
                 label = "内容更新日：" + max(e["date"] for e in log)
                 with self.subTest(page=name, slug=slugs[0]):
@@ -436,7 +445,25 @@ class LedgerListings(unittest.TestCase):
             else:
                 self.assertIn(f"公開日：{listing['published_on']}", card, row["slug"])
             seen[bool(log)] += 1
-        self.assertEqual(sorted(seen), [False, True])
+        self.assertTrue(seen[True], "no published comparison carries a change_log")
+        # Every published comparison now has a change_log, so the 公開日 branch can
+        # only be exercised by removing one: re-project with that row's log cleared
+        # and require the card to fall back to its 公開日. Asserting it this way
+        # keeps the rule two-sided without pinning a slug that the next batch would
+        # have to update the moment it publishes a correction for it.
+        registry = copy.deepcopy(self.registry)
+        subject = next(
+            row
+            for row in registry["articles"]
+            if (row.get("listing") or {}).get("role") == "comparison"
+            and row["listing"].get("state") == "published"
+            and row["listing"].get("change_log")
+        )
+        subject["listing"]["change_log"] = []
+        pages, _, _ = editorial.render_pages(registry, self.catalog, self.data, {})
+        card = card_for(pages["comparisons"], subject["slug"])
+        self.assertIn(f"公開日：{subject['listing']['published_on']}", card)
+        self.assertNotIn("内容更新日：", card)
         for slug in (
             "compact-dishwasher-comparison",
             "standard-dishwasher-comparison",

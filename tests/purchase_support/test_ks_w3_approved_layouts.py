@@ -13,6 +13,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import json
 import re
+import subprocess
 
 import pytest
 
@@ -385,18 +386,58 @@ def test_curated_history_block_requires_one_article_root(compiled) -> None:
 # Approved-layout record ----------------------------------------------------------
 
 
+BODY_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
+
+
+def _base_ref() -> str:
+    for ref in ("origin/main", "main"):
+        done = subprocess.run(
+            ("git", "rev-parse", "--verify", "--quiet", ref),
+            cwd=builder.ROOT,
+            capture_output=True,
+            text=True,
+        )
+        if done.returncode == 0:
+            return ref
+    raise AssertionError("no published base ref to compare the layouts against")
+
+
+def _bodies_changed_since_base() -> set[str]:
+    """Approved-layout slugs whose published body differs from the base branch."""
+    names = subprocess.run(
+        ("git", "diff", "--name-only", _base_ref(), "--", BODY_PREFIX),
+        cwd=builder.ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.splitlines()
+    return {
+        name[len(BODY_PREFIX) : -len(".html")]
+        for name in names
+        if name.startswith(BODY_PREFIX) and name.endswith(".html")
+    }
+
+
 def test_changed_approved_layouts_are_recorded_as_pending_owner_review() -> None:
+    """Every approved layout this candidate rewrote, not a list fixed in advance.
+
+    W4b rewrote 83's airline table and added 30's #robot-space section while the
+    hard-coded list here still named only the three dishwasher comparisons, so
+    the owner's Before/After record missed the two largest changes of the batch.
+    """
     record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
-    for slug in (
-        "compact-dishwasher-comparison",
-        "standard-dishwasher-comparison",
-        "large-dishwasher-comparison",
-    ):
-        pending = record[slug]["pending_revision"]
-        assert pending["review"] == "PENDING_OWNER_BEFORE_AFTER"
-        assert pending["publication_authorized"] is False
-        assert pending["tasks"] and all(t.startswith("KS-") for t in pending["tasks"])
-        assert pending["source_paths"]
+    changed = sorted(_bodies_changed_since_base() & set(record))
+    assert changed, sorted(record)
+    for slug in changed:
+        pending = record[slug].get("pending_revision")
+        assert pending, slug
+        assert pending["review"] == "PENDING_OWNER_BEFORE_AFTER", slug
+        assert pending["publication_authorized"] is False, slug
+        assert pending["tasks"] and all(
+            task.startswith("KS-") for task in pending["tasks"]
+        ), slug
+        assert pending["source_paths"], slug
+        assert pending["recorded_on"], slug
 
 
 def test_pending_revision_names_every_branch_its_summary_describes() -> None:
@@ -406,12 +447,13 @@ def test_pending_revision_names_every_branch_its_summary_describes() -> None:
     longer covers what the summary describes.
     """
     record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
-    for slug in (
-        "compact-dishwasher-comparison",
-        "standard-dishwasher-comparison",
-        "large-dishwasher-comparison",
-    ):
-        pending = record[slug]["pending_revision"]
+    pendings = {
+        slug: entry["pending_revision"]
+        for slug, entry in record.items()
+        if entry.get("pending_revision")
+    }
+    assert len(pendings) >= 3, sorted(pendings)
+    for slug, pending in pendings.items():
         assert "branch" not in pending, slug
         branches = pending["branches"]
         assert branches, slug

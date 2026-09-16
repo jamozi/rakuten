@@ -1,12 +1,12 @@
 {
   "approval_required": true,
   "artifact_id": "raos-reader-measurement-v1",
-  "contract_sha256": "4e38d873fb428efd93e359c90978835fe38e481c9c9ad868bac0701809eb6eb6",
+  "contract_sha256": "0e6847e47f13b39089a3953472da7542015463f06d2d7b826cbad3c5da9b4084",
   "default_enabled": false,
   "maintenance_file": "includes/reader-measurement-maintenance.php",
   "migration_assessment": "MANUAL_REVIEW_REQUIRED",
-  "package_sha256": "2468f44e370a2fd4b711a6fc2025837b00dc2e186174cd004b6b4099da80195e",
-  "package_size": 28772,
+  "package_sha256": "6f75653dd63b3259a5e0c4295495278ebb9c2b065fc23a70d91a0eeeee03b0ec",
+  "package_size": 28774,
   "plugin_files": [
     {
       "path": "README.md",
@@ -25,12 +25,12 @@
     },
     {
       "path": "config/reader-allowlist.v1.json",
-      "sha256": "4e38d873fb428efd93e359c90978835fe38e481c9c9ad868bac0701809eb6eb6",
+      "sha256": "0e6847e47f13b39089a3953472da7542015463f06d2d7b826cbad3c5da9b4084",
       "size": 23683
     },
     {
       "path": "config/reader-runtime.v1.json",
-      "sha256": "99c854a5bd8cab15e20cf4f0e3d0e6bb4a0eb6712914064907a7050ebf6b757a",
+      "sha256": "46c423e605b85c0073f03b4a75739253f6362d3bb549097ba5759b938e1d6564",
       "size": 1232
     },
     {
@@ -59,7 +59,7 @@
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
   "privacy_source": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
-  "revision": "5e59b3bf39579ed6dbb399d6e5678a2306bf416f1766928abf2f74e220ce2826",
+  "revision": "37b2cbe62391df8ae20de37f4745c13402e4323f23ac4ebc3c82665a6b9ba1f5",
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
@@ -113,8 +113,8 @@
     },
     {
       "path": "python/raos/application/editorial/reader_html.py",
-      "sha256": "2a570565d06a687f1b8906d1b99c277f6385c6a313da5cb8985933e0830437f1",
-      "size": 5817
+      "sha256": "550390438f7607db44262fd5b0ab40f0c42fb6ffe85636db2aa8f95ffa043c24",
+      "size": 5959
     },
     {
       "path": "scripts/build_reader_measurement_v1.py",

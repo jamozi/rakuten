@@ -23,9 +23,9 @@
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
         "branches": [
-        "claude/ks-w3-20260916",
-        "claude/ks-w4a-20260916"
-      ],
+          "claude/ks-w3-20260916",
+          "claude/ks-w4a-20260916"
+        ],
         "tasks": [
           "KS-120",
           "KS-129",
@@ -60,7 +60,29 @@
       "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
       "shared_validation": "PASS_320_375_390_600_768_1440",
       "shared_parity": "PASS_320_390_768_1440_ALL_CELL_WIDTHS_IDENTICAL",
-      "narrow_layout": "Approved dedicated layout retained"
+      "narrow_layout": "Approved dedicated layout retained",
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-16",
+        "branches": [
+          "claude/ks-w4b5-20260916",
+          "claude/ks-w4b6-20260916"
+        ],
+        "tasks": [
+          "KS-131",
+          "KS-201",
+          "KS-014"
+        ],
+        "summary": "航空会社別の条件を、553と同じ carry_on_fit.rules から描く9行の表に作り直した（スマートフォンでは1社1枚のカード、横幅の広い画面では表）。AIRDOの持ち込み条件を2026年9月16日の公式ページの表記（各辺55×40×25cm以内のみ・3辺合計の記載なし、身の回り品は2026年10月1日から40×30×20cm以内）に合わせ、スカイマーク・AIRDO・ソラシドエアの対象便を「公式ページに記載なし」に訂正。車輪・ハンドルを寸法に含む記載は、明記しているJAL・ANA・Peach・ジェットスターだけに限った。車輪・ハンドルの記載を確認できていない4社（スカイマーク・AIRDO・ソラシドエア・スターフライヤー）を注記に列挙。末尾に553への入口を追加し、確認・更新履歴に2026年9月16日の1行を足した。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "changes/reader-purchase-support-v1/purchase-support.v1.json",
+          "python/raos/application/editorial/purchase_support.py",
+          "changes/wordpress-direct-publish-v1/articles.v1.json",
+          "changes/ks-integrated-20260915/evidence/KS-131.md"
+        ],
+        "publication_authorized": false
+      }
     },
     "compact-robot-vacuum-shortlist": {
       "body_sha256": "1abcbca96563c550b4b9cbd13ea615f6c1f278ab36c2fe6311afa02e01a2e303",
@@ -73,7 +95,27 @@
       "user_statement": "これでオッケーかな／うん、オッケー",
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345122+00:00",
-      "publication_authorized": false
+      "publication_authorized": false,
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-16",
+        "branches": [
+          "claude/ks-w4b5-20260916",
+          "claude/ks-w4b6-20260916"
+        ],
+        "tasks": [
+          "KS-136"
+        ],
+        "summary": "Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記どおりに訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。#robot-space の節と、4機種の本体の高さ・台の周囲に空ける空間・ふたやタンクの出し入れを公式資料で比べる4列の表を新設し、スマートフォンでは、先頭列を7rem（112px）に保ったまま表のmin-widthを39remにして、320pxの実測の枠286px（記事シェルの左右1remと枠の1px境界で viewport−34）にデータ列1つ（170.7px）が収まるようにした。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記し、未確認なのは底面の幅と奥行の対応であることを明記。確認・更新履歴に2026年9月16日の1行を足した。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
+          "changes/reader-purchase-support-v1/purchase-support.v1.json",
+          "python/raos/application/editorial/purchase_support.py",
+          "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "changes/wordpress-direct-publish-v1/articles.v1.json"
+        ],
+        "publication_authorized": false
+      }
     },
     "standard-dishwasher-comparison": {
       "body_sha256": "2b3888d532a9ceb3174442476a20644061861e9ec8e24f2829fe995d7883aed0",
@@ -91,9 +133,9 @@
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
         "branches": [
-        "claude/ks-w3-20260916",
-        "claude/ks-w4a-20260916"
-      ],
+          "claude/ks-w3-20260916",
+          "claude/ks-w4a-20260916"
+        ],
         "tasks": [
           "KS-015",
           "KS-017",
@@ -125,9 +167,9 @@
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
         "branches": [
-        "claude/ks-w3-20260916",
-        "claude/ks-w4a-20260916"
-      ],
+          "claude/ks-w3-20260916",
+          "claude/ks-w4a-20260916"
+        ],
         "tasks": [
           "KS-122",
           "KS-015",
