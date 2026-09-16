@@ -15,7 +15,6 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import json
 import re
-import subprocess
 
 import pytest
 
@@ -28,6 +27,7 @@ from raos.application.editorial.purchase_support import (
     validate_catalog,
 )
 from raos.application.editorial.reader_html import Element, fragment
+from tests.purchase_support import ks_w4_batch
 
 NOW = datetime(2026, 9, 13, 7, tzinfo=timezone.utc)
 LEDGER = builder.ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
@@ -826,45 +826,15 @@ def test_same_day_change_log_names_the_approximation_correction() -> None:
         assert "開扉" in entry["summary"] or "扉を開" in entry["summary"], slug
 
 
-# Bodies this batch changed against the batch base, read from the batch's own
-# commits plus the working tree. Hub and entry pages have no listing of their
-# own, so only the article rows below carry a change_log. The batch's commits
-# are "KS W4a" on the candidate branch and the squashed "KS W4: …" commit that
-# carries W4a and W4b together on the PR branch; every body in either candidate
-# owes /updates/ the same card, so the wider set only strengthens the rule.
-BATCH_SUBJECTS = ("KS W4a", "KS W4:")
-ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
-
-
-def _git(*arguments: str) -> str:
-    return subprocess.run(
-        ("git", *arguments),
-        cwd=builder.ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout
-
-
-def _batch_body_days() -> dict[str, str]:
-    """Each body this batch changed, with the day it last changed."""
-    log = _git("log", "--format=%H%x1f%ad%x1f%s", "--date=short", "HEAD")
-    rows = [line.split("\x1f") for line in log.splitlines() if line]
-    batch = [
-        (sha, day) for sha, day, subject in rows if subject.startswith(BATCH_SUBJECTS)
-    ]
-    assert batch, BATCH_SUBJECTS
-    days: dict[str, str] = {}
-    for sha, day in batch:
-        for path in _git("show", "--name-only", "--format=", sha).splitlines():
-            if path.startswith(ARTICLE_PREFIX) and path.endswith(".html"):
-                days[path] = max(days.get(path, ""), day)
-    # Work still in the tree belongs to the batch's latest day.
-    latest = max(day for _, day in batch)
-    for path in _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines():
-        if path.endswith(".html"):
-            days[path] = max(days.get(path, ""), latest)
-    return days
+# Bodies this batch changed, read from the publication record rather than from
+# git. The subject of the commit that carries them and the position of
+# ``origin/main`` are both properties of the branch this runs on -- a squash
+# merge rewrites the first and moves the second onto these very bodies -- so the
+# batch is taken from ``status.v1.json`` and cross-checked against the ledger and
+# the generated /updates/ page in ``test_ks_integrated_records.py``. Hub and
+# entry pages have no listing of their own, so only article rows carry a
+# change_log; W4a and W4b published on the same day and every body in either one
+# owes /updates/ the same card, so the rule is stated over both.
 
 
 def test_every_body_this_batch_changed_reports_the_change_on_updates() -> None:
@@ -874,17 +844,15 @@ def test_every_body_this_batch_changed_reports_the_change_on_updates() -> None:
     batch while their listing stopped at 2026-09-13, so /updates/ under-reported
     the batch next to the cards it did write for 41 and 549.
     """
-    bodies = _batch_body_days()
-    assert bodies, "the batch changed no article body"
-    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
-    rows = {a["body_source"]: a for a in ledger["articles"] if a.get("body_source")}
-    missing = []
-    for path, day in sorted(bodies.items()):
-        listing = rows.get(path, {}).get("listing") or {}
-        if "change_log" not in listing:
-            continue
-        if day not in {entry["date"] for entry in listing["change_log"]}:
-            missing.append((rows[path]["slug"], day))
+    bodies = ks_w4_batch.batch_article_documents()
+    assert len(bodies) >= 13, sorted(bodies)
+    rows = ks_w4_batch.ledger_rows()
+    missing = [
+        slug
+        for slug in sorted(bodies)
+        if ks_w4_batch.PUBLISH_DAY
+        not in {entry["date"] for entry in ks_w4_batch.change_log(rows[slug])}
+    ]
     assert missing == []
 
 

@@ -19,6 +19,7 @@ depend on regenerated outputs. No `\\b` is used next to Japanese text.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import hashlib
 import json
 import re
 
@@ -31,7 +32,7 @@ from raos.application.editorial.purchase_support import (
     resolve_product_media,
 )
 from raos.application.editorial.reader_html import Element, fragment
-from tests.purchase_support import phone_table_frames
+from tests.purchase_support import ks_w4_batch, phone_table_frames
 
 THEME_CSS = (
     builder.ROOT
@@ -409,6 +410,9 @@ W4A_BRANCH = "claude/ks-w4a-20260916"
 RECORD_TERMS = ("軸名", "座席下", "開閉構造")
 
 
+ARTICLE_BODIES = builder.ROOT / "changes/wordpress-direct-publish-v1/articles"
+
+
 def articles_record() -> dict[str, dict]:
     return json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
 
@@ -559,3 +563,60 @@ def test_changed_approved_layouts_record_the_owner_review() -> None:
         assert len(w3) == 1, slug
         assert w3[0]["tasks"] and all(t.startswith("KS-") for t in w3[0]["tasks"])
         assert w3[0]["source_paths"]
+
+
+def published_documents() -> dict[str, set[str]]:
+    """Candidate id -> the documents that candidate published."""
+    status = json.loads(STATUS.read_text(encoding="utf-8"))
+    return {
+        batch["candidate_id"]: set(batch.get("documents", []))
+        for batch in status["batches"].values()
+        if batch.get("publication_status") == PUBLISHED
+    }
+
+
+def test_accepted_records_name_the_body_a_reader_can_open() -> None:
+    """The two identifiers in an acceptance must resolve to the published body.
+
+    ``body_sha256`` and ``snapshot_id`` are the whole point of the record -- they
+    say *which* body the owner accepted -- and nothing checked them against the
+    body. Overwriting 549's digest with 64 zeros and its snapshot id with
+    ``ps-0…`` left tests/purchase_support and tests/wordpress_public_acceptance
+    green, so the record could drift away from the article at the next
+    regeneration without a word.
+    """
+    documents = published_documents()
+    for slug, entry in sorted(articles_record().items()):
+        accepted = entry.get("latest_accepted")
+        if accepted is None:
+            continue
+        raw = (ARTICLE_BODIES / f"{slug}.html").read_bytes()
+        assert accepted["body_sha256"] == hashlib.sha256(raw).hexdigest(), slug
+        assert accepted["snapshot_id"] in raw.decode("utf-8"), (
+            slug,
+            accepted["snapshot_id"],
+        )
+        # The candidate the record names must be the one that carried this body.
+        published = documents.get(accepted["shared_candidate"])
+        assert published is not None, (slug, accepted["shared_candidate"])
+        assert slug in published, (slug, sorted(published))
+
+
+def test_the_previous_acceptance_is_the_body_this_batch_corrected() -> None:
+    """The recorded before-state and the previous acceptance are the same body.
+
+    ``ks_w4_published_before.json`` holds what each body showed before the
+    2026-09-16 publish, for the card rules that have no git history to read. For
+    the three dishwasher comparisons the owner also accepted that exact body at
+    W3, so the digest recorded then is an independent check that the captured
+    before is the state readers actually saw.
+    """
+    checked = []
+    for slug, entry in sorted(articles_record().items()):
+        history = entry.get("previous_accepted") or []
+        if not history or slug not in ks_w4_batch.before_record()["bodies"]:
+            continue
+        before = ks_w4_batch.published_before(slug)
+        assert history[0]["body_sha256"] == before["body_sha256"], slug
+        checked.append(slug)
+    assert len(checked) == 3, checked
