@@ -416,6 +416,58 @@ def compose_override(candidate_dir: Path, mounts: list[dict]) -> Path:
     return override
 
 
+def record_preview_copy_for_run(candidate: dict, relative: str) -> None:
+    """Contract §5/§8: a run-bound preview records the copy it is about to freeze.
+
+    ``theme-<injected tree sha256>`` is written under the preview base at *preview* time, which
+    is before ``publish`` reserves anything, and the §5 needle sweep can only find such a copy
+    through the injected hashes the approval records at publish. A candidate that is previewed
+    and never published - the documented "the preview showed a problem, do not publish" case,
+    and any abandoned prepare - therefore left the whole frozen injected theme on disk while
+    the run still answered PURGED. The run's own record closes that: ``sweep_local_copies``
+    enumerates and deletes the copy from it, and ``run_status`` refuses PURGED while it exists.
+
+    Fail closed: a candidate that names a run but cannot be recorded freezes nothing. Only
+    this CLI's own code leaves the function, so nothing the store refused reaches stdout.
+    """
+    bound = candidate.get("price_overlay")
+    if not isinstance(bound, dict):
+        # A plain owner-direct preview has no run and freezes no injected bytes.
+        return
+    for entry in (str(ROOT), str(ROOT / "python")):
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from raos.adapters import rakuten_price_refresh_client as client
+
+    try:
+        # The record must live in the checkout the copy lands in, which for a run-bound
+        # preview is the owner checkout ``verify_price_overlay_candidate`` already pinned.
+        client.record_preview_copy(
+            client.PrivateStore(ROOT), bound.get("run_id"), relative
+        )
+    except client.RefreshError, OSError, ValueError, TypeError, KeyError:
+        raise ValueError("DIRECT_PREVIEW_PREVIEW_COPY_RECORD_FAILED") from None
+
+
+def freeze_display_theme(candidate: dict, private: Path, theme: Path) -> Path:
+    """Freeze the display theme as ``<preview base>/theme-<tree>``, recorded before it is written.
+
+    The directory name is the injected tree hash and its runtime JSON holds the injected body
+    hashes, so this copy is price-recoverable (contract §3, §8): recording comes first so an
+    interrupted copy is swept like a finished one.
+    """
+    theme_sha = _theme_tree(theme)
+    record_preview_copy_for_run(candidate, "theme-" + theme_sha)
+    frozen = private / ("theme-" + theme_sha)
+    if not frozen.exists():
+        shutil.copytree(theme, frozen, symlinks=False)
+    if _theme_tree(frozen) != theme_sha:
+        raise ValueError("DIRECT_PREVIEW_THEME_CHANGED")
+    for path in [frozen, *frozen.rglob("*")]:
+        path.chmod(0o755 if path.is_dir() else 0o644)
+    return frozen
+
+
 def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     planned = preview_plan(candidate, candidate_dir)
     images = product_image_mirror(candidate, candidate_dir, fetch=download_product_image)
@@ -460,15 +512,10 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
         if candidate.get("theme")
         else THEME
     )
-    theme_sha = _theme_tree(theme)
-    # Freeze the display theme even when it is not being deployed by this candidate.
-    frozen_theme = private / ("theme-" + theme_sha)
-    if not frozen_theme.exists():
-        shutil.copytree(theme, frozen_theme, symlinks=False)
-    if _theme_tree(frozen_theme) != theme_sha:
-        raise ValueError("DIRECT_PREVIEW_THEME_CHANGED")
-    for path in [frozen_theme, *frozen_theme.rglob("*")]:
-        path.chmod(0o755 if path.is_dir() else 0o644)
+    # Freeze the display theme even when it is not being deployed by this candidate. A
+    # run-bound candidate records the copy in its run directory before it is written, so the
+    # §5 sweep reaches it with no publish record to find it by.
+    frozen_theme = freeze_display_theme(candidate, private, theme)
     environment.update(
         {
             "RAOS_REPOSITORY_ROOT": str(ROOT),

@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import socket
 import stat
 import subprocess
@@ -1928,6 +1929,7 @@ def test_gate_and_fetch_refuse_until_the_purge_publish_or_an_owner_incident_reso
             "record_state": "PURGED",
             "candidate_directories_deleted": 1,
             "preview_copies_deleted": 1,
+            "preview_copy_records_deleted": 0,
         },
     )
     assert not stray.exists() and not fixture.exists()
@@ -2283,6 +2285,170 @@ def test_a_loose_file_under_the_preview_base_blocks_until_it_is_swept(owner, cap
     assert run_status(store, RUN_ID)[0] == "PURGED"
 
 
+PREVIEW_COPIES_FILE = "preview-copies.v1.json"
+FROZEN = "theme-" + "9" * 64
+
+
+def record_copy(store, name=FROZEN, *, hand=False, **overrides):
+    """Record a preview copy the way the preview does, or (``hand``) write the file by hand."""
+    from raos.adapters.rakuten_price_refresh_client import (
+        PREVIEW_COPIES_SCHEMA,
+        record_preview_copy,
+    )
+
+    if not overrides and not hand:
+        return record_preview_copy(store, RUN_ID, name, T0)
+    store.write_json(
+        store.run_directory(RUN_ID) / PREVIEW_COPIES_FILE,
+        {
+            "schema": PREVIEW_COPIES_SCHEMA,
+            "run_id": RUN_ID,
+            "copies": [name],
+            "recorded_at": rpr.iso(T0),
+            **overrides,
+        },
+        replace=True,
+    )
+    return None
+
+
+def test_a_recorded_preview_copy_is_deleted_by_the_record_not_by_content(owner, capsys):
+    """Round 11 review: a preview that is never published leaves no needle to find it by.
+
+    The frozen theme carries only injected hashes, and those reach ``leak_needles`` from the
+    approval's publish records. The preview writes its name into the run directory before it
+    freezes anything, and that record is what the sweep follows.
+    """
+    from raos.adapters.rakuten_price_refresh_client import (
+        expired_unpurged_runs,
+        local_copies,
+        run_status,
+    )
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    frozen = root / PREVIEW_RELATIVE / FROZEN
+    (frozen / "assets").mkdir(parents=True)
+    # No marker, no value, no hash any record names: the content sweep cannot see it.
+    (frozen / "assets/purchase-support.v1.json").write_text('{"articles": []}')
+    assert store.preview_copies_containing(["anything"]) == []
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+    assert record_copy(store) == [FROZEN]
+    assert local_copies(store, RUN_ID, None, None)[1] == [FROZEN]
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    assert stat.S_IMODE((directory / PREVIEW_COPIES_FILE).stat().st_mode) == 0o600
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["preview_copies_deleted"], report["preview_copy_records_deleted"]) == (
+        0,
+        1,
+        1,
+    )
+    assert not frozen.exists() and not (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+
+def test_the_record_is_kept_while_any_copy_it_names_is_still_there(owner):
+    """It only goes once the copies do: its own ``copies`` are the frozen tree hashes."""
+    from raos.adapters.rakuten_price_refresh_client import (
+        discard_preview_copy_record,
+        recorded_preview_copies,
+        run_status,
+    )
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    other = "theme-" + "8" * 64
+    assert record_copy(store) == [FROZEN]
+    assert record_copy(store, other) == sorted([FROZEN, other])
+    # Recording the same copy twice does not grow the record.
+    assert record_copy(store, other) == sorted([FROZEN, other])
+    assert recorded_preview_copies(store, RUN_ID) == sorted([FROZEN, other])
+    kept = root / PREVIEW_RELATIVE / other
+    kept.mkdir(parents=True)
+    assert discard_preview_copy_record(store, RUN_ID) is False
+    assert (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    shutil.rmtree(kept)
+    assert discard_preview_copy_record(store, RUN_ID) is True
+    assert not (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+
+@pytest.mark.parametrize(
+    "name",
+    ["", ".", "..", "../sentinel.txt", "fixtures/articles/a.html", "a\\b", "x" * 256],
+)
+def test_a_recorded_name_that_leaves_the_preview_base_is_refused(owner, name):
+    from raos.adapters.rakuten_price_refresh_client import record_preview_copy, run_status
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    sentinel = root / ".secrets/sentinel.txt"
+    sentinel.write_text("keep")
+    with pytest.raises(rpr.RefreshError, match="PREVIEW_COPY_NAME_INVALID"):
+        record_preview_copy(store, RUN_ID, name, T0)
+    assert not (directory / PREVIEW_COPIES_FILE).exists()
+    # Nor through a hand-written record: reading one refuses the same way, so the sweep
+    # never receives a path that could leave the preview base.
+    from raos.adapters.rakuten_price_refresh_client import preview_copy_record
+
+    record_copy(store, name, hand=True)
+    with pytest.raises(rpr.RefreshError, match="PREVIEW_COPY_NAME_INVALID"):
+        preview_copy_record(store, RUN_ID)
+    assert sentinel.read_text() == "keep"
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"schema": "RAOS_SOMETHING_ELSE_V1"},
+        {"run_id": "ks020-synthetic-0002"},
+        {"copies": []},
+        {"copies": ["theme-" + "9" * 64] * 65},
+        {"copies": "theme-x"},
+        {"recorded_at": "not-a-time"},
+        {"extra": 1},
+    ],
+)
+def test_an_unreadable_preview_copy_record_keeps_the_run_blocked(owner, capsys, overrides):
+    """Fail closed: the sweep refuses loudly rather than reaching PURGED past a broken record."""
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    root, _plan_path = owner
+    store, _directory = purged_run(root)
+    record_copy(store, **overrides)
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    assert (code, lines[-1]["result"]) == (2, "REFUSED")
+    assert lines[-1]["code"] in {
+        "PREVIEW_COPY_RECORD_INVALID",
+        "PREVIEW_COPY_NAME_INVALID",
+        "TIMESTAMP_INVALID",
+    }
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+
+
+def test_delete_run_file_only_removes_a_plain_file_of_the_run(owner, tmp_path):
+    from raos.adapters.rakuten_price_refresh_client import PREVIEW_COPIES_FILE as NAME
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    for name in ("", ".", "..", "../approval.v1.json", "raw/a.json"):
+        with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+            store.delete_run_file(RUN_ID, name)
+    assert (directory / "approval.v1.json").exists()
+    assert store.delete_run_file(RUN_ID, NAME) is False
+    link = directory / NAME
+    link.symlink_to(directory / "approval.v1.json")
+    with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+        store.delete_run_file(RUN_ID, NAME)
+    assert (directory / "approval.v1.json").exists()
+
+
 @pytest.mark.parametrize("kind", ["mode-0644", "hardlink"])
 def test_a_stale_leftover_that_is_not_a_private_single_link_file_is_refused(owner, kind):
     from raos.adapters.rakuten_price_refresh_client import STALE_TMP_SECONDS
@@ -2335,6 +2501,38 @@ def test_resolve_incident_records_nothing_while_a_local_copy_survives_the_sweep(
     )
     assert (code, lines[-1]["code"]) == (2, "LOCAL_COPIES_REMAIN")
     assert stray.exists()
+    assert not (directory / "incident-resolution.v1.json").exists()
+    assert not (directory / "plugin-cleanup.v1.json").exists()
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+
+
+def test_resolve_incident_records_nothing_while_the_preview_record_survives_the_sweep(
+    owner, capsys, monkeypatch
+):
+    """The record names the frozen tree, so it blocks the resolution like a copy would.
+
+    ``sweep_local_copies`` normally drops it in the same call; a copy frozen between the sweep
+    and the check (the reason the post-sweep check exists at all) leaves it behind, which the
+    stubbed delete stands in for here.
+    """
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    (directory / "incident-resolution.v1.json").unlink()
+    (directory / "plugin-cleanup.v1.json").unlink()
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+    record_copy(store)
+    monkeypatch.setattr(PrivateStore, "delete_run_file", lambda self, run_id, name: False)
+    code, lines = run(
+        ["resolve-incident", "--owner-checkout", root, "--run-id", RUN_ID,
+         "--resolution", "WORDPRESS_POSTS_WITHDRAWN", "--owner-confirmed-price-free", RUN_ID,
+         "--owner-confirmed-plugin-cleanup", "PLUGIN_COPIES_REMOVED:" + RUN_ID],
+        capsys,
+        clock=lambda: T0 + timedelta(hours=25),
+    )
+    assert (code, lines[-1]["code"]) == (2, "LOCAL_COPIES_REMAIN")
+    assert (directory / PREVIEW_COPIES_FILE).exists()
     assert not (directory / "incident-resolution.v1.json").exists()
     assert not (directory / "plugin-cleanup.v1.json").exists()
     assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"

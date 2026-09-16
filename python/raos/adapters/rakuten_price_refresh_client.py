@@ -67,6 +67,39 @@ STAGING_PREFIX: Final = ".staging-"
 # A replace write leaves <file>.tmp only when it was interrupted between create and rename;
 # a younger one may belong to a concurrent writer and is never removed.
 STALE_TMP_SECONDS: Final = 60
+# scripts/raos_wordpress_direct_preview.py freezes the injected display theme as
+# ``<preview base>/theme-<injected tree sha256>`` at *preview* time - before any publish record
+# exists. The needle sweep takes its injected hashes from the approval's publish records, so a
+# run that is previewed and never published left that copy (and the injected body hashes inside
+# it) where nothing could find it. The preview records what it is about to freeze in the run's
+# own directory instead, and the sweep deletes it from there (contract §5).
+PREVIEW_COPIES_SCHEMA: Final = "RAOS_RAKUTEN_PRICE_OVERLAY_PREVIEW_COPIES_V1"
+PREVIEW_COPIES_FILE: Final = "preview-copies.v1.json"
+# A run previews a handful of candidates at most; a record that grew past this is not one of
+# ours, and the sweep must never be handed an unbounded list of paths to delete.
+MAX_PREVIEW_COPIES: Final = 64
+
+
+def require_preview_copy_name(relative: object) -> str:
+    """One path segment directly under the preview base: all a preview may record.
+
+    ``theme-<tree>`` today. Refused here rather than in ``delete_preview_copy``, so a
+    hand-edited record cannot aim the sweep at a path outside the preview base. Each clause
+    carries its own case: ``name`` is the last segment, so it differs from the whole string
+    for anything holding ``/`` and is empty for ``"."``; the length bound refuses ``""``,
+    which ``name`` lets through; ``".."`` is a segment as far as ``name`` is concerned, so it
+    is named; and ``\\`` - legal on POSIX, a separator elsewhere - is refused so a recorded
+    name means one thing wherever the record is read.
+    """
+    if (
+        not isinstance(relative, str)
+        or not 1 <= len(relative) <= 255
+        or PurePosixPath(relative).name != relative
+        or relative == ".."
+        or "\\" in relative
+    ):
+        fail("PREVIEW_COPY_NAME_INVALID")
+    return relative
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -538,6 +571,35 @@ class PrivateStore:
             return True
         return False
 
+    def preview_copy_exists(self, relative: str) -> bool:
+        """Whether a *recorded* preview copy is still on disk (symlinks count as present).
+
+        Never follows a link and never reads: a symlink where the copy should be is reported
+        as present so ``delete_preview_copy`` gets to refuse it (PRIVATE_PATH_UNSAFE) instead
+        of the run quietly reaching PURGED.
+        """
+        path = self.owner_checkout / PREVIEW_PRIVATE_RELATIVE / require_preview_copy_name(relative)
+        return path.is_symlink() or path.exists()
+
+    def delete_run_file(self, run_id: str, name: str) -> bool:
+        """Delete one bookkeeping file of a run directory (the preview-copy record).
+
+        The record names ``theme-<injected tree sha256>``, so it is price-recoverable itself
+        and has to die with the copies it points at.
+        """
+        if PurePosixPath(name).name != name or name in {"", ".", ".."}:
+            fail("PRIVATE_PATH_UNSAFE")
+        directory = self.run_directory(run_id)
+        if directory.is_symlink():
+            fail("PRIVATE_PATH_UNSAFE")
+        path = directory / name
+        if path.is_symlink():
+            fail("PRIVATE_PATH_UNSAFE")
+        if not path.is_file():
+            return False
+        path.unlink()
+        return True
+
     def delete_owner_direct_candidate(self, candidate_id: object) -> bool:
         """Delete one publisher candidate directory (injected bodies, runtime, theme, journal):
         ``<candidate_id>`` or an interrupted ``.staging-<name>``."""
@@ -627,6 +689,77 @@ def plugin_cleanup(store: PrivateStore, run_id: str) -> dict[str, Any] | None:
     return record
 
 
+def preview_copy_record(store: PrivateStore, run_id: str) -> dict[str, Any] | None:
+    """The run's own record of what its previews froze under the preview base (contract §5)."""
+    path = store.run_directory(run_id) / PREVIEW_COPIES_FILE
+    if not path.exists():
+        return None
+    record = store.read_json(path)
+    if (
+        not isinstance(record, dict)
+        or set(record) != {"schema", "run_id", "copies", "recorded_at"}
+        or record["schema"] != PREVIEW_COPIES_SCHEMA
+        or record["run_id"] != run_id
+        or not isinstance(record["copies"], list)
+        or not 1 <= len(record["copies"]) <= MAX_PREVIEW_COPIES
+    ):
+        fail("PREVIEW_COPY_RECORD_INVALID")
+    for name in record["copies"]:
+        require_preview_copy_name(name)
+    parse_time(record["recorded_at"])
+    return record
+
+
+def recorded_preview_copies(store: PrivateStore, run_id: str) -> list[str]:
+    record = preview_copy_record(store, run_id)
+    return list(record["copies"]) if record is not None else []
+
+
+def record_preview_copy(
+    store: PrivateStore,
+    run_id: str,
+    relative: str,
+    now: datetime | None = None,
+) -> list[str]:
+    """Record a preview copy *before* it is written (contract §5, §8).
+
+    The copy is named after the injected theme tree and holds the injected body hashes, so it
+    is price-recoverable; but it is frozen at preview time, when the approval has no publish
+    record for the needle sweep to work from. This is the only thing that can find it when the
+    candidate is never published. Written first, so an interrupted preview is covered too, and
+    the caller must fail closed when this raises: nothing may be frozen unrecorded.
+    """
+    run_id = require_run_id(run_id)
+    name = require_preview_copy_name(relative)
+    existing = preview_copy_record(store, run_id)
+    copies = sorted({*(existing["copies"] if existing else ()), name})
+    if len(copies) > MAX_PREVIEW_COPIES:
+        fail("PREVIEW_COPY_RECORD_FULL")
+    if existing is not None and existing["copies"] == copies:
+        return copies
+    store.write_json(
+        store.run_directory(run_id) / PREVIEW_COPIES_FILE,
+        {
+            "schema": PREVIEW_COPIES_SCHEMA,
+            "run_id": run_id,
+            "copies": copies,
+            "recorded_at": iso(now if now is not None else datetime.now(UTC)),
+        },
+        replace=existing is not None,
+    )
+    return copies
+
+
+def discard_preview_copy_record(store: PrivateStore, run_id: str) -> bool:
+    """Delete the record once every copy it names is gone: it names them, so it leaks too."""
+    record = preview_copy_record(store, run_id)
+    if record is None:
+        return False
+    if any(store.preview_copy_exists(name) for name in record["copies"]):
+        return False
+    return store.delete_run_file(run_id, PREVIEW_COPIES_FILE)
+
+
 def local_copy_needles(
     run_id: str, overlay: object, approval: object
 ) -> tuple[set[str], list[str]]:
@@ -667,7 +800,15 @@ def local_copies(
         if len(c) == 64 and all(ch in "0123456789abcdef" for ch in c) and (base / c).exists()
     }
     candidates = sorted(recorded | set(store.owner_direct_candidates_containing(needles)))
-    return candidates, store.preview_copies_containing(needles)
+    # By content, plus what the run's previews recorded before freezing it: a preview that is
+    # never published leaves no needle anywhere, so the record is the only way to that copy.
+    previews = set(store.preview_copies_containing(needles))
+    previews.update(
+        name
+        for name in recorded_preview_copies(store, run_id)
+        if store.preview_copy_exists(name)
+    )
+    return candidates, sorted(previews)
 
 
 def sweep_local_copies(
@@ -677,9 +818,11 @@ def sweep_local_copies(
 
     Covers the ids recorded by the publisher, every interrupted ``.staging-*`` candidate,
     any candidate any of whose files still carries the run's marker, values or injected
-    hashes (for example a flag-free candidate prepared while values were live), and preview
-    copies (frozen display themes and fixtures). Run it before redacting the approval: the
-    injected hashes are what find a frozen injected theme.
+    hashes (for example a flag-free candidate prepared while values were live), preview
+    copies (frozen display themes and fixtures) found by content, and every copy the run's
+    own previews recorded before freezing it - the only handle on a candidate that was
+    previewed and never published. Run it before redacting the approval: for a published run
+    the injected hashes are what find a frozen injected theme.
     """
     candidates, previews = local_copies(store, run_id, overlay, approval)
     return {
@@ -687,6 +830,11 @@ def sweep_local_copies(
             store.delete_owner_direct_candidate(c) for c in candidates
         ),
         "preview_copies_deleted": sum(store.delete_preview_copy(p) for p in previews),
+        # Last: the record names ``theme-<injected tree sha256>`` itself, so it may only go
+        # once every copy it points at is gone.
+        "preview_copy_records_deleted": int(
+            discard_preview_copy_record(store, run_id)
+        ),
     }
 
 
@@ -775,9 +923,11 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
 
     A run whose local values are purged is PURGED only when all of these hold: the purge
     publish or an owner incident resolution is recorded; the approval carries no
-    price-recoverable id; no replace write left a .tmp; no publisher candidate or preview
-    copy still carries the run's markers or values; and the plugin's stored copies are
-    known to be gone (wordpress_redaction COMPLETE, or the owner's plugin cleanup record).
+    price-recoverable id; no replace write left a .tmp; the run holds no preview-copy record
+    (its names are price-recoverable hashes); no publisher candidate or preview copy still
+    carries the run's markers or values, and no recorded preview copy is still on disk; and
+    the plugin's stored copies are known to be gone (wordpress_redaction COMPLETE, or the
+    owner's plugin cleanup record).
     """
     directory = store.run_directory(run_id)
     has_raw = (directory / "raw").exists()
@@ -802,8 +952,12 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
                 return "PUBLISHED_NOT_PURGED", None
             if redact_approval(record) != record:
                 return "REDACTION_PENDING", None
-            if store.run_tmp_files(run_id) or any(
-                local_copies(store, run_id, overlay, record)
+            if (
+                store.run_tmp_files(run_id)
+                # The preview-copy record carries the frozen tree's name whether or not the
+                # copy is still there, so PURGED waits for the record to go as well.
+                or preview_copy_record(store, run_id) is not None
+                or any(local_copies(store, run_id, overlay, record))
             ):
                 return "REDACTION_PENDING", None
             if record.get("publish") is not None:

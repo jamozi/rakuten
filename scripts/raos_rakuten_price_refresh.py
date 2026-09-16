@@ -38,6 +38,7 @@ from raos.adapters.rakuten_price_refresh_client import (  # noqa: E402
     local_copies,
     observation_record,
     plugin_cleanup_confirmation_text,
+    preview_copy_record,
     read_refresh_credentials,
     run_status,
     scan_repository_for_overlay,
@@ -483,7 +484,13 @@ def command_resolve_incident(
     store.remove_stale_tmp_files(run_id)
     if isinstance(approval, dict) and redact_approval(approval) != approval:
         store.write_json(approval_path, redact_approval(approval), replace=True)
-    if store.run_tmp_files(run_id) or any(local_copies(store, run_id, overlay, approval)):
+    if (
+        store.run_tmp_files(run_id)
+        # The preview-copy record names ``theme-<injected tree sha256>``: it has to be gone
+        # too, not only the copies it points at.
+        or preview_copy_record(store, run_id) is not None
+        or any(local_copies(store, run_id, overlay, approval))
+    ):
         fail("LOCAL_COPIES_REMAIN")
     recorded_at = iso(_now(args.now, clock))
     # Cleanup first (replaceable): an interruption before the incident record leaves the

@@ -2233,3 +2233,346 @@ def test_purge_publish_refuses_an_injected_article_body_before_writes(owner, pub
         publish(owner, purge_directory, tampered, server, price_overlay_purge=RUN_ID)
     assert len(server.writes()) == writes, "refused before any WordPress write"
     assert approval_record(owner)["purge_publish"] is None
+
+
+# ---------------------------------------------------------------------------
+# A preview freezes the injected theme before any publish record exists
+# ---------------------------------------------------------------------------
+
+
+def freeze_theme(owner, candidate, theme, monkeypatch):
+    """Freeze one display theme exactly as the run-bound preview does."""
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    monkeypatch.setattr(preview_script, "ROOT", owner)
+    private = owner / price_overlay.PREVIEW_PRIVATE
+    private.mkdir(mode=0o700, parents=True, exist_ok=True)
+    return preview_script.freeze_display_theme(candidate, private, theme)
+
+
+def freeze(owner, candidate, directory, monkeypatch):
+    return freeze_theme(
+        owner, candidate, directory / candidate["theme"]["directory"], monkeypatch
+    )
+
+
+def tmp_theme(owner, theme, name="kept-theme"):
+    """A copy of a candidate theme, outside the checkout, that survives the purge."""
+    kept = owner.parent / name
+    shutil.copytree(theme, kept)
+    return kept
+
+
+def injected_only_hashes(owner, candidate, frozen):
+    """Body hashes the frozen theme adds to the price-free baseline: price-recoverable."""
+    def runtime(root):
+        return {
+            a["body_sha256"]
+            for a in json.loads((root / price_overlay.RUNTIME_RELATIVE).read_bytes())[
+                "articles"
+            ]
+        }
+
+    base = owner / direct.PRIVATE / candidate["price_overlay"]["base_candidate_id"]
+    return runtime(frozen) - runtime(base / "theme")
+
+
+def preview_copy_record(owner):
+    path = (
+        PrivateStore(owner).run_directory(RUN_ID)
+        / "preview-copies.v1.json"
+    )
+    return json.loads(path.read_text()) if path.exists() else None
+
+
+def purge_expired(owner, capsys, *, hours=25, extra=()):
+    capsys.readouterr()
+    code = refresh_cli.main(
+        ["purge-expired", "--owner-checkout", str(owner), "--run-id", RUN_ID, *extra],
+        clock=lambda: T0 + timedelta(hours=hours),
+    )
+    assert code == 0
+    return json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+
+
+def test_a_preview_that_is_never_published_is_recorded_and_swept(
+    owner, publisher, capsys, monkeypatch
+):
+    """Round 11 review: the frozen injected theme of an unpublished run outlived the purge.
+
+    ``prepare_candidate_preview`` freezes the injected display theme at *preview* time, under
+    ``<owner>/.secrets/wordpress-direct-preview/theme-<injected tree sha256>/``. The §5 sweep
+    finds a ``theme-*`` only by content, and the only needles that can match one are the
+    injected hashes, which ``leak_needles`` reads from ``publish``/``purge_publish``. A preview
+    that is never published (the documented "the preview showed a problem, do not publish"
+    case, and any abandoned prepare) therefore left both the directory name and the injected
+    body hashes inside it on disk for good, while ``run_status`` still answered PURGED.
+
+    The preview now records the copy in the run's own directory before it writes it, the sweep
+    deletes it from that record, and PURGED is refused while the record exists.
+    """
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    frozen = freeze(owner, candidate, directory, monkeypatch)
+    body_hashes = injected_only_hashes(owner, candidate, frozen)
+    assert body_hashes and all(len(h) == 64 for h in body_hashes)
+    # Recorded at preview time, in the run's own directory: no publish exists to find it by.
+    record = preview_copy_record(owner)
+    assert record["run_id"] == RUN_ID and record["copies"] == [frozen.name]
+    assert stat.S_IMODE(
+        (PrivateStore(owner).run_directory(RUN_ID) / "preview-copies.v1.json").stat().st_mode
+    ) == 0o600
+    store = PrivateStore(owner)
+
+    report = purge_expired(owner, capsys)
+    assert report["result"] == "PURGED"
+    assert report["preview_copies_deleted"] == 1
+    assert report["preview_copy_records_deleted"] == 1
+    assert not frozen.exists()
+    assert preview_copy_record(owner) is None
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    # Nothing under the whole owner checkout still names the injected tree or its bodies.
+    names = " ".join(str(p) for p in (owner / ".secrets").rglob("*"))
+    text = b"".join(
+        p.read_bytes() for p in (owner / ".secrets").rglob("*") if p.is_file()
+    )
+    for needle in {frozen.name[len("theme-"):], *body_hashes}:
+        assert needle not in names and needle.encode() not in text, needle
+
+
+def test_a_recorded_preview_copy_that_is_still_on_disk_refuses_purged(
+    owner, publisher, capsys, monkeypatch
+):
+    """A copy that reappears (or a sweep that could not finish) keeps the run blocked."""
+    from raos.adapters.rakuten_price_refresh_client import (
+        expired_unpurged_runs,
+        run_status,
+    )
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    frozen = freeze(owner, candidate, directory, monkeypatch)
+    # The purge deletes the candidate directory, so keep the injected theme to freeze again.
+    kept = tmp_theme(owner, directory / candidate["theme"]["directory"])
+    store = PrivateStore(owner)
+    assert purge_expired(owner, capsys)["result"] == "PURGED"
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+    # The same preview run again after the purge: recorded first, so it blocks immediately.
+    assert freeze_theme(owner, candidate, kept, monkeypatch) == frozen
+    assert preview_copy_record(owner)["copies"] == [frozen.name]
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0 + timedelta(hours=26)) == [RUN_ID]
+    report = purge_expired(owner, capsys, hours=26)
+    assert (report["result"], report["preview_copies_deleted"]) == ("ALREADY_PURGED", 1)
+    assert not frozen.exists() and preview_copy_record(owner) is None
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+    # The record alone - the copy already gone - still blocks: its name is the injected tree.
+    freeze_theme(owner, candidate, kept, monkeypatch)
+    shutil.rmtree(frozen)
+    assert preview_copy_record(owner)["copies"] == [frozen.name]
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    report = purge_expired(owner, capsys, hours=27)
+    assert (report["preview_copies_deleted"], report["preview_copy_records_deleted"]) == (0, 1)
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+
+def test_two_previews_of_one_run_are_both_recorded_and_both_swept(
+    owner, publisher, capsys, monkeypatch
+):
+    """Both previews of a run are recorded, and the purge publish sweeps both from the record.
+
+    The publish candidate's frozen theme is deleted by name (``delete_local_injected_copies``
+    knows the published candidate id). The purge candidate's is not: it restores the price-free
+    bytes, so it carries no marker, no value and no hash any record names - the content sweep
+    cannot see it. Only the run's own preview-copy record reaches it.
+    """
+    from raos.adapters.rakuten_price_refresh_client import (
+        local_copies,
+        local_copy_needles,
+        run_status,
+    )
+
+    overlay = write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    injected = freeze(owner, candidate, directory, monkeypatch)
+    # Previewing the same candidate twice records one copy, not two.
+    assert freeze(owner, candidate, directory, monkeypatch) == injected
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    purge, purge_directory = prepare_overlay(owner, server, purge=RUN_ID)
+    restored = freeze(owner, purge, purge_directory, monkeypatch)
+    assert restored != injected
+    assert preview_copy_record(owner)["copies"] == sorted({injected.name, restored.name})
+    store = PrivateStore(owner)
+    assert run_status(store, RUN_ID)[0] != "PURGED"
+
+    # The content sweep sees the injected theme and nothing else; the record adds the other.
+    needles = local_copy_needles(RUN_ID, overlay, approval_record(owner))[1]
+    assert store.preview_copies_containing(needles) == [injected.name]
+    assert local_copies(store, RUN_ID, overlay, approval_record(owner))[1] == sorted(
+        {injected.name, restored.name}
+    )
+
+    publish(owner, purge_directory, purge, server, price_overlay_purge=RUN_ID)
+    # The purge publish sweeps both and drops the record, whose names are the frozen trees.
+    assert not injected.exists() and not restored.exists()
+    assert preview_copy_record(owner) is None
+    report = purge_expired(owner, capsys)
+    assert (report["preview_copies_deleted"], report["preview_copy_records_deleted"]) == (0, 0)
+    assert run_status(store, RUN_ID)[0] == "WORDPRESS_REDACTION_UNCONFIRMED"
+    names = " ".join(str(p) for p in (owner / ".secrets").rglob("*"))
+    for frozen in (injected, restored):
+        assert frozen.name[len("theme-"):] not in names
+
+
+def test_an_interrupted_preview_records_the_copy_before_it_writes_it(
+    owner, publisher, capsys, monkeypatch
+):
+    """The record is written first, so a preview killed mid-copy is still swept.
+
+    Fail-closed both ways: a record that cannot be written stops the preview before anything
+    is frozen, and a copy that was half written is deleted from the record like a whole one.
+    """
+    from raos.adapters.rakuten_price_refresh_client import run_status
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    theme = directory / candidate["theme"]["directory"]
+    expected = "theme-" + preview_script._theme_tree(theme)
+
+    def interrupted(source, target, **kwargs):
+        Path(target).mkdir(parents=True)
+        (Path(target) / price_overlay.RUNTIME_RELATIVE).parent.mkdir(
+            parents=True, exist_ok=True
+        )
+        shutil.copyfile(
+            Path(source) / price_overlay.RUNTIME_RELATIVE,
+            Path(target) / price_overlay.RUNTIME_RELATIVE,
+        )
+        raise KeyboardInterrupt("preview killed while copying")
+
+    with monkeypatch.context() as killed:
+        killed.setattr(preview_script.shutil, "copytree", interrupted)
+        with pytest.raises(KeyboardInterrupt):
+            freeze(owner, candidate, directory, monkeypatch)
+    partial = owner / price_overlay.PREVIEW_PRIVATE / expected
+    assert partial.is_dir()
+    assert preview_copy_record(owner)["copies"] == [expected]
+    store = PrivateStore(owner)
+    assert run_status(store, RUN_ID)[0] != "PURGED"
+    report = purge_expired(owner, capsys)
+    assert (report["result"], report["preview_copies_deleted"]) == ("PURGED", 1)
+    assert not partial.exists() and preview_copy_record(owner) is None
+
+
+def test_a_preview_whose_record_cannot_be_written_freezes_nothing(
+    owner, publisher, monkeypatch
+):
+    from raos.adapters import rakuten_price_refresh_client as client
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    monkeypatch.setattr(
+        client, "record_preview_copy", lambda *a, **k: client.fail("PRIVATE_TMP_BUSY")
+    )
+    with pytest.raises(ValueError, match="DIRECT_PREVIEW_PREVIEW_COPY_RECORD_FAILED"):
+        freeze(owner, candidate, directory, monkeypatch)
+    private = owner / price_overlay.PREVIEW_PRIVATE
+    assert [p.name for p in private.iterdir()] == []
+    assert preview_copy_record(owner) is None
+    # A candidate with no run records nothing and still freezes (the plain preview path).
+    plain = {k: v for k, v in candidate.items() if k != "price_overlay"}
+    frozen = preview_script.freeze_display_theme(
+        plain, private, directory / candidate["theme"]["directory"]
+    )
+    assert frozen.is_dir() and preview_copy_record(owner) is None
+
+
+def test_prepare_candidate_preview_writes_the_override_inside_the_candidate_directory(
+    owner, publisher, monkeypatch
+):
+    """Round 11 review: the helper was pinned, its caller was not.
+
+    ``compose_override`` writing into the candidate directory proves nothing on its own - the
+    round 10 shape (``compose_override(private, mounts)``) survived every test because
+    ``prepare_candidate_preview`` needs docker and was stubbed everywhere. This drives the real
+    function with the docker runs, the login poll and the browser stubbed out, and asserts what
+    it actually does: the override lands inside the candidate directory, that exact path is the
+    one handed to ``docker compose --file``, nothing is left loose under the preview base, and
+    the frozen theme it writes there is recorded in the run's own directory first.
+    """
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    private = owner / price_overlay.PREVIEW_PRIVATE
+    commands = []
+
+    class Login:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_exception):
+            return False
+
+    def fake_run(command, *, environment, input_text=None, timeout=180, check=True):
+        commands.append(list(command))
+        stdout = ""
+        if "eval-file" in command:
+            stdout = "DIRECT_PREVIEW_SEEDED\n"
+        elif command[-1].endswith("browser-input.json"):
+            stdout = json.dumps(
+                {"status": "PASS", "screenshots": [], "failures": []}
+            )
+        return subprocess.CompletedProcess(command, 0, stdout, "")
+
+    monkeypatch.setattr(preview_script, "ROOT", owner)
+    monkeypatch.setattr(preview_script, "_run", fake_run)
+    monkeypatch.setattr(preview_script, "urlopen", lambda *a, **k: Login())
+    monkeypatch.setattr(preview_script, "_yoast", lambda p, e: p / "plugins/wordpress-seo")
+    monkeypatch.setattr(
+        preview_script, "download_product_image", lambda url: (b"", "image/webp")
+    )
+
+    # What scripts/raos_wordpress_direct_publish.py hands it: injected bodies are checked by
+    # their own hash, exactly as patch bodies are.
+    view = price_overlay.preview_view(candidate)
+    report = preview_script.prepare_candidate_preview(view, directory)
+    assert report["status"] == "PASS"
+
+    override = directory / "compose.override.yaml"
+    assert override.is_file(), "the override must live in the unit the run deletes"
+    # Every docker compose invocation names that exact path, and no other override.
+    composes = [c for c in commands if "compose" in c and "--file" in c]
+    assert composes
+    for command in composes:
+        files = [c[i + 1] for i, c in ((i, command) for i, v in enumerate(command) if v == "--file")]
+        assert files == [str(preview_script.SLICE / "compose.yaml"), str(override)]
+    body = override.read_bytes()
+    frozen = private / ("theme-" + preview_script._theme_tree(directory / "theme"))
+    assert frozen.is_dir()
+    assert str(directory.resolve()).encode() in body and str(frozen).encode() in body
+    # The only loose file under the preview base is the preview's own generated credentials
+    # (random hex, no injected bytes): that base is where the override used to be written.
+    assert sorted(p.name for p in private.iterdir() if p.is_file()) == ["credentials.env"]
+    assert all(
+        candidate["candidate_id"].encode() not in path.read_bytes()
+        and frozen.name.encode() not in path.read_bytes()
+        for path in private.rglob("*")
+        if path.is_file() and not path.is_relative_to(frozen)
+    )
+    # And the frozen theme this call wrote is recorded in the run, before it was written.
+    assert preview_copy_record(owner)["copies"] == [frozen.name]
