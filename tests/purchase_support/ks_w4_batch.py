@@ -46,6 +46,16 @@ BEFORE = Path(__file__).with_name("ks_w4_published_before.json")
 PUBLISH_DAY = "2026-09-16"
 #: The two candidates of this batch, in publication order.
 BATCH_NAMES = ("W4a", "W4b")
+#: The commit ``ks_w4_published_before.json`` was captured from: ``origin/main``
+#: when this batch was written -- 「暮らしのしるべ: KS バッチG」 (PR #292), already on
+#: main and so in every clone that has history. It is pinned by sha rather than
+#: by ``origin/main`` because a squash merge moves that name onto the published
+#: bodies themselves, and by a *main* commit rather than by this batch's own
+#: candidates (``ad936713`` / ``9fa8ee45``), which exist only in local branches.
+#: Batch G changed no article body, so these are the bodies the batch published
+#: over. ``test_the_before_record_is_the_bodies_at_the_pinned_main_commit``
+#: re-derives the whole record from it.
+PRE_PUBLISH_COMMIT = "e128783af2f0417cbfeaf712030b3cc04312f526"
 PUBLISHED = "PUBLISHED_AND_READBACK_VERIFIED"
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
 

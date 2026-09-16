@@ -14,8 +14,10 @@ so a record cannot narrow the scope of its own audit by dropping a document.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
 
 from tests.purchase_support import ks_w4_batch
@@ -254,24 +256,67 @@ def test_evaluation_record_lists_every_published_batch_and_defers_decision() -> 
     assert not PDF_NUMERIC_PHRASE.search(text), PDF_NUMERIC_PHRASE.search(text)
 
 
+#: One `## ` section of a record, heading included.
+SECTION = re.compile(r"^## .*?(?=^## |\Z)", re.M | re.S)
+#: The sections that describe a batch: where its candidate is prepared, approved,
+#: inspected or published. 「## 復元」「## 受入条件」「## 途中の失敗と対処」 and the
+#: Before/After notes are not, so a candidate named only there does not count.
+BATCH_HEADING = re.compile(r"候補|承認|KS-30[12]")
+
+
+def evidence_sections() -> list[tuple[str, str, str]]:
+    """(file, heading, section text) for the KS-301 / KS-302 records."""
+    found = []
+    for path in BATCH_EVIDENCE:
+        for match in SECTION.finditer(path.read_text(encoding="utf-8")):
+            text = match.group(0)
+            found.append((path.name, text.splitlines()[0], text))
+    return found
+
+
 def test_every_published_batch_has_an_evidence_file() -> None:
     """A batch that reached production owes a record of its own, not just a table row.
 
     KS-303 is the evaluation record and names every candidate by design, so it
     does not count here: the check is that each publish also has a KS-301 / KS-302
     evidence file naming the candidate that carried it.
+
+    The name has to be the full 64-hex id, on a line that names it as the
+    candidate, in the section that prepares, approves, inspects or publishes it.
+    An 8-character prefix anywhere in the file was not enough: deleting the full
+    id from W4b's 候補 line left this rule green, because 「作り直した候補
+    `7cea2e0a…` でも同じ」 -- a parenthetical about screenshot counts -- still
+    carried the prefix. It is the same looseness the KS-303 §1 rule above had to
+    drop, for the same reason.
     """
     assert BATCH_EVIDENCE, "no KS-301 / KS-302 evidence files"
-    texts = {path.name: path.read_text(encoding="utf-8") for path in BATCH_EVIDENCE}
+    sections = evidence_sections()
+    assert sections, "no `## ` sections in the KS-301 / KS-302 evidence"
     status = json.loads(STATUS.read_text(encoding="utf-8"))
+    named: dict[str, list[str]] = {}
     missing = {}
     for name, batch in status["batches"].items():
         if batch.get("publication_status") != PUBLISHED:
             continue
         candidate = batch["candidate_id"]
-        if not any(candidate[:8] in text for text in texts.values()):
+        found = [
+            f"{file} {heading}"
+            for file, heading, text in sections
+            if BATCH_HEADING.search(heading)
+            and any(
+                candidate in line and "candidate" in line
+                for line in text.splitlines()
+            )
+        ]
+        if found:
+            named[name] = found
+        else:
             missing[name] = candidate[:8]
-    assert not missing, f"no KS-301 / KS-302 evidence names these publishes: {missing}"
+    assert not missing, (
+        "no KS-301 / KS-302 evidence section names these publishes by their full "
+        f"candidate id: {missing}"
+    )
+    assert len(named) >= 10, sorted(named)
 
 
 def test_the_batch_records_agree_with_the_ledger_and_the_updates_page() -> None:
@@ -304,3 +349,63 @@ def test_the_batch_records_agree_with_the_ledger_and_the_updates_page() -> None:
     # /updates/ itself is republished by each candidate that writes a card.
     for name in ks_w4_batch.BATCH_NAMES:
         assert "updates" in ks_w4_batch.batch_documents(name), name
+
+
+def git(*args: str) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(("git", *args), cwd=ROOT, capture_output=True)
+
+
+def test_the_before_record_is_the_bodies_at_the_pinned_main_commit() -> None:
+    """The "before" every card rule is measured against comes from outside itself.
+
+    ``tests/purchase_support/ks_w4_published_before.json`` is written by the same
+    commit as the cards it validates, so until this rule nothing constrained it.
+    Measured on this tree: appending 「背面は5cm必要」 to 551's ``text`` and to its
+    AQUA ADW-L40B row (``body_sha256`` untouched, because no check recomputes it
+    from those fields) and prepending a 訂正 card quoting that phrase -- a state
+    the published body never showed -- left the eight record and batch files at
+    `146 passed`. The digest is not enough on its own either: the card rules read
+    ``text``/``rows``/``sections``/``links``/``openings``, none of which a digest
+    covers, so the whole record is re-derived here.
+
+    The record is re-derived from ``ks_w4_batch.PRE_PUBLISH_COMMIT`` (batch G,
+    PR #292): a commit of *main*, so it is in every clone that has history, and
+    it changed no article body, so it holds the bodies this batch published over.
+
+    A missing object fails; it does not skip. The job that runs pytest checks
+    this repository out with ``fetch-depth: 0`` -- ``.github/workflows/ci.yml``,
+    job ``tests``, and so do ``plan``, ``static``, ``php``, ``contracts``,
+    ``data``, ``storage``, ``secrets`` and ``final``; only ``lock``, which runs
+    no test, takes the default shallow checkout. So the commit is always
+    reachable where this rule runs, and a skip would let the one thing that
+    binds the record to an observation outside itself disappear without a word.
+    """
+    record = ks_w4_batch.before_record()
+    commit = ks_w4_batch.PRE_PUBLISH_COMMIT
+    assert record["captured_from"]["commit"] == commit, record["captured_from"]
+
+    present = git("cat-file", "-e", commit + "^{commit}")
+    assert present.returncode == 0, (
+        f"{commit} is not in this clone, so the before-record cannot be checked "
+        "against the bodies it claims to hold. CI checks out with fetch-depth: 0 "
+        "(.github/workflows/ci.yml), so fetch the full history rather than "
+        "letting this rule pass unmeasured."
+    )
+
+    bodies = record["bodies"]
+    documents = ks_w4_batch.batch_article_documents()
+    assert set(bodies) == documents, sorted(set(bodies) ^ documents)
+
+    published_over = {}
+    for slug in sorted(bodies):
+        blob = git("show", f"{commit}:{ks_w4_batch.ARTICLE_PREFIX}{slug}.html")
+        assert blob.returncode == 0, (slug, blob.stderr.decode("utf-8", "replace"))
+        published_over[slug] = hashlib.sha256(blob.stdout).hexdigest()
+    assert {slug: body["body_sha256"] for slug, body in bodies.items()} == (
+        published_over
+    )
+
+    # Every field the card rules actually read, which no digest can cover.
+    rebuilt = ks_w4_batch.capture(commit)["bodies"]
+    edited = sorted(slug for slug in bodies if bodies[slug] != rebuilt[slug])
+    assert edited == [], edited
