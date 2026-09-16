@@ -438,6 +438,113 @@ class W4aReviewFixes(PurposeBase):
                 self.assertRegex(joined, r"min-width:\d+rem!important", ident)
                 self.assertIn("position:sticky!important", joined, ident)
 
+    # Scroll-frame client width measured by static rendering at a 320px viewport
+    # (the .np-table frame loses 2px to its own border).
+    PHONE_FRAME_PX = {
+        "space-zones-table": 240,
+        "housework-record-table": 240,
+        "housework-time-table": 240,
+        "housework-route-table": 240,
+        "maintenance-dishwasher-table": 240,
+        "maintenance-vacuum-table": 240,
+        "maintenance-suitcase-table": 240,
+        "np-method-table": 238,
+    }
+    TABLE_PAGES = {
+        "space-zones-table": "small-space",
+        "housework-record-table": "save-housework",
+        "housework-time-table": "save-housework",
+        "housework-route-table": "save-housework",
+        "maintenance-dishwasher-table": "easy-maintenance",
+        "maintenance-vacuum-table": "easy-maintenance",
+        "maintenance-suitcase-table": "easy-maintenance",
+        "np-method-table": "without-installation",
+    }
+    # Horizontal padding plus the collapsed border of one cell at 320px, from the
+    # rendered CSS (5+5+1 in .ks-editorial-table, 8.8x2 in .np-table).
+    CELL_CHROME_PX = {
+        "space-zones-table": 11,
+        "housework-record-table": 11,
+        "housework-time-table": 11,
+        "housework-route-table": 11,
+        "maintenance-dishwasher-table": 11,
+        "maintenance-vacuum-table": 11,
+        "maintenance-suitcase-table": 11,
+        "np-method-table": 18,
+    }
+    PHONE_MARKER = "/* KS-W4A phone table widths"
+
+    def phone_block(self, css: str) -> str:
+        self.assertIn(self.PHONE_MARKER, css)
+        start = css.index("{", css.index(self.PHONE_MARKER))
+        depth = 0
+        for index in range(start, len(css)):
+            if css[index] == "{":
+                depth += 1
+            elif css[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    return css[start + 1 : index]
+        raise AssertionError("unbalanced phone table width block")
+
+    def phone_px(self, block: str, ident: str, prop: str, first_child: bool) -> float:
+        found = []
+        for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", block):
+            if "#" + ident not in selector:
+                continue
+            if (":first-child" in selector) != first_child:
+                continue
+            match = re.search(prop + r":\s*([\d.]+)rem!important", body)
+            if match:
+                found.append(float(match.group(1)) * 16)
+        self.assertEqual(len(found), 1, (ident, prop, first_child, found))
+        return found[0]
+
+    def table_columns(self, page: str, ident: str) -> int:
+        start = page.rindex("<table", 0, page.index('id="' + ident + '"'))
+        table = page[start : page.index("</table>", start)]
+        head = table[table.index("<tr") : table.index("</tr>")]
+        return len(re.findall(r"<t[hd][ >]", head))
+
+    def test_sticky_first_column_leaves_room_for_a_whole_data_column(self):
+        """table-layout is fixed, so the data columns share (min-width - first).
+
+        A sticky first column as wide as a data column leaves no scroll position
+        that shows a whole data cell on a phone.
+        """
+        css = THEME_CSS.read_text()
+        block = self.phone_block(css)
+        for ident, frame in self.PHONE_FRAME_PX.items():
+            columns = self.table_columns(self.pages[self.TABLE_PAGES[ident]], ident)
+            self.assertGreaterEqual(columns, 3, ident)
+            first = (
+                self.phone_px(block, ident, "width", True) + self.CELL_CHROME_PX[ident]
+            )
+            minimum = self.phone_px(block, ident, "min-width", False)
+            data = (minimum - first) / (columns - 1)
+            self.assertLessEqual(first, 0.45 * frame, ident)
+            self.assertGreaterEqual(data, 120, ident)
+            self.assertLessEqual(first + data, frame, ident)
+
+    def test_sticky_first_column_covers_the_scrolled_edge(self):
+        """With border-collapse the cell background stops at the middle of the
+        collapsed border, so a 1px strip of the scrolled columns shows at the
+        sticky column's left edge unless the cell covers it."""
+        css = THEME_CSS.read_text()
+        rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+        for ident in self.PHONE_FRAME_PX:
+            if ident == "np-method-table":
+                continue  # .np-table cells carry no left border, so nothing leaks
+            joined = " ".join(
+                body.replace(" ", "")
+                for selector, body in rules
+                if "#" + ident in selector and "th:first-child::before" in selector
+            )
+            self.assertIn("position:absolute", joined, ident)
+            self.assertIn("left:-1px", joined, ident)
+            self.assertRegex(joined, r"background:#[0-9a-f]{6}", ident)
+            self.assertRegex(joined, r"border-left:1pxsolid#[0-9a-f]{6}", ident)
+
 
 class Regression(PurposeBase):
     def test_no_measured_time_savings_or_rankings(self):

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "569ca21dd89b6fc5b6e063c46e7a62fa136b78a6ce31f9678b8579aedde6b896",
+          "sha256": "4cdd3fb84b6dac8f2f6affe0317e75cb878379ebf44bb619fd14dd16a02ea47f",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 697071,
-          "sha256": "543d27a9ea7a432270d9ade2422bfc50436c2ef51a504ddaac717c9a874fbb2c",
+          "sha256": "1fadcf3126aec0bb37f9dfe19c95d188b4af8310ac6f0cb7f708a24cfa44b7ac",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1986,8 +1986,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html"
         },
         {
-          "bytes": 44556,
-          "sha256": "0370c2f30d220e068145d15276a9ee1c656a1555859fce18669929e1ae5f5dd3",
+          "bytes": 44565,
+          "sha256": "15595536d8fe8a3bbbb5086d7751d53ce794e47947cd7b64bf771d4df633991d",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
         },
         {
@@ -2001,8 +2001,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 81967,
-          "sha256": "d608f8c9baeab9ffff82fd479b6034a7a6063b2266fa50cf6d8465db4aed6dae",
+          "bytes": 81979,
+          "sha256": "f82ffd313f7ed3acdd4000a316509e9bd4040481dd048462e6478e7fbaea6ae0",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
@@ -2016,8 +2016,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 34101,
-          "sha256": "fe5e9869702be588ae5bc9f2c9dd2a37e06452b87d6c29390772083ad095b61c",
+          "bytes": 34110,
+          "sha256": "46684db9c5e51fbb38d5272516903650cdb1bbc34b7237aaf494008091d2f360",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
@@ -2061,8 +2061,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html"
         },
         {
-          "bytes": 39111,
-          "sha256": "16f3e130a40eeae78bd01c86871130ee58b3a5eb9aa38d842ed774a321481f81",
+          "bytes": 39117,
+          "sha256": "129802edcaa36e6ca875ad63f87256808d95551993f89f8969d4ffc4ba288b83",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html"
         }
       ],
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "ff8297383c793b4bfa00b408ad6a192b19646842195589513845ef3a397eb8a2",
+          "sha256": "15df5fcb5a428d7bead47513156321f066de67c607cf167db9a4924b710fbc17",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "3b08c8a758707d04ddabc6d5af162b31e2bf50b2db19387b63b90cb7a44b73fe",
+          "sha256": "2a2593c63d99ff53c6378b126b744b24567ef2b39cb40e841f41373dc2182af4",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "7f1df40bb7a50c455592c9ee744f9a8e4cfd7a3e65d36ec5c680c027af86cd55",
+          "sha256": "b62075aa6a59349dea362e20ca18ebd5303c33536d8d7aa5050e3238e080a928",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "b258e46dd87b192e3d7fcd8ce7cd4cd87f75ba8a451dfe2f5eeac37059e77ae2",
+          "sha256": "2c2fe3820a09dcb8e7c722e9f048cbdd84ca96ba9ca61189e1e6a42817c6e80c",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

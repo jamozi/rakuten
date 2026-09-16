@@ -271,7 +271,7 @@ def test_conflict_door_depth_names_both_official_values_without_choosing(tracked
         if tr.find(tag="th")[0].text() == "扉を開いたとき"
     )
     cell = next(td for td in row.find(tag="td") if td.attrs.get("data-ps-product") == p["product_id"])
-    assert cell.text() == "奥行 公式資料で値が異なる（個別仕様 上386mm・下362mm、比較表 433mm）／高さ 712mm"
+    assert cell.text() == "奥行 公式資料で値が異なる（個別仕様 上386mm・下362mm、比較表 433mm）／高さ 約712mm"
     model = by_id(guide, p["anchor"])
     assert DOOR_NOTE in model.text()
     reference = model.find(cls="ps-installation-reference")[0].text()
@@ -481,7 +481,7 @@ def test_data_tsp1_door_depth_is_a_conflict_between_two_official_pages():
         # Decision 11: the values come from the renderer note; the text does not repeat them.
         assert text == (
             "どちらもドア開閉時の最大寸法と表記しています。"
-            "どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは712mm。"
+            "どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは約712mm。"
         )
         assert "未解決" not in text and "未解決" not in record["locator"]
         # Decision 3 (amended): the locator names only the linked spec page wording.

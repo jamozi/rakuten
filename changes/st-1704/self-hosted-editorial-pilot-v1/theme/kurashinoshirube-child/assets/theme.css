@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: ee19b03cedeeceb0cd81617b67db0f5a1df3718b22761dd58afe11fa4dd07b60;
+  --raos-theme-runtime-revision-base: 6f6d5caaddf4df6d8b37ce66d2ebcad3719383fdb1e7a609c4fb538a474eb141;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -5312,3 +5312,21 @@ table.ks-readable-table td::before { display:none!important; content:none!import
 
 .single-post .raos-article-title-grid h1 { grid-column:1 / -1; width:100%; margin-inline:auto; }
 .ks-branch-guide .ks-branch-opening { grid-template-columns:minmax(0,1fr); }
+
+/* KS-W4A phone table widths: the sticky first column stays narrow so one whole
+   data column fits beside it. table-layout is fixed, so the data columns share
+   (min-width - first column); at a 320px viewport the scroll frame is 240px
+   (238px inside the .np-table border). */
+@media (max-width:600px) {
+  body .ks-editorial-page .ks-editorial-table > table:is(#space-zones-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table) { min-width:39rem!important; }
+  body .ks-editorial-page .ks-editorial-table > table:is(#housework-record-table,#housework-time-table) { min-width:31rem!important; }
+  body .ks-editorial-page .ks-editorial-table > table#housework-route-table { min-width:22rem!important; }
+  body .ks-editorial-page .ks-editorial-table > table:is(#space-zones-table,#housework-record-table,#housework-time-table,#housework-route-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table) :is(th,td):first-child { width:5.5rem!important; }
+  .ks-no-plumbing .np-table > table#np-method-table { min-width:31rem!important; }
+  .ks-no-plumbing .np-table > table#np-method-table :is(th,td):first-child { width:5rem!important; }
+}
+
+/* With border-collapse the cell background stops at the middle of the collapsed
+   border, so a 1px strip of the scrolled columns shows at the sticky first
+   column's left edge. Cover that strip from inside the cell. */
+body .ks-editorial-page :is(#space-zones-table,#housework-record-table,#housework-time-table,#housework-route-table,#maintenance-dishwasher-table,#maintenance-vacuum-table,#maintenance-suitcase-table) th:first-child::before { content:""; position:absolute; top:0; bottom:0; left:-1px; width:3px; box-sizing:border-box; border-left:1px solid #d7d3cb; background:#f0eee8; }

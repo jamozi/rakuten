@@ -672,6 +672,31 @@ def test_measurement_table_keeps_approximate_door_depths(compiled) -> None:
     assert cells[COLOR].startswith("奥行594mm／")
 
 
+def test_door_open_depths_keep_the_official_approximation(compiled) -> None:
+    """The spec rows print 「約 幅310×高さ435×奥行225＜485＞mm」 and
+    「約 幅550×高さ600＜712＞×奥行341…」, so every door-open value in the
+    republished bodies carries 約 (review round 2, minor)."""
+    _, _, outputs, _ = compiled
+    bodies = {
+        slug: squash(fragment(outputs[slug]).text())
+        for slug in (COMPACT, COUNTERTOP, PAIR, MEASURE)
+    }
+    for phrase in (
+        "扉を開くと約48.5cm",
+        "開扉時奥行約48.5cm",
+        "開扉時の最大奥行約48.5cm",
+    ):
+        assert phrase in bodies[COMPACT], phrase
+    for slug in (COUNTERTOP, PAIR):
+        assert "扉を開けたときの奥行約485mm" in bodies[slug], slug
+        assert "扉を開けたときの奥行485mm" not in bodies[slug], slug
+    assert "開扉時の奥行は約485mmです" in bodies[MEASURE]
+    for slug in (COUNTERTOP, MEASURE):
+        assert "開扉時の高さは約712mm" in bodies[slug], slug
+        assert "開扉時の高さは712mm" not in bodies[slug], slug
+    assert "最大高さ約712mm" in bodies[COUNTERTOP]
+
+
 def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
     catalog, _, outputs, _ = compiled
     fact = next(
