@@ -40,10 +40,14 @@ class HubContracts(unittest.TestCase):
                 )
                 html = doc.text[nav.start : nav.end]
                 self.assertIn('<a href="/">ホーム</a>', html)
-                self.assertIn(
-                    'aria-current="page">' + {'travel': 'スーツケース', 'cleaning': 'ロボット掃除機', 'preparedness': 'ポータブル電源'}.get(slug, self.routes['/' + slug + '/']['title']),
-                    html,
+                # A category page ends its breadcrumb on the category label, so
+                # widening a label (KS next30 W0) must reach the page itself.
+                current = (
+                    DATA["categories"][slug]["name"]
+                    if slug in DATA["categories"]
+                    else self.routes["/" + slug + "/"]["title"]
                 )
+                self.assertIn('aria-current="page">' + current, html)
                 if slug in DATA["categories"]:
                     self.assertIn('href="/categories/"', html)
                 elif slug not in (

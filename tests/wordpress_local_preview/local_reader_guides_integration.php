@@ -200,7 +200,7 @@ $card = kurashinoshirube_reader_guide_card(get_post($id));
 check(str_contains($card, '未確認') && !str_contains($card, '2026年9月5日'), 'unknown editorial update never falls back to WP modified date');
 check(str_contains($card, 'キッチン・家事 / 選び方ガイド') && str_contains($card, '/local-preview-test-guide-1/'), 'guide card metadata and local link');
 check(str_contains(kurashinoshirube_reader_group_cards('category'), '5記事を読む'), 'category card count');
-check(str_contains(kurashinoshirube_reader_group_cards('category'), '>食洗機</span>'), 'product name is the category card title');
+check(str_contains(kurashinoshirube_reader_group_cards('category'), '>台所</span>'), 'widened category label is the category card title');
 check(kurashinoshirube_reader_journey_stage('dishwasher-installation-measurement') === 'conditions', 'installation belongs to conditions');
 check(kurashinoshirube_reader_journey_stage('dishwasher-running-cost') === 'purchase', 'cost belongs to purchase checks');
 check(kurashinoshirube_reader_journey_stage('st1704-countertop-dishwasher-for-small-households') === 'comparison', 'comparison supports direct entry');

@@ -1,0 +1,984 @@
+{
+  "schema": "RAOSNext30DecisionsV1",
+  "programme": "next30-20260916",
+  "recorded_on": "2026-09-16",
+  "recorded_in": "changes/next30-20260916",
+  "summary": "2026-09-16 の intake 30 本に対するオーナー決定と編集判断の記録。生存 25 本を 8 波・16 候補で公開する。波 0 は新記事を 1 本も含まず、サイト側の記述（方針ページの扱う領域とカテゴリの表示名）を先に真にする。",
+  "intake_package": {
+    "path": "tmp/next30/kurashinoshirube_30_articles_20260916",
+    "created_on": "2026-09-16",
+    "articles": 30,
+    "files": 66,
+    "manifest": "MANIFEST.sha256",
+    "kind": "編集設計版の企画パッケージ。記事本文でも公開済みサイトでもない。",
+    "clusters": {
+      "水切りラック": 7,
+      "衣類乾燥除湿機": 9,
+      "ノンフライヤー・熱風調理": 8,
+      "軽量コードレス掃除機": 6
+    },
+    "not_verified_by_the_package": [
+      "検索量・順位・PV・利益は未測定",
+      "公開 20 投稿の全文監査は未実施",
+      "新 17 商品の承認済みアフィリエイト offer はゼロ",
+      "JSON は現行 RAOS API のスキーマと未照合（本計画で写像を確定した）"
+    ],
+    "reviewed_with": [
+      "feasibility の verdict と overlaps（next30_sources_r2.json）",
+      "契約写像と候補の上限（next30_map.json）",
+      "確定版の編集判断（next30/plan.md）"
+    ]
+  },
+  "owner_decisions": {
+    "decided_on": "2026-09-16",
+    "categories_widened": {
+      "statement": "カテゴリの表示名を品目名から場所・用途の広い語へ広げる。キー（kitchen / cleaning / travel / preparedness）は変えず、読者が見るラベルだけを変える。",
+      "keys_unchanged": true,
+      "renamed": {
+        "kitchen": {
+          "before": "食洗機",
+          "after": "台所"
+        },
+        "cleaning": {
+          "before": "ロボット掃除機",
+          "after": "掃除"
+        }
+      },
+      "unchanged": {
+        "travel": "スーツケース",
+        "preparedness": "ポータブル電源"
+      },
+      "applied_in": "W0-A",
+      "existing_articles_recategorised": 0
+    },
+    "laundry_category": {
+      "key": "laundry",
+      "label": "洗濯・乾燥",
+      "statement": "洗濯・乾燥カテゴリを新設する。ただし wave 0 では触らない。",
+      "wordpress_post_id": 701,
+      "post_status": "draft",
+      "delegated": false,
+      "wave_zero_touches_it": false,
+      "required_before": "W3",
+      "note": "publisher は post_type='post' 固定で固定ページを作れない（class-raos-codex-mcp-owner-direct.php:252）。オーナーが wp-admin で固定ページを公開し、post_id を targets へ委譲登録し、entry-pages.v1.json の categories/pages・HOME_CATEGORIES・OUTPUT_PATHS・テーマの editorial-navigation.v3.json の hubs を登録するまで W3 は始められない。post 701 は下書きのまま未委譲なので、波 0 はこのページを一切触らない。"
+    },
+    "policy_revised_first": {
+      "statement": "新記事を 1 本も公開する前に、方針ページの「扱う領域」を改訂する。",
+      "page": "about-ad-policy (post 10)",
+      "source": "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
+      "applied_in": "W0-A",
+      "revision": "扱う領域を 4 分野から 8 分野へ（卓上食洗機・水切りラック・ノンフライヤー・熱風調理器・衣類乾燥除湿機・ロボット掃除機・軽量コードレス掃除機・機内持ち込みスーツケース・ポータブル電源）。根拠の確認手順を、仕様の確認と型番の照合／購入先を案内する商品の販売条件の記録／照合できた販売先がない商品の扱い、の 3 つに分けた。",
+      "why": "新 17 商品は承認済み offer がゼロなので、販売店で販売条件を確認するという無条件の記述が偽になる。宣言だけが先に増えないよう、扱う領域の末尾に公開済み記事の一覧（/categories/）への案内を添えた。"
+    },
+    "waves_without_per_wave_approval": {
+      "statement": "波ごとの公開承認は求めない。計画された順序で波を進めてよい。",
+      "still_required": [
+        "公開そのものはオーナーの明示指示（prepare → preview → publish）で行う",
+        "approved-layout-baselines.v1.json の Before/After 了承は W0-A の前提として残る",
+        "本番プロファイルの allow_new_posts は W1-A の前にオーナー確認が要る",
+        "固定ページ laundry の作成と委譲登録はオーナーの作業（W0-B / W3 の前提）"
+      ]
+    },
+    "dropped_articles": {
+      "statement": "30 本のうち 4 本をオーナーが落とし、1 本は実現性の判定で落ちた。",
+      "by_owner": [
+        "A16",
+        "A18",
+        "A23",
+        "A29"
+      ],
+      "by_feasibility": [
+        "A06"
+      ],
+      "survivors": 25,
+      "note": "落ちた 5 本の問いは、公式の印字で担保できる範囲だけを生存記事が引き受ける。受け皿の取り出し方向・F-YEX90D の連続排水可否・CAF-LI211 の側面余白・YCW-C120 の食洗機可否・スタンド台の寸法は、どの記事でも判定しない。"
+    }
+  },
+  "product_catalog": {
+    "file": "changes/next30-20260916/products.candidate.v1.json",
+    "copied_from": "next30/products.catalog.json（ラウンド 3 の訂正を適用した検証済みカタログ）",
+    "sha256": "a0551667f5787fc27a1347edb3356caea2142585d3586a6e8844284c7662213d",
+    "products": 17,
+    "facts": 284,
+    "guide_facts": 29,
+    "installation": 12,
+    "fact_states": {
+      "KNOWN": 249,
+      "UNKNOWN": 26,
+      "CONFLICT": 9
+    },
+    "fact_states_including_guide_facts": {
+      "KNOWN": 275,
+      "UNKNOWN": 29,
+      "CONFLICT": 9
+    },
+    "validator": {
+      "module": "python/raos/application/editorial/purchase_support.py",
+      "runner": "next30/validate/run_validate.py（products[] は verbatim、記事側の足場のみ合成）",
+      "output": [
+        "validate_catalog: OK  (products=17, facts=284, guide_facts=29, installation=12)",
+        "installation_consistency_mismatches: 0 row(s)",
+        "validate_fact_state: OK  states={'CONFLICT': 9, 'KNOWN': 275, 'UNKNOWN': 29}",
+        "ALL OK"
+      ],
+      "negative_controls": "10 件の変異をすべて ValueError で捕捉（unmutated catalog still passes: True）"
+    },
+    "wired_into_live_catalog": false,
+    "live_catalog": "changes/reader-purchase-support-v1/purchase-support.v1.json",
+    "import_planned_in": "W1-A",
+    "import_note": "取り込み時は 17 商品すべてに research_issues[] を 1 件以上付ける（PURCHASE_DESTINATION_OR_ISSUE_REQUIRED）。承認済み offer はゼロなので参考価格の欄は「価格は確認中」、導線は official_verify の参照リンクだけになる。",
+    "conflicts": [
+      {
+        "product_id": "PRD-SHARP-CV-U71",
+        "label": "衣類乾燥モードの表示（公式内で不一致）"
+      },
+      {
+        "product_id": "PRD-SHARP-CV-U60",
+        "label": "定格除湿能力（条件つき・試験条件が公式内で不一致）"
+      },
+      {
+        "product_id": "PRD-SHARP-CV-U60",
+        "label": "除湿（自動）運転時の消費電力（公式内で不一致）"
+      },
+      {
+        "product_id": "PRD-PANASONIC-F-YEX90D",
+        "label": "ケア「衣類」運転時の消費電力22Wの条件（公式内で不一致）"
+      },
+      {
+        "product_id": "PRD-RECOLTE-RAO-3",
+        "label": "食洗機対応（部品別）"
+      },
+      {
+        "product_id": "PRD-PANASONIC-MC-PB61J",
+        "label": "スティック時1.3 kgに含まれる部品の内訳"
+      },
+      {
+        "product_id": "PRD-PANASONIC-MC-PB61J",
+        "label": "付属品（付属ノズルを含む）"
+      },
+      {
+        "product_id": "PRD-SHARP-EC-AR50A",
+        "label": "付属品（付属ノズルを含む）"
+      },
+      {
+        "product_id": "PRD-PANASONIC-AMC-U2",
+        "label": "適合機種（公式記載）"
+      }
+    ],
+    "curated_comparison_coverage": {
+      "note": "PURCHASE_UNUSED_PRODUCT を満たす参照元（網羅ではない）。",
+      "PRD-YAMAZAKI-4314": [
+        "A02",
+        "A03"
+      ],
+      "PRD-YAMAZAKI-5070": [
+        "A02",
+        "A03"
+      ],
+      "PRD-SHIMOMURA-42666": [
+        "A02",
+        "A03"
+      ],
+      "PRD-YAMAZAKI-7835": [
+        "A03",
+        "A05"
+      ],
+      "PRD-YAMAZAKI-3492": [
+        "A03",
+        "A05"
+      ],
+      "PRD-SHARP-CV-U71": [
+        "A09"
+      ],
+      "PRD-SHARP-CV-U60": [
+        "A09"
+      ],
+      "PRD-PANASONIC-F-YEX90D": [
+        "A09"
+      ],
+      "PRD-COSORI-CAF-LI211": [
+        "A20"
+      ],
+      "PRD-RECOLTE-RAO-4": [
+        "A20"
+      ],
+      "PRD-RECOLTE-RAO-3": [
+        "A20"
+      ],
+      "PRD-YAMAZEN-YCW-C120": [
+        "A22"
+      ],
+      "PRD-PANASONIC-MC-PB61J": [
+        "A27"
+      ],
+      "PRD-SHARP-EC-KR50A": [
+        "A27"
+      ],
+      "PRD-SHARP-EC-AR50A": [
+        "A27"
+      ],
+      "PRD-PANASONIC-AMC-U2": [
+        "A30"
+      ],
+      "PRD-SHARP-EC-530PN": [
+        "A30"
+      ]
+    }
+  },
+  "articles": [
+    {
+      "article_id": "A01",
+      "slug": "dish-rack-installation-measurement",
+      "title": "水切りラックを置けるか測る｜シンク・脚・蛇口の確認",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W1",
+      "category": "kitchen",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "脚・蛇口・水受けの干渉（5 商品とも未掲載）をこの記事が丸ごと持つ。落ちた A06 の排水先の採寸を採寸ステップ⑥で引き受ける。"
+    },
+    {
+      "article_id": "A02",
+      "slug": "slim-dish-rack-under-20cm",
+      "title": "短辺20cm以下の水切りラック3商品を比べる",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W1",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "落ちた A06 の排水方式の比較を「水受け・排水方式」列で引き受ける。取り出し空間は 3 商品とも未掲載のため比較表に行を置かない。"
+    },
+    {
+      "article_id": "A03",
+      "slug": "dish-rack-no-space",
+      "title": "水切りかごを置く場所がない｜3つの方式から選ぶ",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W1",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "broad_comparison",
+      "note": "HUB 4 本のうちこの 1 本だけ role=comparison（5 商品の方式別一覧が公式の「置き方」の印字だけで成立するため）。"
+    },
+    {
+      "article_id": "A04",
+      "slug": "dish-rack-one-tier-vs-two-tier",
+      "title": "水切りラックは1段か2段か｜4314と5070",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W2",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "段数の印字があるのは 5070 だけなので、4314 を「1段」と書かずに高さと内寸で比べる。"
+    },
+    {
+      "article_id": "A05",
+      "slug": "foldable-rack-vs-extendable-basket",
+      "title": "折り畳み7835と伸縮3492｜掛かる条件で選ぶ",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W2",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "7835 の収納後寸法が未掲載のため「空けやすさ」の結論は出さず、掛かる条件だけで比べる。"
+    },
+    {
+      "article_id": "A06",
+      "slug": "dish-rack-auto-drain-vs-tray",
+      "title": "水切りかごの自動排水は必要？水が流れる型と水受け型の違い",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "DROP",
+      "drop_source": "feasibility",
+      "wave": null,
+      "category": null,
+      "role": null,
+      "page_kind": null,
+      "note": "主比較点だった「受け皿の取り出し方向」が両商品とも未掲載で、記事の要が立たない。排水方式の比較は A02 の比較表、排水先の採寸は A01 の採寸ステップ⑥が引き受ける。旧 L005（A02→A06）は張らない。"
+    },
+    {
+      "article_id": "A07",
+      "slug": "dish-rack-with-dishwasher",
+      "title": "食洗機と水切りラックの併用｜手洗い分だけ置く",
+      "cluster": "水切りラック",
+      "cluster_key": "WR",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W2",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "42666 を外し 5070 を入れる（42666 は耐荷重も対応シンク条件も未掲載で、この記事の要の 2 軸を担えない）。"
+    },
+    {
+      "article_id": "A08",
+      "slug": "laundry-dehumidifier-placement",
+      "title": "衣類乾燥除湿機の置き場所を測る｜3機種の余白",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W3",
+      "category": "laundry",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "F-YEX90D の「※50cm以上（ルーバーを閉じて使うとき）」は図に方向の印字がないため、左右・後方の適合判定をしない。"
+    },
+    {
+      "article_id": "A09",
+      "slug": "compact-laundry-dehumidifier-comparison",
+      "title": "省スペース除湿機3機種｜高さ・奥行・方式で比較",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W3",
+      "category": "laundry",
+      "role": "comparison",
+      "page_kind": "broad_comparison",
+      "note": "比較表から「連続排水の順位」と「除湿能力の順位」を外し、公式内の不一致の提示に替える。"
+    },
+    {
+      "article_id": "A10",
+      "slug": "indoor-laundry-dehumidifier-guide",
+      "title": "部屋干し用の除湿機の選び方｜季節と置き場所から",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W3",
+      "category": "laundry",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "HUB だが role=guide（横並びにしない判定のため比較表アンカーを持たせない）。数値比較は A09・A13・A14 に一本化。"
+    },
+    {
+      "article_id": "A11",
+      "slug": "dehumidifier-types-compressor-desiccant-eco-hybrid",
+      "title": "除湿機の3方式の違い｜使う季節と消費電力で選ぶ",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "KEEP",
+      "drop_source": null,
+      "wave": "W4",
+      "category": "laundry",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "唯一の KEEP。CV-U71 の衣類乾燥モード名の CONFLICT を印字のまま並べる教材にする。"
+    },
+    {
+      "article_id": "A12",
+      "slug": "winter-indoor-laundry-dehumidifier",
+      "title": "冬の部屋干しと除湿機｜低温の公表値の読み方",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W4",
+      "category": "laundry",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "A14 と商品ペアが同じなので、購入比較表は A14 に渡し、この記事は低温表示の読み方に限定する。"
+    },
+    {
+      "article_id": "A13",
+      "slug": "cv-u60-vs-cv-u71",
+      "title": "CV-U60とCV-U71の違い｜方式・排水・消費電力",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W4",
+      "category": "laundry",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "落ちた A16 の CV-U71 の連続排水（内径15mm・外径21mmまで、引きかた、2週間ごとの点検）を吸収する。"
+    },
+    {
+      "article_id": "A14",
+      "slug": "f-yex90d-vs-cv-u60",
+      "title": "F-YEX90DとCV-U60｜低い除湿機2機種を比べる",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W4",
+      "category": "laundry",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "冬季の試験条件は 1 行にして A12 へ送る。ケア「衣類」22W の CONFLICT は衣類乾燥モードの比較に使わない。"
+    },
+    {
+      "article_id": "A15",
+      "slug": "laundry-dehumidifier-electricity-cost",
+      "title": "衣類乾燥除湿機の電気代｜Whがある機種とない機種",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W4",
+      "category": "laundry",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "CV-U71 のモード名が公式内で割れているため、電気代の行はモード名を原語のまま併記する。"
+    },
+    {
+      "article_id": "A16",
+      "slug": "dehumidifier-continuous-drainage",
+      "title": "除湿機の連続排水｜対応機種・ホース・排水先を購入前に確認",
+      "cluster": "衣類乾燥除湿機",
+      "cluster_key": "DH",
+      "verdict": "DROP",
+      "drop_source": "owner",
+      "wave": null,
+      "category": null,
+      "role": null,
+      "page_kind": null,
+      "note": "オーナー DROP。CV-U71 の連続排水は A13 が吸収する。F-YEX90D は連続排水の可否そのものが未掲載なので、どの記事でも判定しない。"
+    },
+    {
+      "article_id": "A17",
+      "slug": "air-fryer-needed-guide",
+      "title": "ノンフライヤーは必要か｜買う前に確かめる5点",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W5",
+      "category": "kitchen",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "HUB だが role=guide。落ちた A18 の確認事項を分担し、「兼用できるか」は分岐 1 個にとどめて A22 へ送る。"
+    },
+    {
+      "article_id": "A18",
+      "slug": "air-fryer-placement-clearance",
+      "title": "ノンフライヤーの置き場所｜放熱・引き出し・コンセントを確認",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "DROP",
+      "drop_source": "owner",
+      "wave": null,
+      "category": null,
+      "role": null,
+      "page_kind": null,
+      "note": "オーナー DROP。放熱を含む置き場所は A20 の比較表（放熱余白の行）・A17 の確認事項・A22 の前面開放の説明が分担する。CAF-LI211 の側面余白は未掲載なので左右の適合判定はしない。"
+    },
+    {
+      "article_id": "A19",
+      "slug": "air-fryer-one-person-2l-vs-4l",
+      "title": "一人暮らしは2Lか4Lか｜容量表示の書き方の違い",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W6",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "公式の容量表示の読み分け（人数表記か MAX ラインか）に限定し、3 機種表は A20 に一本化する。"
+    },
+    {
+      "article_id": "A20",
+      "slug": "compact-air-fryer-comparison",
+      "title": "小型ノンフライヤー3機種比較｜2L・4L・スチーム",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W5",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "broad_comparison",
+      "note": "落ちた A18 の放熱余白を比較表の行で引き受ける。CAF-LI211 の側面余白は未掲載なので左右の適合判定はしない。"
+    },
+    {
+      "article_id": "A21",
+      "slug": "rao-4-vs-rao-3",
+      "title": "RAO-4とRAO-3の違い｜熱風4Lかスチーム付きか",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W6",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "落ちた A23 の RAO-3 の食洗機 CONFLICT を全文提示し、メーカー確認への分岐を持つ。"
+    },
+    {
+      "article_id": "A22",
+      "slug": "air-fryer-vs-convection-toaster",
+      "title": "RAO-4とYCW-C120｜バスケット型か扉型か",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W5",
+      "category": "kitchen",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "落ちた A18 の前面開放の説明を持つ。YCW-C120 の食洗機対応は UNKNOWN のまま断定しない。"
+    },
+    {
+      "article_id": "A23",
+      "slug": "air-fryer-cleaning-dishwasher-safe",
+      "title": "ノンフライヤーの洗い方と食洗機対応｜本体・バスケットを分けて確認",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "DROP",
+      "drop_source": "owner",
+      "wave": null,
+      "category": null,
+      "role": null,
+      "page_kind": null,
+      "note": "オーナー DROP。RAO-3 の食洗機 CONFLICT の確認先は A21、A20 は 1 行の言及にとどめる。YCW-C120 の食洗機可否はどの記事でも断定しない。"
+    },
+    {
+      "article_id": "A24",
+      "slug": "air-fryer-electricity-preheat-batches",
+      "title": "ノンフライヤーの電気代｜定格Wから上限を見積もる",
+      "cluster": "ノンフライヤー・熱風調理",
+      "cluster_key": "AF",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W6",
+      "category": "kitchen",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "消費電力量の印字が無いので、定格 W と時間からの上限見積もりに限る。"
+    },
+    {
+      "article_id": "A25",
+      "slug": "lightweight-cordless-vacuum-guide",
+      "title": "軽量コードレス掃除機の選び方｜場所と方式から",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W7",
+      "category": "cleaning",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "HUB だが role=guide（数値比較は A27 に一本化）。落ちた A29 の充電・収納は確認事項どまりで適合判定はしない。"
+    },
+    {
+      "article_id": "A26",
+      "slug": "cordless-vacuum-paper-bag-vs-cyclone",
+      "title": "紙パックかサイクロンか｜ごみ捨てと手入れで選ぶ",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W7",
+      "category": "cleaning",
+      "role": "guide",
+      "page_kind": "task_guide",
+      "note": "消耗品の要否と交換目安までで、金額の積み上げはしない（単価表は A30 のみ）。"
+    },
+    {
+      "article_id": "A27",
+      "slug": "cordless-vacuum-under-1-5kg",
+      "title": "1.5kg以下のコードレス掃除機3機種を比べる",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W7",
+      "category": "cleaning",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "各社の質量定義の並記表を持つ。落ちた A29 の収納は確認事項どまり（スタンド台の寸法が未掲載）。"
+    },
+    {
+      "article_id": "A28",
+      "slug": "mc-pb61j-vs-ec-kr50a",
+      "title": "MC-PB61JとEC-KR50A｜比べられるのはどこか",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W7",
+      "category": "cleaning",
+      "role": "comparison",
+      "page_kind": "head_to_head",
+      "note": "質量定義の差は 1 行にして A27 へ送る。MC-PB61J の 1.3kg の内訳は CONFLICT のまま並記する。"
+    },
+    {
+      "article_id": "A29",
+      "slug": "cordless-vacuum-charging-storage",
+      "title": "コードレス掃除機の置き場所｜充電台・収納・取り出し空間を確認",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "DROP",
+      "drop_source": "owner",
+      "wave": null,
+      "category": null,
+      "role": null,
+      "page_kind": null,
+      "note": "オーナー DROP。充電・収納は A25・A27 の確認事項どまりにする。EC-KR50A・EC-AR50A のスタンド台の寸法が無いため、収納の軸はどの記事でも完成しない。"
+    },
+    {
+      "article_id": "A30",
+      "slug": "cordless-vacuum-paper-bag-battery-cost",
+      "title": "紙パック掃除機の維持費｜紙パックと電池だけ積む",
+      "cluster": "軽量コードレス掃除機",
+      "cluster_key": "VC",
+      "verdict": "RESHAPE",
+      "drop_source": null,
+      "wave": "W7",
+      "category": "cleaning",
+      "role": "comparison",
+      "page_kind": "condition_comparison",
+      "note": "AMC-U2 と EC-530PN を参照する唯一の記事なので curated_comparison / role=comparison にする（guide だと PURCHASE_UNUSED_PRODUCT）。"
+    }
+  ],
+  "waves": [
+    {
+      "wave": "W0",
+      "name": "方針ページの改訂とカテゴリ表示名の拡張",
+      "articles": [],
+      "candidate_a": {
+        "documents": 7,
+        "theme": true,
+        "contents": [
+          "about-ad-policy (10)",
+          "home (15)",
+          "categories (130)",
+          "cleaning (131)",
+          "comparisons (133)",
+          "guides (135)",
+          "kitchen (136)"
+        ]
+      },
+      "candidate_b": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "laundry（新しい固定ページの本文）",
+          "home (15)",
+          "categories (130)"
+        ]
+      },
+      "depends_on": [],
+      "note": "候補 A の 7 本は 9fa8ee45 との再生成差分で実測した本文（計画の上限見積もりは 16 だった）。候補 B はオーナーが wp-admin で固定ページ laundry を作成し post_id を委譲登録するまで着手できない。"
+    },
+    {
+      "wave": "W1",
+      "name": "水切りラックの中核",
+      "articles": [
+        "A01",
+        "A02",
+        "A03"
+      ],
+      "candidate_a": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "A01",
+          "A02",
+          "A03（新本文。mode:new・listing なし）"
+        ]
+      },
+      "candidate_b": {
+        "documents": 6,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "small-space"
+        ]
+      },
+      "depends_on": [
+        "W0-A"
+      ],
+      "note": "候補 A の時点では 3 行とも未公開なので validate_reader_roles は相互リンクを検査しない。候補 B で 3 行が同時に published になる。"
+    },
+    {
+      "wave": "W2",
+      "name": "水切りラックの残り",
+      "articles": [
+        "A04",
+        "A05",
+        "A07"
+      ],
+      "candidate_a": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "A04",
+          "A05",
+          "A07"
+        ]
+      },
+      "candidate_b": {
+        "documents": 10,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "kitchen（EX_KITCHEN→A07）",
+          "A01",
+          "A02",
+          "A03（後追いリンク）",
+          "compact-dishwasher-comparison (549)",
+          "standard-dishwasher-comparison (550)"
+        ]
+      },
+      "depends_on": [
+        "W1"
+      ],
+      "note": "先行 3 本へ後追いリンクを足すので W1 の公開が前提。記事波では最大の候補（10＋テーマ）。"
+    },
+    {
+      "wave": "W3",
+      "name": "衣類乾燥除湿機の中核",
+      "articles": [
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "candidate_a": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "A08",
+          "A09",
+          "A10"
+        ]
+      },
+      "candidate_b": {
+        "documents": 7,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "laundry（representative=A09 / choose=A08）",
+          "small-space（EX_SMALL→A10）"
+        ]
+      },
+      "depends_on": [
+        "W0-B"
+      ],
+      "note": "laundry カテゴリが登録されるまで listing.category が EDITORIAL_LISTING_INVALID になるため、W0-B が必須。"
+    },
+    {
+      "wave": "W4",
+      "name": "衣類乾燥除湿機の残り",
+      "articles": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "candidate_a": {
+        "documents": 5,
+        "theme": true,
+        "contents": [
+          "A11",
+          "A12",
+          "A13",
+          "A14",
+          "A15"
+        ]
+      },
+      "candidate_b": {
+        "documents": 8,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "A08（→A13 の張り替え）",
+          "A09（→A13・A14）",
+          "A10（→A11）"
+        ]
+      },
+      "depends_on": [
+        "W3"
+      ],
+      "note": "落ちた A16 の連続排水は A13 が持つので、A08 の旧リンク L020 を A13 へ張り替える。"
+    },
+    {
+      "wave": "W5",
+      "name": "ノンフライヤーの中核",
+      "articles": [
+        "A17",
+        "A20",
+        "A22"
+      ],
+      "candidate_a": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "A17",
+          "A20",
+          "A22"
+        ]
+      },
+      "candidate_b": {
+        "documents": 7,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "kitchen（台所カテゴリに熱風調理を載せる）",
+          "small-space（EX_SMALL→A17）"
+        ]
+      },
+      "depends_on": [
+        "W0-A",
+        "W2-B"
+      ],
+      "note": "kitchen の本文を触るので W2-B の後に回す（同じページを 2 候補で奪い合わないため）。"
+    },
+    {
+      "wave": "W6",
+      "name": "ノンフライヤーの残り",
+      "articles": [
+        "A19",
+        "A21",
+        "A24"
+      ],
+      "candidate_a": {
+        "documents": 3,
+        "theme": true,
+        "contents": [
+          "A19",
+          "A21",
+          "A24"
+        ]
+      },
+      "candidate_b": {
+        "documents": 7,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "A17（→A19）",
+          "A20（→A21・A24）"
+        ]
+      },
+      "depends_on": [
+        "W5"
+      ],
+      "note": "落ちた A23 の食洗機 CONFLICT の確認先は A21 なので、A20 の旧リンク L049 を A21 へ張り替える。"
+    },
+    {
+      "wave": "W7",
+      "name": "軽量コードレス掃除機",
+      "articles": [
+        "A25",
+        "A26",
+        "A27",
+        "A28",
+        "A30"
+      ],
+      "candidate_a": {
+        "documents": 5,
+        "theme": true,
+        "contents": [
+          "A25",
+          "A26",
+          "A27",
+          "A28",
+          "A30"
+        ]
+      },
+      "candidate_b": {
+        "documents": 9,
+        "theme": true,
+        "contents": [
+          "home",
+          "categories",
+          "updates",
+          "comparisons",
+          "guides",
+          "cleaning（手書き入口。EX_CLEAN→A25）",
+          "small-space（EX_SMALL→A25）",
+          "compact-robot-vacuum-shortlist (30)",
+          "roomba-mini-vs-switchbot-k11-pro (85)"
+        ]
+      },
+      "depends_on": [
+        "W0-A"
+      ],
+      "note": "掃除カテゴリに掃除機 5 本が載るので、表示名の拡張（W0-A）が前提。"
+    }
+  ],
+  "wave_zero_applied": {
+    "branch": "claude/ks-n30-w0-20260916",
+    "base_commit": "9fa8ee45",
+    "contains_new_articles": false,
+    "documents_changed": 7,
+    "theme_reissued": true,
+    "sources_edited": [
+      "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
+      "changes/reader-purchase-support-v1/articles/kitchen.html",
+      "changes/site-improvements-20260913/entry-pages.v1.json",
+      "changes/site-improvements-20260913/entry-pages/cleaning.html",
+      "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+      "changes/wordpress-direct-publish-v1/articles.v1.json",
+      "changes/wordpress-direct-publish-v1/reader-sync/site-map.v2.json",
+      "changes/wordpress-direct-publish-v1/reader-sync/tools/hub_pages_20260912.py",
+      "python/raos/application/editorial/reader_experience_v1.py"
+    ],
+    "ledger_publish_field_changes": [
+      {
+        "article_key": "categories",
+        "field": "excerpt",
+        "before": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
+        "after": "スーツケース・台所・掃除・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。"
+      }
+    ],
+    "not_touched": [
+      "既存記事の listing.category（1 件も動かしていない）",
+      "カテゴリページのタイトルと excerpt（W5 / W7 で内容が増えたときに広げる）",
+      "洗濯・乾燥カテゴリ（post 701 は下書き・未委譲）",
+      "画像の alt（商品種別の説明であって表示名ではない）"
+    ]
+  },
+  "unresolved": [
+    "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W3 は開始できない）",
+    "本番プロファイルの allow_new_posts の現在値（W1-A の前にオーナー確認が要る）",
+    "approved-layout-baselines.v1.json の Before/After 了承（W0-A の公開前提）",
+    "AF04 / YCW-C120 のハンドル質量とパンくずトレイの帰属（公式は「ハンドルは含まれていません」だけ）",
+    "DH03 / F-YEX90D のケア「衣類」22W の条件（仕様ページと取扱説明書で不一致・メーカー確認待ち）",
+    "DH03 / F-YEX90D の「※50cm以上（ルーバーを閉じて使うとき）」の方向（図に印字なし）",
+    "DH01 / CV-U71 の衣類乾燥モード名（取扱説明書・仕様ページ・商品ページで不一致）",
+    "AF04 / YCW-C120 の食洗機対応（UNKNOWN のまま）",
+    "catalog 全 284 facts の再監査（各波の候補 A で、その波が使う fact だけを再照合する運用）",
+    "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）"
+  ]
+}

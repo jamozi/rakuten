@@ -100,7 +100,7 @@
         "category-undecided"
       ],
       "images": [],
-      "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。"
+      "description": "スーツケース・台所・掃除・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。"
     },
     "small-space": {
       "title": "一人暮らし・省スペース",
@@ -233,7 +233,7 @@
     },
     "kitchen": {
       "post_id": 136,
-      "name": "食洗機",
+      "name": "台所",
       "lead": "置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
       "choose": {
         "article_key": "dishwasher-installation-measurement",
@@ -247,7 +247,7 @@
     },
     "cleaning": {
       "post_id": 131,
-      "name": "ロボット掃除機",
+      "name": "掃除",
       "lead": "本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
       "choose": {
         "article_key": "compact-robot-vacuum-shortlist",

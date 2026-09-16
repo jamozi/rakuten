@@ -159,7 +159,7 @@
       "post_type": "page",
       "slug": "categories",
       "title": "商品カテゴリから探す",
-      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
+      "excerpt": "スーツケース・台所・掃除・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html",
       "reader_role": {
         "page_kind": "directory",

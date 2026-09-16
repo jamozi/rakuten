@@ -59,9 +59,14 @@ import re  # noqa: E402
 from raos.application.editorial.reader_html import Element  # noqa: E402
 
 ANALYTICS_JS = RUNTIME_JS.with_name("purchase-analytics.js")
-# The policy pages carry the date of the revision that is published with this batch.
-POLICY_REVISED_ON = "2026-09-15"
-POLICY_SLUGS = ("about-ad-policy", "comparison-policy", "privacy-policy")
+# Each policy page carries the date of the revision it was last published with;
+# next30 Wave 0 (2026-09-16) revises the operating policy only.
+POLICY_REVISED_ON = {
+    "about-ad-policy": "2026-09-16",
+    "comparison-policy": "2026-09-15",
+    "privacy-policy": "2026-09-15",
+}
+POLICY_SLUGS = tuple(POLICY_REVISED_ON)
 SKIPPED_TAGS = frozenset({"script", "style", "template", "code", "pre"})
 DISCLOSURE = re.compile(
     r'<(?:p|aside)\b[^>]*class="[^"]*\b(?:ps-disclosure|ks-reader-ad-note|sc-ad|raos-disclosure)\b'
@@ -232,7 +237,7 @@ def test_tpl_policy_pages_carry_this_revision_date(roots, slug: str) -> None:
     """KS-117 (Q9): the last-updated date moves with the published revision."""
     assert visible_text(roots[slug]).count("最終更新日") == 1
     times = [t for t in roots[slug].find(tag="time") if "最終更新日" in visible_text(t.parent)]
-    assert [t.attrs.get("datetime") for t in times] == [POLICY_REVISED_ON]
+    assert [t.attrs.get("datetime") for t in times] == [POLICY_REVISED_ON[slug]]
 
 
 def test_tpl_comparison_policy_links_the_pre_publication_check(roots) -> None:
