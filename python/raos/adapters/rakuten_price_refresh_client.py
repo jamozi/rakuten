@@ -52,6 +52,8 @@ from raos.domain.editorial.rakuten_price_refresh import (
 )
 
 USER_AGENT: Final = "RAOS-KS020-price-refresh/1"
+# The one place the key travels: the Rakuten request header, never the query (ST-0505).
+ACCESS_KEY_HEADER: Final = "accessKey"
 CONNECT_TIMEOUT_SECONDS: Final = 10.0
 MAX_CREDENTIAL_BYTES: Final = 4096
 MAX_PRIVATE_JSON_BYTES: Final = 8_000_000
@@ -255,7 +257,7 @@ class PriceRefreshClient:
             "Accept-Encoding": "identity",
             "Connection": "close",
             "User-Agent": USER_AGENT,
-            "accessKey": self._credentials.access_key,
+            ACCESS_KEY_HEADER: self._credentials.access_key,
         }
         if self._last is not None:
             wait = MIN_REQUEST_INTERVAL_SECONDS - (self._monotonic() - self._last)

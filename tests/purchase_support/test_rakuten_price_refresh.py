@@ -42,7 +42,8 @@ CATALOG_BYTES = (FIXTURES / "catalog.synthetic.json").read_bytes()
 RESPONSES = json.loads((FIXTURES / "responses.synthetic.json").read_text())
 BODY = (FIXTURES / "body.price-free.synthetic.html").read_text()
 APP_ID = "synthetic-app-0001"
-ACCESS_KEY = "synthetic-key-0001"
+# A placeholder key, spelled the way the secret scanner recognizes one; never a live key.
+ACCESS_KEY = "fixture-access-key"
 RUN_ID = "ks020-synthetic-0001"
 # Odd microseconds: the ISO strings derived from this instant appear in no tracked file.
 T0 = datetime(2026, 9, 15, 1, 2, 3, 456789, tzinfo=timezone.utc)

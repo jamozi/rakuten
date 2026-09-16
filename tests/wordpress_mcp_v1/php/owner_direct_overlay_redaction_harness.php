@@ -305,11 +305,11 @@ $live = RAOS_Codex_MCP_Content::document(12);
 demand(! is_wp_error($live) && $live['content_sha256'] === $purge_row['after_sha256'], 'LIVE_DOCUMENT_MISMATCH');
 $GLOBALS['options'][$undo('1')] = array('applied_document' => $d($injected, 2), 'public_before' => snapshot($d($free, 1)));
 $GLOBALS['options'][$undo('2')] = array('applied_document' => $live, 'public_before' => snapshot($d($injected, 2)));
-$token = str_repeat('f', 64);
+$batch_token = str_repeat('f', 64);
 $batch_manifest = array('schema' => 'RAOSWordPressPublicationBatchManifestV1', 'expected_theme_tree_sha256' => $price_free_tree,
     'proposal_count' => 2, 'proposals' => array_map(static fn($row) => array('proposal_id' => $row['proposal_id'], 'kind' => $row['kind'],
         'before_sha256' => $row['before_sha256'], 'after_sha256' => $row['after_sha256']), array($purge_row, $purge_theme)));
-$db->batches[$token] = array('batch_token' => $token, 'state' => 'APPROVED', 'created_by' => 7,
+$db->batches[$batch_token] = array('batch_token' => $batch_token, 'state' => 'APPROVED', 'created_by' => 7,
     'created_at_gmt' => '2026-09-15 01:00:00', 'expires_at_gmt' => '2026-09-15 02:00:00', 'applying_at_gmt' => null,
     'batch_manifest_sha256' => RAOS_Codex_MCP_Store::hash($batch_manifest),
     'proposal_ids_json' => json_encode(array($purge_row['proposal_id'], $purge_theme['proposal_id'])),
@@ -324,11 +324,11 @@ $batches_before_finish = $db->batches;
 $options_before_finish = $GLOBALS['options'];
 $private_before_finish = scandir($work . '/private');
 $db->fail_update_kinds = array('THEME_RELEASE');
-$blocked = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($token, $db->batches[$token]['batch_manifest_sha256'], 'finalize');
+$blocked = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($batch_token, $db->batches[$batch_token]['batch_manifest_sha256'], 'finalize');
 demand(! is_wp_error($blocked) && 'FINALIZED' === $blocked['state'], 'THEME_UPDATE_FAILURE_FINISH ' . json_encode($blocked));
 demand(($blocked['price_overlay_redaction'] ?? null) === array(array('state' => 'INCOMPLETE', 'runs' => array($run), 'post_id' => 12,
     'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 0, 'theme_proposals' => 0)), 'THEME_UPDATE_FAILURE_REPORTED ' . json_encode($blocked));
-demand(get_option('raos_codex_owner_direct_finish_' . $token, null) === $blocked, 'THEME_UPDATE_FAILURE_NOT_RECORDED');
+demand(get_option('raos_codex_owner_direct_finish_' . $batch_token, null) === $blocked, 'THEME_UPDATE_FAILURE_NOT_RECORDED');
 demand($db->rows[str_repeat('a', 64)] === $publish_theme && $db->rows[str_repeat('b', 64)] === $purge_theme, 'THEME_ROWS_CHANGED_ON_UPDATE_FAILURE');
 $db->fail_update_kinds = array();
 $db->rows = $rows_before_finish;
@@ -336,12 +336,12 @@ $db->batches = $batches_before_finish;
 $GLOBALS['options'] = $options_before_finish;
 foreach (array_diff(scandir($work . '/private'), $private_before_finish) as $name) { $remove($work . '/private/' . $name); }
 
-$finish = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($token, $db->batches[$token]['batch_manifest_sha256'], 'finalize');
+$finish = RAOS_Codex_MCP_Deployment::finish_owner_direct_batch($batch_token, $db->batches[$batch_token]['batch_manifest_sha256'], 'finalize');
 demand(! is_wp_error($finish), 'FINISH_REFUSED ' . (is_wp_error($finish) ? $finish->code : ''));
 demand('FINALIZED' === $finish['state'] && array_column($finish['members'], 'state') === array('FINALIZED', 'FINALIZED'), 'FINISH_NOT_FINALIZED ' . json_encode($finish));
 demand(($finish['price_overlay_redaction'] ?? null) === array(array('state' => 'COMPLETE', 'runs' => array($run), 'post_id' => 12,
     'proposals' => 2, 'undo_options' => 2, 'skipped_active' => 0, 'theme_proposals' => 2)), 'FINISH_DID_NOT_REDACT ' . json_encode($finish));
-demand(get_option('raos_codex_owner_direct_finish_' . $token, null) === $finish, 'FINISH_RESULT_NOT_RECORDED');
+demand(get_option('raos_codex_owner_direct_finish_' . $batch_token, null) === $finish, 'FINISH_RESULT_NOT_RECORDED');
 $stored = static fn($char) => json_decode($db->rows[str_repeat($char, 64)]['payload_json'], true);
 demand($stored('1')['after']['block_markup'] === 'sha256:' . hash('sha256', $injected)
     && $stored('2')['before']['block_markup'] === 'sha256:' . hash('sha256', $injected), 'FINISH_CONTENT_NOT_REDACTED');

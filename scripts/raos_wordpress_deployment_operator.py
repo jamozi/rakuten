@@ -1653,11 +1653,11 @@ def price_overlay_bound_calls() -> Iterator[None]:
     would make the values impossible to take down. Everything else - the CLI, the MCP bridge,
     any other importer - is refused in ``request_json``. Contract §8.
     """
-    token = _price_overlay_bound.set(True)
+    bound_context_reset = _price_overlay_bound.set(True)
     try:
         yield
     finally:
-        _price_overlay_bound.reset(token)
+        _price_overlay_bound.reset(bound_context_reset)
 
 
 def parser() -> argparse.ArgumentParser:

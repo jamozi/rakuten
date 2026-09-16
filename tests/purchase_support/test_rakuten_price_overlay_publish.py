@@ -99,6 +99,27 @@ def git(root, *args, check=True):
     )
 
 
+def _git_lock_files(directory, names):
+    """Git's transient lock names, which are never checkout content."""
+    if ".git" not in Path(directory).parts:
+        return set()
+    return {name for name in names if name.endswith(".lock")}
+
+
+def copy_checkout(source, destination):
+    """Copy a synthetic owner checkout, lock files excluded.
+
+    Git's background maintenance creates and removes ``.git/objects/maintenance.lock`` on
+    its own schedule, and a plain copy fails when that name disappears between the listing
+    of a directory and the copy of that entry. ``template`` turns the automatic maintenance
+    off in the source repository, and skipping lock files keeps the copy right even when
+    another git invocation takes one: a lock holds no repository state, so the copy carries
+    the same objects, index and worktree.
+    """
+    shutil.copytree(source, destination, symlinks=True, ignore=_git_lock_files)
+    return destination
+
+
 # ---------------------------------------------------------------------------
 # Owner checkout: tracked theme copy re-stamped by the generator's own primitives
 # ---------------------------------------------------------------------------
@@ -145,6 +166,10 @@ def template(tmp_path_factory):
     git(root, "init", "-q", "-b", "main")
     git(root, "config", "user.name", "Test")
     git(root, "config", "user.email", "test@example.invalid")
+    # The commit below would otherwise start git's background maintenance, whose lock file
+    # appears and vanishes under every copy this template feeds.
+    git(root, "config", "gc.auto", "0")
+    git(root, "config", "maintenance.auto", "false")
     (root / ".gitignore").write_text(".secrets/\n")
     # The checkpoint admits generated theme outputs (favicon.ico) through the build manifest.
     listed = git(
@@ -206,7 +231,7 @@ def template(tmp_path_factory):
 def owner(template, tmp_path):
     source, _revision = template
     root = (tmp_path / "owner").resolve()
-    shutil.copytree(source, root, symlinks=True)
+    copy_checkout(source, root)
     (root / ".secrets").mkdir(mode=0o700)
     return root
 
@@ -427,7 +452,7 @@ def test_prepare_and_publish_without_the_flag_are_byte_identical(
     roots = []
     for name in ("direct", "cli", "overlay"):
         root = (tmp_path / name).resolve()
-        shutil.copytree(source, root, symlinks=True)
+        copy_checkout(source, root)
         (root / ".secrets").mkdir(mode=0o700)
         roots.append(root)
     direct_root, cli_root, overlay_root = roots
@@ -650,7 +675,7 @@ def test_readback_compares_the_injected_body_and_theme_hashes(
 
     source, _revision = template
     other = (tmp_path / "other").resolve()
-    shutil.copytree(source, other, symlinks=True)
+    copy_checkout(source, other)
     (other / ".secrets").mkdir(mode=0o700)
     write_run(other)
     monkeypatch.setattr(operator, "OWNER_CHECKOUT", other)
@@ -1261,7 +1286,7 @@ def test_flag_free_prepare_and_publish_match_the_pre_batch_g_publisher(
     runs = []
     for name, module in (("pre-batch-g", main_publisher), ("branch", direct)):
         root = (tmp_path / name).resolve()
-        shutil.copytree(source, root, symlinks=True)
+        copy_checkout(source, root)
         (root / ".secrets").mkdir(mode=0o700)
         server = FakeWordPress(root)
         synced = []
@@ -1428,7 +1453,7 @@ def test_while_values_may_be_live_flag_free_commands_are_refused_from_a_worktree
     )
     source, _revision = template
     worktree = (tmp_path / "worktree").resolve()
-    shutil.copytree(source, worktree, symlinks=True)
+    copy_checkout(source, worktree)
     (worktree / ".secrets").mkdir(mode=0o700)
     monkeypatch.setattr(direct, "ROOT", worktree)
     # A flag-free candidate prepared in the worktree before the values went live.
@@ -1606,7 +1631,7 @@ def test_run_bound_commands_run_only_in_the_fixed_owner_checkout(
     server = FakeWordPress(owner)
     source, _revision = template
     worktree = (tmp_path / "worktree").resolve()
-    shutil.copytree(source, worktree, symlinks=True)
+    copy_checkout(source, worktree)
     (worktree / ".secrets").mkdir(mode=0o700)
     monkeypatch.setattr(direct, "ROOT", worktree)
     monkeypatch.setattr(
