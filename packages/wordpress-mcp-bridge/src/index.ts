@@ -92,8 +92,21 @@ class OperatorError extends Error {
   }
 }
 
-function runOperator(
+// Price-refresh contract §8: while Rakuten price values may be live, no tool reaches WordPress.
+// The operator refuses too; this entry check dispatches only on its exact negative answer.
+async function runOperator(
   command: OperatorCommand | DirectCommand,
+  input: Record<string, unknown>,
+): Promise<OperatorResult> {
+  const check = await spawnOperator('price-overlay-live-check', {});
+  if (Object.keys(check).length !== 1 || check['price_overlay_live'] !== false) {
+    throw new OperatorError('WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID');
+  }
+  return spawnOperator(command, input);
+}
+
+function spawnOperator(
+  command: OperatorCommand | DirectCommand | 'price-overlay-live-check',
   input: Record<string, unknown>,
 ): Promise<OperatorResult> {
   return new Promise((resolve, reject) => {

@@ -175,6 +175,9 @@ def theme_php(tmp_path_factory: pytest.TempPathFactory) -> dict[str, dict[str, o
             [{"slug": hub["slug"], "label": hub["label"]} for hub in HUBS],
             ensure_ascii=False,
         ),
+        # The program points get_stylesheet_directory() at this copy, so the sandboxed PHP
+        # has to be able to read it (theme_php_harness.run_theme_php).
+        mounts=(theme_copy,),
     )
 
 

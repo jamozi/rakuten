@@ -472,11 +472,28 @@ def _content_suffix(content_type: str) -> str:
     return ".bin"
 
 
+def _refuse_while_price_overlay_live() -> None:
+    """Contract §8: the packet stores whole public response bodies and their sha256, which
+    carry the injected prices while an overlay run is live."""
+    import sys
+
+    python_root = str(Path(__file__).resolve().parents[1] / "python")
+    if python_root not in sys.path:
+        sys.path.insert(0, python_root)
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal()
+    if code is not None:
+        _fail(code)
+
+
 def _capture_public(config: Mapping[str, Any]) -> dict[str, Any]:
+    _refuse_while_price_overlay_live()
     captured_at = _utc_now()
     responses: list[dict[str, Any]] = []
     tls = ssl.create_default_context()
     for row in config["public_urls"]:
+        _refuse_while_price_overlay_live()
         parsed = urlsplit(row["url"])
         path = parsed.path or "/"
         connection = http.client.HTTPSConnection(

@@ -52,6 +52,10 @@ Thumbs.db
 # Local-only browser and visual evidence; never generator or release input.
 output/playwright/
 output/lighthouse/
+# Before/After と計測の描画。contract §8 の判定で配信中の撮影は止まるが、過去の
+# 描画がここに残るので、取り違えて commit しないように ignore する。
+output/ks-*/
+output/site-improvements-*/
 
 # Local-only test execution evidence; tracked receipts contain only hashes.
 output/pytest/

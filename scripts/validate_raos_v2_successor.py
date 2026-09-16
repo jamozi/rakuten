@@ -5861,7 +5861,21 @@ class _SafeRedirectHandler(HTTPRedirectHandler):
         )
 
 
+def _refuse_while_price_overlay_live() -> None:
+    """Contract §8: the capture records sha256 of live public bodies, which are
+    price-recoverable while an overlay run is live (§3)."""
+    python_root = str(Path(__file__).resolve().parents[1] / "python")
+    if python_root not in sys.path:
+        sys.path.insert(0, python_root)
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal()
+    if code is not None:
+        fail("RAOS_V2_" + code)
+
+
 def _fetch(url: str) -> tuple[int, bytes, Mapping[str, str], list[dict[str, object]]]:
+    _refuse_while_price_overlay_live()
     validate_public_url(url)
     redirect_handler = _SafeRedirectHandler()
     opener = build_opener(

@@ -1,0 +1,78 @@
+{
+  "products": [
+    {"product_id": "PRD-SYN-100A", "exact_model": "SYN-100A"},
+    {"product_id": "PRD-SYN-200B", "exact_model": "SYN-200B"},
+    {"product_id": "PRD-SYN-300C", "exact_model": "SYN-300C"},
+    {"product_id": "PRD-SYN-400D", "exact_model": "SYN-400D"}
+  ],
+  "offers": [
+    {
+      "offer_id": "synthetic-single",
+      "product_id": "PRD-SYN-100A",
+      "product_model": "SYN-100A",
+      "seller_id": "rakuten-synth-shop",
+      "seller": "シンセ商店 楽天市場店",
+      "merchant_url": "https://item.rakuten.co.jp/synth-shop/synth-item-a/",
+      "variant": "ホワイト・本体単体",
+      "variant_id": "synth-item-a",
+      "identity_verified": true,
+      "condition": "UNKNOWN",
+      "state": "UNKNOWN",
+      "price_yen": null
+    },
+    {
+      "offer_id": "synthetic-variant",
+      "product_id": "PRD-SYN-200B",
+      "product_model": "SYN-200B",
+      "seller_id": "rakuten-synth-shop",
+      "seller": "シンセ商店 楽天市場店",
+      "merchant_url": "https://item.rakuten.co.jp/synth-shop/synth-item-b/?variantId=02",
+      "variant": "ブラック・本体",
+      "variant_id": "02",
+      "identity_verified": true,
+      "condition": "UNKNOWN",
+      "state": "UNKNOWN",
+      "price_yen": null
+    },
+    {
+      "offer_id": "synthetic-shared-page",
+      "product_id": "PRD-SYN-300C",
+      "product_model": "SYN-300C",
+      "seller_id": "synth-store-rakuten",
+      "seller": "シンセストア",
+      "merchant_url": "https://item.rakuten.co.jp/synth-store/synth-item-c/",
+      "variant": "ブラック。白との共通販売ページで「ブラック」を選択してください。",
+      "variant_id": "syn-300c",
+      "identity_verified": true,
+      "condition": "new",
+      "state": "UNKNOWN",
+      "price_yen": null
+    },
+    {
+      "offer_id": "synthetic-maker",
+      "product_id": "PRD-SYN-100A",
+      "product_model": "SYN-100A",
+      "seller_id": "maker-direct",
+      "seller": "メーカー直販",
+      "merchant_url": "https://maker.example/syn-100a",
+      "variant": "ホワイト・本体",
+      "identity_verified": true,
+      "condition": "new",
+      "state": "UNKNOWN",
+      "price_yen": null
+    },
+    {
+      "offer_id": "synthetic-shop-top",
+      "product_id": "PRD-SYN-400D",
+      "product_model": "SYN-400D",
+      "seller_id": "rakuten-synth-shop",
+      "seller": "シンセ商店 楽天市場店",
+      "merchant_url": "https://item.rakuten.co.jp/synth-shop/",
+      "variant": "本体",
+      "identity_verified": true,
+      "condition": "UNKNOWN",
+      "state": "UNKNOWN",
+      "price_yen": null
+    }
+  ]
+}

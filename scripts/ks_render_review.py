@@ -12,17 +12,44 @@ import re
 import sys
 from pathlib import Path
 
+PYTHON = Path(__file__).resolve().parents[1] / "python"
 
-def main() -> int:
-    out = Path(sys.argv[1])
-    label = sys.argv[2] if len(sys.argv) > 2 else out.name
-    before_origin = sys.argv[3] if len(sys.argv) > 3 else "http://127.0.0.1:41398"
-    after_origin = sys.argv[4] if len(sys.argv) > 4 else "http://127.0.0.1:42429"
+
+def refuse_while_price_overlay_live(*checkouts: str | Path | None) -> None:
+    """Contract §8: do not republish a Before/After directory while values are published.
+
+    The input directory is what ``scripts/ks_before_after.py`` wrote: full-page renderings of
+    the injected pages and the candidate id. This script embeds every one of those PNGs in a
+    single reviewer-facing ``review.html`` inside the repository, which the §5 purge sweep does
+    not reach, so it is refused for the same reason the capture is.
+    """
+    if str(PYTHON) not in sys.path:
+        sys.path.insert(0, str(PYTHON))
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal(*checkouts)
+    if code is not None:
+        print(code, file=sys.stderr)
+        raise SystemExit(69)
+
+
+def read_index(out: Path) -> list[tuple[str, ...]]:
     rows = []
     for line in (out / "index.md").read_text(encoding="utf-8").splitlines():
         m = re.match(r"\| `([^`]+)` \| `([^`]+)` \| (-\d+ / \+\d+) \| (\S+) \|", line)
         if m:
             rows.append(m.groups())
+    return rows
+
+
+def main() -> int:
+    # Before reading index.md and before writing review.html.
+    refuse_while_price_overlay_live()
+    out = Path(sys.argv[1])
+    label = sys.argv[2] if len(sys.argv) > 2 else out.name
+    before_origin = sys.argv[3] if len(sys.argv) > 3 else "http://127.0.0.1:41398"
+    after_origin = sys.argv[4] if len(sys.argv) > 4 else "http://127.0.0.1:42429"
+    rows = read_index(out)
 
     def img(name: str) -> str:
         if not (out / name).is_file():

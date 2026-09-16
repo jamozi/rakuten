@@ -2,14 +2,18 @@
  * Usage: node changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs ORIGIN OUTPUT
  * Layout enlargement follows reader_experience_audit: 200% computed text sizes, not browser zoom.
  * Result text and table cells are compared with tests/wordpress_local_preview/fixtures/running-cost-hand-calculations.v1.json. */
-import { chromium } from 'playwright';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import { refuseWhilePriceOverlayLive } from '../../../scripts/raos_price_overlay_live_check.mjs';
 
 const [origin, output] = process.argv.slice(2), target = new URL(origin);
 if (!['127.0.0.1', 'localhost'].includes(target.hostname) || target.protocol !== 'http:' || target.username || target.password || target.pathname !== '/' || target.search || target.hash || !output) throw Error('LOCAL_ORIGIN_AND_OUTPUT_REQUIRED');
+// Contract §8: same loopback exposure as reader_experience_audit - per-check PNGs and the raw
+// response.html of the audited page. Refused wherever they would land while values are live.
+await refuseWhilePriceOverlayLive();
+const { chromium } = await import('playwright');
 const widths = [360, 390, 768, 1024, 1440], keys = ['electricity', 'water', 'detergent', 'runs'];
 const mount = '[data-raos-cost-calculator="v1"]', form = mount + ' .raos-cost-form', normal = ['30.7', '262', '2.1', '30'];
 const invalid = [['negative', 'electricity', '-1'], ['nonfinite', 'water', 'Infinity'], ['nan', 'electricity', 'NaN'], ['nonnumeric', 'detergent', 'abc'], ['fraction-runs', 'runs', '2.5'], ['rounded-fraction-runs', 'runs', '1.0000000000000001']];

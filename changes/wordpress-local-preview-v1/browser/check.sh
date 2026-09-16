@@ -27,6 +27,11 @@ readonly artifact_parent=$repository_root/output/playwright
 readonly published_artifact_directory=$artifact_parent/local-preview
 readonly session=raos-wordpress-local-preview-$$
 readonly preview_origin="${RAOS_WORDPRESS_PREVIEW_ORIGIN:-}"
+# Contract §8: the preview origin is an environment variable, so this recipe can be aimed at
+# the candidate preview docker that serves the injected bodies. The run keeps full-page
+# screenshots, audit JSON and body hashes under output/, which the §5 purge sweep does not
+# reach, so it is refused while Rakuten price overlay values may be published.
+"$node_bin" "$repository_root/scripts/raos_price_overlay_live_check.mjs" || exit 69
 audit_runtime=''
 artifact_directory=''
 previous_artifact_directory=''

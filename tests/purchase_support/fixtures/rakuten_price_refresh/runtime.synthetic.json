@@ -1,0 +1,15 @@
+{
+  "schema": "RAOS_PURCHASE_ARTICLE_RUNTIME_V1",
+  "articles": [
+    {
+      "slug": "synthetic-comparison",
+      "post_type": "post",
+      "body_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "slug": "synthetic-guide",
+      "post_type": "post",
+      "body_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ]
+}

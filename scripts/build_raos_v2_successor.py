@@ -8283,7 +8283,10 @@ body, sealed package and deployed plugin hashes while checking computed
 disclosure/blocked-CTA visibility, keyboard use, 200% zoom, axe WCAG 2.2 AA and
 resource/network behavior. Raw capture and screenshot bytes must remain in
 owner-controlled storage outside Git. The local public-read-only recorder is
-implemented in `tests/raos_v2/phase3-public-validation.mjs`; its raw receipt is
+implemented in `tests/raos_v2/phase3-public-validation.mjs`, which refuses with exit
+69 while Rakuten price overlay values may be published (its receipt binds the
+published body hash and its screenshots render the injected prices - contract §8 of
+changes/reader-purchase-support-v1/price-refresh-contract.md); its raw receipt is
 explicitly non-authoritative and cannot complete Phase 3. An independent
 acceptance verifier must still recalculate the public HTTP receipt digest,
 resource manifest, screenshot bytes/hashes and the harness, browser binary and
