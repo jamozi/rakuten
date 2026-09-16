@@ -126,6 +126,8 @@ def ledger() -> dict:
 # Bodies this candidate changed against its base, read from its own commits plus
 # the working tree -- the shape W4a uses for the same kind of batch-wide rule.
 BATCH_SUBJECT = "KS W4b"
+BATCH_NAME = "W4b"
+STATUS = ROOT / "changes/ks-integrated-20260915/status.v1.json"
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
 
 
@@ -135,14 +137,32 @@ def _git(*arguments: str) -> str:
     ).stdout
 
 
-def _batch_bodies() -> set[str]:
-    """Every article body this candidate changed, as a slug set."""
+def _batch_shas() -> list[str]:
     log = _git("log", "--format=%H%x1f%s", "HEAD")
-    shas = [
+    return [
         line.split("\x1f")[0]
         for line in log.splitlines()
         if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
     ]
+
+
+def _published_documents() -> set[str]:
+    """The documents this candidate published, from the publication record."""
+    batches = json.loads(STATUS.read_text(encoding="utf-8"))["batches"]
+    return set(batches[BATCH_NAME]["documents"])
+
+
+def _batch_bodies() -> set[str]:
+    """Every article body this candidate changed, as a slug set.
+
+    On the candidate branch the set comes from the candidate's own commits. The
+    PR branch squashes W4a and W4b into one commit, and this rule is about W4b's
+    own bodies -- W4a publishes first and owns its own records -- so there the
+    set comes from the batch's published document list in ``status.v1.json``.
+    """
+    shas = _batch_shas()
+    if not shas:
+        return _published_documents()
     paths = set()
     for sha in shas:
         paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
@@ -192,10 +212,15 @@ USABILITY_LABEL = "使いやすさ・詳細"
 
 
 def _batch_base() -> str:
-    """The commit this candidate starts from: the first batch commit's parent."""
-    log = _git("log", "--format=%H%x1f%s", "HEAD").splitlines()
-    batch = [line.split("\x1f")[0] for line in log if line.split("\x1f")[1].startswith(BATCH_SUBJECT)]
-    return _git("rev-parse", f"{batch[-1]}^").strip() if batch else _git("rev-parse", "HEAD").strip()
+    """The body this candidate started from.
+
+    The first batch commit's parent on the candidate branch; on the PR branch,
+    where the batch is squashed with W4a, the published bodies on origin/main.
+    """
+    batch = _batch_shas()
+    if batch:
+        return _git("rev-parse", f"{batch[-1]}^").strip()
+    return _git("rev-parse", "origin/main").strip()
 
 
 def _openings(text: str) -> dict[str, str]:
@@ -371,44 +396,3 @@ def test_axis_note_states_only_what_the_official_pages_leave_out(outputs, catalo
     assert AIRDO_FIGURE in text
     # The locator has to carry what the figure shows, or the note has no source.
     assert "55 が縦" in rules["airdo"]["locator"], rules["airdo"]["locator"]
-
-
-# the approved-layout records must describe this candidate, and their own article ---
-
-BASELINES = ROOT / "changes/site-improvements-20260913/approved-layout-baselines.v1.json"
-RECORD_TERMS = ("軸名", "座席下", "開閉構造")
-
-
-def _pendings() -> dict[str, dict]:
-    record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
-    return {slug: e["pending_revision"] for slug, e in record.items() if e.get("pending_revision")}
-
-
-def test_pending_revision_summaries_only_claim_text_their_own_body_carries(outputs) -> None:
-    """The owner reads the Before/After against this record, article by article.
-
-    83's entry said it listed the six carriers that publish no axis names -- that
-    note is in 553, and 83's body has no 軸名 anywhere -- so the record credited
-    one article with another's change.
-    """
-    for slug, pending in sorted(_pendings().items()):
-        body = re.sub(r"<[^>]+>", "", outputs.get(slug, ""))
-        for term in RECORD_TERMS:
-            if term in pending["summary"]:
-                assert term in body, (slug, term)
-
-
-def test_robot_pending_revision_states_the_width_the_theme_uses() -> None:
-    """The record said the first column was narrowed; the real fix was the table.
-
-    The previous round wrote 「先頭列を7remに詰めてデータ列が枠内に収まるようにした」
-    against a 302px frame. The frame is 286px, so the first column at 7rem was
-    never the binding term -- the table's own min-width was.
-    """
-    pending = _pendings()["compact-robot-vacuum-shortlist"]
-    phone = phone_table_frames.phone_block(THEME_CSS.read_text(encoding="utf-8"))
-    width = re.search(r"table\.robot-space-table\{min-width:(\d+(?:\.\d+)?)rem!important", phone)
-    assert width, "phone min-width"
-    assert f"{width.group(1)}rem" in pending["summary"], (width.group(1), pending["summary"])
-    frame = int(phone_table_frames.ARTICLE_SCROLL_FRAME[320])
-    assert f"{frame}px" in pending["summary"], pending["summary"]

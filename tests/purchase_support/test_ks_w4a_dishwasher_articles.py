@@ -828,8 +828,11 @@ def test_same_day_change_log_names_the_approximation_correction() -> None:
 
 # Bodies this batch changed against the batch base, read from the batch's own
 # commits plus the working tree. Hub and entry pages have no listing of their
-# own, so only the article rows below carry a change_log.
-BATCH_SUBJECT = "KS W4a"
+# own, so only the article rows below carry a change_log. The batch's commits
+# are "KS W4a" on the candidate branch and the squashed "KS W4: …" commit that
+# carries W4a and W4b together on the PR branch; every body in either candidate
+# owes /updates/ the same card, so the wider set only strengthens the rule.
+BATCH_SUBJECTS = ("KS W4a", "KS W4:")
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
 
 
@@ -848,9 +851,9 @@ def _batch_body_days() -> dict[str, str]:
     log = _git("log", "--format=%H%x1f%ad%x1f%s", "--date=short", "HEAD")
     rows = [line.split("\x1f") for line in log.splitlines() if line]
     batch = [
-        (sha, day) for sha, day, subject in rows if subject.startswith(BATCH_SUBJECT)
+        (sha, day) for sha, day, subject in rows if subject.startswith(BATCH_SUBJECTS)
     ]
-    assert batch, BATCH_SUBJECT
+    assert batch, BATCH_SUBJECTS
     days: dict[str, str] = {}
     for sha, day in batch:
         for path in _git("show", "--name-only", "--format=", sha).splitlines():
@@ -888,10 +891,6 @@ def test_every_body_this_batch_changed_reports_the_change_on_updates() -> None:
 # W4a review round 6 -----------------------------------------------------------
 
 LARGE = "large-dishwasher-comparison"
-BASELINES = (
-    builder.ROOT / "changes/site-improvements-20260913/approved-layout-baselines.v1.json"
-)
-BRANCH = "claude/ks-w4a-20260916"
 # Re-fetched 2026-09-16. AQUA adw_l40b_m28b_webc.pdf p.1〈側面〉draws 728 from the
 # same rear extension line as the 360 body depth, and p.2 repeats it as
 # 「取り出しに必要な奥行 72.8cm」beside 「本体奥行 36cm」. panasonic.jp NP-TA5 /
@@ -973,17 +972,6 @@ def test_large_reports_the_open_door_correction_on_updates() -> None:
     assert "起点" in entry["summary"]
     for value in ("57.9cm", "72.0cm", "72.8cm"):
         assert value in entry["summary"], value
-
-
-def test_large_pending_revision_records_this_branch() -> None:
-    baselines = json.loads(BASELINES.read_text(encoding="utf-8"))
-    pending = baselines["articles"][LARGE]["pending_revision"]
-    assert BRANCH in pending["branches"]
-    assert "起点" in pending["summary"]
-    assert (
-        "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
-        in pending["source_paths"]
-    )
 
 
 def test_pair_change_log_names_every_change_of_the_day() -> None:

@@ -38,6 +38,8 @@ ROOT = Path(__file__).resolve().parents[2]
 LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
 BATCH_SUBJECT = "KS W4b"
+BATCH_NAME = "W4b"
+STATUS = ROOT / "changes/ks-integrated-20260915/status.v1.json"
 PUBLISHED = "origin/main"
 DAY = "2026-09-16"
 LIGHT = "lightweight-carry-on-suitcase-under-3kg"
@@ -61,13 +63,22 @@ def _text(body: str) -> str:
 
 
 def _candidate_bodies() -> set[str]:
-    """Every article body this candidate changed, as a slug set."""
+    """Every article body this candidate changed, as a slug set.
+
+    On the candidate branch the set comes from the candidate's own commits. The
+    PR branch squashes W4a and W4b into one commit, and this rule is about W4b's
+    own bodies -- W4a publishes first and owns its own records -- so there the
+    set comes from the batch's published document list in ``status.v1.json``.
+    """
     log = _git("log", "--format=%H%x1f%s", "HEAD")
     shas = [
         line.split("\x1f")[0]
         for line in log.splitlines()
         if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
     ]
+    if not shas:
+        batches = json.loads(STATUS.read_text(encoding="utf-8"))["batches"]
+        return set(batches[BATCH_NAME]["documents"])
     paths: set[str] = set()
     for sha in shas:
         paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
