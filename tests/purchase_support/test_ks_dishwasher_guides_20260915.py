@@ -34,7 +34,7 @@ CAPTION_TAIL = (
 # Decision 1 (amended): neither NP-TSP1 manual gives a door-open depth, so the
 # reader is sent to the manufacturer, not to the manuals.
 MAKER_CHECK = "どちらの値かはメーカー（相談窓口）へ確認してください。"
-DOOR_NOTE = "公式資料で値が異なります（個別仕様 上386mm・下362mm、比較表 433mm）。" + MAKER_CHECK
+DOOR_NOTE = "公式資料で値が異なります（個別仕様 上約386mm・下約362mm、比較表 約433mm）。" + MAKER_CHECK
 SPEC_URL = "https://panasonic.jp/dish/products/NP-TSP1/spec.html"
 COMPARISON_URL = "https://panasonic.jp/dish/comparison.html"
 INSTALLATION_URL = "https://panasonic.jp/dish/installation.html"
@@ -228,14 +228,14 @@ def door_conflict(catalog, *, labels=True):
     sources = [
         {
             "label": "個別仕様",
-            "value": "上386mm・下362mm",
+            "value": "上約386mm・下約362mm",
             "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
             "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
             "checked_at": "2026-09-15",
         },
         {
             "label": "比較表",
-            "value": "433mm",
+            "value": "約433mm",
             "source_url": "https://panasonic.jp/dish/comparison.html",
             "locator": "比較表「本体外形寸法」行のNP-TSP1列",
             "checked_at": "2026-09-15",
@@ -271,11 +271,11 @@ def test_conflict_door_depth_names_both_official_values_without_choosing(tracked
         if tr.find(tag="th")[0].text() == "扉を開いたとき"
     )
     cell = next(td for td in row.find(tag="td") if td.attrs.get("data-ps-product") == p["product_id"])
-    assert cell.text() == "奥行 公式資料で値が異なる（個別仕様 上386mm・下362mm、比較表 433mm）／高さ 約712mm"
+    assert cell.text() == "奥行 公式資料で値が異なる（個別仕様 上約386mm・下約362mm、比較表 約433mm）／高さ 約712mm"
     model = by_id(guide, p["anchor"])
     assert DOOR_NOTE in model.text()
     reference = model.find(cls="ps-installation-reference")[0].text()
-    assert "公式資料で値が異なる項目：開扉時の奥行（個別仕様 上386mm・下362mm、比較表 433mm）" in reference
+    assert "公式資料で値が異なる項目：開扉時の奥行（個別仕様 上約386mm・下約362mm、比較表 約433mm）" in reference
     assert "確認できていない項目：開扉時の奥行" not in reference
     assert "どちらの値かはメーカー（相談窓口）へ確認してください" in reference
     assert "取扱説明書" not in reference
@@ -300,8 +300,8 @@ def test_conflict_note_names_locators_when_sources_have_no_label(tracked_catalog
     p = door_conflict(catalog, labels=False)
     record = next(f for f in p["facts"] if f["label"] == "開扉時の寸法")
     assert conflict_note(record) == (
-        "公式資料で値が異なります（仕様・スペック表「本体外形寸法」行と表末の注記：上386mm・下362mm、"
-        "比較表「本体外形寸法」行のNP-TSP1列：433mm）。" + MAKER_CHECK
+        "公式資料で値が異なります（仕様・スペック表「本体外形寸法」行と表末の注記：上約386mm・下約362mm、"
+        "比較表「本体外形寸法」行のNP-TSP1列：約433mm）。" + MAKER_CHECK
     )
     assert conflict_note({"state": "UNKNOWN", "text": "x"}) == ""
     validate_catalog(catalog)
@@ -464,14 +464,14 @@ def test_data_tsp1_door_depth_is_a_conflict_between_two_official_pages():
         assert record["conflict_sources"] == [
             {
                 "label": "個別仕様",
-                "value": "上386mm・下362mm",
+                "value": "上約386mm・下約362mm",
                 "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
                 "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
                 "checked_at": "2026-09-15",
             },
             {
                 "label": "比較表",
-                "value": "433mm",
+                "value": "約433mm",
                 "source_url": "https://panasonic.jp/dish/comparison.html",
                 "locator": "比較表「本体外形寸法」行のNP-TSP1列",
                 "checked_at": "2026-09-15",
@@ -598,7 +598,7 @@ def test_data_histories_record_the_2026_09_15_catalog_corrections():
 
 
 def test_conflict_sources_are_links_on_the_installation_guide_and_main_comparison(tracked):
-    # Decision 2: the 433mm comparison-table source is reachable wherever the note shows.
+    # Decision 2: the 約433mm comparison-table source is reachable wherever the note shows.
     for slug in ("dishwasher-installation-measurement", "countertop-dishwasher-for-small-households"):
         root = fragment(tracked[slug])
         labelled = {(a.text(), a.attrs.get("href")) for a in root.find(tag="a")}
@@ -606,7 +606,7 @@ def test_conflict_sources_are_links_on_the_installation_guide_and_main_compariso
         text = root.text()
         assert DOOR_NOTE in text, slug
         assert REAR_TEXT in text and "設置案内の注記" not in text, slug
-        assert "比較表 433mm）。設置前に取扱説明書" not in text, slug
+        assert "比較表 約433mm）。設置前に取扱説明書" not in text, slug
 
 
 def test_installation_widget_names_conflicting_keys(tracked, tracked_catalog):

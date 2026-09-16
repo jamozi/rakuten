@@ -3015,14 +3015,14 @@
           "conflict_sources": [
             {
               "label": "個別仕様",
-              "value": "上386mm・下362mm",
+              "value": "上約386mm・下約362mm",
               "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
               "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
               "checked_at": "2026-09-15"
             },
             {
               "label": "比較表",
-              "value": "433mm",
+              "value": "約433mm",
               "source_url": "https://panasonic.jp/dish/comparison.html",
               "locator": "比較表「本体外形寸法」行のNP-TSP1列",
               "checked_at": "2026-09-15"
@@ -3087,14 +3087,14 @@
           "conflict_sources": [
             {
               "label": "個別仕様",
-              "value": "上386mm・下362mm",
+              "value": "上約386mm・下約362mm",
               "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
               "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
               "checked_at": "2026-09-15"
             },
             {
               "label": "比較表",
-              "value": "433mm",
+              "value": "約433mm",
               "source_url": "https://panasonic.jp/dish/comparison.html",
               "locator": "比較表「本体外形寸法」行のNP-TSP1列",
               "checked_at": "2026-09-15"

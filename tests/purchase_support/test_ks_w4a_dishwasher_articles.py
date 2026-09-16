@@ -208,11 +208,11 @@ STANDARD_DOOR_DRY = {
     "ss-ma251": ("約76cm", "送風＋自動開扉"),
     "ss-mu251": ("約76cm", "送風"),
     "sttdwadw": ("未確認", "温風"),
-    "ax-s7": ("75cm", "温風"),
+    "ax-s7": ("約75cm", "温風"),
     "dws-33b-w": ("未確認", "温風"),
     "np-tcr5-w": ("59.8cm", "ヒーター"),
     "tkdwslhwh": ("83cm", "温風"),
-    "np-tsk2": ("43.3cm", "ヒーター"),
+    "np-tsk2": ("約43.3cm", "ヒーター"),
     "np-tsp1-w": ("公式表記に差", "ヒーター"),
     "tkdwwdhwh": ("73cm", "温風"),
     "adw-m28b": ("83cm", "温風／送風"),
@@ -695,6 +695,14 @@ def test_door_open_depths_keep_the_official_approximation(compiled) -> None:
         assert "開扉時の高さは約712mm" in bodies[slug], slug
         assert "開扉時の高さは712mm" not in bodies[slug], slug
     assert "最大高さ約712mm" in bodies[COUNTERTOP]
+    # NP-TSP1's two conflicting official values sit next to the 約712mm height and
+    # come from rows that carry 約 themselves (spec 「約 幅550×高さ600＜712＞×奥行341
+    # ＜上386,下362＞mm」, comparison 「本体外形寸法（約）」; re-fetched 2026-09-16).
+    for phrase in ("個別仕様上約386mm・下約362mm", "比較表約433mm"):
+        assert phrase in bodies[MEASURE], phrase
+    assert "上386mm" not in bodies[MEASURE]
+    assert "下362mm" not in bodies[MEASURE]
+    assert "比較表433mm" not in bodies[MEASURE]
 
 
 def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
@@ -716,3 +724,62 @@ def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
             item = squash(li.text())
             if "P9901-20V10p.8" in item:
                 assert item.endswith("仕様確認2026年9月16日"), slug
+
+
+# Re-fetched 2026-09-16: panasonic.jp NP-TSK2 spec 「本体外形寸法 ★8 約 幅550×奥行290
+# ＜上433,下362＞×高さ500＜612＞mm」, NP-TSP1 spec 「約 幅550×高さ600＜712＞×奥行341
+# ＜上386,下362＞mm」, ainx.info 「扉を開いた際の最大奥行幅 約75cm」, siroca 据え付けFAQ
+# 「（約）… d: ドアを開いたときの奥行き 76.0 cm」.
+DOOR_DEPTH_APPROXIMATE = {
+    "std-np-tsk2": ("約43.3cm", "約61.2cm"),
+    "std-np-tsp1-w": ("約43.3cm", "約38.6cm", "約36.2cm"),
+    "std-ax-s7": ("約75cm",),
+    "std-ss-m171": ("約76cm",),
+}
+# Re-fetched 2026-09-16: NP-TCR5 spec 「本体外形寸法 ★6 幅470×奥行300＜598＞×高さ460
+# ＜467＞mm」 (no 約), thanko.jp 「開扉時奥行：830mm」「730mm」 (no 約).
+DOOR_DEPTH_EXACT = {
+    "std-np-tcr5-w": "59.8cm",
+    "std-tkdwslhwh": "83cm",
+    "std-tkdwwdhwh": "73cm",
+}
+
+
+def test_standard_door_depth_column_follows_each_official_notation(compiled) -> None:
+    """One column must not quote 約 from one maker and drop it from another.
+
+    The Panasonic values come from rows whose own header carries 約, so writing
+    them bare states the dimension more precisely than the source does.
+    """
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[STANDARD])
+    cells = {}
+    for cell in nodes(root, lambda n: "std-door-depth" in (n.attrs.get("class") or "")):
+        row = next(a for a in ancestors(cell) if a.tag == "tr")
+        cells[row.attrs.get("id")] = squash(cell.text())
+    for row_id, phrases in DOOR_DEPTH_APPROXIMATE.items():
+        for phrase in phrases:
+            assert phrase in cells[row_id], (row_id, phrase, cells.get(row_id))
+    for row_id, value in DOOR_DEPTH_EXACT.items():
+        assert "約" not in cells[row_id], (row_id, cells[row_id])
+        assert value in cells[row_id], row_id
+    body = squash(root.text())
+    assert "設置の目安約62cm以上" in body
+    assert squash("「約」は、公式が「約」を付けている値に付けています。") in body
+    assert "本体幅55cm、開扉時の奥行約43.3cm" in body
+
+
+def test_same_day_change_log_names_the_approximation_correction() -> None:
+    """/updates/ shows the 2026-09-16 card for 41 and 549.
+
+    The bodies gained 約 on every door-open dimension that day, so a card dated
+    2026-09-16 that does not mention it describes less than what changed.
+    """
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    for slug in (COMPACT, COUNTERTOP):
+        article = next(a for a in ledger["articles"] if a["slug"] == slug)
+        entry = next(
+            c for c in article["listing"]["change_log"] if c["date"] == "2026-09-16"
+        )
+        assert "「約」" in entry["summary"], slug
+        assert "開扉" in entry["summary"] or "扉を開" in entry["summary"], slug

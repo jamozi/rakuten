@@ -187,7 +187,7 @@ class FailsBeforeW4a(PurposeBase):
             "/compact-robot-vacuum-shortlist/",
         ):
             self.assertIn(f'href="{href}"', routes)
-        mop = text(row_with(routes, "N285060"))
+        mop = text(routes)
         for phrase in (
             "奥行き34.0×幅33.0×高さ48.5cm",
             "給水・廃水タンクのすすぎ",
@@ -449,6 +449,7 @@ class W4aReviewFixes(PurposeBase):
         "maintenance-vacuum-table": 240,
         "maintenance-suitcase-table": 240,
         "np-method-table": 238,
+        "np-model-table": 238,
     }
     TABLE_PAGES = {
         "space-zones-table": "small-space",
@@ -459,6 +460,7 @@ class W4aReviewFixes(PurposeBase):
         "maintenance-vacuum-table": "easy-maintenance",
         "maintenance-suitcase-table": "easy-maintenance",
         "np-method-table": "without-installation",
+        "np-model-table": "without-installation",
     }
     # Horizontal padding plus the collapsed border of one cell at 320px, from the
     # rendered CSS (5+5+1 in .ks-editorial-table, 8.8x2 in .np-table).
@@ -471,7 +473,17 @@ class W4aReviewFixes(PurposeBase):
         "maintenance-vacuum-table": 11,
         "maintenance-suitcase-table": 11,
         "np-method-table": 18,
+        "np-model-table": 18,
     }
+    # Share of the frame the sticky first column may take. A three-column table
+    # carries more of its meaning in the row header, and #np-model-table has to
+    # hold an unbreakable model code, so it is allowed half.
+    FIRST_COLUMN_SHARE = {"np-model-table": 0.5}
+    # Rendered width of the widest nowrap model code (TDWS25SRD) in the
+    # #np-model-table row header at a phone viewport: 91.1px at the cell's 15px
+    # font. .np-model-code is nowrap, so the column has to be at least that wide
+    # or the code is painted over the next column.
+    MODEL_CODE_PX = 92
     PHONE_MARKER = "/* KS-W4A phone table widths"
 
     def phone_block(self, css: str) -> str:
@@ -522,9 +534,86 @@ class W4aReviewFixes(PurposeBase):
             )
             minimum = self.phone_px(block, ident, "min-width", False)
             data = (minimum - first) / (columns - 1)
-            self.assertLessEqual(first, 0.45 * frame, ident)
+            share = self.FIRST_COLUMN_SHARE.get(ident, 0.45)
+            self.assertLessEqual(first, share * frame, ident)
             self.assertGreaterEqual(data, 120, ident)
             self.assertLessEqual(first + data, frame, ident)
+
+    def test_model_table_first_column_holds_the_model_codes(self):
+        """The model table's row header carries nowrap model codes.
+
+        Without an id the phone width rules miss the table: the three columns
+        just split the frame, nothing scrolls, and below about 380px the codes
+        are painted on top of the next column's text.
+        """
+        source = SOURCE.read_text()
+        self.assertEqual(source.count('id="np-model-table"'), 1)
+        page = self.pages["without-installation"]
+        self.assertEqual(page.count('id="np-model-table"'), 1)
+        self.assertRegex(
+            page,
+            r'<div class="[^"]*np-table[^"]*"[^>]*>\s*<table[^>]*id="np-model-table"',
+        )
+        css = THEME_CSS.read_text()
+        joined = " ".join(
+            body.replace(" ", "")
+            for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+            if "#np-model-table" in selector
+        )
+        self.assertIn("position:sticky!important", joined)
+        block = self.phone_block(css)
+        self.assertGreaterEqual(
+            self.phone_px(block, "np-model-table", "width", True), self.MODEL_CODE_PX
+        )
+
+    def test_water_supply_dates_agree_across_the_two_pages(self):
+        """Two pages in one candidate must not date the same source page
+        differently. /save-housework/ records the SS-MA251 manual p.12 water
+        amount as checked on 2026-09-16, so the /without-installation/ note,
+        whose water-route date is 2026-09-13 with a list of later checks, has to
+        name it there."""
+        fact = self.data["purpose_evidence"]["save-housework"]["examples"][0][
+            "facts"
+        ][0]
+        self.assertIn("p.12", fact["locator"])
+        self.assertIn("ss-ma251", fact["source_url"])
+        year, month, day = (int(part) for part in fact["checked_at"].split("-"))
+        stamp = f"{year}年{month}月{day}日"
+        note = text(section_after(self.pages["without-installation"], "出典・編集方針"))
+        head = note.index("給水方法の確認日")
+        clause = note[head : note.index("。", head)]
+        self.assertNotIn(stamp, clause[: clause.index("（")])
+        exceptions = clause[clause.index("（") + 1 : clause.index("）")]
+        named = [
+            part for part in re.split(r"[、，]", exceptions) if "SS-MA251" in part
+        ]
+        self.assertTrue(named, exceptions)
+        for part in named:
+            self.assertIn(stamp, part)
+
+    def test_route_table_rows_stay_one_check_each(self):
+        """Every 確かめること cell is a check, and every 次に読む cell a link.
+
+        One row carried a whole product record (412 characters), which made that
+        single row 1394px tall on a phone and did not read as 「確かめること」;
+        one 次に読む cell was the only one that was neither a link nor a dash.
+        """
+        page = self.pages["save-housework"]
+        routes = section_after(page, "困っていることから比較を選ぶ")
+        body = rows(routes)[1:]
+        self.assertGreaterEqual(len(body), 6)
+        for row in body:
+            cells = re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", row, re.S)
+            self.assertEqual(len(cells), 3, row[:60])
+            check = text(cells[1]).strip()
+            self.assertLessEqual(len(check), 120, check[:40])
+            follow = cells[2]
+            self.assertTrue(
+                "<a " in follow or text(follow).strip() == "—", text(follow)
+            )
+        # The record itself stays on the page, below the table.
+        self.assertIn("N285060", text(routes))
+        self.assertNotIn("N285060", "".join(body))
 
     def test_sticky_first_column_covers_the_scrolled_edge(self):
         """With border-collapse the cell background stops at the middle of the
@@ -533,7 +622,7 @@ class W4aReviewFixes(PurposeBase):
         css = THEME_CSS.read_text()
         rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
         for ident in self.PHONE_FRAME_PX:
-            if ident == "np-method-table":
+            if ident.startswith("np-"):
                 continue  # .np-table cells carry no left border, so nothing leaks
             joined = " ".join(
                 body.replace(" ", "")

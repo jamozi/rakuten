@@ -397,3 +397,25 @@ def test_changed_approved_layouts_are_recorded_as_pending_owner_review() -> None
         assert pending["publication_authorized"] is False
         assert pending["tasks"] and all(t.startswith("KS-") for t in pending["tasks"])
         assert pending["source_paths"]
+
+
+def test_pending_revision_names_every_branch_its_summary_describes() -> None:
+    """The owner reads the Before/After against this record.
+
+    W4a appended its work to the W3 entries, so a single `branch` string no
+    longer covers what the summary describes.
+    """
+    record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
+    for slug in (
+        "compact-dishwasher-comparison",
+        "standard-dishwasher-comparison",
+        "large-dishwasher-comparison",
+    ):
+        pending = record[slug]["pending_revision"]
+        assert "branch" not in pending, slug
+        branches = pending["branches"]
+        assert branches, slug
+        assert all(b.startswith("claude/ks-") for b in branches), slug
+        assert len(set(branches)) == len(branches), slug
+        named = set(re.findall(r"claude/ks-[0-9a-z-]+", pending["summary"]))
+        assert named <= set(branches), (slug, named, branches)

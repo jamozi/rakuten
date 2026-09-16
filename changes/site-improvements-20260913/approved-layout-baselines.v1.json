@@ -22,7 +22,10 @@
       "pending_revision": {
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
-        "branch": "claude/ks-w3-20260916",
+        "branches": [
+        "claude/ks-w3-20260916",
+        "claude/ks-w4a-20260916"
+      ],
         "tasks": [
           "KS-120",
           "KS-129",
@@ -87,7 +90,10 @@
       "pending_revision": {
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
-        "branch": "claude/ks-w3-20260916",
+        "branches": [
+        "claude/ks-w3-20260916",
+        "claude/ks-w4a-20260916"
+      ],
         "tasks": [
           "KS-015",
           "KS-017",
@@ -118,7 +124,9 @@
       "pending_revision": {
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
-        "branch": "claude/ks-w3-20260916",
+        "branches": [
+        "claude/ks-w3-20260916"
+      ],
         "tasks": [
           "KS-122",
           "KS-015",
