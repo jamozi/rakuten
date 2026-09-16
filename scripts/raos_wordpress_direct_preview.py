@@ -434,9 +434,13 @@ def record_preview_copy_for_run(candidate: dict, relative: str) -> None:
     if not isinstance(bound, dict):
         # A plain owner-direct preview has no run and freezes no injected bytes.
         return
-    for entry in (str(ROOT), str(ROOT / "python")):
-        if entry not in sys.path:
-            sys.path.insert(0, entry)
+    live_guard, _price_overlay = _price_overlay_modules()
+    if Path(ROOT).resolve() != Path(live_guard.OWNER_CHECKOUT).resolve():
+        # The record and the copy land in the *running* checkout, and the §5 sweep walks the
+        # owner checkout: freezing anywhere else would leave a directory named after a
+        # price-recoverable hash where no purge looks. The publisher and this CLI both refuse
+        # a run-bound command from elsewhere; this is the last of the three.
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
     from raos.adapters import rakuten_price_refresh_client as client
 
     try:
@@ -809,13 +813,18 @@ def main() -> int:
     try:
         candidate = json.loads(args.candidate.read_bytes())
         run_bound = "price_overlay" in candidate
-        directory = args.candidate.parent
+        directory, candidate_view = args.candidate.parent, candidate
         if run_bound:
             # Contract §8: the run-bound route is verified, never asserted - a hand-written
             # key cannot switch the live refusal off, and the injected copies this preview
             # writes can only land in the checkout the §5 purge sweep walks. The renderer is
             # given the directory that was verified, not the one that was named.
             directory = verify_price_overlay_candidate(candidate, args.candidate)
+            # Contract §8: the same view the publisher passes (``preview_candidate``). An
+            # injected body is checked against its own hash; handed the raw candidate,
+            # ``preview_plan`` compares it with the price-free checkpoint hash and this
+            # route would refuse every bound candidate (DIRECT_PREVIEW_BODY_CHANGED).
+            candidate_view = _price_overlay_modules()[1].preview_view(candidate)
         else:
             # Contract §8: only a run-bound candidate may be previewed while values are live
             # (the publisher refuses the same way; this CLI takes any candidate file).
@@ -827,7 +836,7 @@ def main() -> int:
             code = price_overlay_refusal()
             if code is not None:
                 raise ValueError("DIRECT_PREVIEW_" + code)
-        result = prepare_candidate_preview(candidate, directory)
+        result = prepare_candidate_preview(candidate_view, directory)
         printed = price_overlay_output(candidate, result) if run_bound else result
         print(json.dumps(printed, ensure_ascii=False))
         return 0 if result["status"] == "PASS" else 1

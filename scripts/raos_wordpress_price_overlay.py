@@ -100,6 +100,20 @@ def _store(root):
     return PrivateStore(Path(root))
 
 
+def require_owner_checkout(direct, root):
+    """Contract §8: pin a run-bound publisher command to the owner checkout.
+
+    ``resolve_handle`` pins it for the ``price-overlay:<run>:<mode>`` form, but a candidate
+    named by its raw id reaches ``preview``/``publish``/``status``/``sync`` without ever
+    opening the run store. The preview freezes ``theme-<injected tree sha256>`` under the
+    *running* checkout and records it in that checkout's run directory, and the §5 sweep
+    walks the owner checkout only - so a run-bound command from anywhere else is refused
+    rather than leaving injected bytes where no purge looks.
+    """
+    with refusals(direct):
+        _store(root)
+
+
 def _approval(store, run_id):
     path = store.run_directory(run_id) / "approval.v1.json"
     if not path.is_file():
@@ -519,7 +533,9 @@ def preview_view(candidate):
     if not candidate.get("price_overlay"):
         return candidate
     view = copy.deepcopy(candidate)
-    for article in view["articles"]:
+    # ``.get`` rather than ``[...]``: the publisher's candidate always carries articles, but
+    # this view is also taken by the standalone preview CLI, which is handed a file.
+    for article in view.get("articles") or ():
         if article.get("price_overlay_injected"):
             article["patch_source"] = "price-overlay-injected-body"
     return view

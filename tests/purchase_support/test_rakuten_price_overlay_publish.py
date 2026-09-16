@@ -2576,3 +2576,165 @@ def test_prepare_candidate_preview_writes_the_override_inside_the_candidate_dire
     )
     # And the frozen theme this call wrote is recorded in the run, before it was written.
     assert preview_copy_record(owner)["copies"] == [frozen.name]
+
+
+def test_a_run_directory_holding_only_the_preview_record_is_swept(
+    owner, publisher, capsys, monkeypatch
+):
+    """Round 12 review: EMPTY is a finished answer, and the record alone used to reach it.
+
+    A preview records into the run directory and creates it if it is not there, so a candidate
+    whose run directory the owner removed by hand comes back holding nothing but the record.
+    ``purge-expired`` answered NO_RECORDS for it without sweeping, ``expired_unpurged_runs``
+    did not list it and fetch stopped blocking - while the frozen injected theme stayed under
+    the preview base for good.
+    """
+    from raos.adapters.rakuten_price_refresh_client import (
+        expired_unpurged_runs,
+        run_status,
+    )
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    frozen = freeze(owner, candidate, directory, monkeypatch)
+    body_hashes = injected_only_hashes(owner, candidate, frozen)
+    store = PrivateStore(owner)
+    run_directory = store.run_directory(RUN_ID)
+    for path in sorted(run_directory.rglob("*"), reverse=True):
+        if path.name != "preview-copies.v1.json":
+            shutil.rmtree(path) if path.is_dir() else path.unlink()
+    assert sorted(p.name for p in run_directory.iterdir()) == ["preview-copies.v1.json"]
+
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0 + timedelta(hours=25)) == [RUN_ID]
+    capsys.readouterr()
+    assert refresh_cli.main(
+        ["purge-expired", "--owner-checkout", str(owner)],
+        clock=lambda: T0 + timedelta(hours=25),
+    ) == 0
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    assert (report["run_id"], report["record_state"]) == (RUN_ID, "REDACTION_PENDING")
+    assert (report["preview_copies_deleted"], report["preview_copy_records_deleted"]) == (1, 1)
+    assert not frozen.exists() and preview_copy_record(owner) is None
+    assert run_status(store, RUN_ID)[0] == "EMPTY"
+    names = " ".join(str(p) for p in (owner / ".secrets").rglob("*"))
+    text = b"".join(p.read_bytes() for p in (owner / ".secrets").rglob("*") if p.is_file())
+    for needle in {frozen.name[len("theme-"):], *body_hashes}:
+        assert needle not in names and needle.encode() not in text, needle
+
+
+def test_the_publisher_pins_a_raw_run_bound_candidate_to_the_owner_checkout(
+    owner, publisher, tmp_path, monkeypatch, capsys
+):
+    """Round 12 review: only the handle form opened the run store, so only it pinned ROOT.
+
+    A run-bound candidate named by its raw 64-hex id reached preview/status/publish from any
+    checkout that held a copy of its directory: ``resolve_handle`` (and with it ``_store``)
+    never ran. The preview freezes ``theme-<injected tree sha256>`` under the *running*
+    checkout and records it in that checkout's run directory, and the §5 sweep walks the owner
+    checkout only, so the copy would sit outside every ``--owner-checkout`` purge.
+    """
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    candidate_id = candidate["candidate_id"]
+    other = (tmp_path / "other-checkout").resolve()
+    other.mkdir()
+    (other / ".secrets").mkdir(mode=0o700)
+    shutil.copytree(directory, other / direct.PRIVATE / candidate_id)
+    monkeypatch.setattr(direct, "ROOT", other)
+    capsys.readouterr()
+
+    for command in ("preview", "status"):
+        arguments = direct.parser().parse_args([command, "--candidate", candidate_id])
+        assert direct.execute_cli(arguments) == 69
+        assert "PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED" in capsys.readouterr().err
+    assert not (other / price_overlay.PREVIEW_PRIVATE).exists()
+    assert not (other / ".secrets/rakuten-price-refresh").exists()
+
+    # The same raw id from the owner checkout is the route the handle form resolves to.
+    monkeypatch.setattr(direct, "ROOT", owner)
+    assert direct.execute_cli(
+        direct.parser().parse_args(["status", "--candidate", candidate_id])
+    ) == 0
+    assert json.loads(capsys.readouterr().out)["candidate"] == f"price-overlay:{RUN_ID}:publish"
+
+
+def test_a_preview_outside_the_owner_checkout_freezes_nothing(
+    owner, publisher, tmp_path, monkeypatch
+):
+    """The freeze itself refuses too: the record and the copy must land where the sweep looks."""
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    other = (tmp_path / "other-checkout").resolve()
+    (other / ".secrets").mkdir(parents=True)
+    monkeypatch.setattr(preview_script, "ROOT", other)
+    private = other / price_overlay.PREVIEW_PRIVATE
+    private.mkdir(mode=0o700, parents=True)
+    with pytest.raises(ValueError, match="DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED"):
+        preview_script.freeze_display_theme(
+            candidate, private, directory / candidate["theme"]["directory"]
+        )
+    assert sorted(private.iterdir()) == []
+    assert not (other / ".secrets/rakuten-price-refresh").exists()
+
+
+def test_the_standalone_preview_cli_plans_the_injected_bodies(
+    owner, publisher, monkeypatch, capsys
+):
+    """Round 12 review: contract §8 documents this CLI as the run-bound preview route.
+
+    ``preview_plan`` checks each patched body against the hash of its ``patch_source``; for an
+    injected body that source is the price-free checkpoint, so the raw candidate always refused
+    (DIRECT_PREVIEW_BODY_CHANGED) and the documented route rendered nothing. The publisher
+    hands ``prepare_candidate_preview`` the ``preview_candidate`` view, which points those
+    articles at their own injected hash; this CLI now hands it the same one.
+    """
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    monkeypatch.setattr(preview_script, "ROOT", owner)
+    with pytest.raises(ValueError, match="DIRECT_PREVIEW_BODY_CHANGED"):
+        preview_script.preview_plan(candidate, directory)
+
+    seen = []
+
+    def render(view, where):
+        seen.append((view, preview_script.preview_plan(view, where)))
+        return {
+            "status": "PASS",
+            "candidate_id": view["candidate_id"],
+            "failures": [],
+            "screenshots": [],
+            "urls": [],
+        }
+
+    monkeypatch.setattr(preview_script, "prepare_candidate_preview", render)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["raos_wordpress_direct_preview.py", "--candidate", str(directory / "candidate.json")],
+    )
+    capsys.readouterr()
+    assert preview_script.main() == 0
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["candidate"] == f"price-overlay:{RUN_ID}:publish"
+    assert printed["candidate_id"] == "REDACTED_PRICE_OVERLAY"
+    assert re.search(r"[0-9a-f]{64}", json.dumps(printed)) is None, printed
+    view, planned = seen[0]
+    injected = [a for a in view["articles"] if a.get("price_overlay_injected")]
+    assert injected and all(
+        a["patch_source"] == "price-overlay-injected-body" for a in injected
+    )
+    assert planned["surfaces"], planned
+    # Only the view changed: the candidate file still carries its checkpoint patch_source.
+    with pytest.raises(ValueError, match="DIRECT_PREVIEW_BODY_CHANGED"):
+        preview_script.preview_plan(
+            json.loads((directory / "candidate.json").read_bytes()), directory
+        )

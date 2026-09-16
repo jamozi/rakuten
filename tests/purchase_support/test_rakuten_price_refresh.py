@@ -2432,6 +2432,110 @@ def test_an_unreadable_preview_copy_record_keeps_the_run_blocked(owner, capsys, 
     assert run_status(store, RUN_ID)[0] == "UNDATED"
 
 
+def test_a_symlink_where_a_recorded_copy_was_counts_as_present(owner, capsys):
+    """Round 12 review: ``preview_copy_exists`` reports a link as present, and that matters.
+
+    The recorded name is ``theme-<injected tree sha256>`` - price-recoverable in itself - so a
+    link left in its place must keep the run unfinished. Reporting it absent (``path.exists()``
+    alone, which is False for a dangling link) would let ``discard_preview_copy_record`` drop
+    the record and the run reach PURGED with that name still under the preview base.
+    """
+    from raos.adapters.rakuten_price_refresh_client import local_copies, run_status
+
+    root, _plan_path = owner
+    store, directory = purged_run(root)
+    assert record_copy(store) == [FROZEN]
+    base = root / PREVIEW_RELATIVE
+    base.mkdir(parents=True, exist_ok=True)
+    link = base / FROZEN
+    link.symlink_to(root / "no-such-target")
+    assert link.is_symlink() and not link.exists()
+
+    assert store.preview_copy_exists(FROZEN) is True
+    assert local_copies(store, RUN_ID, None, None)[1] == [FROZEN]
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    assert (code, lines[-1]["result"], lines[-1]["code"]) == (2, "REFUSED", "PRIVATE_PATH_UNSAFE")
+    # Refused rather than reported PURGED: the link and the record both stay for the owner.
+    assert link.is_symlink() and (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+
+
+def test_a_run_directory_holding_only_the_preview_record_is_not_empty(owner, capsys):
+    """Round 12 review: EMPTY is a finished answer, and the record alone used to reach it.
+
+    ``purge-expired`` reported NO_RECORDS without sweeping, ``expired_unpurged_runs`` did not
+    list the run and fetch stopped blocking, while ``theme-<injected tree sha256>`` stayed
+    under the preview base. A run directory that holds the record holds an obligation.
+    """
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    root, _plan_path = owner
+    store = PrivateStore(root)
+    directory = store.run_directory(RUN_ID)
+    frozen = root / PREVIEW_RELATIVE / FROZEN
+    frozen.mkdir(parents=True)
+    assert record_copy(store) == [FROZEN]
+    assert sorted(p.name for p in directory.iterdir()) == [PREVIEW_COPIES_FILE]
+
+    assert run_status(store, RUN_ID) == ("REDACTION_PENDING", None)
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    code, lines = run(["purge-expired", "--owner-checkout", root], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["run_id"], report["record_state"], report["result"]) == (
+        0,
+        RUN_ID,
+        "REDACTION_PENDING",
+        "ALREADY_PURGED",
+    )
+    assert (report["preview_copies_deleted"], report["preview_copy_records_deleted"]) == (1, 1)
+    assert not frozen.exists() and not (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "EMPTY"
+
+
+def test_one_unreadable_record_does_not_stop_the_purge_of_the_other_runs(
+    owner, capsys, monkeypatch
+):
+    """Round 12 review: the refusal cost every run its purge, which is the unsafe direction.
+
+    ``purge-expired`` without ``--run-id`` walks the runs in order; a broken record in the
+    first one used to propagate out of the loop, so the later runs kept their expired values
+    on disk. Each run now reports for itself, and the command still exits non-zero.
+    """
+    from raos.adapters.rakuten_price_refresh_client import run_status
+
+    root, plan_path = owner
+    other = "ks020-synthetic-0002"
+    run(
+        fetch_args(root, plan_path, "--owner-approved-run", other),
+        capsys,
+        transport=FakeTransport([ok(body_for(row()))] * 3),
+        sleep=lambda _s: None,
+    )
+    store, directory = purged_run(root)
+    record_copy(store, schema="RAOS_SOMETHING_ELSE_V1")
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+    assert (store.run_directory(other) / "raw").is_dir()
+
+    code, lines = run(
+        ["purge-expired", "--owner-checkout", root],
+        capsys,
+        clock=lambda: T0 + timedelta(hours=25),
+    )
+    rows = {r["run_id"]: r for r in lines[-1]["runs"]}
+    assert code == 2 and sorted(rows) == [RUN_ID, other]
+    assert rows[RUN_ID] == {
+        "run_id": RUN_ID,
+        "result": "REFUSED",
+        "code": "PREVIEW_COPY_RECORD_INVALID",
+    }
+    # The run that could be purged was purged: its raw values are gone.
+    assert (rows[other]["result"], rows[other]["raw_files_deleted"]) == ("PURGED", 3)
+    assert not (store.run_directory(other) / "raw").exists()
+    # The broken run keeps its record and keeps blocking, exactly as with --run-id.
+    assert (directory / PREVIEW_COPIES_FILE).exists()
+    assert run_status(store, RUN_ID)[0] == "UNDATED"
+
 def test_delete_run_file_only_removes_a_plain_file_of_the_run(owner, tmp_path):
     from raos.adapters.rakuten_price_refresh_client import PREVIEW_COPIES_FILE as NAME
 

@@ -979,7 +979,20 @@ def run_status(store: PrivateStore, run_id: str) -> tuple[str, datetime | None]:
             ) + MAX_CACHE_AGE
     except RefreshError, OSError, ValueError, KeyError, TypeError:
         return "UNDATED", None
-    return ("UNDATED", None) if has_raw else ("EMPTY", None)
+    if has_raw:
+        return "UNDATED", None
+    # No overlay and no approval, but a run directory holding the preview-copy record is not
+    # empty: the record names ``theme-<injected tree sha256>`` and the copies it names may
+    # still be under the preview base, and EMPTY is a finished answer - ``purge-expired``
+    # reports NO_RECORDS without sweeping, ``expired_unpurged_runs`` does not list the run and
+    # fetch/gate stop blocking. Reachable when a preview records a copy into a run directory
+    # that carries nothing else (contract §5).
+    try:
+        if preview_copy_record(store, run_id) is not None:
+            return "REDACTION_PENDING", None
+    except RefreshError, OSError, ValueError, KeyError, TypeError:
+        return "UNDATED", None
+    return "EMPTY", None
 
 
 def expired_unpurged_runs(

@@ -186,6 +186,7 @@ confirm-plugin-cleanup --owner-checkout /home/minami/rakuten --run-id <run_id> -
     2. 承認記録に price-recoverable な id・hash が残っていない。残れば `REDACTION_PENDING`。
     3. run ディレクトリに `.tmp` が残っていない。残れば `REDACTION_PENDING`。
     4. run ディレクトリに preview 複製の記録（`preview-copies.v1.json`）が残っていない。記録自体が `theme-<注入 tree sha256>` という名前を持つので、複製を消しただけでは足りません。残れば `REDACTION_PENDING`。
+       - overlay も承認記録も無い run ディレクトリでも同じです。この記録があれば `EMPTY`（終わった状態）にはならず `REDACTION_PENDING` を返します。`EMPTY` は `purge-expired` が走査せずに `NO_RECORDS` を返し、`expired_unpurged_runs()` にも載らない状態なので、記録だけを持つ run ディレクトリ（オーナーが run ディレクトリを手で消した後の preview など）が凍結テーマを置いたまま終われてしまうためです。
     5. ローカル複製の走査（`local_copies()`）が何も見つけない。見つければ `REDACTION_PENDING`。
     6. 公開の記録がある run では、承認記録の `purge_publish.wordpress_redaction` が `COMPLETE`、またはオーナーの plugin 後始末の記録（`plugin-cleanup.v1.json`）がある。欠ければ `WORDPRESS_REDACTION_UNCONFIRMED`。
   - **ローカル複製の走査**（`sweep_local_copies()` が削除し、`local_copies()` が検出する）
@@ -206,6 +207,7 @@ confirm-plugin-cleanup --owner-checkout /home/minami/rakuten --run-id <run_id> -
     - 記録できる名前は preview 直下の 1 段だけです（`require_preview_copy_name()`。空・`.`・`..`・区切りを含む名前は拒否）。手で書き換えた記録が preview の外を指すことはありません。削除は `delete_run_file()` が run ディレクトリ直下の通常ファイルに限って行います。
     - 走査しないもの: `.secrets` 外のコピー、ほかの clone・worktree、preview のデータベース（§10.1-3）、上記以外の `.secrets` 内のファイル。worktree の `.secrets` へ複製が入る経路は、配信中のフラグ無し prepare / publish の拒否（§8、owner checkout を基準に判定）で塞いでいます。
   - `purge-expired` の報告（`result`）: `PURGED` / `ALREADY_PURGED` のほか、残っている条件に応じて `PURGE_PUBLISH_MISSING`（上の 1）、`REDACTION_PENDING`（2〜5。通常は同じ実行で解消）、`WORDPRESS_REDACTION_UNCONFIRMED`（6）、承認記録が無い・読めない `UNDATED` を返します。`candidate_directories_deleted`・`preview_copies_deleted`・`preview_copy_records_deleted`・`stale_tmp_files_deleted` も出します。
+  - **拒否は run 単位です**: 引数なしの `purge-expired` で 1 つの run の記録が読めない（壊れた `preview-copies.v1.json` など）場合、その run は `{"result": "REFUSED", "code": ...}` の行になり、**残りの run の掃除は続きます**（全体の終了コードは 2）。ここで止めると、掃除されなかった run の期限切れの値がローカルに残る＝安全でない側に倒れるためです。拒否された run は記録もそのまま残り、`fetch` と `gate` を拒否し続けます。`--run-id` を付けた実行では、その run の拒否がコマンド全体の答えです（従来どおり `{"result": "REFUSED", "code": ...}`、終了コード 2）。
   - **`PUBLISHED_NOT_PURGED` の解除**は次のどちらかだけです。
     - purge 公開を記録する（期限後でも可。§8-5）。完了時に purge candidate・ローカル複製・id も消えます。
     - オーナーが `resolve-incident` で記録する。purge 公開はできないが、WordPress が値を配信していないことをオーナーが確かめた場合です（手作業で価格なしに戻した `WORDPRESS_RESTORED_OUTSIDE_PUBLISHER`、記事を非公開にした `WORDPRESS_POSTS_WITHDRAWN`）。
@@ -410,9 +412,12 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
   - 実行中の checkout が固定の `OWNER_CHECKOUT` でない、または candidate ファイルが `<OWNER_CHECKOUT>/.secrets/wordpress-mcp/owner-direct-v1/<candidate id>/` の中に無ければ `DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED` で拒否します。理由: `prepare_candidate_preview()` は注入 theme を `<ROOT>/.secrets/wordpress-direct-preview/theme-<tree sha256>` に複製し、そのディレクトリ名自体が価格復元可能な hash だからです（§5 の走査は owner checkout しか歩きません）。
   - `price_overlay` は publisher と同じ `resolve_binding()`（`schema` は `BINDING_SCHEMA`、mode と run_id が一致）と `resolve_handle()`（承認記録の `prepared_candidates` にある id）で検証します。解決できなければ `DIRECT_PREVIEW_PRICE_OVERLAY_*` で拒否し、描画も画像の取得も行いません。
   - preview が candidate ディレクトリの外に書くもののうち、価格復元可能な値を持つのは 2 つだけです。凍結テーマ `theme-<tree sha256>`（`freeze_display_theme()` が凍結の**前に** run ディレクトリへ名前を記録し、§5 の走査がその記録から消します。公開しなかった run でも消えます）と、compose の上書きファイル（mount の source として candidate ディレクトリと凍結テーマの名前を持つ）です。後者は `docker compose --file` が任意のパスを受けるので、**candidate ディレクトリの中**に `compose.override.yaml` として書きます（`compose_override()`）。run の後始末が id で消す単位に入るため、purge 後に残りません。preview 直下のほかの書き出し（`fixtures/posts.json` は `{}`、`credentials.env` は乱数、`downloads/`・`plugins/` は固定の Yoast 配布物、`media/` は空）は値を持ちません。古い形や中断で preview 直下に残った 1 枚は、§5 の走査が中身で見つけて消します。
+  - 描画には publisher と同じ view（`preview_candidate()` / `preview_view()`）を渡します。注入本文は「その本文自身の hash」で照合する必要があり、生の candidate のままだと `preview_plan()` が価格なし checkpoint の hash と比べて必ず `DIRECT_PREVIEW_BODY_CHANGED` になるためです（candidate ファイル自体は書き換えません）。
   - 照合は `candidate_path.resolve().parent` で行い、**その検証済みディレクトリをそのまま `prepare_candidate_preview()` に渡します**（`args.candidate.parent` は使いません）。candidate ディレクトリ自体が symlink の場合、resolve すると base の外に出るので `DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED` になり、描画が link 越しの場所へ書くことはありません（§5 の走査は `is_symlink()` のディレクトリを飛ばすため、そこは消去が届きません）。
-- **run 付きコマンドの実行場所の固定**: publisher の run 付き `prepare` / `publish` と、price overlay の handle を使う `preview` / `status` / `sync` は、ROOT が固定の `OWNER_CHECKOUT` でなければ `PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED` で拒否します（承認記録を開く前）。
+- **run 付きコマンドの実行場所の固定**: publisher の run 付き `prepare` / `publish` と、run に束縛された candidate を指す `preview` / `status` / `sync` は、ROOT が固定の `OWNER_CHECKOUT` でなければ `PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED` で拒否します（承認記録を開く前）。
+  - handle（`price-overlay:<run_id>:<mode>`）は `resolve_handle()` が承認記録を開く時点で、**生の 64 桁 id は読み込んだ candidate に `price_overlay` があった時点で**判定します（`require_owner_checkout()`）。handle 形だけを見ていたため、生の id なら worktree からでも通っていました。
   - 理由: 承認記録は owner checkout にしかなく、注入 candidate のローカル複製の走査（§5）も owner checkout の candidate ディレクトリしか見ません。worktree から実行すると、purge が届かない場所に注入バイト列を作ってしまいます。
+  - 凍結側でも同じ判定をします: `record_preview_copy_for_run()` は ROOT が `OWNER_CHECKOUT` でなければ `DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED` で止まり、記録も複製も作りません。
 - **run ディレクトリの安全性**: `.secrets/rakuten-price-refresh` 直下に symlink やディレクトリでない entry があると、`live_run_ids()` は `PRIVATE_PATH_UNSAFE` で拒否します（operator では `WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID`、publisher では `PRICE_OVERLAY_PRIVATE_PATH_UNSAFE`）。読めない run を「配信していない」と扱わないためです。
 - 出力に candidate id を出しません。注入 candidate の id は注入後本文の hash、purge candidate の id は live の注入後本文を baseline に持つ candidate の hash で、どちらも価格を総当たりで復元できるためです。
   - `prepare` は id を承認記録の `prepared_candidates` にだけ書き、`{"candidate": "price-overlay:<run_id>:<mode>", "candidate_id": "REDACTED_PRICE_OVERLAY", ...}` を出します。candidate ディレクトリのパスも出しません。

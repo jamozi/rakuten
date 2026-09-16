@@ -344,120 +344,129 @@ def command_gate(args: argparse.Namespace, clock: Callable[[], datetime]) -> int
     return EXIT_GATE_REFUSED if findings else EXIT_OK
 
 
+def _purge_one_run(
+    store: PrivateStore, run_id: str, now: datetime, args: argparse.Namespace
+) -> dict[str, Any]:
+    """Purge one run and return its report row (contract §5)."""
+    status, expires = run_status(store, run_id)
+    if status == "PURGED":
+        return {"run_id": run_id, "result": "ALREADY_PURGED"}
+    if status in UNFINISHED_PURGE_STATUSES:
+        # Values are already purged locally. Sweep copies frozen or published since
+        # (e.g. a late purge publish, a flag-free candidate prepared while values were
+        # live), stale .tmp leftovers, and redact. PUBLISHED_NOT_PURGED and
+        # WORDPRESS_REDACTION_UNCONFIRMED keep blocking fetch and gate.
+        directory = store.run_directory(run_id)
+        approval_path = directory / "approval.v1.json"
+        overlay = _read_optional(store, directory / "overlay.v1.json")
+        approval = _read_optional(store, approval_path)
+        swept = sweep_local_copies(store, run_id, overlay, approval)
+        tmp_deleted = store.remove_stale_tmp_files(run_id)
+        if isinstance(approval, dict):
+            store.write_json(approval_path, redact_approval(approval), replace=True)
+        final_status, _expires = run_status(store, run_id)
+        return {
+            "run_id": run_id,
+            "result": UNFINISHED_RESULTS.get(final_status, "ALREADY_PURGED"),
+            "record_state": status,
+            **swept,
+            "stale_tmp_files_deleted": tmp_deleted,
+        }
+    if status == "EMPTY":
+        return {"run_id": run_id, "result": "NO_RECORDS"}
+    if (
+        status == "DATED"
+        and expires is not None
+        and now < expires
+        and not args.include_unexpired
+    ):
+        return {
+            "run_id": run_id,
+            "result": "NOT_EXPIRED",
+            "cache_expires_at": iso(expires),
+        }
+    # UNDATED (unreadable or invalid records) is purged immediately: retention fails safe.
+    directory = store.run_directory(run_id)
+    overlay_path, approval_path = (
+        directory / "overlay.v1.json",
+        directory / "approval.v1.json",
+    )
+    overlay = _read_optional(store, overlay_path)
+    approval = _read_optional(store, approval_path)
+    deleted = store.delete_raw(run_id)
+    entries = overlay.get("entries") if isinstance(overlay, dict) else None
+    offer_ids = (
+        sorted(
+            str(e["offer_id"])
+            for e in entries
+            if isinstance(e, dict) and "offer_id" in e
+        )
+        if isinstance(entries, list)
+        else []
+    )
+    store.write_json(
+        overlay_path,
+        {
+            "schema": PURGED_SCHEMA,
+            "run_id": run_id,
+            "purged_at": iso(now),
+            "offer_ids": offer_ids,
+        },
+        replace=True,
+    )
+    purge_publish_recorded = False
+    # Before the redaction: the injected hashes are what find a frozen injected theme.
+    swept = sweep_local_copies(store, run_id, overlay, approval)
+    if isinstance(approval, dict):
+        purge_publish_recorded = approval.get("purge_publish") is not None
+        store.write_json(approval_path, redact_approval(approval), replace=True)
+    tmp_deleted = store.remove_stale_tmp_files(run_id)
+    # Local values are gone, but a publish without its purge publish leaves WordPress
+    # serving them, and unconfirmed plugin copies keep them stored: the run stays an
+    # obligation (fetch and gate keep refusing).
+    final_status, _expires = run_status(store, run_id)
+    return {
+        "run_id": run_id,
+        "result": UNFINISHED_RESULTS.get(final_status, "PURGED"),
+        "record_state": status,
+        "raw_files_deleted": deleted,
+        "published": bool(isinstance(approval, dict) and approval.get("publish")),
+        "purge_publish_recorded": purge_publish_recorded,
+        **swept,
+        "stale_tmp_files_deleted": tmp_deleted,
+        "approval_unreadable": approval_path.exists()
+        and not isinstance(approval, dict),
+    }
+
+
 def command_purge(args: argparse.Namespace, clock: Callable[[], datetime]) -> int:
     store = PrivateStore(args.owner_checkout)
     now = _now(args.now, clock)
+    named = bool(args.run_id)
     run_ids = (
         [require_run_id(args.run_id)]
-        if args.run_id
+        if named
         else [r for r in store.run_ids() if RUN_ID_PATTERN.fullmatch(r)]
     )
     report = []
+    refused = 0
     for run_id in run_ids:
-        status, expires = run_status(store, run_id)
-        if status == "PURGED":
-            report.append({"run_id": run_id, "result": "ALREADY_PURGED"})
-            continue
-        if status in UNFINISHED_PURGE_STATUSES:
-            # Values are already purged locally. Sweep copies frozen or published since
-            # (e.g. a late purge publish, a flag-free candidate prepared while values were
-            # live), stale .tmp leftovers, and redact. PUBLISHED_NOT_PURGED and
-            # WORDPRESS_REDACTION_UNCONFIRMED keep blocking fetch and gate.
-            directory = store.run_directory(run_id)
-            approval_path = directory / "approval.v1.json"
-            overlay = _read_optional(store, directory / "overlay.v1.json")
-            approval = _read_optional(store, approval_path)
-            swept = sweep_local_copies(store, run_id, overlay, approval)
-            tmp_deleted = store.remove_stale_tmp_files(run_id)
-            if isinstance(approval, dict):
-                store.write_json(approval_path, redact_approval(approval), replace=True)
-            final_status, _expires = run_status(store, run_id)
+        try:
+            report.append(_purge_one_run(store, run_id, now, args))
+        except RefreshError as error:
+            # One run whose records are unreadable must not stop the scan: every other run's
+            # expired values would stay on disk, which is the unsafe direction. The refusing
+            # run is reported as its own row and keeps blocking fetch and gate (run_status
+            # answers UNDATED for it), and the command still exits non-zero. When the owner
+            # named a single run its refusal is the whole answer, as before.
+            if named:
+                raise
+            refused += 1
             report.append(
-                {
-                    "run_id": run_id,
-                    "result": UNFINISHED_RESULTS.get(final_status, "ALREADY_PURGED"),
-                    "record_state": status,
-                    **swept,
-                    "stale_tmp_files_deleted": tmp_deleted,
-                }
+                {"run_id": run_id, "result": "REFUSED", "code": error.code}
             )
-            continue
-        if status == "EMPTY":
-            report.append({"run_id": run_id, "result": "NO_RECORDS"})
-            continue
-        if (
-            status == "DATED"
-            and expires is not None
-            and now < expires
-            and not args.include_unexpired
-        ):
-            report.append(
-                {
-                    "run_id": run_id,
-                    "result": "NOT_EXPIRED",
-                    "cache_expires_at": iso(expires),
-                }
-            )
-            continue
-        # UNDATED (unreadable or invalid records) is purged immediately: retention fails safe.
-        directory = store.run_directory(run_id)
-        overlay_path, approval_path = (
-            directory / "overlay.v1.json",
-            directory / "approval.v1.json",
-        )
-        overlay = _read_optional(store, overlay_path)
-        approval = _read_optional(store, approval_path)
-        deleted = store.delete_raw(run_id)
-        entries = overlay.get("entries") if isinstance(overlay, dict) else None
-        offer_ids = (
-            sorted(
-                str(e["offer_id"])
-                for e in entries
-                if isinstance(e, dict) and "offer_id" in e
-            )
-            if isinstance(entries, list)
-            else []
-        )
-        store.write_json(
-            overlay_path,
-            {
-                "schema": PURGED_SCHEMA,
-                "run_id": run_id,
-                "purged_at": iso(now),
-                "offer_ids": offer_ids,
-            },
-            replace=True,
-        )
-        purge_publish_recorded = False
-        # Before the redaction: the injected hashes are what find a frozen injected theme.
-        swept = sweep_local_copies(store, run_id, overlay, approval)
-        if isinstance(approval, dict):
-            purge_publish_recorded = approval.get("purge_publish") is not None
-            store.write_json(approval_path, redact_approval(approval), replace=True)
-        tmp_deleted = store.remove_stale_tmp_files(run_id)
-        # Local values are gone, but a publish without its purge publish leaves WordPress
-        # serving them, and unconfirmed plugin copies keep them stored: the run stays an
-        # obligation (fetch and gate keep refusing).
-        final_status, _expires = run_status(store, run_id)
-        report.append(
-            {
-                "run_id": run_id,
-                "result": UNFINISHED_RESULTS.get(final_status, "PURGED"),
-                "record_state": status,
-                "raw_files_deleted": deleted,
-                "published": bool(
-                    isinstance(approval, dict) and approval.get("publish")
-                ),
-                "purge_publish_recorded": purge_publish_recorded,
-                **swept,
-                "stale_tmp_files_deleted": tmp_deleted,
-                "approval_unreadable": approval_path.exists()
-                and not isinstance(approval, dict),
-            }
-        )
     emit({"result": "PURGE_COMPLETE", "runs": report})
-    return EXIT_OK
-
+    return EXIT_REFUSED if refused else EXIT_OK
 
 def command_resolve_incident(
     args: argparse.Namespace, clock: Callable[[], datetime]

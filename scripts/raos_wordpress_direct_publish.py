@@ -1179,6 +1179,15 @@ def execute_cli(args):
                 # Contract §8: while values may be live, only run-bound candidates may reach
                 # WordPress, the preview downloads or the git sync. publish() refuses again.
                 refuse_while_price_overlay_live(ROOT)
+            else:
+                from scripts import raos_wordpress_price_overlay as price_overlay
+
+                # Contract §8: a run-bound candidate is read, previewed, published and
+                # reported from the owner checkout only - by its raw id as well as through
+                # the handle form, which resolve_handle already pinned above. The preview
+                # freezes the injected theme under the running checkout, and the §5 sweep
+                # walks the owner checkout.
+                price_overlay.require_owner_checkout(sys.modules[__name__], ROOT)
             if args.command == "preview":
                 from scripts.raos_wordpress_direct_preview import (
                     prepare_candidate_preview,
