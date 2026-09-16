@@ -276,7 +276,7 @@ def test_search_surfaces_get_self_canonical_and_hub_hints(rendered) -> None:
     assert rendered["search_canonical"] == ORIGIN + "/?s=%E9%A3%9F%E6%B4%97%E6%A9%9F"
     kitchen = str(rendered["hint_kitchen"])
     assert kitchen.startswith('<p class="raos-listing-hub-hint">')
-    assert f'href="{ORIGIN}/kitchen/">食洗機の比較はこちら' in kitchen
+    assert f'href="{ORIGIN}/kitchen/">台所の道具の比較はこちら' in kitchen
     assert rendered["hint_solota"] == kitchen
     assert rendered["hint_none"] == ""
     # A matched route whose hub page is not reachable renders nothing rather than a dead link.

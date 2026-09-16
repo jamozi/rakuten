@@ -669,7 +669,7 @@
       "name": "方針ページの改訂とカテゴリ表示名の拡張",
       "articles": [],
       "candidate_a": {
-        "documents": 7,
+        "documents": 19,
         "theme": true,
         "contents": [
           "about-ad-policy (10)",
@@ -678,7 +678,19 @@
           "cleaning (131)",
           "comparisons (133)",
           "guides (135)",
-          "kitchen (136)"
+          "kitchen (136)",
+          "compact-robot-vacuum-shortlist (30)",
+          "countertop-dishwasher-for-small-households (41)",
+          "roomba-mini-vs-switchbot-k11-pro (85)",
+          "solota-vs-rakua-mini-plus (86)",
+          "dishwasher-installation-measurement (262)",
+          "dishwasher-water-supply-methods (263)",
+          "dishwasher-detergent-guide (264)",
+          "dishwasher-cleaning-guide (265)",
+          "dishwasher-running-cost (266)",
+          "standard-dishwasher-comparison (550)",
+          "large-dishwasher-comparison (551)",
+          "dishwasher-branch-faucet-guide (552)"
         ]
       },
       "candidate_b": {
@@ -691,7 +703,7 @@
         ]
       },
       "depends_on": [],
-      "note": "候補 A の 7 本は 9fa8ee45 との再生成差分で実測した本文（計画の上限見積もりは 16 だった）。候補 B はオーナーが wp-admin で固定ページ laundry を作成し post_id を委譲登録するまで着手できない。"
+      "note": "候補 A の 19 本は 9fa8ee45 との再生成差分で実測した本文。サイト側の 7 本に加え、改称した 2 つのハブへ戻るリンクを旧名で名乗っていた記事 12 本を同じ候補で直す（1 ページが同じ URL を 2 つの名前で呼ぶのを残さないため）。19 ＋テーマ = proposal 20 で上限ちょうど。候補 B はオーナーが wp-admin で固定ページ laundry を作成し post_id を委譲登録するまで着手できない。"
     },
     {
       "wave": "W1",
@@ -785,7 +797,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 7,
+        "documents": 8,
         "theme": true,
         "contents": [
           "home",
@@ -794,13 +806,14 @@
           "comparisons",
           "guides",
           "laundry（representative=A09 / choose=A08）",
-          "small-space（EX_SMALL→A10）"
+          "small-space（EX_SMALL→A10）",
+          "about-ad-policy (10)（衣類乾燥除湿機を準備中から外す）"
         ]
       },
       "depends_on": [
         "W0-B"
       ],
-      "note": "laundry カテゴリが登録されるまで listing.category が EDITORIAL_LISTING_INVALID になるため、W0-B が必須。"
+      "note": "laundry カテゴリが登録されるまで listing.category が EDITORIAL_LISTING_INVALID になるため、W0-B が必須。衣類乾燥除湿機の最初の公開なので、方針ページの「準備中」からこの分野を外す（DF03）。"
     },
     {
       "wave": "W4",
@@ -860,7 +873,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 7,
+        "documents": 8,
         "theme": true,
         "contents": [
           "home",
@@ -869,14 +882,15 @@
           "comparisons",
           "guides",
           "kitchen（台所カテゴリに熱風調理を載せる）",
-          "small-space（EX_SMALL→A17）"
+          "small-space（EX_SMALL→A17）",
+          "about-ad-policy (10)（ノンフライヤー・熱風調理器を準備中から外す）"
         ]
       },
       "depends_on": [
         "W0-A",
         "W2-B"
       ],
-      "note": "kitchen の本文を触るので W2-B の後に回す（同じページを 2 候補で奪い合わないため）。"
+      "note": "kitchen の本文を触るので W2-B の後に回す（同じページを 2 候補で奪い合わないため）。ノンフライヤー・熱風調理器の最初の公開なので、方針ページの「準備中」からこの分野を外す（DF03）。"
     },
     {
       "wave": "W6",
@@ -896,7 +910,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 7,
+        "documents": 8,
         "theme": true,
         "contents": [
           "home",
@@ -905,13 +919,14 @@
           "comparisons",
           "guides",
           "A17（→A19）",
-          "A20（→A21・A24）"
+          "A20（→A21・A24）",
+          "kitchen（熱風調理の棚に A19・A21・A24 を足す）"
         ]
       },
       "depends_on": [
         "W5"
       ],
-      "note": "落ちた A23 の食洗機 CONFLICT の確認先は A21 なので、A20 の旧リンク L049 を A21 へ張り替える。"
+      "note": "落ちた A23 の食洗機 CONFLICT の確認先は A21 なので、A20 の旧リンク L049 を A21 へ張り替える。台所の棚に熱風調理の記事が 3 本増えるので、kitchen のハブ本文も同じ候補で直す（DF02）。"
     },
     {
       "wave": "W7",
@@ -935,7 +950,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 9,
+        "documents": 10,
         "theme": true,
         "contents": [
           "home",
@@ -946,33 +961,48 @@
           "cleaning（手書き入口。EX_CLEAN→A25）",
           "small-space（EX_SMALL→A25）",
           "compact-robot-vacuum-shortlist (30)",
-          "roomba-mini-vs-switchbot-k11-pro (85)"
+          "roomba-mini-vs-switchbot-k11-pro (85)",
+          "about-ad-policy (10)（軽量コードレス掃除機を準備中から外す）"
         ]
       },
       "depends_on": [
         "W0-A"
       ],
-      "note": "掃除カテゴリに掃除機 5 本が載るので、表示名の拡張（W0-A）が前提。"
+      "note": "掃除カテゴリに掃除機 5 本が載るので、表示名の拡張（W0-A）が前提。軽量コードレス掃除機の最初の公開なので、方針ページの「準備中」からこの分野を外す（DF03）。"
     }
   ],
   "wave_zero_applied": {
     "branch": "claude/ks-n30-w0-20260916",
     "base_commit": "9fa8ee45",
     "contains_new_articles": false,
-    "documents_changed": 7,
+    "documents_changed": 19,
     "theme_reissued": true,
     "sources_edited": [
       "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
+      "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
+      "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
+      "changes/reader-purchase-support-v1/articles/dishwasher-cleaning-guide.html",
+      "changes/reader-purchase-support-v1/articles/dishwasher-detergent-guide.html",
+      "changes/reader-purchase-support-v1/articles/dishwasher-installation-measurement.html",
+      "changes/reader-purchase-support-v1/articles/dishwasher-running-cost.html",
+      "changes/reader-purchase-support-v1/articles/dishwasher-water-supply-methods.html",
       "changes/reader-purchase-support-v1/articles/kitchen.html",
+      "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
+      "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
+      "changes/reader-purchase-support-v1/articles/solota-vs-rakua-mini-plus.html",
+      "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
       "changes/reader-purchase-support-v1/purchase-support.v1.json",
       "changes/site-improvements-20260913/entry-pages.v1.json",
       "changes/site-improvements-20260913/entry-pages/cleaning.html",
       "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
       "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
       "changes/wordpress-direct-publish-v1/articles.v1.json",
+      "changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html",
       "changes/wordpress-direct-publish-v1/reader-sync/site-map.v2.json",
       "changes/wordpress-direct-publish-v1/reader-sync/tools/hub_pages_20260912.py",
-      "python/raos/application/editorial/reader_experience_v1.py"
+      "python/raos/application/editorial/purchase_support.py",
+      "python/raos/application/editorial/reader_experience_v1.py",
+      "python/raos/application/editorial/site_editorial_pages.py"
     ],
     "ledger_publish_field_changes": [
       {
@@ -1008,11 +1038,10 @@
     ],
     "not_touched": [
       "既存記事の listing.category（1 件も動かしていない）",
-      "記事本文（比較表の値・商品データ・記事タイトル・記事の excerpt）",
+      "記事本文の中身（比較表の値・商品データ・記事タイトル・記事の excerpt）。触ったのは改称した 2 つのハブへ戻るリンクの文言だけ",
       "洗濯・乾燥カテゴリ（post 701 は下書き・未委譲）",
       "画像の alt（商品種別ではなく画像そのものの説明）",
-      "テーマの記事パンくずのハブ label（キッチン・家事 / 掃除・時短。もともと広い語）",
-      "検索ヒットの案内文（読者が入力した語への応答）"
+      "テーマの記事パンくずのハブ label（キッチン・家事 / 掃除・時短。もともと広い語）"
     ],
     "applied_candidate": {
       "wave": "W0",
@@ -1035,9 +1064,9 @@
     ],
     "publish_candidate": {
       "candidate": "W0-A",
-      "documents": 7,
+      "documents": 19,
       "theme": true,
-      "proposals": 8,
+      "proposals": 20,
       "limit": 20,
       "contents": [
         "about-ad-policy (10)",
@@ -1046,9 +1075,63 @@
         "cleaning (131)",
         "comparisons (133)",
         "guides (135)",
-        "kitchen (136)"
+        "kitchen (136)",
+        "compact-robot-vacuum-shortlist (30)",
+        "countertop-dishwasher-for-small-households (41)",
+        "roomba-mini-vs-switchbot-k11-pro (85)",
+        "solota-vs-rakua-mini-plus (86)",
+        "dishwasher-installation-measurement (262)",
+        "dishwasher-water-supply-methods (263)",
+        "dishwasher-detergent-guide (264)",
+        "dishwasher-cleaning-guide (265)",
+        "dishwasher-running-cost (266)",
+        "standard-dishwasher-comparison (550)",
+        "large-dishwasher-comparison (551)",
+        "dishwasher-branch-faucet-guide (552)"
       ]
-    }
+    },
+    "hub_link_labels_rewritten": {
+      "why": "テーマは記事のパンくずと BreadcrumbList をハブの post_title から刷るので、本文側が旧名のままだと 1 ページに同じ URL の名前が 2 つ出る。",
+      "new_labels": {
+        "kitchen": "台所の道具の選び方・比較",
+        "cleaning": "掃除の道具の選び方・比較"
+      },
+      "documents": 12,
+      "before": [
+        "食洗機の選び方・記事一覧（4 本）",
+        "食洗機選びの全体像に戻る（5 本）",
+        "食洗機の選び方（分岐水栓ガイドの 2 か所）",
+        "食洗機選び／食洗機選びの全体へ（給水方法ガイド）",
+        "食洗機の選び方に戻る →／食洗機の選び方へ戻る（標準・大容量の比較）",
+        "ロボット掃除機の選び方・記事一覧（2 本）",
+        "ロボット掃除機選びの全体像に戻る（2 本）"
+      ],
+      "not_affected": "compact-dishwasher-comparison (549) は /kitchen/ へのリンクを 1 件も持たない（旧 DF05 はこの 1 本を誤って名指ししていた）。"
+    },
+    "reader_note_changes": [
+      {
+        "page": "kitchen (136)",
+        "before": "広告の有無は記事ごとに、記事の中で示します。",
+        "after": "広告リンクを含む記事は、記事の中でその旨を示します。",
+        "why": "台所の 11 本のうち広告リンクを持つのは 6 本（比較 5 本と給水方法ガイド 1 本）で、その 6 本だけが広告を名乗る断りを最初の広告リンクより前に刷る。残り 5 本は広告について何も書かないので、「有無」を名乗ると偽になる。"
+      },
+      {
+        "page": "about-ad-policy (10)",
+        "before": "扱う領域に準備中の4群の断りを添え…カテゴリページの名前を表示名にそろえ、",
+        "after": "扱う領域のうち、まだ記事のない4分野にその断りを添え…台所と掃除のページの名前を、メニューやカードで使っている名前にそろえ、",
+        "why": "「群」「表示名」は作業側の語で、同じページが同じ対象を「分野」と数えている。「名前を表示名にそろえ」は読者には同語反復だった。"
+      }
+    ],
+    "ledger_reader_role_field_changes": [
+      {
+        "article_key": "home",
+        "field": "reader_role.main_cta.label",
+        "before": "商品カテゴリーから選ぶ",
+        "after": "商品カテゴリから選ぶ",
+        "why": "パンくずと両メニューは「商品カテゴリ」。同じ台帳行の excerpt も長音なしで、home の見出し（site_editorial_pages.py）だけが長音つきだった。この label は本文に刷られないので公開文書は増えない。"
+      }
+    ],
+    "base_on_origin_main": "base 9fa8ee45 の記事本文は 2026-09-16 に origin/main（b5618eed / PR #293「KS W4」）として公開済みで、changes/wordpress-direct-publish-v1/articles/ の全ファイルが origin/main と一致する。したがって W0-A の 19 本は、いま読者が見ている本文に対する差分そのものである。"
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
@@ -1103,7 +1186,10 @@
         "W5",
         "W6"
       ],
-      "why": "台所の棚が増えるのは W1（A01〜A03 が listing.category=kitchen で published になる）。W0 でページ名は広げたが、本文と excerpt は「いま掲載しているのは卓上食洗機」と書いてあるので、水切りラックが載る候補と同じ候補で直さないと偽になる。以前の記録は W5 に送っていた。"
+      "why": "台所の棚が増えるのは W1（A01〜A03 が listing.category=kitchen で published になる）。W0 でページ名は広げたが、本文と excerpt は「いま掲載しているのは卓上食洗機」と書いてあるので、水切りラックが載る候補と同じ候補で直さないと偽になる。以後も台所の記事が増える波（W2・W5・W6）で同じ作業を繰り返す。later_waves の 3 波はいずれも候補 B に kitchen を持つ（W6-B には本記録で足した）。以前の記録は W5 に送っていた。",
+      "where_quote": {
+        "changes/reader-purchase-support-v1/articles/kitchen.html": "いま掲載しているのは卓上食洗機です。"
+      }
     },
     {
       "id": "DF03",
@@ -1123,7 +1209,10 @@
         "W5",
         "W7"
       ],
-      "why": "「このうち水切りラック…は準備中」は W0〜W1 の窓でだけ真。水切りラック（W1）、衣類乾燥除湿機（W3）、ノンフライヤー・熱風調理器（W5）、軽量コードレス掃除機（W7）の順に 1 群ずつ外す。"
+      "why": "「このうち水切りラック…は準備中」は W0〜W1 の窓でだけ真。水切りラック（W1）、衣類乾燥除湿機（W3）、ノンフライヤー・熱風調理器（W5）、軽量コードレス掃除機（W7）の順に 1 分野ずつ外す。W3-B・W5-B・W7-B には about-ad-policy の枠が無かったので、本記録で 3 候補に足した（documents 7→8 / 7→8 / 9→10）。",
+      "where_quote": {
+        "changes/reader-purchase-support-v1/articles/about-ad-policy.html": "準備中で、まだ公開した記事はありません。"
+      }
     },
     {
       "id": "DF04",
@@ -1142,24 +1231,8 @@
       "why": "listing.card_image は新 25 本すべて null なので、新着カードが出る最初の波で発火する。いま発火している記事はないため W0 では出力が 1 文字も変わらず、直しても検証できない。"
     },
     {
-      "id": "DF05",
-      "what": "記事本文から /kitchen/ へ戻るリンクの文言が旧ページ名（食洗機の選び方）を引用している",
-      "where": [
-        "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
-        "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html"
-      ],
-      "trigger": "wave_edits_document",
-      "documents": [
-        "compact-dishwasher-comparison",
-        "standard-dishwasher-comparison"
-      ],
-      "wave": "W2",
-      "candidate": "B",
-      "why": "リンク文言なので偽ではないが、着地したページ名と揃わない。この 2 本を再公開する最初の候補が W2-B。残りの記事は本文を触る波で同時に直す。"
-    },
-    {
       "id": "DF06",
-      "what": "/cleaning/ のハブ本文と excerpt を軽量コードレス掃除機まで広げ、掃除の記事から戻るリンクの文言も揃える",
+      "what": "/cleaning/ のハブ本文と excerpt を軽量コードレス掃除機まで広げる",
       "where": [
         "changes/site-improvements-20260913/entry-pages/cleaning.html",
         "changes/wordpress-direct-publish-v1/articles.v1.json",
@@ -1172,7 +1245,10 @@
       ],
       "wave": "W7",
       "candidate": "B",
-      "why": "掃除の棚が増えるのは W7 だけ。それまで本文の「いま掲載しているのはロボット掃除機です」は真。"
+      "why": "掃除の棚が増えるのは W7 だけ。それまで本文の「いま掲載しているのはロボット掃除機です」は真。掃除の記事から戻るリンクの文言は W0-A で直したので、この先送りには含まない。",
+      "where_quote": {
+        "changes/site-improvements-20260913/entry-pages/cleaning.html": "いま掲載しているのはロボット掃除機です。"
+      }
     }
   ]
 }

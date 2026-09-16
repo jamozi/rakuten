@@ -168,3 +168,53 @@ def test_reference_price_promise_covers_only_products_with_recorded_conditions(
     unmatched = [s for s in sentences(text) if "照合できた販売先がない商品" in s]
     assert len(unmatched) == 1, text
     assert "価格は確認中" in unmatched[0], unmatched
+
+
+# --- 改定内容 is a reader's sentence ---------------------------------------
+# The revision note is published text, not a work log. Wave 0 let three working
+# words into it: 「群」 for the fields the same page counts as 「分野」,
+# 「表示名」 for the name the reader sees, and the tautology 「カテゴリページの名前を
+# 表示名にそろえ」. 「波」 is banned with them because the programme's own unit of
+# work has no meaning on a reader's page.
+WORKING_WORDS = ("群", "表示名", "波")
+# The page counts its subject in 分野; the note may not rename that unit.
+SCOPE_UNIT = "分野"
+
+
+def revision_note(root: Element) -> str:
+    times = [t for t in root.find(tag="time") if "最終更新日" in visible_text(t.parent)]
+    assert len(times) == 1, times
+    return visible_text(times[0].parent)
+
+
+def test_the_revision_note_uses_no_working_vocabulary(roots) -> None:
+    note = revision_note(roots["about-ad-policy"])
+    for word in WORKING_WORDS:
+        assert word not in note, (word, note)
+
+
+def test_the_whole_policy_page_keeps_the_working_vocabulary_out(roots) -> None:
+    """A word the site never uses elsewhere is a leak wherever it lands."""
+    page = visible_text(roots["about-ad-policy"])
+    for word in WORKING_WORDS:
+        assert word not in page, (word, page)
+
+
+def test_the_revision_note_counts_the_scope_the_way_the_page_counts_it(roots) -> None:
+    """One page, one unit: 「8分野」 above, so 「4分野」 — never 「4群」 — below."""
+    root = roots["about-ad-policy"]
+    scope = visible_text(bullet(root, "扱う領域："))
+    assert f"8{SCOPE_UNIT}" in scope, scope
+    note = revision_note(root)
+    pending = [s for s in sentences(note) if "まだ記事のない" in s or "準備中" in s]
+    assert len(pending) == 1, note
+    assert f"4{SCOPE_UNIT}" in pending[0], pending
+
+
+def test_the_revision_note_says_what_the_category_pages_were_renamed_to(roots) -> None:
+    """「名前を表示名にそろえ」 told the reader nothing; the names have to appear."""
+    note = revision_note(roots["about-ad-policy"])
+    renamed = [s for s in sentences(note) if "そろえ" in s]
+    assert len(renamed) == 1, note
+    for label in ("台所", "掃除"):
+        assert label in renamed[0], (label, renamed)

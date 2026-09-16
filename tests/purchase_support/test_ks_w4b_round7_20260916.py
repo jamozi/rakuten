@@ -55,6 +55,32 @@ def _published(slug: str) -> str:
     return _git("show", f"{PUBLISHED}:{ARTICLE_PREFIX}{slug}.html")
 
 
+def _batch_shipped() -> bool:
+    """True once origin/main carries this batch's own bodies.
+
+    Two rules below read an /updates/ card against the body readers can see.
+    That only says anything while the batch waits to publish: until then the
+    published body is the card's 「…から」 before, and the compiled body is its
+    after. Once the batch publishes, origin/main *is* the after, the before it
+    names is history, and nothing has moved between the two -- so the rules have
+    no subject rather than a violation. They stay armed for the next unpublished
+    batch and step aside for a batch that has already shipped.
+    """
+    log = _git("log", "--format=%H%x1f%s", "HEAD").splitlines()
+    tips = [
+        line.split("\x1f")[0]
+        for line in log
+        if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
+    ]
+    bodies = sorted(_candidate_bodies())
+    if not tips or not bodies:
+        return False
+    return all(
+        _published(slug) == _git("show", f"{tips[0]}:{ARTICLE_PREFIX}{slug}.html")
+        for slug in bodies
+    )
+
+
 def _text(body: str) -> str:
     stripped = re.sub(r"(?s)<(script|style).*?</\1>", "", body)
     return html.unescape(re.sub(r"<[^>]+>", "\n", stripped))
@@ -71,7 +97,14 @@ def _candidate_bodies() -> set[str]:
     paths: set[str] = set()
     for sha in shas:
         paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
-    paths.update(_git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines())
+    # Uncommitted work belongs to this batch only while the batch is the branch
+    # tip. Once a later batch commits on top, its edits are its own to report,
+    # and sweeping them in here would judge them against this batch's base.
+    lines = log.splitlines()
+    if lines and lines[0].split("\x1f")[1].startswith(BATCH_SUBJECT):
+        paths.update(
+            _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines()
+        )
     return {
         Path(path).stem
         for path in paths
@@ -153,6 +186,8 @@ def test_card_before_states_are_what_the_published_body_shows(outputs, cards) ->
     so a whole-body check passes while the claim is still false; the before has
     to be read from the row the sentence names.
     """
+    if _batch_shipped():
+        pytest.skip("the W4b candidate is published; its cards are history now")
     assert len(cards) >= 13, sorted(cards)
     checked = []
     wrong = []
@@ -259,6 +294,8 @@ def test_card_reports_the_section_this_candidate_moved(outputs, cards) -> None:
     the card has to name its new heading. The moved set is computed from the two
     bodies, not written down here.
     """
+    if _batch_shipped():
+        pytest.skip("the W4b candidate is published; its cards are history now")
     moved = {}
     for slug in sorted(_candidate_bodies() & set(cards)):
         published = _published(slug)

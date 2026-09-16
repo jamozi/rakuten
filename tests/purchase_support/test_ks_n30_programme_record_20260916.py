@@ -323,3 +323,74 @@ def test_wave_zero_records_the_category_pages_as_widened() -> None:
         assert ledger[key]["title"] == change["after"], key
         assert change["before"] != change["after"], key
         assert ledger[key]["excerpt"] == change["excerpt_after"], key
+
+
+# A candidate is a publish batch with a hard ceiling: 20 proposals, one of which
+# is always the theme. A deferral that names a wave whose candidates have no
+# slot for its document is a promise nothing will keep — DF03 sent the policy
+# page to W3/W5/W7 while none of those candidates listed it.
+PROPOSAL_LIMIT = 20
+
+
+def candidate_rows() -> list[tuple[str, str, dict]]:
+    return [
+        (wave["wave"], candidate, wave["candidate_a" if candidate == "A" else "candidate_b"])
+        for wave in wave_rows()
+        for candidate in CANDIDATES
+    ]
+
+
+def test_every_candidate_counts_its_own_documents_and_fits_the_limit() -> None:
+    for wave, candidate, row in candidate_rows():
+        contents = row["contents"]
+        assert row["documents"] == len(contents), (wave, candidate, contents)
+        assert row["theme"] is True, (wave, candidate)
+        proposals = row["documents"] + 1
+        assert proposals <= PROPOSAL_LIMIT, (wave, candidate, proposals)
+        assert len(contents) == len(set(contents)), (wave, candidate, contents)
+
+
+def test_the_applied_candidate_records_the_size_it_actually_holds() -> None:
+    applied = decisions()["wave_zero_applied"]
+    published = applied["publish_candidate"]
+    wave, candidate = applied["applied_candidate"].values()
+    planned = next(
+        row for w, c, row in candidate_rows() if (w, c) == (wave, candidate)
+    )
+    assert published["documents"] == planned["documents"], (published, planned)
+    assert published["contents"] == planned["contents"], published["contents"]
+    assert published["proposals"] == published["documents"] + 1, published
+    assert published["limit"] == PROPOSAL_LIMIT, published
+    assert applied["documents_changed"] == published["documents"], applied
+
+
+def test_a_deferral_that_repeats_fits_every_later_wave_it_names() -> None:
+    """Each repeat needs a candidate that republishes the document it changes."""
+    order = candidate_order()
+    for row in deferrals():
+        documents = row.get("documents", [])
+        for wave in row.get("later_waves", []):
+            fitting = [
+                candidate
+                for held_wave, candidate, contents in order
+                if held_wave == wave
+                and all(lists_document(contents, name) for name in documents)
+            ]
+            assert fitting, (
+                f"{row['id']} repeats in {wave}, but no {wave} candidate lists "
+                f"{documents}"
+            )
+
+
+def test_each_deferral_quotes_wording_the_named_file_really_carries() -> None:
+    """DF05 named a file that never held the sentence it deferred."""
+    rows = deferrals()
+    assert any("where_quote" in row for row in rows), (
+        "no deferral pins the wording it defers to the file that carries it"
+    )
+    for row in rows:
+        quotes = row.get("where_quote", {})
+        for path, quote in quotes.items():
+            assert path in row["where"], (row["id"], path)
+            text = (ROOT / path).read_text(encoding="utf-8")
+            assert quote in text, (row["id"], path, quote)

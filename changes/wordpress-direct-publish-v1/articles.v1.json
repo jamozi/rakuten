@@ -20,7 +20,7 @@
           "kind": "internal",
           "target": null,
           "anchor": "",
-          "label": "商品カテゴリーから選ぶ"
+          "label": "商品カテゴリから選ぶ"
         },
         "next_question": {
           "question": "商品より先に困りごとがある？",

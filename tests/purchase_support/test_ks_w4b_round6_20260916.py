@@ -146,7 +146,14 @@ def _batch_bodies() -> set[str]:
     paths = set()
     for sha in shas:
         paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
-    paths.update(_git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines())
+    # Uncommitted work belongs to this batch only while the batch is the branch
+    # tip. Once a later batch commits on top, its edits are its own to report,
+    # and sweeping them in here would judge them against this batch's base.
+    lines = log.splitlines()
+    if lines and lines[0].split("\x1f")[1].startswith(BATCH_SUBJECT):
+        paths.update(
+            _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines()
+        )
     return {
         Path(path).stem
         for path in paths

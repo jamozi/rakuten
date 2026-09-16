@@ -856,11 +856,16 @@ def _batch_body_days() -> dict[str, str]:
         for path in _git("show", "--name-only", "--format=", sha).splitlines():
             if path.startswith(ARTICLE_PREFIX) and path.endswith(".html"):
                 days[path] = max(days.get(path, ""), day)
-    # Work still in the tree belongs to the batch's latest day.
-    latest = max(day for _, day in batch)
-    for path in _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines():
-        if path.endswith(".html"):
-            days[path] = max(days.get(path, ""), latest)
+    # Uncommitted work belongs to this batch only while the batch is the branch
+    # tip. Once a later batch commits on top, its edits are its own to report,
+    # and sweeping them in here would judge them against this batch's base.
+    if rows and rows[0][2].startswith(BATCH_SUBJECT):
+        latest = max(day for _, day in batch)
+        for path in _git(
+            "diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX
+        ).splitlines():
+            if path.endswith(".html"):
+                days[path] = max(days.get(path, ""), latest)
     return days
 
 

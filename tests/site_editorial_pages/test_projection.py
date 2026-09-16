@@ -208,7 +208,10 @@ class ProjectionTest(unittest.TestCase):
             self.assertNotIn(text, home)
         self.assertNotIn('data-ks-home-product="', home)
         self.assertEqual(home.count('class="ks-feature-image"'), 4)
-        self.assertEqual(home.count("商品カテゴリー"), 1)
+        self.assertNotIn("商品カテゴリー", home)
+        self.assertEqual(
+            home.count('<h2 id="km-articles-title">商品カテゴリ</h2>'), 1
+        )
         self.assertNotIn("暮らしに合う道具を比較する", home)
         self.assertNotIn("AI編集イメージ・実物写真ではありません", home)
         self.assertNotIn("hb.afl.rakuten.co.jp", home)

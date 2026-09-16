@@ -96,14 +96,14 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 
 | 波 | 内容 | 候補 A | 候補 B | 依存 |
 | --- | --- | --- | --- | --- |
-| W0 | 方針ページの改訂とカテゴリ表示名の拡張（新記事なし） | 7 ＋テーマ | 3 ＋テーマ（`laundry` の本文・`home`・`categories`） | 候補 B はオーナーの固定ページ作成と委譲 |
+| W0 | 方針ページの改訂・カテゴリ表示名の拡張・ハブの呼び名そろえ（新記事なし） | 19 ＋テーマ | 3 ＋テーマ（`laundry` の本文・`home`・`categories`） | 候補 B はオーナーの固定ページ作成と委譲 |
 | W1 | 水切りラックの中核 3 本 | 3 ＋テーマ | 8 ＋テーマ | W0-A |
 | W2 | 水切りラックの残り 3 本 | 3 ＋テーマ | 10 ＋テーマ | W1 |
-| W3 | 衣類乾燥除湿機の中核 3 本 | 3 ＋テーマ | 7 ＋テーマ | **W0-B 必須** |
+| W3 | 衣類乾燥除湿機の中核 3 本 | 3 ＋テーマ | 8 ＋テーマ | **W0-B 必須** |
 | W4 | 衣類乾燥除湿機の残り 5 本 | 5 ＋テーマ | 8 ＋テーマ | W3 |
-| W5 | ノンフライヤーの中核 3 本 | 3 ＋テーマ | 7 ＋テーマ | W0-A・W2-B |
-| W6 | ノンフライヤーの残り 3 本 | 3 ＋テーマ | 7 ＋テーマ | W5 |
-| W7 | 軽量コードレス掃除機 5 本 | 5 ＋テーマ | 9 ＋テーマ | W0-A |
+| W5 | ノンフライヤーの中核 3 本 | 3 ＋テーマ | 8 ＋テーマ | W0-A・W2-B |
+| W6 | ノンフライヤーの残り 3 本 | 3 ＋テーマ | 8 ＋テーマ | W5 |
+| W7 | 軽量コードレス掃除機 5 本 | 5 ＋テーマ | 10 ＋テーマ | W0-A |
 
 各波が公開する記事 ID は `decisions.v1.json` の `waves[].articles` にある。落ちた記事はここに 1 件も現れない
 （テストで見張っている）。波をまたぐ前方リンクは本文に書けないので、後続波の候補 B で先行記事を編集して再公開する。
@@ -112,7 +112,8 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 
 ## この波（W0）で変わったもの
 
-再生成の結果、公開候補に入る本文は **7 本＋テーマ**（計画時の上限見積もりは 16 本だった）。
+再生成の結果、公開候補に入る本文は **19 本＋テーマ**（proposal 20 件＝上限ちょうど）。
+サイト側の 7 本に、改称した 2 つのハブへ戻るリンクを旧名で名乗っていた記事 12 本が加わる。
 9fa8ee45 との差分で document が変わるのは次の行だけ:
 
 | article_key | post_id | 変わったフィールド | 読者に見える変化 |
@@ -123,7 +124,19 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 | `cleaning` | 131 | title・excerpt・block_markup | ページ名を「掃除の道具の選び方・比較」に、パンくずの現在地、見出しに掲載中の商品 |
 | `comparisons` | 133 | block_markup | カテゴリ別の見出しとジャンプナビ |
 | `guides` | 135 | block_markup | カテゴリ別のジャンプナビ |
-| `kitchen` | 136 | title・excerpt・block_markup | ページ名を「台所の道具の選び方・比較」に、パンくずの現在地、見出しに掲載中の商品、広告の断りを記事単位に |
+| `kitchen` | 136 | title・excerpt・block_markup | ページ名を「台所の道具の選び方・比較」に、パンくずの現在地、見出しに掲載中の商品、広告の断りを「広告リンクを含む記事は…」に |
+| `compact-robot-vacuum-shortlist` | 30 | block_markup | `/cleaning/` へ戻るリンク 2 本の文言 |
+| `countertop-dishwasher-for-small-households` | 41 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `roomba-mini-vs-switchbot-k11-pro` | 85 | block_markup | `/cleaning/` へ戻るリンク 2 本の文言 |
+| `solota-vs-rakua-mini-plus` | 86 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `dishwasher-installation-measurement` | 262 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `dishwasher-water-supply-methods` | 263 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `dishwasher-detergent-guide` | 264 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `dishwasher-cleaning-guide` | 265 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `dishwasher-running-cost` | 266 | block_markup | `/kitchen/` へ戻るリンク 2 本の文言 |
+| `standard-dishwasher-comparison` | 550 | block_markup | `/kitchen/` へ戻るリンク 1 本の文言 |
+| `large-dishwasher-comparison` | 551 | block_markup | `/kitchen/` へ戻るリンク 1 本の文言 |
+| `dishwasher-branch-faucet-guide` | 552 | block_markup | `/kitchen/` へのリンク 2 本の文言 |
 
 台帳（`articles.v1.json`）で公開フィールドが変わったのは 5 件:
 `categories` の `excerpt`（「スーツケース・食洗機・ロボット掃除機・ポータブル電源から…」→
@@ -133,10 +146,20 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 「省スペースの掃除機を比べる」→「省スペースのロボット掃除機を比べる」に直した
 （home のカテゴリカードの CTA は代表記事の short_title を刷るので、「掃除」の見出しの下では
 まだ扱っていないスティック掃除機まで含むように読める）。この 1 件で増える公開候補はない。
-記事本文（比較表の値・商品データ・記事タイトル・記事の excerpt）は 1 文字も動いていない。
+記事本文で動いたのは、改称した 2 つのハブへ戻るリンクの文言だけである
+（「食洗機の選び方・記事一覧」「食洗機選びの全体像に戻る」「ロボット掃除機の選び方・記事一覧」ほかを、
+着地するページの名前「台所の道具の選び方・比較」「掃除の道具の選び方・比較」にそろえた）。
+テーマは記事のパンくずと BreadcrumbList をハブの `post_title` から刷るため、本文を直さないと
+同じ画面が 1 つの URL を 2 つの名前で呼ぶ。比較表の値・商品データ・記事タイトル・記事の `excerpt` は
+1 文字も動いていない。`compact-dishwasher-comparison`（549）は `/kitchen/` へのリンクを持たないので候補に入らない。
 テーマは再刻印されるので、W0-A ではテーマの再アップロードが必須になる。
 
-触っていないもの: 既存記事の `listing.category`、記事本文、洗濯・乾燥カテゴリ、
+あわせて `home` の見出しと `reader_role.main_cta.label` を「商品カテゴリー」→「商品カテゴリ」にそろえ
+（パンくずと両メニューはもともと長音なし）、テーマの検索ヒットの案内文を
+「食洗機の比較はこちら」「ロボット掃除機の比較はこちら」→「台所の道具の比較はこちら」
+「掃除の道具の比較はこちら」に直した。どちらも公開候補は増えない。
+
+触っていないもの: 既存記事の `listing.category`、記事本文の中身、洗濯・乾燥カテゴリ、
 画像の alt（商品種別ではなく画像そのものの説明）、テーマの記事パンくずのハブ label（「キッチン・家事」「掃除・時短」）。
 
 ## 先送り（deferrals）
@@ -149,10 +172,17 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 | --- | --- | --- | --- |
 | DF01 | `/categories/` と `home` のリードに「洗濯・乾燥」を足す | W0-B | `laundry` の固定ページ公開と委譲 |
 | DF02 | `/kitchen/` のハブ本文と `excerpt` を水切りラックまで広げる | W1-B | A01〜A03 が `kitchen` で published になる |
-| DF03 | 方針ページの「扱う領域」から準備中の断りを 1 群ずつ外す | W1-B（以後 W3・W5・W7） | 各群の最初の公開 |
+| DF03 | 方針ページの「扱う領域」から準備中の断りを 1 分野ずつ外す | W1-B（以後 W3・W5・W7） | 各分野の最初の公開 |
 | DF04 | カード画像が無い記事の alt フォールバックがカテゴリ表示名を差し込む | W1-B | `listing.card_image` が null の新着カード |
-| DF05 | 記事本文から `/kitchen/` へ戻るリンクの文言が旧ページ名を引用している | W2-B | この 2 本を再公開する最初の候補 |
 | DF06 | `/cleaning/` のハブ本文と `excerpt` を軽量コードレス掃除機まで広げる | W7-B | A25〜A30 が `cleaning` で published になる |
+
+`later_waves` を持つ先送り（DF02 の W2・W5・W6、DF03 の W3・W5・W7）は、その波の候補に
+対象 document の枠が無いと落ちる。枠が無かった 4 候補にこの波で足した:
+W6-B に `kitchen`（7→8）、W3-B・W5-B・W7-B に `about-ad-policy`（7→8 / 7→8 / 9→10）。
+
+記事から `/kitchen/`・`/cleaning/` へ戻るリンクの文言（旧 DF05）は先送りから外した。
+旧 DF05 は `compact-dishwasher-comparison` を名指ししていたが、その本文は `/kitchen/` へのリンクを
+1 件も持たず、実際に旧名を名乗っていたのは別の 12 本だった。12 本ともこの波（W0-A）で直している。
 
 `changes/wordpress-local-preview-v1/content/home.html` は休眠ツールだけが書く死んだ出力で、古い表示名が残っている。
 生成物なので手編集せず、再実行すると現行の生成器が持つ記事本文を上書きするため走らせない。

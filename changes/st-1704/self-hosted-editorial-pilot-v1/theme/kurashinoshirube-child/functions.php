@@ -14,11 +14,11 @@ const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '81b458c7130ccb0555fcb24e8ce4a946843c697b2f6489512a51e8d2fa046a64';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '4cc4e577b76ee9e6281395151ad4b7de485d663cee358a4f4b0a4889ff509507';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '633c2bab5f48a2e5477d75a61fffdfa878b36172b749d889989c74eeaa3fb205';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'cb0d37be0686d3f0388ab780ba7c73d9be1ce4918f8ab62e9eb63bc2ee5ef270';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '1084382d1c79515c3c5bae7fa418a44ea63b7bae0fc8f062564bd3ddcb903e98';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '1084382d1c79515c3c5bae7fa418a44ea63b7bae0fc8f062564bd3ddcb903e98';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2cf278a23d2ce2b539c7477f5f9ef40304913ed92d5ad1eb5c2934ba723da7af';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2cf278a23d2ce2b539c7477f5f9ef40304913ed92d5ad1eb5c2934ba723da7af';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -4473,7 +4473,7 @@ function kurashinoshirube_search_hub_routes(): array
         'kitchen' => array(
             'article_id' => 'st1704-countertop-dishwasher-for-small-households',
             'keywords' => array('食洗機', '食器洗い', 'ソロタ', 'solota', 'ラクア', 'rakua'),
-            'label' => '食洗機の比較はこちら',
+            'label' => '台所の道具の比較はこちら',
         ),
         'travel' => array(
             'article_id' => 'st1703-first-suitcase-comparison',
@@ -4483,7 +4483,7 @@ function kurashinoshirube_search_hub_routes(): array
         'cleaning' => array(
             'article_id' => 'st1704-compact-robot-vacuum-shortlist',
             'keywords' => array('ロボット掃除機', 'ルンバ', 'roomba', 'switchbot', 'スイッチボット'),
-            'label' => 'ロボット掃除機の比較はこちら',
+            'label' => '掃除の道具の比較はこちら',
         ),
         'preparedness' => array(
             'article_id' => 'st1704-portable-power-station-guide',
