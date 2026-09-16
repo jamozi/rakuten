@@ -974,7 +974,7 @@
   ],
   "wave_zero_applied": {
     "branch": "claude/ks-n30-w0-20260916",
-    "base_commit": "9fa8ee45",
+    "base_commit": "b5618eed411315292f0c9e7d72d96cc11fd4d10e",
     "contains_new_articles": false,
     "documents_changed": 19,
     "theme_reissued": true,
@@ -1161,7 +1161,13 @@
       "reader_role_fields": 2,
       "total": 8,
       "note": "base 9fa8ee45 との実測（articles.v1.json の全フィールドを再帰比較）。行数は 5（categories・cleaning・compact-robot-vacuum-shortlist・home・kitchen）。"
-    }
+    },
+    "base_note": "main の commit（PR #293 の squash）。作業ブランチは公開済みの W4b の内容 9fa8ee45 から分岐し、のちに main を取り込んだ。9fa8ee45 は候補作成用の commit で main には無い。",
+    "approved_layout_pending": [
+      "standard-dishwasher-comparison",
+      "large-dishwasher-comparison",
+      "compact-robot-vacuum-shortlist"
+    ]
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",

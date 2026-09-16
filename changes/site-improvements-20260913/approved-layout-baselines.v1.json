@@ -149,6 +149,23 @@
         ],
         "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
+      },
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-17",
+        "branches": [
+          "claude/ks-n30-w0-20260916"
+        ],
+        "tasks": [
+          "KS-N30-W0"
+        ],
+        "summary": "W0（claude/ks-n30-w0-20260916）：改称したハブへ戻るリンク 2 本の文言を「ロボット掃除機の選び方・記事一覧」ほかから「掃除の道具の選び方・比較に戻る」に変え、台帳の listing.short_title を「省スペースのロボット掃除機を比べる」にした（home のカードの CTA に出る）。比較表・数値・順序・推薦・見出しは変えていない。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
+          "changes/wordpress-direct-publish-v1/articles.v1.json"
+        ],
+        "recorded_at": "2026-09-16T18:53:50.145411+00:00",
+        "publication_authorized": false
       }
     },
     "standard-dishwasher-comparison": {
@@ -207,7 +224,23 @@
           "recorded_at": "2026-09-15T21:58:56.903491+00:00",
           "publication_authorized": false
         }
-      ]
+      ],
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-17",
+        "branches": [
+          "claude/ks-n30-w0-20260916"
+        ],
+        "tasks": [
+          "KS-N30-W0"
+        ],
+        "summary": "W0（claude/ks-n30-w0-20260916）：改称したハブへ戻るリンクの文言を「食洗機の選び方・記事一覧」から「台所の道具の選び方・比較に戻る」に変えた。比較表・数値・順序・推薦・見出しは変えていない。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html"
+        ],
+        "recorded_at": "2026-09-16T18:53:50.145411+00:00",
+        "publication_authorized": false
+      }
     },
     "large-dishwasher-comparison": {
       "body_sha256": "3a42ba10de33ce014f4711a267701bad7e6d97e9a62c3af25d725391a068e1b3",
@@ -270,7 +303,23 @@
           "recorded_at": "2026-09-15T21:58:56.903491+00:00",
           "publication_authorized": false
         }
-      ]
+      ],
+      "pending_revision": {
+        "review": "PENDING_OWNER_BEFORE_AFTER",
+        "recorded_on": "2026-09-17",
+        "branches": [
+          "claude/ks-n30-w0-20260916"
+        ],
+        "tasks": [
+          "KS-N30-W0"
+        ],
+        "summary": "W0（claude/ks-n30-w0-20260916）：改称したハブへ戻るリンクの文言を「食洗機の選び方・記事一覧」から「台所の道具の選び方・比較に戻る」に変えた。比較表・数値・順序・推薦・見出しは変えていない。",
+        "source_paths": [
+          "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
+        ],
+        "recorded_at": "2026-09-16T18:53:50.145411+00:00",
+        "publication_authorized": false
+      }
     }
   }
 }

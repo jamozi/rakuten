@@ -396,9 +396,7 @@ def test_curated_history_block_requires_one_article_root(compiled) -> None:
 
 
 W3_CANDIDATE = "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf"
-STATUS = (
-    builder.ROOT / "changes/ks-integrated-20260915/status.v1.json"
-)
+STATUS = builder.ROOT / "changes/ks-integrated-20260915/status.v1.json"
 PUBLICATION_20260913 = (
     builder.ROOT / "changes/site-improvements-20260913/publication-result.v1.json"
 )
@@ -479,7 +477,9 @@ def test_every_approved_layout_records_the_revision_it_carries() -> None:
         assert record["branches"] and all(
             branch.startswith("claude/") for branch in record["branches"]
         ), slug
-        assert record["tasks"] and all(t.startswith("KS-") for t in record["tasks"]), slug
+        assert record["tasks"] and all(t.startswith("KS-") for t in record["tasks"]), (
+            slug
+        )
         assert record["source_paths"], slug
         assert record["publication_authorized"] is False, slug
         if record["accepted"]:
@@ -490,8 +490,13 @@ def test_every_approved_layout_records_the_revision_it_carries() -> None:
 
 def test_large_revision_record_names_the_branch_that_wrote_it() -> None:
     """551's W4 revision withdrew the open-door origin; the record must say so."""
-    record = revision(articles_record()[LARGE_SLUG])
-    assert W4A_BRANCH in record["branches"], record["branches"]
+    records = [
+        record
+        for record in revisions(articles_record()[LARGE_SLUG])
+        if W4A_BRANCH in record["branches"]
+    ]
+    assert records, [r["branches"] for r in revisions(articles_record()[LARGE_SLUG])]
+    record = records[0]
     assert "起点" in record["summary"], record["summary"]
     assert (
         "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
@@ -522,15 +527,59 @@ def test_robot_revision_states_the_width_the_theme_uses() -> None:
     against a 302px frame. The frame is 286px, so the first column at 7rem was
     never the binding term -- the table's own min-width was.
     """
-    summary = revision(articles_record()[ROBOT_SLUG])["summary"]
+    summaries = [
+        record["summary"] for record in revisions(articles_record()[ROBOT_SLUG])
+    ]
     phone = phone_table_frames.phone_block(THEME_CSS.read_text(encoding="utf-8"))
     width = re.search(
         r"table\.robot-space-table\{min-width:(\d+(?:\.\d+)?)rem!important", phone
     )
     assert width, "phone min-width"
-    assert f"{width.group(1)}rem" in summary, (width.group(1), summary)
     frame = int(phone_table_frames.ARTICLE_SCROLL_FRAME[320])
-    assert f"{frame}px" in summary, summary
+    stated = [
+        summary
+        for summary in summaries
+        if f"{width.group(1)}rem" in summary and f"{frame}px" in summary
+    ]
+    assert stated, (width.group(1), frame, summaries)
+
+
+def revisions(entry: dict) -> list[dict]:
+    """Every revision this entry records, newest first.
+
+    A later wave can add a fresh ``pending_revision`` on top of an accepted one,
+    so a rule about one batch's revision must look through the whole record
+    rather than at whichever revision happens to be current.
+    """
+    records: list[dict] = []
+    if entry.get("pending_revision") is not None:
+        records.append(revision(entry))
+    accepted = entry.get("latest_accepted")
+    if accepted is not None:
+        records.append(
+            {
+                "accepted": True,
+                "summary": accepted["accepted_scope"],
+                "branches": accepted.get("branches", []),
+                "tasks": accepted["tasks"],
+                "source_paths": accepted["source_paths"],
+                "publication_authorized": accepted["publication_authorized"],
+                "candidate": accepted["shared_candidate"],
+            }
+        )
+    for older in entry.get("previous_accepted", []):
+        records.append(
+            {
+                "accepted": True,
+                "summary": older.get("accepted_scope", ""),
+                "branches": older.get("branches", []),
+                "tasks": older.get("tasks", []),
+                "source_paths": older.get("source_paths", []),
+                "publication_authorized": older.get("publication_authorized", False),
+                "candidate": older.get("shared_candidate", ""),
+            }
+        )
+    return records
 
 
 def test_changed_approved_layouts_record_the_owner_review() -> None:
