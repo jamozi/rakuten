@@ -176,6 +176,18 @@ def invoke(command, body):
     return operator.run("owner-direct-" + command, body)
 
 
+def bound_invoke(command, body):
+    """Contract §8: the run-bound calls the operator's ``request_json`` serves while live.
+
+    The purge is what takes published values back down, so ``prepare --price-overlay-purge``
+    (which reads the live injected documents as its baseline) and the purge ``publish`` have to
+    reach WordPress while a run is live. Every other in-process caller of ``operator.run`` is
+    refused where the connection is built.
+    """
+    with operator.price_overlay_bound_calls():
+        return operator.run("owner-direct-" + command, body)
+
+
 def checkpoint_git(root, paths, snapshot_id):
     from scripts.raos_wordpress_publish_git import checkpoint
 
@@ -754,7 +766,7 @@ def preview_candidate(candidate):
     return price_overlay.preview_view(candidate)
 
 
-def prepare_price_overlay(root, keys, theme=False, call=invoke, *, run=None, purge=None,
+def prepare_price_overlay(root, keys, theme=False, call=bound_invoke, *, run=None, purge=None,
                           affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
     """prepare with exactly one of --price-overlay-run / --price-overlay-purge."""
     if bool(run) == bool(purge):
@@ -775,6 +787,10 @@ def publish(root, directory, candidate_id, call=invoke, *, price_overlay_run=Non
             price_overlay_purge=None):
     if price_overlay_run is None and price_overlay_purge is None:
         refuse_while_price_overlay_live(root)
+    elif call is invoke:
+        # Contract §8: the run-bound publish is the one caller the operator's request_json
+        # serves while a run is live. A caller that passed its own `call` keeps it.
+        call = bound_invoke
     safe_ancestors(directory)
     descriptor = os.open(
         directory / "operation.lock", os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o600
@@ -1200,10 +1216,14 @@ def execute_cli(args):
                     journal["git_sync"] = sync_git(ROOT, journal["checkpoint"])
                     save(directory / "journal.json", journal)
                 elif journal.get("proposal_ids"):
+                    # Contract §8: a run-bound candidate's status is read while the run is
+                    # live, so it uses the call request_json serves; a flag-free candidate
+                    # never gets here (refused above).
+                    observe = bound_invoke if "price_overlay" in candidate else invoke
                     journal = {
                         **journal,
                         "observed_operations": [
-                            invoke("operation-status", {"operation_id": value})
+                            observe("operation-status", {"operation_id": value})
                             for value in journal["proposal_ids"]
                         ],
                     }

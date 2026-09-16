@@ -254,6 +254,22 @@ def deployment_bridge_call(monkeypatch, calls, tmp_path):
     )
 
 
+def deployment_operator_request_json(monkeypatch, calls, tmp_path):
+    """The operator's own transport, not its CLI entry point.
+
+    ``main()`` refuses every non-local command, but the publisher's ``invoke`` imports the
+    module and calls ``run()`` directly, so the refusal has to stand where the connection is
+    built. The credentials stub is silent on purpose: a refused call must not reach it.
+    """
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", guard.OWNER_CHECKOUT)
+    monkeypatch.setattr(operator, "ROOT", guard.REPOSITORY_ROOT)
+    monkeypatch.setattr(operator, "credentials", lambda: ("synthetic", "x" * 24))
+    monkeypatch.setattr(
+        operator.urllib.request, "build_opener", recorder(calls, "operator-transport")
+    )
+    operator.request_json("GET", "/status")
+
+
 def seo_audit_transport(monkeypatch, calls, tmp_path):
     transport = seo.BoundedHttpsTransport.__new__(seo.BoundedHttpsTransport)
     transport._contract = SimpleNamespace(
@@ -374,6 +390,7 @@ PYTHON_PATHS = {
     "public-page-readback": public_page_readback,
     "public-stylesheet-readback": public_stylesheet_readback,
     "deployment-bridge-call": deployment_bridge_call,
+    "deployment-operator-request-json": deployment_operator_request_json,
     "seo-audit-transport": seo_audit_transport,
     "full-redesign-public-capture": full_redesign_capture,
     "raos-v2-public-capture": raos_v2_public_capture,
@@ -409,6 +426,121 @@ def test_every_python_path_reaches_its_transport_when_nothing_is_live(
     text = outcome(name, monkeypatch, calls, tmp_path)
     assert "PRICE_OVERLAY" not in text, text
     assert len(calls) == 1, text
+
+
+# ---------------------------------------------------------------------------
+# The one caller the operator's transport still serves while a run is live
+# ---------------------------------------------------------------------------
+#
+# The purge is what takes published values back down: `prepare --price-overlay-purge` reads the
+# live injected documents as its baseline and the purge `publish` writes the price-free bodies
+# back, both through request_json. Refusing those would make the values impossible to remove,
+# so exactly one in-process context is exempt - and nothing else is.
+
+
+def request_json_outcome(monkeypatch, calls, bound):
+    monkeypatch.setattr(operator, "credentials", lambda: ("synthetic", "x" * 24))
+    monkeypatch.setattr(
+        operator.urllib.request, "build_opener", recorder(calls, "operator-transport")
+    )
+    context = (
+        operator.price_overlay_bound_calls() if bound else contextlib.nullcontext()
+    )
+    try:
+        with context:
+            operator.request_json("GET", "/status")
+    except BaseException as error:  # noqa: BLE001 - the code is what is asserted
+        return f"{type(error).__name__}:{error}"
+    return "RETURNED"
+
+
+@pytest.mark.parametrize("state", ["live", "unreadable", "empty"])
+def test_the_operator_transport_serves_only_the_run_bound_context(
+    tmp_path, monkeypatch, state
+):
+    owner = owner_with_state(tmp_path, state)
+    empty = (tmp_path / "worktree").resolve()
+    (empty / ".secrets").mkdir(parents=True, mode=0o700)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(operator, "ROOT", empty)
+    refused = {
+        "live": "WORDPRESS_MCP_PRICE_OVERLAY_LIVE",
+        "unreadable": "WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID",
+        "empty": None,
+    }[state]
+
+    calls = []
+    text = request_json_outcome(monkeypatch, calls, bound=False)
+    if refused is None:
+        assert calls == ["operator-transport"], text
+    else:
+        assert refused in text, text
+        assert calls == [], text
+
+    # The publisher's run-bound calls reach the transport whatever the run state is.
+    bound_calls = []
+    bound_text = request_json_outcome(monkeypatch, bound_calls, bound=True)
+    assert "PRICE_OVERLAY" not in bound_text, bound_text
+    assert bound_calls == ["operator-transport"], bound_text
+    assert operator._price_overlay_bound.get() is False
+
+
+def test_only_bound_invoke_enters_the_context_request_json_serves(monkeypatch):
+    seen = []
+    monkeypatch.setattr(
+        operator, "run", lambda *_a, **_k: seen.append(operator._price_overlay_bound.get())
+    )
+    direct.invoke("status", {})
+    direct.bound_invoke("status", {})
+    assert seen == [False, True]
+    assert operator._price_overlay_bound.get() is False
+
+
+@pytest.mark.parametrize(
+    ("flags", "expected"),
+    [
+        ({"price_overlay_purge": RUN_ID}, "bound_invoke"),
+        ({"price_overlay_run": RUN_ID}, "bound_invoke"),
+    ],
+)
+def test_a_run_bound_publish_uses_the_call_the_transport_serves(
+    tmp_path, monkeypatch, flags, expected
+):
+    """Without this the purge publish would be refused by its own operator while live."""
+    seen = {}
+
+    def record(root, directory, candidate_id, call, run=None, purge=None):
+        seen["call"] = call
+        return {"candidate_id": candidate_id}
+
+    monkeypatch.setattr(direct, "_publish", record)
+    directory = tmp_path / "candidate"
+    directory.mkdir()
+    direct.publish(tmp_path, directory, "a" * 64, **flags)
+    assert seen["call"] is getattr(direct, expected)
+
+
+def test_a_flag_free_publish_keeps_the_call_request_json_refuses(tmp_path, monkeypatch):
+    seen = {}
+    monkeypatch.setattr(
+        direct,
+        "_publish",
+        lambda root, d, cid, call, run=None, purge=None: seen.setdefault("call", call),
+    )
+    monkeypatch.setattr(direct, "refuse_while_price_overlay_live", lambda root: None)
+    directory = tmp_path / "candidate"
+    directory.mkdir()
+    direct.publish(tmp_path, directory, "a" * 64)
+    assert seen["call"] is direct.invoke
+
+
+def test_the_run_bound_prepare_defaults_to_the_call_the_transport_serves():
+    """`prepare --price-overlay-purge` reads the live injected documents as its baseline."""
+    import inspect
+
+    signature = inspect.signature(direct.prepare_price_overlay)
+    assert signature.parameters["call"].default is direct.bound_invoke
+    assert inspect.signature(direct.prepare).parameters["call"].default is direct.invoke
 
 
 # ---------------------------------------------------------------------------
@@ -1170,6 +1302,7 @@ def test_the_preview_cli_redacts_a_verified_run_bound_candidate(tmp_path, monkey
         ("other-candidate-id", "DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN"),
         ("wrong-directory", "DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN"),
         ("outside-the-candidate-base", "DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED"),
+        ("symlinked-candidate-directory", "DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED"),
     ],
 )
 def test_the_preview_cli_refuses_a_price_overlay_claim_that_does_not_resolve(
@@ -1202,6 +1335,19 @@ def test_the_preview_cli_refuses_a_price_overlay_claim_that_does_not_resolve(
     if change == "outside-the-candidate-base":
         path = tmp_path / "loose-candidate.json"
         path.write_text(json.dumps(candidate))
+    elif change == "symlinked-candidate-directory":
+        # The containment check resolves the candidate path. Without that `.resolve()` the
+        # parent is the base and the name is the recorded id, so the renderer would run with
+        # `candidate_dir` pointing through the link and write the injected theme and the
+        # screenshots outside the owner checkout - where the §5 sweep never looks, because
+        # `owner_direct_candidates_containing` skips a symlinked directory.
+        outside = (tmp_path / "outside-the-owner-checkout").resolve()
+        outside.mkdir()
+        (outside / "candidate.json").write_text(json.dumps(candidate))
+        base = owner / ".secrets/wordpress-mcp/owner-direct-v1"
+        base.mkdir(parents=True, exist_ok=True)
+        (base / PREVIEW_CANDIDATE_ID).symlink_to(outside)
+        path = base / PREVIEW_CANDIDATE_ID / "candidate.json"
     else:
         path = bound_candidate_path(owner, candidate, name=name)
     calls = []
@@ -1293,17 +1439,23 @@ def test_the_preview_cli_still_refuses_a_flag_free_candidate_while_live(
 
 
 # ---------------------------------------------------------------------------
-# The destination rule: a rendering may only be kept where the §5 purge reaches
+# The destination rule: only a candidate directory the run itself deletes
 # ---------------------------------------------------------------------------
+#
+# Round 9 decided this from the destination's *name*; the §5 sweep deletes by content, so an
+# invented or needle-free directory of the right shape was accepted and never deleted (round 9
+# review). The exemption is gone for every caller but the run-bound preview, and that one is
+# proved from the candidate's own binding.
 
 
-def kept_where_purge_reaches(module_root, destination):
-    """``keptWherePurgeReaches`` as the module copied into ``module_root`` answers it."""
+def bound_candidate_destination(module_root, destination):
+    """``boundCandidateDestination`` as the module copied into ``module_root`` answers it."""
     assert NODE is not None
     module = (Path(module_root) / "scripts/raos_price_overlay_live_check.mjs").as_uri()
     program = (
-        f"import {{ keptWherePurgeReaches }} from {json.dumps(module)};"
-        f"process.stdout.write(String(keptWherePurgeReaches({json.dumps(str(destination))})));"
+        f"import {{ boundCandidateDestination }} from {json.dumps(module)};"
+        "process.stdout.write(JSON.stringify(boundCandidateDestination("
+        f"{json.dumps(str(destination))})));"
     )
     completed = subprocess.run(
         [NODE, "--input-type=module", "-e", program],
@@ -1313,8 +1465,7 @@ def kept_where_purge_reaches(module_root, destination):
         timeout=120,
     )
     assert completed.returncode == 0, completed.stderr
-    assert completed.stdout in {"true", "false"}, completed.stdout
-    return completed.stdout == "true"
+    return json.loads(completed.stdout)
 
 
 def stub_owner_checkout(tmp_path, name="stub-owner-checkout"):
@@ -1325,113 +1476,257 @@ def stub_owner_checkout(tmp_path, name="stub-owner-checkout"):
     return root
 
 
-CANDIDATE_BASE = "/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1"
-PREVIEW_BASE = "/home/minami/rakuten/.secrets/wordpress-direct-preview"
+CANDIDATE_RELATIVE = ".secrets/wordpress-mcp/owner-direct-v1"
+PREVIEW_RELATIVE = ".secrets/wordpress-direct-preview"
 CANDIDATE_ID = "a" * 64
+BINDING = {
+    "schema": "RAOS_OWNER_DIRECT_PRICE_OVERLAY_V1",
+    "mode": "PUBLISH",
+    "run_id": RUN_ID,
+}
+
+
+def write_candidate(root, name=CANDIDATE_ID, candidate=None, relative=CANDIDATE_RELATIVE):
+    """One owner-direct candidate directory, with the candidate.json the rule reads."""
+    directory = root / relative / name
+    directory.mkdir(parents=True, exist_ok=True)
+    if candidate is not None:
+        (directory / "candidate.json").write_text(json.dumps(candidate))
+    return directory
+
+
+def bound_candidate(root, name=CANDIDATE_ID, mode="PUBLISH"):
+    return write_candidate(
+        root,
+        name=name,
+        candidate={"candidate_id": name, "price_overlay": {**BINDING, "mode": mode}},
+    )
+
+
+# shape -> (build the fixture, pick the destination from it, accepted)
+DESTINATION_SHAPES = {
+    # The one exemption: the publisher's run-bound preview writes its screenshots into the
+    # candidate directory the purge publish deletes by the id the approval record holds.
+    "bound-publish-candidate-screenshots": (
+        lambda root: bound_candidate(root) / "screenshots",
+        True,
+    ),
+    "bound-publish-candidate-png": (
+        lambda root: bound_candidate(root) / "screenshots/0-home-390.png",
+        True,
+    ),
+    "bound-publish-candidate-directory": (lambda root: bound_candidate(root), True),
+    # The purge candidate froze the live injected documents as its baseline; `_finish_purge`
+    # deletes it by its own id.
+    "bound-purge-candidate": (
+        lambda root: bound_candidate(root, mode="PURGE") / "screenshots",
+        True,
+    ),
+    # Everything below outlives the purge, or cannot be shown not to.
+    "invented-candidate-directory": (
+        lambda root: root / CANDIDATE_RELATIVE / ("c" * 64) / "screenshots/x.png",
+        False,
+    ),
+    "candidate-directory-without-candidate-json": (
+        lambda root: write_candidate(root) / "screenshots/x.png",
+        False,
+    ),
+    "flag-free-candidate": (
+        lambda root: write_candidate(root, candidate={"candidate_id": CANDIDATE_ID})
+        / "screenshots",
+        False,
+    ),
+    "binding-not-an-object": (
+        lambda root: write_candidate(
+            root, candidate={"price_overlay": f"price-overlay:{RUN_ID}:publish"}
+        )
+        / "screenshots",
+        False,
+    ),
+    "binding-wrong-schema": (
+        lambda root: write_candidate(
+            root,
+            candidate={"price_overlay": {**BINDING, "schema": "RAOS_V2"}},
+        )
+        / "screenshots",
+        False,
+    ),
+    "binding-unknown-mode": (
+        lambda root: write_candidate(
+            root, candidate={"price_overlay": {**BINDING, "mode": "PREVIEW"}}
+        )
+        / "screenshots",
+        False,
+    ),
+    "binding-invalid-run-id": (
+        lambda root: write_candidate(
+            root, candidate={"price_overlay": {**BINDING, "run_id": "short"}}
+        )
+        / "screenshots",
+        False,
+    ),
+    "candidate-json-not-json": (
+        lambda root: _unparsable_candidate(root) / "screenshots",
+        False,
+    ),
+    "candidate-json-is-a-directory": (
+        lambda root: _candidate_json_directory(root) / "screenshots",
+        False,
+    ),
+    # `.staging-*` is reported by the sweep unconditionally, but nothing writes a rendering
+    # there and it carries no binding to read: not a shape this rule accepts any more.
+    "staging-sibling": (
+        lambda root: bound_candidate(root, name=".staging-derive-1") / "theme/x.png",
+        False,
+    ),
+    # The frozen preview theme is written by prepare_candidate_preview itself, never by a
+    # browser, and holds no candidate.json.
+    "frozen-preview-theme": (
+        lambda root: root / PREVIEW_RELATIVE / ("theme-" + CANDIDATE_ID) / "x.png",
+        False,
+    ),
+    "preview-fixtures": (
+        lambda root: root / PREVIEW_RELATIVE / "fixtures/home-390.png",
+        False,
+    ),
+    "caller-named-directory": (
+        lambda root: _beside_a_bound_candidate(root, "perf-shots/home-390.png"),
+        False,
+    ),
+    "loose-file-under-the-base": (
+        lambda root: _beside_a_bound_candidate(root, "loose-capture.png"),
+        False,
+    ),
+    "the-base-itself": (lambda root: _beside_a_bound_candidate(root, ""), False),
+    "another-private-directory": (
+        lambda root: root / ".secrets/wordpress-mcp/incremental-snapshots/x",
+        False,
+    ),
+    "output": (lambda root: root / "output/ks-20260915/x.png", False),
+    "escape-with-dot-dot": (
+        lambda root: bound_candidate(root) / "../../../../output/x.png",
+        False,
+    ),
+    "symlinked-candidate-directory": (lambda root: _symlinked_unit(root), False),
+}
+
+
+def _unparsable_candidate(root):
+    directory = write_candidate(root)
+    (directory / "candidate.json").write_text("{not json")
+    return directory
+
+
+def _candidate_json_directory(root):
+    directory = write_candidate(root)
+    (directory / "candidate.json").mkdir()
+    return directory
+
+
+def _beside_a_bound_candidate(root, relative):
+    """A real bound candidate exists; the destination is somewhere else under the base."""
+    base = bound_candidate(root).parent
+    return base / relative if relative else base
+
+
+def _symlinked_unit(root):
+    """A unit that is a symlink out of the checkout: the sweep skips it (`is_symlink()`)."""
+    outside = root.parent / "outside-the-owner-checkout"
+    outside.mkdir(parents=True, exist_ok=True)
+    (outside / "candidate.json").write_text(
+        json.dumps({"candidate_id": "b" * 64, "price_overlay": BINDING})
+    )
+    base = root / CANDIDATE_RELATIVE
+    base.mkdir(parents=True, exist_ok=True)
+    link = base / ("b" * 64)
+    if not link.is_symlink():
+        link.symlink_to(outside)
+    return link / "screenshots/x.png"
+
+
+@pytest.mark.parametrize("shape", sorted(DESTINATION_SHAPES))
+def test_the_node_destination_rule_answers_for_every_shape(tmp_path, shape):
+    build, accepted = DESTINATION_SHAPES[shape]
+    root = stub_owner_checkout(tmp_path, name="shape-owner")
+    destination = build(root)
+    answer = bound_candidate_destination(root, destination)
+    if not accepted:
+        assert answer is None, (shape, answer)
+        return
+    # Accepted answers with the *resolved* path, which is what the caller writes into.
+    assert answer == str(Path(destination).resolve()), (shape, answer)
 
 
 @pytest.mark.parametrize(
-    ("destination", "purged"),
+    ("destination", "accepted"),
     [
-        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/screenshots", True),
-        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/screenshots/0-home-390.png", True),
-        # The unit `delete_owner_direct_candidate` removes whole, and the interrupted sibling
-        # `owner_direct_candidates_containing` always reports.
-        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}", True),
-        (f"{CANDIDATE_BASE}/.staging-derive-1/theme/functions.php", True),
-        (f"{PREVIEW_BASE}/theme-{CANDIDATE_ID}/functions.php", True),
-        # Inside the swept base but not inside a unit the sweep deletes: a full-page PNG holds
-        # the prices as pixels, not as the needle bytes the sweep greps for, so neither the
-        # loose file nor the caller-named directory is ever reported or removed (§5).
-        (f"{CANDIDATE_BASE}/perf-shots/home-390.png", False),
-        (f"{CANDIDATE_BASE}/loose-capture.png", False),
-        (f"{CANDIDATE_BASE}/.staging-/x.png", False),
-        (f"{PREVIEW_BASE}/shots/home-390.png", False),
-        (f"{PREVIEW_BASE}/downloads/x.html", False),
-        # `preview_copies_containing` reports fixture files one by one and only when the file
-        # itself carries a needle, which a rendering does not.
-        (f"{PREVIEW_BASE}/fixtures/home-390.png", False),
-        (f"{PREVIEW_BASE}/theme-a/x.png", False),
-        ("/home/minami/rakuten/output/ks-20260915/x.png", False),
-        (CANDIDATE_BASE, False),
-        ("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-snapshots/x", False),
-        # The segment appearing somewhere in the path is not enough: the sweep walks the two
-        # directories in the owner checkout only (§5), so each of these outlives a purge.
-        (f"/tmp/anything/.secrets/wordpress-mcp/owner-direct-v1/{CANDIDATE_ID}/x", False),
-        (
-            "/home/minami/rakuten/.worktrees/w/.secrets/wordpress-mcp/owner-direct-v1/"
-            + CANDIDATE_ID,
-            False,
-        ),
-        (f"/home/minami/evil/.secrets/wordpress-direct-preview/theme-{CANDIDATE_ID}", False),
-        (
-            "/home/minami/rakuten/output/.secrets/wordpress-direct-preview/theme-"
-            + CANDIDATE_ID,
-            False,
-        ),
-        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/../../../output/x.png", False),
-        ("output/ks-20260915/x.png", False),
         ("", False),
+        ("output/ks-20260915/x.png", False),
+        (f"/tmp/anything/{CANDIDATE_RELATIVE}/{CANDIDATE_ID}/x", False),
     ],
 )
-def test_the_node_destination_rule_answers_for_every_shape(destination, purged):
-    assert kept_where_purge_reaches(ROOT, destination) is purged, destination
+def test_the_node_destination_rule_refuses_these_against_the_real_owner_checkout(
+    destination, accepted
+):
+    """The production module, with its production `/home/minami/rakuten` anchor."""
+    assert (bound_candidate_destination(ROOT, destination) is not None) is accepted
 
 
 def test_a_relative_destination_is_refused_even_from_the_owner_checkout(tmp_path):
     """The absolute-path requirement is the check's, not the caller's working directory.
 
-    ``kept_where_purge_reaches`` runs node with cwd set to the stubbed owner checkout, so this
-    relative path resolves into the swept candidate directory. It must still be refused: the
-    documented guarantee is that a relative destination runs the live check.
+    ``bound_candidate_destination`` runs node with cwd set to the stubbed owner checkout, so
+    this relative path resolves into the bound candidate directory. It must still be refused:
+    the documented guarantee is that a relative destination runs the live check.
     """
     root = stub_owner_checkout(tmp_path, name="relative-destination-owner")
-    inside = root / ".secrets/wordpress-mcp/owner-direct-v1" / CANDIDATE_ID / "screenshots"
-    inside.mkdir(parents=True)
-    relative = f".secrets/wordpress-mcp/owner-direct-v1/{CANDIDATE_ID}/screenshots/x.png"
-    assert kept_where_purge_reaches(root, inside / "x.png") is True
-    assert kept_where_purge_reaches(root, relative) is False
+    inside = bound_candidate(root) / "screenshots"
+    inside.mkdir(parents=True, exist_ok=True)
+    relative = f"{CANDIDATE_RELATIVE}/{CANDIDATE_ID}/screenshots/x.png"
+    assert bound_candidate_destination(root, inside / "x.png") is not None
+    assert bound_candidate_destination(root, relative) is None
 
 
-def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
+def test_a_symlink_cannot_make_a_destination_look_bound(tmp_path):
     """The deepest existing ancestor is resolved, so `.secrets/...` -> output/ still refuses."""
     root = stub_owner_checkout(tmp_path)
     real = root / "output/ks-20260915"
     real.mkdir(parents=True)
-    private = root / ".secrets/wordpress-mcp/owner-direct-v1"
-    private.mkdir(parents=True)
-    (private / ("b" * 64)).symlink_to(real)
-    assert kept_where_purge_reaches(root, private / ("b" * 64) / "screenshots/a.png") is False
-    kept = private / ("a" * 64) / "screenshots"
-    kept.mkdir(parents=True)
-    assert kept_where_purge_reaches(root, kept / "0-home-390.png") is True
+    (real / "candidate.json").write_text(
+        json.dumps({"candidate_id": "b" * 64, "price_overlay": BINDING})
+    )
+    base = root / CANDIDATE_RELATIVE
+    base.mkdir(parents=True)
+    (base / ("b" * 64)).symlink_to(real)
+    assert bound_candidate_destination(root, base / ("b" * 64) / "s/a.png") is None
+    kept = bound_candidate(root) / "screenshots"
+    kept.mkdir(parents=True, exist_ok=True)
+    assert bound_candidate_destination(root, kept / "0-home-390.png") is not None
 
 
-@pytest.mark.parametrize(
-    "relative",
-    [
-        f".secrets/wordpress-mcp/owner-direct-v1/{'a' * 64}/screenshots/x.png",
-        f".secrets/wordpress-direct-preview/theme-{'a' * 64}/x.png",
-    ],
-)
-def test_the_same_directory_outside_the_owner_checkout_is_not_purge_reachable(
-    tmp_path, relative
-):
-    """Only the owner checkout's own copy of the directory is swept (§5)."""
+def test_the_same_directory_outside_the_owner_checkout_is_not_accepted(tmp_path):
+    """Only the owner checkout's own candidate directory is swept (§5)."""
     root = stub_owner_checkout(tmp_path)
-    assert kept_where_purge_reaches(root, root / relative) is True
+    relative = f"{CANDIDATE_RELATIVE}/{CANDIDATE_ID}/screenshots/x.png"
+    bound_candidate(root)
+    assert bound_candidate_destination(root, root / relative) is not None
     for other in (tmp_path / "another-clone", root / "output", root / ".worktrees/w"):
-        assert kept_where_purge_reaches(root, other / relative) is False, other
+        directory = other / CANDIDATE_RELATIVE / CANDIDATE_ID
+        directory.mkdir(parents=True)
+        (directory / "candidate.json").write_text(
+            json.dumps({"candidate_id": CANDIDATE_ID, "price_overlay": BINDING})
+        )
+        assert bound_candidate_destination(root, other / relative) is None, other
 
 
-def refuse_unless_purged(root, destinations):
-    """Run ``refuseWhilePriceOverlayLiveUnlessPurged`` against the copy in ``root``."""
+def refuse_unless_bound(root, destination):
+    """Run ``refuseWhilePriceOverlayLiveUnlessBoundCandidate`` against the copy in ``root``."""
     assert NODE is not None
     module = (root / "scripts/raos_price_overlay_live_check.mjs").as_uri()
     program = (
-        f"import {{ refuseWhilePriceOverlayLiveUnlessPurged }} from {json.dumps(module)};"
-        "await refuseWhilePriceOverlayLiveUnlessPurged("
-        f"{json.dumps([str(entry) for entry in destinations])});"
+        f"import {{ refuseWhilePriceOverlayLiveUnlessBoundCandidate }} from {json.dumps(module)};"
+        "process.stdout.write(await refuseWhilePriceOverlayLiveUnlessBoundCandidate("
+        f"{json.dumps(str(destination))}));"
     )
     return subprocess.run(
         [NODE, "--input-type=module", "-e", program],
@@ -1443,55 +1738,78 @@ def refuse_unless_purged(root, destinations):
 
 
 @pytest.mark.parametrize(
-    ("shape", "refused"),
-    [
-        ("one-purged", False),
-        ("two-purged", False),
-        ("mixed", True),
-        ("mixed-reversed", True),
-        ("empty", True),
-    ],
+    "shape", ["bound-candidate", "unbound-candidate", "output", "relative"]
 )
-def test_the_destination_list_is_exempt_only_when_the_purge_reaches_every_entry(
-    tmp_path, shape, refused
-):
-    """A caller that writes into two directories is exempt only when both are swept: one
-    purge-reachable entry must not carry an artifact written under output/ past the check."""
-    root = fake_check_root(tmp_path, [ANSWER_LIVE], name="destination-list-root")
-    candidate = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
-    candidate.mkdir(parents=True)
-    theme = root / ".secrets/wordpress-direct-preview" / ("theme-" + "a" * 64)
-    theme.mkdir(parents=True)
-    unpurged = root / "output/ks-20260915"
-    destinations = {
-        "one-purged": [candidate],
-        "two-purged": [candidate, theme],
-        "mixed": [candidate, unpurged],
-        "mixed-reversed": [unpurged, candidate],
-        "empty": [],
-    }[shape]
-    completed = refuse_unless_purged(root, destinations)
-    if refused:
+def test_the_one_exemption_is_the_bound_candidate_and_nothing_else(tmp_path, shape):
+    """While live: the run-bound preview's destination passes, everything else refuses."""
+    root = fake_check_root(tmp_path, [ANSWER_LIVE], name="destination-root")
+    destination = {
+        "bound-candidate": lambda: bound_candidate(root) / "screenshots",
+        "unbound-candidate": lambda: write_candidate(
+            root, candidate={"candidate_id": CANDIDATE_ID}
+        )
+        / "screenshots",
+        "output": lambda: root / "output/ks-20260915",
+        "relative": lambda: f"{CANDIDATE_RELATIVE}/{CANDIDATE_ID}/screenshots",
+    }[shape]()
+    completed = refuse_unless_bound(root, destination)
+    if shape == "bound-candidate":
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+        assert "PRICE_OVERLAY" not in completed.stderr
+        assert completed.stdout == str(Path(destination).resolve())
+        assert checks_run(root) == 0
+    else:
         assert completed.returncode == 69, completed.stdout + completed.stderr
         assert completed.stderr.strip() == "WORDPRESS_MCP_PRICE_OVERLAY_LIVE"
         assert checks_run(root) == 1
-    else:
-        assert completed.returncode == 0, completed.stdout + completed.stderr
-        assert "PRICE_OVERLAY" not in completed.stderr
-        assert checks_run(root) == 0
 
 
-# A loopback origin is no longer an exemption: the candidate preview docker serves the injected
-# bodies on 127.0.0.1, so the five probes refuse there too while values may be published.
-@pytest.mark.parametrize("script", PROBES)
-def test_every_anonymous_probe_refuses_a_loopback_capture_as_well(tmp_path, script):
+def test_the_exemption_answers_with_the_path_it_verified(tmp_path):
+    """The verified destination is returned, so it cannot be proved safe and then swapped.
+
+    A caller that names a path through a symlink gets the resolved one back; the pinned write
+    below is what makes that structural for the only caller.
+    """
+    root = fake_check_root(tmp_path, [ANSWER_LIVE], name="verified-path-root")
+    directory = bound_candidate(root)
+    real = directory / "screenshots"
+    real.mkdir()
+    (directory / "link").symlink_to(real)
+    completed = refuse_unless_bound(root, directory / "link/0-home-390.png")
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    assert completed.stdout == str(real / "0-home-390.png")
+
+
+def test_the_run_bound_preview_writes_into_the_path_the_check_returned():
+    """The one caller keeps the checked argument and the written path the same object."""
+    source = (
+        ROOT / "changes/wordpress-direct-publish-v1/preview-browser.mjs"
+    ).read_text(encoding="utf-8")
+    assert (
+        "const screenshotsDirectory = await refuseWhilePriceOverlayLiveUnlessBoundCandidate("
+        in source
+    )
+    assert "path.join(screenshotsDirectory," in source
+    assert "path.join(input.screenshots" not in source
+
+
+@pytest.mark.parametrize("script", ["ks_before_capture.mjs"])
+def test_a_probe_writing_into_the_candidate_directory_is_refused_as_well(
+    tmp_path, script
+):
+    """The destination is no exemption for an anonymous probe any more (round 10): only the
+    publisher's run-bound preview may capture while values are published."""
     assert NODE is not None
     root = probe_root(tmp_path, [ANSWER_LIVE], script)
+    inside = bound_candidate(root) / "screenshots"
+    inside.mkdir(parents=True, exist_ok=True)
     completed = subprocess.run(
         [
             NODE,
             f"scripts/{script}",
-            *probe_arguments(root, script, origin="http://127.0.0.1:41398"),
+            *probe_arguments(
+                root, script, origin="http://127.0.0.1:41398", out=inside
+            ),
         ],
         cwd=root,
         capture_output=True,
@@ -1504,50 +1822,22 @@ def test_every_anonymous_probe_refuses_a_loopback_capture_as_well(tmp_path, scri
     assert checks_run(root) == 1
 
 
-@pytest.mark.parametrize("script", ["ks_before_capture.mjs"])
-def test_a_probe_writing_into_the_purged_candidate_directory_is_not_refused(
-    tmp_path, script
-):
-    """The run-bound preview keeps its screenshots where the purge deletes them, so the check
-    is not even run for that destination (contract §8)."""
-    assert NODE is not None
-    root = probe_root(tmp_path, [ANSWER_LIVE], script)
-    purged = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
-    purged.mkdir(parents=True)
-    completed = subprocess.run(
-        [
-            NODE,
-            f"scripts/{script}",
-            *probe_arguments(
-                root, script, origin="http://127.0.0.1:41398", out=purged
-            ),
-        ],
-        cwd=root,
-        capture_output=True,
-        text=True,
-        timeout=300,
-    )
-    assert completed.returncode != 69
-    assert "PRICE_OVERLAY" not in completed.stderr
-    assert checks_run(root) == 0
-
-
 # ---------------------------------------------------------------------------
 # Every other browser capture of a WordPress page
 # ---------------------------------------------------------------------------
 
 CAPTURE_SCRIPTS = {
-    # relative path -> (extra files to copy, arguments builder, destination is caller-chosen)
+    # relative path -> (extra files to copy, arguments builder, keeps the one exemption)
     "changes/wordpress-direct-publish-v1/preview-browser.mjs": ((), "preview-browser", True),
     "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs": (
         (),
         "origin-output",
-        True,
+        False,
     ),
     "changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs": (
         (),
         "origin-output",
-        True,
+        False,
     ),
     "tests/purchase_support/purchase_paths_browser.mjs": ((), "purchase-paths", False),
     "tests/raos_v2/phase3-public-validation.mjs": (
@@ -1634,26 +1924,56 @@ def test_every_browser_capture_continues_when_nothing_is_live(tmp_path, relative
     assert checks_run(root) == 1
 
 
-@pytest.mark.parametrize(
-    "relative",
-    sorted(name for name, row in CAPTURE_SCRIPTS.items() if row[2]),
-)
-def test_a_capture_kept_where_the_purge_reaches_is_not_refused(tmp_path, relative):
+@pytest.mark.parametrize("relative", sorted(CAPTURE_SCRIPTS))
+def test_only_the_run_bound_preview_captures_into_a_bound_candidate_while_live(
+    tmp_path, relative
+):
+    """One exemption, and only into a candidate whose candidate.json carries a binding.
+
+    Round 9 exempted any destination of the right *name* for five of these scripts; the sweep
+    deletes by content, so the rest now refuse wherever they write.
+    """
     assert NODE is not None
-    extra, shape, _ = CAPTURE_SCRIPTS[relative]
+    extra, shape, exempt = CAPTURE_SCRIPTS[relative]
     root = capture_root(tmp_path, [ANSWER_LIVE], relative, extra)
-    purged = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
-    purged.mkdir(parents=True)
+    inside = bound_candidate(root) / "screenshots"
+    inside.mkdir(parents=True, exist_ok=True)
     completed = subprocess.run(
-        [NODE, relative, *capture_arguments(root, shape, purged)],
+        [NODE, relative, *capture_arguments(root, shape, inside)],
         cwd=root,
         capture_output=True,
         text=True,
         timeout=300,
     )
-    assert completed.returncode != 69, completed.stdout + completed.stderr
-    assert "PRICE_OVERLAY" not in completed.stderr
-    assert checks_run(root) == 0
+    if exempt:
+        assert completed.returncode != 69, completed.stdout + completed.stderr
+        assert "PRICE_OVERLAY" not in completed.stderr
+        assert checks_run(root) == 0
+    else:
+        assert completed.returncode == 69, completed.stdout + completed.stderr
+        assert completed.stderr.strip().endswith("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+        assert checks_run(root) == 1
+
+
+def test_the_run_bound_preview_refuses_a_candidate_directory_with_no_binding(tmp_path):
+    """The one exemption is the binding, not the shape of the directory it writes into."""
+    assert NODE is not None
+    relative = "changes/wordpress-direct-publish-v1/preview-browser.mjs"
+    root = capture_root(tmp_path, [ANSWER_LIVE], relative, ())
+    inside = (
+        write_candidate(root, candidate={"candidate_id": CANDIDATE_ID}) / "screenshots"
+    )
+    inside.mkdir(parents=True, exist_ok=True)
+    completed = subprocess.run(
+        [NODE, relative, *capture_arguments(root, "preview-browser", inside)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert completed.returncode == 69, completed.stdout + completed.stderr
+    assert completed.stderr.strip().endswith("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+    assert checks_run(root) == 1
 
 
 # ---------------------------------------------------------------------------

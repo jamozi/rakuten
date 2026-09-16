@@ -51,8 +51,15 @@ PG_PACKAGES = (
 # A harness that renders a *copy* of tracked source (a theme with one asset rewritten) has to
 # name that copy here, through RAOS_PHP_EXTRA_MOUNTS: the container masks /tmp with its own
 # tmpfs, so a pytest tmp_path is invisible inside it and PHP silently reads nothing instead of
-# failing. Read-only, existing directories only, and never a private store.
+# failing. Read-only, existing directories only, and never a private store - neither one inside
+# a `.secrets` tree nor one that holds a `.secrets` tree anywhere beneath it (a mount of
+# `/home/minami/rakuten` would put the owner's runs, candidates and credentials in the
+# container just as surely as naming `.secrets` itself).
 PHP_EXTRA_MOUNTS_VARIABLE = "RAOS_PHP_EXTRA_MOUNTS"
+PRIVATE_STORE = ".secrets"
+# A declared mount is a harness's own copy of tracked source; a tree this large is not one, and
+# walking further to prove it holds no private store is not worth it, so it is refused.
+MAX_MOUNT_DIRECTORIES = 4096
 PHP_MOUNTS = (
     "tests/editorial_measurement_v1",
     "tests/reader_measurement_v1",
@@ -204,6 +211,28 @@ def setup_postgres(environment: Mapping[str, str]) -> dict[str, str]:
     return result
 
 
+def holds_private_store(path: Path) -> bool:
+    """Whether a private store lies anywhere under ``path``.
+
+    Fail closed twice over: a tree bigger than a harness copy, or one the walk cannot read,
+    counts as holding one, because the point is to refuse a mount that *may* carry the owner's
+    ``.secrets`` into the container - not to enumerate it.
+    """
+    seen = 0
+    walked = False
+    for current, directories, _files in os.walk(path, followlinks=False, onerror=None):
+        walked = True
+        if PRIVATE_STORE in directories:
+            return True
+        seen += len(directories)
+        if seen > MAX_MOUNT_DIRECTORIES:
+            return True
+        directories[:] = [
+            name for name in directories if not Path(current, name).is_symlink()
+        ]
+    return not walked
+
+
 def extra_php_mounts(environment: Mapping[str, str]) -> tuple[Path, ...]:
     """Directories the caller asked to bind read-only, validated (fail closed)."""
     value = environment.get(PHP_EXTRA_MOUNTS_VARIABLE, "")
@@ -214,8 +243,10 @@ def extra_php_mounts(environment: Mapping[str, str]) -> tuple[Path, ...]:
         path = Path(entry)
         if not path.is_absolute() or path.is_symlink() or not path.is_dir():
             raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} is not an existing directory: {entry}")
-        if ".secrets" in path.parts or path.resolve() != path:
+        if PRIVATE_STORE in path.parts or path.resolve() != path:
             raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} refuses this path: {entry}")
+        if holds_private_store(path):
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} holds a private store: {entry}")
         if path not in found:
             found.append(path)
     return tuple(found)

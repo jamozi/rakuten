@@ -321,6 +321,52 @@ def test_php_container_mounts_a_declared_copy_read_only_and_refuses_anything_els
             extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(refused)})
 
 
+def test_a_declared_mount_that_holds_a_private_store_is_refused(tmp_path, monkeypatch):
+    """Refusing only a `.secrets` component refused the store and accepted every ancestor.
+
+    ``extra_php_mounts({"RAOS_PHP_EXTRA_MOUNTS": "/home/minami/rakuten"})`` used to answer with
+    that path, and ``php_command`` then bound the owner's whole checkout - runs, owner-direct
+    candidates and credential files included - read-only into the PHP container.
+    """
+    from scripts import raos_test_runtime as runtime
+    from scripts.raos_test_runtime import (
+        PHP_EXTRA_MOUNTS_VARIABLE,
+        extra_php_mounts,
+        holds_private_store,
+    )
+
+    copy = tmp_path / "theme-copy"
+    (copy / "assets").mkdir(parents=True)
+    assert holds_private_store(copy) is False
+    assert extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(copy)}) == (copy,)
+
+    checkout = tmp_path / "checkout"
+    (checkout / "a/b/.secrets/rakuten-price-refresh").mkdir(parents=True)
+    shallow = tmp_path / "shallow"
+    (shallow / ".secrets").mkdir(parents=True)
+    for refused in (checkout, shallow):
+        assert holds_private_store(refused) is True
+        with pytest.raises(RuntimeError, match="holds a private store"):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(refused)})
+
+    # A tree too big to be a harness copy is refused rather than walked to the end.
+    big = tmp_path / "big"
+    for index in range(6):
+        (big / f"d{index}").mkdir(parents=True)
+    assert holds_private_store(big) is False
+    monkeypatch.setattr(runtime, "MAX_MOUNT_DIRECTORIES", 4)
+    assert holds_private_store(big) is True
+    with pytest.raises(RuntimeError, match="holds a private store"):
+        extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(big)})
+    monkeypatch.undo()
+
+    # A symlinked subtree is not followed, and a store behind the link is not what refuses.
+    linked = tmp_path / "linked"
+    linked.mkdir()
+    (linked / "into-the-checkout").symlink_to(checkout)
+    assert holds_private_store(linked) is False
+
+
 def test_the_theme_harness_refuses_a_directory_the_php_runtime_cannot_see(tmp_path):
     """The tripwire that would have caught the batch F harness on the day it was written."""
     from tests.st1704 import theme_php_harness as harness

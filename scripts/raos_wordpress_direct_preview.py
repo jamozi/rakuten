@@ -667,7 +667,7 @@ class _Refusal:
         raise ValueError("DIRECT_PREVIEW_" + code)
 
 
-def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> None:
+def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> Path:
     """Contract §8: the one route left unrefused while a run is live has to be earned.
 
     Two things are checked before ``prepare_candidate_preview`` may run, because that call
@@ -683,7 +683,11 @@ def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> Non
       ``resolve_binding``, then the id ``prepare`` recorded in ``prepared_candidates`` - not a
       flag whose mere presence switches the live refusal off.
 
-    Anything that does not resolve raises, and ``main`` prints only the code.
+    Anything that does not resolve raises, and ``main`` prints only the code. The verified
+    directory is returned so that the path ``main`` hands the renderer is the one checked here
+    (``candidate_path.resolve().parent``), never the unresolved ``args.candidate.parent``: a
+    candidate directory that is a symlink resolves out of the base and is refused, and the
+    renderer can no longer be pointed through the link.
     """
     live_guard, price_overlay = _price_overlay_modules()
     if ROOT.resolve() != Path(live_guard.OWNER_CHECKOUT).resolve():
@@ -708,6 +712,7 @@ def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> Non
     )
     if recorded != candidate.get("candidate_id") or directory.name != recorded:
         raise ValueError("DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN")
+    return directory
 
 
 def price_overlay_output(candidate: dict, result: dict) -> dict:
@@ -739,11 +744,13 @@ def main() -> int:
     try:
         candidate = json.loads(args.candidate.read_bytes())
         run_bound = "price_overlay" in candidate
+        directory = args.candidate.parent
         if run_bound:
             # Contract §8: the run-bound route is verified, never asserted - a hand-written
             # key cannot switch the live refusal off, and the injected copies this preview
-            # writes can only land in the checkout the §5 purge sweep walks.
-            verify_price_overlay_candidate(candidate, args.candidate)
+            # writes can only land in the checkout the §5 purge sweep walks. The renderer is
+            # given the directory that was verified, not the one that was named.
+            directory = verify_price_overlay_candidate(candidate, args.candidate)
         else:
             # Contract §8: only a run-bound candidate may be previewed while values are live
             # (the publisher refuses the same way; this CLI takes any candidate file).
@@ -755,7 +762,7 @@ def main() -> int:
             code = price_overlay_refusal()
             if code is not None:
                 raise ValueError("DIRECT_PREVIEW_" + code)
-        result = prepare_candidate_preview(candidate, args.candidate.parent)
+        result = prepare_candidate_preview(candidate, directory)
         printed = price_overlay_output(candidate, result) if run_bound else result
         print(json.dumps(printed, ensure_ascii=False))
         return 0 if result["status"] == "PASS" else 1

@@ -12,7 +12,8 @@ from __future__ import annotations
 
 import argparse
 import base64
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
 import hashlib
@@ -51,6 +52,12 @@ _private_owner: ContextVar[Path | None] = ContextVar(
     "wordpress_private_owner", default=None
 )
 _owner_direct: ContextVar[bool] = ContextVar("wordpress_owner_direct", default=False)
+# Price-refresh contract §8: set only by the publisher's run-bound commands (see
+# ``price_overlay_bound_calls``), which are the one caller allowed to reach WordPress while a
+# run is live - the purge publish is what takes the values back down.
+_price_overlay_bound: ContextVar[bool] = ContextVar(
+    "wordpress_price_overlay_bound", default=False
+)
 MAX_STDIN_BYTES: Final = 64 * 1024
 MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
@@ -288,6 +295,12 @@ def request_json(
     deadline: float | None = None,
     owner_direct: bool = False,
 ) -> dict[str, object]:
+    # Price-refresh contract §8: refused where the connection is built, not only at the CLI
+    # entry point, so an in-process importer of run()/request_json (the publisher's bridge is
+    # one today) cannot inherit an exemption main() never gave it. Before credentials(), so a
+    # refused call does not even read the application password.
+    if not _price_overlay_bound.get():
+        refuse_while_price_overlay_live(_private_owner.get())
     _ensure_request_deadline(deadline)
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
@@ -1629,6 +1642,22 @@ def refuse_while_price_overlay_live(owner: Path | None) -> None:
         fail("WORDPRESS_MCP_PRICE_OVERLAY_STATE_INVALID")
     if live:
         fail("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+
+
+@contextmanager
+def price_overlay_bound_calls() -> Iterator[None]:
+    """The publisher's run-bound commands, the one caller ``request_json`` serves while live.
+
+    ``prepare --price-overlay-purge`` reads the live injected documents as its baseline and the
+    purge ``publish`` writes the price-free bodies back and reads them again: refusing those
+    would make the values impossible to take down. Everything else - the CLI, the MCP bridge,
+    any other importer - is refused in ``request_json``. Contract §8.
+    """
+    token = _price_overlay_bound.set(True)
+    try:
+        yield
+    finally:
+        _price_overlay_bound.reset(token)
 
 
 def parser() -> argparse.ArgumentParser:

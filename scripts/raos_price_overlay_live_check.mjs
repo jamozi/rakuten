@@ -8,7 +8,7 @@
 // may be live and 69 with the refusal code on stderr otherwise.
 
 import { spawn } from 'node:child_process';
-import { realpathSync } from 'node:fs';
+import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import process from 'node:process';
@@ -105,36 +105,40 @@ export async function refuseWhilePriceOverlayLive(root = REPOSITORY_ROOT) {
 }
 
 // Contract §8: while a run is live, a rendering of a WordPress page (a screenshot, the saved
-// HTML, a sha256 of either) may only be kept where the §5 purge sweep reaches it - the
-// owner-direct candidate directories and the frozen preview themes, both under `.secrets`.
-// Anywhere else (`output/`, a caller-chosen directory, a temporary file) the rendered prices
-// and the price-recoverable hashes survive a purge that has already reported success.
+// HTML, a sha256 of either) outlives a purge that has already reported success unless the
+// thing holding it is deleted with the run. Round 9 decided that from the destination's
+// *name* (`<64 hex>`, `theme-<64 hex>`, `.staging-*`), but the §5 sweep deletes by content,
+// not by name: `owner_direct_candidates_containing` removes a candidate directory only when a
+// file inside it carries a price needle, and a full-page PNG holds the prices as pixels. An
+// invented or needle-free directory of the right shape was accepted and never deleted.
 //
-// The destination, not the origin, is what decides: the candidate preview docker serves the
-// injected bodies on `http://127.0.0.1:<port>`, so a loopback capture is exactly as exposing
-// as a public one.
+// So the exemption is gone for every caller but one. The anonymous probes and audits call
+// `refuseWhilePriceOverlayLive()` directly: while values are published they refuse wherever
+// they were going to write, `output/` and `.secrets` alike. The one caller that has to keep
+// working while a run is live is the publisher's own run-bound preview - `preview --candidate
+// price-overlay:<run>:purge` is how the values come back down - and it writes into the
+// candidate directory the run itself deletes. Its exemption is proved from the candidate's
+// own binding, never from the directory's name:
 //
-// The two directories are the ones the sweep walks, and it walks them in the owner checkout
-// only (rakuten_price_refresh_client.py `local_copies` / `preview_copies_containing` scan
-// `store.owner_checkout / <relative>`). So the rule is anchored to the same fixed owner
-// checkout price_overlay_live_guard.py pins, not to the segment appearing anywhere in a path:
-// a worktree, a temporary directory or `<root>/output/.secrets/...` is not swept.
+//   * the destination resolves (through symlinks) into
+//     `<OWNER_CHECKOUT>/.secrets/wordpress-mcp/owner-direct-v1/<64 hex>/` - the one base the
+//     §5 sweep walks, in the one checkout it walks it in; and
+//   * that directory's own `candidate.json` carries a `price_overlay` binding, which is what
+//     makes the run delete the directory whole: `delete_local_injected_copies` removes the
+//     injected candidate and its frozen preview theme by the id the approval record holds,
+//     `_finish_purge` removes the purge candidate by its own id, and both directories carry
+//     the injected bytes `owner_direct_candidates_containing` greps for as well.
 //
-// The sweep is not a prefix sweep, so neither is this rule. It deletes whole units:
-// `owner_direct_candidates_containing` / `delete_owner_direct_candidate` walk the candidate
-// base and remove a directory named `<64-hex candidate id>` or `.staging-<name>`;
-// `preview_copies_containing` / `delete_preview_copy` remove a frozen theme `theme-<64-hex>`.
-// A loose file directly under either base, or a directory of any other shape, is never
-// enumerated and never deleted - a full-page PNG holds the prices as pixels, not as the needle
-// bytes the sweep greps for, so only being inside a unit the sweep deletes whole makes a
-// rendering purge-reachable. `fixtures/` is deliberately not accepted: the sweep reports
-// fixture files one by one and only when the file itself carries a needle, which a rendering
-// does not.
+// The verified path is what the function returns, and the caller writes into that value, so a
+// destination cannot be proved safe and then swapped for another one.
 export const OWNER_CHECKOUT = '/home/minami/rakuten';
-export const PURGE_REACHABLE_SHAPES = Object.freeze([
-  ['.secrets/wordpress-mcp/owner-direct-v1', /^(?:[0-9a-f]{64}|\.staging-[^/]+)$/],
-  ['.secrets/wordpress-direct-preview', /^theme-[0-9a-f]{64}$/],
-]);
+export const OWNER_DIRECT_CANDIDATES = '.secrets/wordpress-mcp/owner-direct-v1';
+const CANDIDATE_UNIT = /^[0-9a-f]{64}$/;
+// raos_wordpress_price_overlay.BINDING_SCHEMA / MODE_PUBLISH / MODE_PURGE / rpr run ids.
+const BINDING_SCHEMA = 'RAOS_OWNER_DIRECT_PRICE_OVERLAY_V1';
+const BINDING_MODES = new Set(['PUBLISH', 'PURGE']);
+const BINDING_RUN_ID = /^[a-z0-9][a-z0-9-]{7,63}$/;
+const MAX_CANDIDATE_BYTES = 4 * 1024 * 1024;
 
 /** The path with its deepest existing ancestor resolved, so a symlink cannot fake the prefix. */
 function resolvedThroughSymlinks(destination) {
@@ -150,50 +154,76 @@ function resolvedThroughSymlinks(destination) {
   return null;
 }
 
-/** `[<owner checkout>/<swept base>/, <shape of the unit it deletes>]`, or [] when unresolvable. */
-function purgeReachableBases() {
+/** `<owner checkout>/.secrets/wordpress-mcp/owner-direct-v1/`, or null when unresolvable. */
+function candidateBase() {
   const base = resolvedThroughSymlinks(OWNER_CHECKOUT);
-  if (base === null) return [];
+  if (base === null) return null;
   const posix = base.split(sep).join('/').replace(/\/+$/, '');
-  if (posix === '') return [];
-  return PURGE_REACHABLE_SHAPES.map(([relative, unit]) => [`${posix}/${relative}/`, unit]);
-}
-
-export function keptWherePurgeReaches(destination) {
-  if (typeof destination !== 'string' || destination === '' || !isAbsolute(destination)) {
-    return false;
-  }
-  const resolved = resolvedThroughSymlinks(destination);
-  if (resolved === null) return false;
-  const posix = resolved.split(sep).join('/');
-  // Anchored at the owner checkout, not a substring match: `..` is already normalised away by
-  // resolve(), and a symlink in an existing ancestor is resolved before the compare. Then the
-  // first segment below the base has to be a unit the sweep deletes whole; the base itself and
-  // anything of another shape under it outlives the purge.
-  return purgeReachableBases().some(([prefix, unit]) => {
-    if (!posix.startsWith(prefix)) return false;
-    // The first segment below the base is the unit; an empty remainder matches no unit.
-    return unit.test(posix.slice(prefix.length).split('/')[0]);
-  });
+  return posix === '' ? null : `${posix}/${OWNER_DIRECT_CANDIDATES}/`;
 }
 
 /**
- * Refuse a capture whose artifacts would outlive the purge. Fail closed: a destination that is
- * missing, relative, unresolvable or outside a unit the purge deletes whole runs the live check,
- * and a missing or empty destination list refuses too. Relative is refused by the check itself,
- * never by where the process happens to be running.
+ * Whether `directory` is a candidate directory bound to a price-overlay run, read from its own
+ * `candidate.json`. Nothing from the file is returned, printed or kept: only the binding's
+ * shape decides, and any read or parse failure answers false (fail closed).
  */
-export async function refuseWhilePriceOverlayLiveUnlessPurged(
-  destinations,
+function boundToAPriceOverlayRun(directory) {
+  let bound;
+  try {
+    if (!lstatSync(directory).isDirectory()) return false;
+    const file = `${directory}/candidate.json`;
+    const info = lstatSync(file);
+    if (!info.isFile() || info.size > MAX_CANDIDATE_BYTES) return false;
+    const parsed = JSON.parse(readFileSync(file, 'utf8'));
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return false;
+    bound = parsed.price_overlay;
+  } catch {
+    return false;
+  }
+  return (
+    bound !== null &&
+    typeof bound === 'object' &&
+    !Array.isArray(bound) &&
+    bound.schema === BINDING_SCHEMA &&
+    BINDING_MODES.has(bound.mode) &&
+    typeof bound.run_id === 'string' &&
+    BINDING_RUN_ID.test(bound.run_id)
+  );
+}
+
+/** The resolved destination when it is inside a run-bound candidate directory, else null. */
+export function boundCandidateDestination(destination) {
+  if (typeof destination !== 'string' || destination === '' || !isAbsolute(destination)) {
+    return null;
+  }
+  const resolved = resolvedThroughSymlinks(destination);
+  const base = candidateBase();
+  if (resolved === null || base === null) return null;
+  const posix = resolved.split(sep).join('/');
+  // Anchored at the owner checkout, not a substring match: `..` is normalised away by
+  // resolve() and a symlink in an existing ancestor is resolved before the compare, so a
+  // worktree, a temporary directory or `<root>/output/.secrets/...` is never the swept base.
+  if (!posix.startsWith(base)) return null;
+  const unit = posix.slice(base.length).split('/')[0];
+  if (!CANDIDATE_UNIT.test(unit)) return null;
+  return boundToAPriceOverlayRun(`${base}${unit}`) ? resolved : null;
+}
+
+/**
+ * Refuse a capture whose artifacts would outlive the purge, and answer with the path the
+ * caller must write into. Fail closed: a destination that is missing, relative, unresolvable,
+ * outside the swept candidate base or inside a directory whose candidate.json carries no
+ * price-overlay binding runs the live check like any other capture.
+ */
+export async function refuseWhilePriceOverlayLiveUnlessBoundCandidate(
+  destination,
   root = REPOSITORY_ROOT,
 ) {
-  const list = Array.isArray(destinations) ? destinations : [destinations];
-  // every(), not some(): a caller that writes into two directories is exempt only when the
-  // purge reaches all of them, so one purged destination cannot carry an artifact written
-  // under output/ past the check.
-  if (list.length === 0 || !list.every(keptWherePurgeReaches)) {
+  const bound = boundCandidateDestination(destination);
+  if (bound === null) {
     await refuseWhilePriceOverlayLive(root);
   }
+  return bound ?? resolve(destination);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
