@@ -353,13 +353,31 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 | harness の `inventory --wordpress-status`（実 MCP を起動） | `scripts/codex_harness.py` の `wordpress_status` | server を起動せず `REFUSED` 行 |
 | candidate preview の単体 CLI | `scripts/raos_wordpress_direct_preview.py` の `main`（フラグ無し candidate のみ） | `DIRECT_PREVIEW_PRICE_OVERLAY_LIVE` |
 | ST-1506 / ST-1704v2 / ST-1703 / ST-1704 pilot の CLI（`raos-bounded-operator`・`wp/v2`） | 各 CLI の `_price_overlay_live()`（operator の check を子プロセスで実行） | `<CLI>_PRICE_OVERLAY_LIVE`（終了コード 69） |
-| 匿名のブラウザ計測（`ks_before_capture` / `ks_public_performance_probe` / `ks_viewport_matrix` / `site_improvements_audit` / `site_improvements_consent_lab` / `npm run wordpress:ui:check`） | `scripts/raos_price_overlay_live_check.mjs`（127.0.0.1 の origin は対象外） | 判定コードで終了 69（ブラウザを起動しない） |
+| 匿名のブラウザ計測（`ks_before_capture` / `ks_public_performance_probe` / `ks_viewport_matrix` / `site_improvements_audit` / `site_improvements_consent_lab` / `npm run wordpress:ui:check`） | `scripts/raos_price_overlay_live_check.mjs`（origin ではなく保存先で判定。下の「保存先の規則」） | 判定コードで終了 69（ブラウザを起動しない） |
+| Before/After の証跡（候補ディレクトリの screenshot を `output/` に複製し、candidate id を `index.md` に書く） | `scripts/ks_before_after.py` の `main()`。`--candidate-root` と `--owner-checkout` も判定対象 | `PRICE_OVERLAY_LIVE` / `PRICE_OVERLAY_STATE_INVALID` を stderr に出して終了 69（台帳も候補ディレクトリも開かない） |
+| Before/After の閲覧ページ（PNG を埋め込んだ `review.html` を作る） | `scripts/ks_render_review.py` の `main()` | 同上（`index.md` を読む前） |
+| RAOS v2 phase 3 の公開ブラウザ検証（`decodedPublicBodySha256` と全幅 PNG を `output/playwright` に保存） | `tests/raos_v2/phase3-public-validation.mjs` の `main()` | 判定コードで終了 69（出力ディレクトリもブラウザも作らない） |
+| ローカル preview のブラウザ撮影（`preview-browser.mjs` / `ks_before_capture` / `purchase_paths_browser` / `reader_experience_audit` / `local_running_cost_audit`） | `refuseWhilePriceOverlayLiveUnlessPurged()`（`scripts/raos_price_overlay_live_check.mjs`） | 保存先が §5 の消去範囲でなければ終了 69 |
+| `make wordpress-preview-check` の browser / Lighthouse（origin は環境変数） | `changes/wordpress-local-preview-v1/browser/check.sh` と `lighthouse_check.sh` | 判定コードで終了 69（artifact ディレクトリを作る前） |
+| incremental snapshot の公開メタデータ GET（自前の opener を持つ） | `scripts/raos_wordpress_incremental_snapshot.py` の `PublicMetadataReader.get` | `RAOS_WORDPRESS_REQUEST_PRICE_OVERLAY_LIVE` |
 
 - **拒否しない経路**（構造上、値も価格復元可能な hash も扱わないもの）
   - `--price-overlay-run` / `--price-overlay-purge` を付けた `prepare` / `publish`、およびその candidate の `preview` / `status` / `sync`（run に束縛された正規の経路。§10.1-11 は別）。
-  - ローカルだけの経路: `make wordpress-preview-*`（docker。seed は価格なしの materialized fixture）、`tests/wordpress_mcp_v1/e2e`（使い捨ての docker）、`raos_wordpress_local_restore.py` / `raos_wordpress_scratch_restore.py` / `raos_wordpress_scratch_theme_restore.py`（ローカルのファイル操作と `theme_package()` だけ）、`store_wordpress_mcp_credential.py`（書き込みのみ）。
-  - kurashinoshirube.com に接続しない経路: Google（GSC / GA4）、楽天 API（価格取得そのもの。§5 の保存規則で守る）、ASP の API、WordPress.com（別サイトの下書き）、`raos_wordpress_baseline_media.py`（楽天のサムネイルのみ）、`raos_public_acceptance.py`（入力は既存の匿名 export で、自分では取得しない）。
-  - 127.0.0.1 の origin を指定したブラウザ計測（ローカル preview の観測）。
+  - ローカルだけの経路: `make wordpress-preview-up` / `status` / `sync` / `down` / `reset`（docker。seed は価格なしの materialized fixture。ブラウザを開く `wordpress-preview-check` は上の表のとおり拒否します）、`tests/wordpress_mcp_v1/e2e`（使い捨ての docker）、`raos_wordpress_local_restore.py` / `raos_wordpress_scratch_restore.py` / `raos_wordpress_scratch_theme_restore.py`（ローカルのファイル操作と `theme_package()` だけ）、`store_wordpress_mcp_credential.py`（書き込みのみ）。
+  - kurashinoshirube.com に接続しない経路: Google（GSC / GA4）、楽天 API（価格取得そのもの。§5 の保存規則で守る）、ASP の API、WordPress.com（別サイトの下書き）、`raos_wordpress_baseline_media.py`（`validate_url()` が `thumbnail.image.rakuten.co.jp` 以外を拒否）、`raos_public_acceptance.py`（入力は既存の匿名 export で、urlopen も opener も持たない）、`tests/raos_v2/phase3-public-adversarial.mjs`（自分で起動した loopback server の fixture だけを開く）。
+  - 自分で fixture を配る loopback server を開くブラウザ（`check_st1001` / `check_st1002` / `check_st1007` / `check_st1105` の公開シェル検査、`reader_measurement_v1` の全 route を差し替えた simulation、`setContent` だけの検査）。
+
+- **保存先の規則（ブラウザ撮影）**: 値の配信中、WordPress のページの描画（screenshot・保存した HTML・その sha256）を残してよいのは、§5 の消去走査が届く場所だけです。つまり `.secrets/wordpress-mcp/owner-direct-v1/` と `.secrets/wordpress-direct-preview/` の下です。
+  - 判定するのは origin ではなく**保存先**です。候補 preview の docker は注入本文を `http://127.0.0.1:<port>` で配るので、loopback の撮影も公開の撮影と同じだけ値を持ちます（round 6 まではここが例外扱いでした）。
+  - 保存先が上の 2 か所の外（`output/` 配下、呼び出し側が指定したディレクトリ、相対パス、空）なら、`refuseWhilePriceOverlayLiveUnlessPurged()` が同じ判定を実行し、配信中なら終了 69 で拒否します。保存先が消去範囲なら判定そのものを実行しません（run に束縛された正規の preview）。
+  - 保存先は、実在する最も深い祖先を realpath してから照合します。`.secrets/...` から `output/` への symlink は消去範囲として通りません（安全側）。
+  - 対象: `changes/wordpress-direct-publish-v1/preview-browser.mjs`、`scripts/ks_before_capture.mjs`、`scripts/ks_public_performance_probe.mjs`、`scripts/ks_viewport_matrix.mjs`、`scripts/site_improvements_audit.mjs`、`scripts/site_improvements_consent_lab.mjs`、`tests/purchase_support/purchase_paths_browser.mjs`、`changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs`、`changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs`。
+- **経路の棚卸しはリポジトリの走査で行う**: `tests/purchase_support/test_price_overlay_live_paths.py` は、ブラウザを起動するファイルと owner-direct の候補ディレクトリを読むファイルをリポジトリ全体から数え上げ、どれもが判定を参照しているか、理由を書いた明示の許可リストに載っているかを確かめます。手書きの一覧だけだった round 1-6 では、この 6 本（上の新しい行）が 6 回の棚卸しをすり抜けました。
+- **この判定が届かない範囲（オーナー作業。リポジトリの中では直せません）**
+  - **owner checkout がまだこの branch に無い**: `.codex/config.toml` は `cwd=/home/minami/rakuten` を指します。その checkout が `claude/ks-g-integration-20260916` を取り込むまで、Codex が実際に起動する MCP サーバと、そこから動く CLI・ブラウザ計測は、ここで足した拒否を持ちません。**初回の実値公開の前に取り込みます。**
+  - **ユーザー水準の MCP サーバ**: `~/.claude.json` や `~/.codex/config.toml` に別途登録された WordPress 系サーバは、このリポジトリの launcher・bridge を通らないので判定を受けません。値の配信中は使わない運用にします。
+  - **開いたままのブラウザ session**: 管理画面や公開ページを開いている既存のブラウザ（`login.mjs` の CDP profile を含む）は、配信中の注入ページをそのまま表示し、保存先の規則も受けません。値の配信中は新しく開かず、開いているものは purge 公開まで閉じます。
+  - **すでに `output/` にある証跡**: この判定は今後の実行を止めるだけです。配信中に作られてしまった `output/ks-*` / `output/site-improvements-*` / `output/playwright` の描画は §5 の走査に入らないので、オーナーが手で消します。
 - **run の保存場所の固定**: `scripts/raos_rakuten_price_refresh.py` の `--owner-checkout` を取るコマンドは、固定の `OWNER_CHECKOUT`（`/home/minami/rakuten`、publisher・operator と同じ値）以外を `OWNER_CHECKOUT_NOT_PINNED` で拒否します。対象は `fetch` / `apply` / `gate` / `purge-expired` / `resolve-incident` / `confirm-plugin-cleanup` です。
   - worktree の ROOT やほかの clone を指定した場合も、保存を開く前（資格情報の読み込み、承認記録の作成、run ディレクトリの作成より前）に拒否します。
   - これで、publisher と operator が見ない場所に run が作られることはありません。

@@ -8,6 +8,8 @@
 // may be live and 69 with the refusal code on stderr otherwise.
 
 import { spawn } from 'node:child_process';
+import { realpathSync } from 'node:fs';
+import { isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import process from 'node:process';
 
@@ -99,6 +101,59 @@ export async function refuseWhilePriceOverlayLive(root = REPOSITORY_ROOT) {
   if (code !== null) {
     process.stderr.write(code + '\n');
     process.exit(69);
+  }
+}
+
+// Contract §8: while a run is live, a rendering of a WordPress page (a screenshot, the saved
+// HTML, a sha256 of either) may only be kept where the §5 purge sweep reaches it - the
+// owner-direct candidate directories and the frozen preview themes, both under `.secrets`.
+// Anywhere else (`output/`, a caller-chosen directory, a temporary file) the rendered prices
+// and the price-recoverable hashes survive a purge that has already reported success.
+//
+// The destination, not the origin, is what decides: the candidate preview docker serves the
+// injected bodies on `http://127.0.0.1:<port>`, so a loopback capture is exactly as exposing
+// as a public one.
+export const PURGE_REACHABLE_DIRECTORIES = Object.freeze([
+  '.secrets/wordpress-mcp/owner-direct-v1',
+  '.secrets/wordpress-direct-preview',
+]);
+
+/** The path with its deepest existing ancestor resolved, so a symlink cannot fake the prefix. */
+function resolvedThroughSymlinks(destination) {
+  const parts = resolve(destination).split(sep);
+  for (let index = parts.length; index >= 1; index -= 1) {
+    const ancestor = parts.slice(0, index).join(sep) || sep;
+    try {
+      return [realpathSync(ancestor), ...parts.slice(index)].join(sep);
+    } catch {
+      // Keep walking up; the root always resolves.
+    }
+  }
+  return null;
+}
+
+export function keptWherePurgeReaches(destination) {
+  if (typeof destination !== 'string' || destination === '' || !isAbsolute(destination)) {
+    return false;
+  }
+  const resolved = resolvedThroughSymlinks(destination);
+  if (resolved === null) return false;
+  const posix = resolved.split(sep).join('/');
+  return PURGE_REACHABLE_DIRECTORIES.some((relative) => posix.includes(`/${relative}/`));
+}
+
+/**
+ * Refuse a capture whose artifacts would outlive the purge. Fail closed: a destination that is
+ * missing, relative, unresolvable or outside the purged directories runs the live check, and a
+ * missing or empty destination list refuses too.
+ */
+export async function refuseWhilePriceOverlayLiveUnlessPurged(
+  destinations,
+  root = REPOSITORY_ROOT,
+) {
+  const list = Array.isArray(destinations) ? destinations : [destinations];
+  if (list.length === 0 || !list.every(keptWherePurgeReaches)) {
+    await refuseWhilePriceOverlayLive(root);
   }
 }
 

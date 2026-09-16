@@ -34,6 +34,11 @@ trap cleanup EXIT HUP INT TERM
 [ -x "$node_bin" ] || refuse
 [ "$($node_bin --version)" = v24.18.1 ] || refuse
 [ "$node_platform" = linux ] || refuse
+# Contract §8: the preview origin is an environment variable, so this recipe can be aimed at
+# the candidate preview docker that serves the injected bodies. The run keeps full-page
+# screenshots, audit JSON and body hashes under output/, which the §5 purge sweep does not
+# reach, so it is refused while Rakuten price overlay values may be published.
+"$node_bin" "$repository_root/scripts/raos_price_overlay_live_check.mjs" || exit 69
 case "$node_temporary_directory" in
   /*) ;;
   *) refuse ;;

@@ -14,6 +14,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import socket
 import ssl
@@ -62,6 +63,12 @@ packet = _load(
 )
 successor = _load(
     "raos_v2_successor_validator", "scripts/validate_raos_v2_successor.py"
+)
+before_after = _load("ks_before_after_cli", "scripts/ks_before_after.py")
+render_review = _load("ks_render_review_cli", "scripts/ks_render_review.py")
+snapshot = _load(
+    "raos_wordpress_incremental_snapshot_cli",
+    "scripts/raos_wordpress_incremental_snapshot.py",
 )
 RUN_ID = ks020.RUN_ID
 
@@ -310,7 +317,58 @@ def direct_preview_cli(monkeypatch, calls, tmp_path):
     return f"exit={code} {buffer.getvalue()}"
 
 
+def ks_before_after_cli(monkeypatch, calls, tmp_path):
+    """The Before/After evidence helper: the ledger read is the first thing behind the guard."""
+    monkeypatch.setattr(before_after, "ledger_rows", recorder(calls, "before-after"))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "ks_before_after.py",
+            "--keys",
+            "ks-synthetic",
+            "--candidate",
+            "a" * 64,
+            "--candidate-root",
+            str(tmp_path / "other-checkout"),
+            "--out",
+            str(tmp_path / "before-after"),
+        ],
+    )
+    return _cli_outcome(before_after.main)
+
+
+def ks_render_review_cli(monkeypatch, calls, tmp_path):
+    """The review page renderer: reading the Before/After index is behind the guard."""
+    monkeypatch.setattr(render_review, "read_index", recorder(calls, "render-review"))
+    monkeypatch.setattr(
+        sys, "argv", ["ks_render_review.py", str(tmp_path / "before-after")]
+    )
+    return _cli_outcome(render_review.main)
+
+
+def incremental_snapshot_public_metadata(monkeypatch, calls, tmp_path):
+    """The snapshot's own opener, refused at the fetch site and not only by call order."""
+    reader = snapshot.PublicMetadataReader.__new__(snapshot.PublicMetadataReader)
+    reader.opener = Opener(calls, "public-metadata")
+    reader.get("posts", 1)
+
+
+def _cli_outcome(main):
+    """Run a refusing CLI and keep both its exit code and the refusal code it printed."""
+    buffer = io.StringIO()
+    with contextlib.redirect_stderr(buffer):
+        try:
+            code = main()
+        except SystemExit as error:
+            return f"exit={error.code} {buffer.getvalue()}"
+    return f"exit={code} {buffer.getvalue()}"
+
+
 PYTHON_PATHS = {
+    "ks-before-after-cli": ks_before_after_cli,
+    "ks-render-review-cli": ks_render_review_cli,
+    "incremental-snapshot-public-metadata": incremental_snapshot_public_metadata,
     "editor-mcp-client-construction": editor_mcp_client_construction,
     "editor-mcp-request": editor_mcp_request,
     "public-page-readback": public_page_readback,
@@ -817,21 +875,24 @@ def probe_root(tmp_path, answers, script):
     return root
 
 
-def probe_arguments(root, script):
+def probe_arguments(root, script, origin="https://kurashinoshirube.com", out=None):
+    out = root / "out" if out is None else Path(out)
     if script == "ks_before_capture.mjs":
         request = root / "input.json"
         request.write_text(
             json.dumps(
                 {
-                    "origin": "https://kurashinoshirube.com",
+                    "origin": origin,
                     "widths": [390],
                     "surfaces": [{"kind": "home", "path": "/"}],
-                    "screenshots": str(root / "screens"),
+                    "screenshots": str(out),
                 }
             )
         )
         return [str(request)]
-    return ["--origin", "https://kurashinoshirube.com", "--out", str(root / "out")]
+    if script in {"site_improvements_audit.mjs", "site_improvements_consent_lab.mjs"}:
+        return ["--origin", origin, "--output", str(out / "baseline.json")]
+    return ["--origin", origin, "--out", str(out)]
 
 
 PROBES = (
@@ -903,3 +964,518 @@ def test_the_public_ui_shell_checks_before_opening_the_browser(tmp_path, state):
         # The check passed; the run stops at the missing pinned Playwright CLI.
         assert "PRICE_OVERLAY" not in completed.stderr
         assert "WORDPRESS_PUBLIC_UI_PLAYWRIGHT_REFUSED" in completed.stderr
+
+
+def test_the_two_before_after_clis_exit_69_with_the_refusal_code(tmp_path, monkeypatch):
+    """Contract §8: the same exit code as the Node probes and the legacy CLIs."""
+    owner = owner_with_state(tmp_path, "live")
+    empty = (tmp_path / "worktree").resolve()
+    (empty / ".secrets").mkdir(parents=True, mode=0o700)
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", empty)
+    for module, argv in (
+        (
+            before_after,
+            ["ks_before_after.py", "--keys", "ks-synthetic", "--out", str(tmp_path / "o")],
+        ),
+        (render_review, ["ks_render_review.py", str(tmp_path / "o")]),
+    ):
+        monkeypatch.setattr(sys, "argv", argv)
+        buffer = io.StringIO()
+        with contextlib.redirect_stderr(buffer), pytest.raises(SystemExit) as error:
+            module.main()
+        assert error.value.code == 69, module.__name__
+        assert buffer.getvalue().strip() == LIVE, module.__name__
+    assert not (tmp_path / "o").exists()
+
+
+def test_the_before_after_helper_checks_the_candidate_root_it_was_given(
+    tmp_path, monkeypatch
+):
+    """``--candidate-root`` may point at another checkout, so that checkout is checked too."""
+    other = owner_with_state(tmp_path, "live")
+    empty = (tmp_path / "worktree").resolve()
+    (empty / ".secrets").mkdir(parents=True, mode=0o700)
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", empty)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", empty)
+    assert guard.price_overlay_refusal() is None
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "ks_before_after.py",
+            "--keys",
+            "ks-synthetic",
+            "--candidate-root",
+            str(other),
+            "--out",
+            str(tmp_path / "o"),
+        ],
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stderr(buffer), pytest.raises(SystemExit) as error:
+        before_after.main()
+    assert error.value.code == 69
+    assert buffer.getvalue().strip() == LIVE
+
+
+# ---------------------------------------------------------------------------
+# The destination rule: a rendering may only be kept where the §5 purge reaches
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("destination", "purged"),
+    [
+        ("/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1/a/screenshots", True),
+        ("/home/minami/rakuten/.secrets/wordpress-direct-preview/theme-a/x.png", True),
+        ("/home/minami/rakuten/output/ks-20260915/x.png", False),
+        ("/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1", False),
+        ("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-snapshots/x", False),
+        ("output/ks-20260915/x.png", False),
+        ("", False),
+    ],
+)
+def test_the_node_destination_rule_answers_for_every_shape(tmp_path, destination, purged):
+    assert NODE is not None
+    program = (
+        "import { keptWherePurgeReaches } from "
+        f"{json.dumps((ROOT / 'scripts/raos_price_overlay_live_check.mjs').as_uri())};"
+        f"process.stdout.write(String(keptWherePurgeReaches({json.dumps(destination)})));"
+    )
+    completed = subprocess.run(
+        [NODE, "--input-type=module", "-e", program],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == ("true" if purged else "false"), destination
+
+
+def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
+    """The deepest existing ancestor is resolved, so `.secrets/...` -> output/ still refuses."""
+    assert NODE is not None
+    real = tmp_path / "output/ks-20260915"
+    real.mkdir(parents=True)
+    private = tmp_path / ".secrets/wordpress-mcp/owner-direct-v1"
+    private.mkdir(parents=True)
+    (private / "candidate").symlink_to(real)
+    program = (
+        "import { keptWherePurgeReaches } from "
+        f"{json.dumps((ROOT / 'scripts/raos_price_overlay_live_check.mjs').as_uri())};"
+        "process.stdout.write(String(keptWherePurgeReaches("
+        f"{json.dumps(str(private / 'candidate' / 'screenshots' / 'a.png'))})));"
+    )
+    completed = subprocess.run(
+        [NODE, "--input-type=module", "-e", program],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout == "false"
+
+
+# A loopback origin is no longer an exemption: the candidate preview docker serves the injected
+# bodies on 127.0.0.1, so the five probes refuse there too while values may be published.
+@pytest.mark.parametrize("script", PROBES)
+def test_every_anonymous_probe_refuses_a_loopback_capture_as_well(tmp_path, script):
+    assert NODE is not None
+    root = probe_root(tmp_path, [ANSWER_LIVE], script)
+    completed = subprocess.run(
+        [
+            NODE,
+            f"scripts/{script}",
+            *probe_arguments(root, script, origin="http://127.0.0.1:41398"),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert completed.returncode == 69, completed.stdout + completed.stderr
+    assert completed.stderr.strip().endswith("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+    assert "playwright" not in completed.stderr
+    assert checks_run(root) == 1
+
+
+@pytest.mark.parametrize("script", ["ks_before_capture.mjs"])
+def test_a_probe_writing_into_the_purged_candidate_directory_is_not_refused(
+    tmp_path, script
+):
+    """The run-bound preview keeps its screenshots where the purge deletes them, so the check
+    is not even run for that destination (contract §8)."""
+    assert NODE is not None
+    root = probe_root(tmp_path, [ANSWER_LIVE], script)
+    purged = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
+    purged.mkdir(parents=True)
+    completed = subprocess.run(
+        [
+            NODE,
+            f"scripts/{script}",
+            *probe_arguments(
+                root, script, origin="http://127.0.0.1:41398", out=purged
+            ),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert completed.returncode != 69
+    assert "PRICE_OVERLAY" not in completed.stderr
+    assert checks_run(root) == 0
+
+
+# ---------------------------------------------------------------------------
+# Every other browser capture of a WordPress page
+# ---------------------------------------------------------------------------
+
+CAPTURE_SCRIPTS = {
+    # relative path -> (extra files to copy, arguments builder, destination is caller-chosen)
+    "changes/wordpress-direct-publish-v1/preview-browser.mjs": ((), "preview-browser", True),
+    "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs": (
+        (),
+        "origin-output",
+        True,
+    ),
+    "changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs": (
+        (),
+        "origin-output",
+        True,
+    ),
+    "tests/purchase_support/purchase_paths_browser.mjs": ((), "purchase-paths", False),
+    "tests/raos_v2/phase3-public-validation.mjs": (
+        ("tests/raos_v2/browser-validation.mjs",),
+        "phase3",
+        False,
+    ),
+}
+
+
+def capture_root(tmp_path, answers, relative, extra):
+    root = fake_check_root(tmp_path, answers, name="capture-root")
+    for name in (relative, *extra):
+        target = root / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / name, target)
+    return root
+
+
+def capture_arguments(root, shape, destination):
+    if shape == "preview-browser":
+        request = root / "input.json"
+        request.write_text(
+            json.dumps(
+                {
+                    "origin": "http://127.0.0.1:41398",
+                    "widths": [390],
+                    "surfaces": [{"kind": "home", "path": "/"}],
+                    "screenshots": str(destination),
+                }
+            )
+        )
+        return [str(request)]
+    if shape == "origin-output":
+        return ["http://127.0.0.1:41398/", str(destination)]
+    if shape == "purchase-paths":
+        for name in ("input.json", "runtime.json"):
+            (root / name).write_text(
+                json.dumps({"origin": "http://127.0.0.1:41398", "articles": []})
+            )
+        return [str(root / "input.json"), str(root / "runtime.json")]
+    return [
+        "--browser-executable",
+        "/usr/bin/busybox",
+        "--output",
+        "output/playwright/synthetic.json",
+    ]
+
+
+@pytest.mark.parametrize("relative", sorted(CAPTURE_SCRIPTS))
+def test_every_browser_capture_of_a_wordpress_page_refuses(tmp_path, relative):
+    assert NODE is not None
+    extra, shape, _ = CAPTURE_SCRIPTS[relative]
+    root = capture_root(tmp_path, [ANSWER_LIVE], relative, extra)
+    completed = subprocess.run(
+        [NODE, relative, *capture_arguments(root, shape, root / "out")],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert completed.returncode == 69, completed.stdout + completed.stderr
+    assert completed.stderr.strip().endswith("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+    assert "playwright" not in completed.stderr
+    assert checks_run(root) == 1
+    assert not (root / "out").exists()
+
+
+@pytest.mark.parametrize("relative", sorted(CAPTURE_SCRIPTS))
+def test_every_browser_capture_continues_when_nothing_is_live(tmp_path, relative):
+    """The control stops at the missing browser package, after the check has answered."""
+    assert NODE is not None
+    extra, shape, _ = CAPTURE_SCRIPTS[relative]
+    root = capture_root(tmp_path, [NOT_LIVE], relative, extra)
+    completed = subprocess.run(
+        [NODE, relative, *capture_arguments(root, shape, root / "out")],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert "PRICE_OVERLAY" not in completed.stderr
+    assert completed.returncode != 69
+    assert checks_run(root) == 1
+
+
+@pytest.mark.parametrize(
+    "relative",
+    sorted(name for name, row in CAPTURE_SCRIPTS.items() if row[2]),
+)
+def test_a_capture_kept_where_the_purge_reaches_is_not_refused(tmp_path, relative):
+    assert NODE is not None
+    extra, shape, _ = CAPTURE_SCRIPTS[relative]
+    root = capture_root(tmp_path, [ANSWER_LIVE], relative, extra)
+    purged = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
+    purged.mkdir(parents=True)
+    completed = subprocess.run(
+        [NODE, relative, *capture_arguments(root, shape, purged)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        timeout=300,
+    )
+    assert completed.returncode != 69, completed.stdout + completed.stderr
+    assert "PRICE_OVERLAY" not in completed.stderr
+    assert checks_run(root) == 0
+
+
+# ---------------------------------------------------------------------------
+# The local preview shell recipes (make wordpress-preview-check)
+# ---------------------------------------------------------------------------
+
+PREVIEW_SHELL = (
+    "changes/wordpress-local-preview-v1/browser/check.sh",
+    "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
+)
+
+
+@pytest.mark.parametrize("relative", PREVIEW_SHELL)
+def test_the_local_preview_shell_checks_before_opening_a_browser(tmp_path, relative):
+    """`RAOS_WORDPRESS_PREVIEW_ORIGIN` can name the candidate preview docker, so the recipe
+    refuses while values may be published (contract §8)."""
+    assert NODE is not None
+    root = fake_check_root(tmp_path, [ANSWER_LIVE], name="preview-shell-root")
+    target = root / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / relative, target)
+    target.chmod(0o755)
+    completed = subprocess.run(
+        ["/usr/bin/busybox", "sh", relative],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        env={
+            **os.environ,
+            "PWD": str(root),
+            "RAOS_NODE": NODE,
+            "RAOS_WORDPRESS_PREVIEW_NODE_BIN": NODE,
+            "RAOS_WORDPRESS_PREVIEW_ORIGIN": "http://127.0.0.1:41398",
+        },
+        timeout=300,
+    )
+    assert completed.returncode == 69, completed.stdout + completed.stderr
+    assert completed.stderr.strip().endswith("WORDPRESS_MCP_PRICE_OVERLAY_LIVE")
+    assert checks_run(root) == 1
+    assert not (root / "output").exists()
+
+
+# ---------------------------------------------------------------------------
+# The inventory is the repository, not a hand-written list
+# ---------------------------------------------------------------------------
+#
+# Rounds 1-6 kept the guarded paths in literal dicts, so scripts/ks_before_after.py,
+# scripts/ks_render_review.py, tests/raos_v2/phase3-public-validation.mjs and three more capture
+# scripts survived six sweeps unnoticed. This walk enumerates the repository instead: a file that
+# opens a browser, or that reads the owner-direct candidate directory, must either reference a
+# guard or carry a reviewed reason here.
+
+SOURCE_SUFFIXES = frozenset({".py", ".mjs", ".js", ".sh", ".ts"})
+SKIPPED_DIRECTORIES = frozenset(
+    {
+        ".git",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".secrets",
+        ".venv",
+        ".worktrees",
+        "__pycache__",
+        "node_modules",
+        "output",
+    }
+)
+BROWSER_MARKERS = re.compile(
+    r"require\('playwright'\)|require\(\"playwright\"\)"
+    r"|from 'playwright'|from \"playwright\""
+    r"|import\('playwright'\)|import\(\"playwright\"\)"
+    r"|require\('puppeteer'\)|from 'puppeteer'"
+    r"|\b(?:chromium|firefox|webkit)\.launch\("
+    r"|remote-debugging-port"
+    r"|node_modules/@playwright/cli|node_modules/lighthouse/cli"
+)
+CANDIDATE_MARKERS = re.compile(
+    r"\.secrets/wordpress-mcp/owner-direct-v1|OWNER_DIRECT_CANDIDATE_RELATIVE"
+)
+GUARD_MARKERS = re.compile(
+    r"refuseWhilePriceOverlayLive|raos_price_overlay_live_check|price_overlay_live_guard"
+    r"|refuse_while_price_overlay_live|price_overlay_refusal|price-overlay-live-check"
+    r"|price_overlay_live_run_ids"
+)
+
+# Reviewed: each of these cannot render or read a live overlay value (contract §8).
+UNGUARDED_BY_REVIEW = {
+    "python/raos/adapters/rakuten_price_refresh_client.py": (
+        "the §5 purge sweep itself: it deletes the candidate directories and never opens a "
+        "browser or reaches the site"
+    ),
+    "scripts/raos_wordpress_price_overlay.py": (
+        "the run-bound candidate materializer; every flag-free publisher command that could "
+        "call it is refused first (scripts/raos_wordpress_direct_publish.py)"
+    ),
+    "scripts/check_st1001_public_shell_browser.mjs": (
+        "serves its own fixture from a loopback server it started and aborts anything off "
+        "that origin"
+    ),
+    "scripts/check_st1002_public_article_browser.mjs": "same own-fixture loopback server",
+    "scripts/check_st1007_public_accessibility_browser.mjs": "same own-fixture loopback server",
+    "scripts/check_st1105_admin_acceptance_browser.mjs": "same own-fixture loopback server",
+    "tests/purchase_support/reference_price_browser.mjs": (
+        "setContent of a synthetic document; it never navigates to an origin"
+    ),
+    "tests/purchase_support/test_rakuten_price_refresh.py": (
+        "the suite that owns the synthetic run and candidate fixtures"
+    ),
+    "tests/raos_v2/browser-validation.mjs": (
+        "CDP helper library with no entry point of its own; the harnesses that use it are "
+        "guarded"
+    ),
+    "tests/reader_measurement_v1/browser.mjs": (
+        "every request is fulfilled or aborted locally behind a closed loopback proxy"
+    ),
+    "tests/reader_measurement_v1/browser_views.mjs": "same fully intercepted simulation",
+    "tests/site_editorial_pages/consent_controls.mjs": (
+        "setContent of a literal fragment; no navigation"
+    ),
+    "tests/st1704/test_decision_list_text_resize.py": "renders a tracked theme asset, no origin",
+    "tests/st1704/test_header_text_resize.py": "renders a tracked theme asset, no origin",
+    "tests/st1704/test_header_without_javascript.py": "renders a tracked theme asset, no origin",
+    "tests/st1704/test_home_fragment_navigation.py": "renders a tracked theme asset, no origin",
+    "tests/st1704/test_toc_saved_css_compatibility.py": "renders a tracked theme asset, no origin",
+    "tests/wordpress_mcp_v1/test_contract.py": "pins a package version string only",
+}
+
+
+def files_that_can_reach_an_overlay_value():
+    found = {}
+    for path in sorted(ROOT.rglob("*")):
+        if path.is_symlink() or not path.is_file():
+            continue
+        relative = path.relative_to(ROOT)
+        if any(part in SKIPPED_DIRECTORIES for part in relative.parts):
+            continue
+        if path.suffix not in SOURCE_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        reasons = []
+        if BROWSER_MARKERS.search(text):
+            reasons.append("browser")
+        if CANDIDATE_MARKERS.search(text):
+            reasons.append("candidate")
+        if reasons:
+            found[relative.as_posix()] = (reasons, bool(GUARD_MARKERS.search(text)))
+    return found
+
+
+def test_every_browser_and_candidate_reader_is_guarded_or_reviewed():
+    found = files_that_can_reach_an_overlay_value()
+    assert len(found) >= 30, sorted(found)
+    unreviewed = sorted(
+        name
+        for name, (_, guarded) in found.items()
+        if not guarded and name not in UNGUARDED_BY_REVIEW
+    )
+    assert unreviewed == [], (
+        "a file opens a browser or reads the owner-direct candidate directory without the "
+        f"contract §8 check: {unreviewed}"
+    )
+
+
+def test_the_reviewed_exceptions_are_all_still_present_and_still_unguarded():
+    """A reason left behind after its file was guarded or deleted would hide the next gap."""
+    found = files_that_can_reach_an_overlay_value()
+    stale = sorted(name for name in UNGUARDED_BY_REVIEW if name not in found)
+    assert stale == [], stale
+    now_guarded = sorted(
+        name for name in UNGUARDED_BY_REVIEW if found[name][1]
+    )
+    assert now_guarded == [], now_guarded
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        "scripts/ks_before_after.py",
+        "scripts/ks_render_review.py",
+        "tests/raos_v2/phase3-public-validation.mjs",
+        "changes/wordpress-direct-publish-v1/preview-browser.mjs",
+        "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
+        "changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs",
+        "tests/purchase_support/purchase_paths_browser.mjs",
+        "changes/wordpress-local-preview-v1/browser/check.sh",
+        "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
+    ],
+)
+def test_the_round_seven_additions_stay_guarded(relative):
+    """The six paths round 6 missed, plus the local preview recipes, named one by one."""
+    assert GUARD_MARKERS.search((ROOT / relative).read_text(encoding="utf-8")), relative
+
+
+# ---------------------------------------------------------------------------
+# The paths that carry no price, pinned so they stay that way
+# ---------------------------------------------------------------------------
+
+
+def test_the_baseline_media_fetch_cannot_reach_the_site():
+    """Contract §8: it only fetches Rakuten thumbnails, so it has no overlay value to leak."""
+    media = _load("raos_wordpress_baseline_media_cli", "scripts/raos_wordpress_baseline_media.py")
+    for url in (
+        publication.ORIGIN + "/carry-on-suitcase-comparison/",
+        publication.ORIGIN + "/wp-json/wp/v2/posts/1",
+        "https://thumbnail.image.rakuten.co.jp.evil.invalid/@0_mall/x.jpg",
+    ):
+        with pytest.raises(Exception) as error:  # noqa: PT011 - the module's own failure type
+            media.validate_url(url)
+        assert "kurashinoshirube" not in str(error.value)
+    media.validate_url("https://thumbnail.image.rakuten.co.jp/@0_mall/a/b.jpg")
+
+
+def test_the_public_acceptance_report_never_fetches_anything():
+    """Contract §8: it reads an export the caller supplies; it has no network primitive."""
+    source = (ROOT / "scripts/raos_public_acceptance.py").read_text(encoding="utf-8")
+    for primitive in ("urlopen", "build_opener", "HTTPSConnection", "socket", "requests."):
+        assert primitive not in source, primitive
+
+
+def test_the_raos_v2_adversarial_harness_serves_its_own_fixture():
+    """It starts a loopback HTTP server and navigates to that; the live site never appears."""
+    source = (ROOT / "tests/raos_v2/phase3-public-adversarial.mjs").read_text(encoding="utf-8")
+    assert "kurashinoshirube" not in source
+    assert "createServer" in source

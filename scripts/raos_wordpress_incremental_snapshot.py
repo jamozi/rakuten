@@ -42,6 +42,10 @@ class PublicMetadataReader:
         self.opener = build_opener(_NoRedirect())
 
     def get(self, resource: str, resource_id: int) -> dict[str, object]:
+        # Contract §8: refuse at the fetch site, not only by call order. main() happens to build
+        # an EditorMcpClient (which refuses) first, but this reader owns its own opener, so a
+        # future caller that used it alone would otherwise reach the live site unchecked.
+        publication.refuse_while_price_overlay_live()
         if resource not in {"posts", "pages", "categories", "tags"} or (
             type(resource_id) is not int or resource_id <= 0
         ):

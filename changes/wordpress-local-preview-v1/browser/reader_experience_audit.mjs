@@ -1,10 +1,15 @@
 /** Local-only reader layout diagnostic. This is not publication or human-test evidence. */
-import { chromium } from 'playwright';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { refuseWhilePriceOverlayLiveUnlessPurged } from '../../../scripts/raos_price_overlay_live_check.mjs';
 const [origin, output] = process.argv.slice(2);
 const target = new URL(origin);
 if (!['127.0.0.1', 'localhost'].includes(target.hostname) || target.protocol !== 'http:' || !output) throw Error('LOCAL_READER_AUDIT_ARGUMENTS_REQUIRED');
+// Contract §8: the local WordPress this audits may be the candidate preview serving the injected
+// bodies. It keeps a full-page PNG per width and, at 1440px, the complete rendered HTML, so while
+// values are published it may only run when those files land where the §5 purge reaches them.
+await refuseWhilePriceOverlayLiveUnlessPurged([path.resolve(output)]);
+const { chromium } = await import('playwright');
 const inventory = JSON.parse(await readFile('changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json','utf8'));
 const guides = JSON.parse(await readFile("changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json", "utf8"));
 if (guides.publication_authority !== false) throw Error("LOCAL_GUIDE_AUDIT_BOUNDARY");

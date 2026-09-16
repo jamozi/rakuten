@@ -30,6 +30,7 @@ import {
   setViewport,
   waitForDebugger,
 } from './browser-validation.mjs';
+import { refuseWhilePriceOverlayLive } from '../../scripts/raos_price_overlay_live_check.mjs';
 
 const require = createRequire(import.meta.url);
 const SCRIPT_PATH = realpathSync(fileURLToPath(import.meta.url));
@@ -1146,6 +1147,11 @@ async function settleInterceptions(tasks) {
 }
 
 async function main() {
+  // Contract §8: this harness opens a price-block article on the live site and keeps the
+  // rendering - full-page PNGs plus a receipt holding decodedPublicBodySha256, the hash of the
+  // published body, which is price-recoverable (§3) - under output/playwright, which the §5
+  // purge sweep does not reach. Refuse before the output directory and before the browser.
+  await refuseWhilePriceOverlayLive();
   if (realpathSync(process.cwd()) !== ROOT) fail('PHASE3_PUBLIC_WORKSPACE_ROOT_REQUIRED');
   if (Number.parseInt(process.versions.node.split('.', 1)[0] ?? '', 10) !== REQUIRED_NODE_MAJOR) {
     fail('PHASE3_PUBLIC_NODE_RUNTIME_MAJOR_INVALID');

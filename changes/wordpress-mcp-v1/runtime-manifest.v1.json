@@ -132,8 +132,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/check.sh",
-      "sha256": "3cfd4a4ee791e92d704e8a1845ded84967b4d5e34093b171d618c1034b7338ce",
-      "size": 13732
+      "sha256": "ed5f4f109b14a5b5c8251a519c4a99cc233b5c249ce10ef1e7172365c23d9e25",
+      "size": 14169
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/incremental_scope.py",
@@ -162,8 +162,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
-      "sha256": "2af102d6957d78c02cc7745463a2c86458fcdb10925ab3e7a770bf53f255df11",
-      "size": 13070
+      "sha256": "0c13684eea5ff90bf713212589b000507ac0242923db23251db0a0d5562967f1",
+      "size": 13507
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
@@ -347,7 +347,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "1a76464b11b5206f0f332d7fc75053e6db7803f888963b7325fd9a5a22f771ff",
+      "sha256": "ffb9e8e7b550c15088e4023d5ebf4ee10dc0705595eb2f520b6dd87eef8fa437",
       "size": 54277
     },
     {
@@ -422,8 +422,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
-      "sha256": "186696b4deefc8a425d0a3a293fe38574a837decc9535af9a66d89ce1f997023",
-      "size": 10787
+      "sha256": "8a6c37ddb5a6c3457f3b84da05fede4776bc905a954fc0bd5129d2521edfd2b5",
+      "size": 11272
     },
     {
       "path": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
@@ -567,8 +567,8 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_snapshot.py",
-      "sha256": "5b2f0655bc622669e5cdbf7d31ab6b3c59e328a58559ada5798df02f32888eb3",
-      "size": 15659
+      "sha256": "b4c73b0eaa3467882a4952cdcc929fd13b9a654d8029c3c14f79699e4dba4770",
+      "size": 15995
     },
     {
       "path": "scripts/raos_wordpress_local_restore.py",
@@ -602,8 +602,8 @@
     },
     {
       "path": "scripts/raos_price_overlay_live_check.mjs",
-      "sha256": "3d4f2dbbf8e3fc9e666940ff798bcdcbc4960173816d4311b7e0cc5f7bd0a034",
-      "size": 3334
+      "sha256": "efca4ffa59369abfcbf0ab8b999d5c4af7c97c0120d977442417ba4098ecda0a",
+      "size": 5687
     },
     {
       "path": "scripts/store_wordpress_mcp_credential.py",

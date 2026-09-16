@@ -6,14 +6,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
+import { refuseWhilePriceOverlayLiveUnlessPurged } from './raos_price_overlay_live_check.mjs';
 const require = createRequire(import.meta.url);
 const input = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 // A local preview, or the public production origin when the published state is the Before.
 if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin) && input.origin !== 'https://kurashinoshirube.com') throw new Error('ORIGIN_NOT_ALLOWED');
-// Contract §8: a capture of the live site while Rakuten price overlay values may be
-// published would store rendered prices (screenshots, snippets) and their hashes.
-if (input.origin !== undefined && !/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin)) await refuseWhilePriceOverlayLive();
+// Contract §8: a capture while Rakuten price overlay values may be published stores the
+// rendered prices and their hashes. The destination decides, not the origin: the candidate
+// preview docker serves the injected bodies on 127.0.0.1 too, so a rendering may only be kept
+// while values are live where the §5 purge sweep reaches it.
+await refuseWhilePriceOverlayLiveUnlessPurged([path.resolve(String(input.screenshots ?? ''))]);
 const { chromium } = require('playwright');
 fs.mkdirSync(input.screenshots, { recursive: true });
 const browser = await chromium.launch({ headless: true });

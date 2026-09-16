@@ -24,10 +24,34 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PYTHON = ROOT / "python"
 ARTICLES = "changes/wordpress-direct-publish-v1/articles"
 LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
 BROWSER = "changes/wordpress-direct-publish-v1/preview-browser.mjs"
 TOKENS = re.compile(r"\b(?:UNKNOWN|UNAVAILABLE|SOLD_OUT|PREORDER)\b|本文候補|レビュー中")
+
+
+def refuse_while_price_overlay_live(*checkouts: str | Path | None) -> None:
+    """Contract §8: nothing of a live overlay run may be read or rendered into ``output/``.
+
+    While values are published this script would (a) open the owner-direct candidate directory
+    and copy its preview screenshots — the injected bodies as pixels — into the repository,
+    (b) write the candidate id into ``index.md``, which is the injected-body sha256 and so
+    price-recoverable (§3), and (c) drive a browser against the candidate preview docker on
+    ``127.0.0.1`` and keep those pages too. None of ``output/`` is reached by the §5 purge
+    sweep, so the artifacts would outlive a purge that already reported success.
+
+    The caller's ``--candidate-root`` and ``--owner-checkout`` are checked as well as the fixed
+    owner checkout and this repository: the candidate may be read out of another checkout.
+    """
+    if str(PYTHON) not in sys.path:
+        sys.path.insert(0, str(PYTHON))
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal(*checkouts)
+    if code is not None:
+        print(code, file=sys.stderr)
+        raise SystemExit(69)
 
 
 def visible_text(html: str) -> list[str]:
@@ -114,6 +138,8 @@ def main() -> int:
     parser.add_argument("--out", default="output/ks-20260915")
     parser.add_argument("--label", default="")
     args = parser.parse_args()
+    # Before the ledger, the candidate directory, the before-capture and any write under --out.
+    refuse_while_price_overlay_live(args.candidate_root, args.owner_checkout)
 
     keys = [k.strip() for k in args.keys.split(",") if k.strip()]
     rows = ledger_rows()

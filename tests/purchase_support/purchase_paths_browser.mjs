@@ -2,11 +2,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {chromium} from 'playwright';
+import { refuseWhilePriceOverlayLiveUnlessPurged } from '../../scripts/raos_price_overlay_live_check.mjs';
 const input = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 const runtime = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
 if (!/^http:\/\/127\.0\.0\.1:\d{4,5}$/.test(input.origin)) throw Error('LOCAL_ORIGIN_REQUIRED');
 const output = path.resolve('output/playwright/purchase-p0');
+// Contract §8: the frozen local preview this opens may be the candidate preview serving the
+// injected bodies, and the per-width screenshots land under output/, outside the §5 purge sweep.
+await refuseWhilePriceOverlayLiveUnlessPurged([output]);
+const {chromium} = await import('playwright');
 fs.mkdirSync(output, {recursive:true});
 const browser = await chromium.launch({headless:true});
 const results = [];

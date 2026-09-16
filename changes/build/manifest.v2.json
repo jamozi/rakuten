@@ -964,8 +964,8 @@
           "uri": "repo://changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
         },
         {
-          "bytes": 11999,
-          "sha256": "6fb6db4141c4f8aaae368dad099f8898e6bc16398456645af1b8dfbb12f3f975",
+          "bytes": 12249,
+          "sha256": "646e6261db5ad9db4072d7753ee039b80800983fe22d927755d3017cc889a457",
           "uri": "repo://changes/raos-v2/phase-3/production-backup-export-runbook.md"
         },
         {
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28434,
-          "sha256": "c260022399031e5642ec62ccec561e4023fbd7cd46b48f123caa29526c032a79",
+          "sha256": "16b9cb93580a230d49f5374b1818905e147330f1cfab15dc32bc8b8c944ce396",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31169,7 +31169,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "1a76464b11b5206f0f332d7fc75053e6db7803f888963b7325fd9a5a22f771ff",
+          "sha256": "ffb9e8e7b550c15088e4023d5ebf4ee10dc0705595eb2f520b6dd87eef8fa437",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
