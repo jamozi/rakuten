@@ -6679,7 +6679,26 @@
       "exact_model": "SS-LH451",
       "anchor": "product-ss-lh451",
       "official_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×35×50cm",
+          "source_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
+          "locator": "製品仕様表「外形寸法(約)」行「幅 55 cm × 奥行 35 cm × 高さ 50 cm」（SS-LH451・SS-LA451共通セル）。取扱説明書 ss-lh451.pdf p.33の仕様も同じ値",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "SS-LH451"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行72.0cm",
+          "source_url": "https://www.siroca.co.jp/support/食器洗い乾燥機：据え付けについて-6267995f924c65001d340936",
+          "locator": "「寸法図」節 SS-LH451/SS-LA451/SS-MH351/SS-MA351の行「d: ドアを開いたときの奥行き 72.0 cm」（約）",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "SS-LH451"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],
@@ -6714,7 +6733,26 @@
       "exact_model": "ADW-L40B(W)",
       "anchor": "product-adw-l40b",
       "official_url": "https://aqua-has.com/product/l40b/",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×36×50cm",
+          "source_url": "https://aqua-has.com/product/l40b/",
+          "locator": "「仕様 (ADW-L40B)」節の外形寸法「幅550×奥行360×高さ500㎜」。取扱説明書 p.30とカタログ p.1の仕様表も同じ値",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "ADW-L40B(W)"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行72.8cm",
+          "source_url": "https://aqua-has.com/wp-content/uploads/2026/04/adw_l40b_%EF%BD%8D28b_webc.pdf",
+          "locator": "カタログ p.2 ADW-L40B側の設置図「取り出しに必要な奥行 72.8cm」。p.1 寸法図〈側面〉の728mm",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "ADW-L40B(W)"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],
@@ -6749,7 +6787,26 @@
       "exact_model": "NP-TA5-W",
       "anchor": "product-np-ta5",
       "official_url": "https://panasonic.jp/dish/products/NP-TA5.html",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×34.4×59.8cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TA5/spec.html",
+          "locator": "仕様表「本体外形寸法」行「約 幅550×奥行344＜579＞×高さ598mm」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TA5-W"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行57.9cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TA5/spec.html",
+          "locator": "仕様表「本体外形寸法」行の＜579＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TA5-W"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],
@@ -6784,7 +6841,26 @@
       "exact_model": "NP-TZ500-W",
       "anchor": "product-np-tz500",
       "official_url": "https://panasonic.jp/dish/products/NP-TZ500.html",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×34.4×59.8cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TZ500/spec.html",
+          "locator": "仕様表「本体外形寸法」行「約 幅550×奥行344＜579＞×高さ598mm」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TZ500-W"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行57.9cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TZ500/spec.html",
+          "locator": "仕様表「本体外形寸法」行の＜579＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TZ500-W"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],
@@ -6819,7 +6895,26 @@
       "exact_model": "NP-TH5-W",
       "anchor": "product-np-th5",
       "official_url": "https://panasonic.jp/dish/products/NP-TH5.html",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×34.4×59.8cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TH5/spec.html",
+          "locator": "仕様表「本体外形寸法」行「約 幅550×奥行344＜579＞×高さ598mm」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TH5-W"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行57.9cm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TH5/spec.html",
+          "locator": "仕様表「本体外形寸法」行の＜579＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "NP-TH5-W"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],
@@ -6854,7 +6949,26 @@
       "exact_model": "SS-LA451-W/HL",
       "anchor": "product-ss-la451",
       "official_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
-      "facts": [],
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "55×35×50cm",
+          "source_url": "https://www.siroca.co.jp/product/dishwasher_largecapacity/",
+          "locator": "製品仕様表「外形寸法(約)」行「幅 55 cm × 奥行 35 cm × 高さ 50 cm」（SS-LH451・SS-LA451共通セル）。SS-LA451の取扱説明書 ss-la451.pdf p.33の仕様も同じ値",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "SS-LA451-W/HL"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行72.0cm",
+          "source_url": "https://www.siroca.co.jp/support/食器洗い乾燥機：据え付けについて-6267995f924c65001d340936",
+          "locator": "「寸法図」節 SS-LH451/SS-LA451/SS-MH351/SS-MA351の行「d: ドアを開いたときの奥行き 72.0 cm」（約）",
+          "checked_at": "2026-09-15",
+          "state": "KNOWN",
+          "exact_model": "SS-LA451-W/HL"
+        }
+      ],
       "use_cases": [],
       "fit": [],
       "avoid": [],

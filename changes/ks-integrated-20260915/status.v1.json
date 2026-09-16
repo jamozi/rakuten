@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-16T03:08+09:00",
+  "updated_at": "2026-09-16T09:20+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -256,6 +256,43 @@
       "effort_hours": null,
       "cost_yen": null,
       "confirmed_reward_yen": null
+    },
+    "W3": {
+      "tasks": [
+        "KS-015",
+        "KS-017",
+        "KS-026",
+        "KS-028",
+        "KS-029",
+        "KS-107",
+        "KS-108",
+        "KS-116",
+        "KS-120",
+        "KS-122",
+        "KS-129",
+        "KS-130"
+      ],
+      "commit": "d65048f3",
+      "candidate_id": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+      "published_at": "2026-09-15T21:53:47Z〜21:54:17Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "categories",
+        "compact-dishwasher-comparison",
+        "dishwasher-branch-faucet-guide",
+        "kitchen",
+        "large-dishwasher-comparison",
+        "prepare-outage",
+        "small-carry-on-suitcase-comparison",
+        "standard-dishwasher-comparison",
+        "travel",
+        "without-installation"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     }
   },
   "items": {
@@ -384,9 +421,10 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
@@ -397,9 +435,10 @@
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
@@ -410,12 +449,13 @@
     },
     "KS-020": {
       "priority": "P1",
-      "status": "一部完了 (免責文リンク)。価格再取得の仕組みは保留",
-      "batch": "B",
+      "batch": "G",
       "evidence": [
+        "evidence/KS-020-price-overlay.md",
         "evidence/KS-019.md",
         "evidence/KS-006.md"
-      ]
+      ],
+      "status": "一部完了 (免責文リンクは W2 で公開)。価格の再取得はバッチ G で実装中。WordPress DB に残る hash はオーナーが許容と決定 (2026-09-16)。plugin 配置・リビジョン/キャッシュ実測・preview DB の後始末が残り"
     },
     "KS-133": {
       "priority": "P1",
@@ -489,12 +529,13 @@
     },
     "KS-118": {
       "priority": "P1",
-      "batch": "W2-23",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-118.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (広告表示の位置と楽天ウェブサービス段落の範囲、本番公開)。問い合わせ先の到達試験と名義はオーナー"
+      "status": "完了 (広告表示の位置と楽天ウェブサービス段落は W2-23 で公開。問い合わせ先は 2026-09-16 の試験メールで到達を確認)。名義と返信の運用はオーナー判断"
     },
     "KS-115": {
       "priority": "P1",
@@ -507,12 +548,13 @@
     },
     "KS-129": {
       "priority": "P1",
-      "batch": "W2-23",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (266 側で SOLOTA の計算例と単価前提の違いを明記、本番公開)。549 側のリンクは承認済みレイアウトのバッチ"
+      "status": "完了 (266 側は W2-23、549 から 266 #guide-cost-example への相互参照は W3 で本番公開)"
     },
     "KS-018": {
       "priority": "P1",
@@ -520,7 +562,7 @@
       "evidence": [
         "evidence/KS-301-302-batch-E.md"
       ],
-      "status": "一部完了 (楽天商品画像 126 枚の代替テキストに商品名を付与、本番公開)。意思決定用の図の整備は編集判断"
+      "status": "一部完了 (楽天商品画像 126 枚の代替テキストに商品名を付与、本番公開)。W3 では図を追加しない。残り 4 図の扱い: 給水経路 = 263 の比較表の行で示す (新しい図は作らない)、スーツケースの開き方 = 本文のテキスト地図で示す、ロボット掃除機の設置スペース = 公式資料間で値が食い違うため保留、電源の W/Wh の図 = 見送り (後日判断)"
     },
     "KS-025": {
       "priority": "P0",
@@ -532,11 +574,12 @@
     },
     "KS-017": {
       "priority": "P1",
-      "batch": "W2-1",
-      "status": "記録済み (幅7・文字拡大3・39ページ・キーボード6ページ)。実際にはスクロールしない案内文の削除は承認ゲート待ち",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-017.md"
-      ]
+      ],
+      "status": "完了 (記録は W2-1。実際にはスクロールしない案内文を 549・550・551 の本文と theme.css の ::before から削除し、W3 で本番公開)"
     },
     "KS-030": {
       "priority": "P1",
@@ -574,11 +617,12 @@
     },
     "KS-015": {
       "priority": "P1",
-      "batch": "W2-23",
-      "status": "一部完了 (553 の仕様グループのラベルと誤ったスクロール案内の削除、本番公開)。549〜551 は承認済みレイアウトのバッチ",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md"
-      ]
+      ],
+      "status": "完了 (553 は W2-23、549・551 の表内ラベルは W3 で本番公開)"
     },
     "KS-012": {
       "priority": "P1",
@@ -714,6 +758,126 @@
         "evidence/KS-021.md"
       ],
       "status": "一部完了 (提携状態と規約根拠を管理画面・公式ヘルプで確認。試行はバリューコマース / Yahoo!ショッピングのみ可、au PAY マーケットは不可)"
+    },
+    "KS-028": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (KS-028-d: /categories/ のカード見出しを h2 にして本番公開。purposes と updates は見出しレベルが飛ばないので変更なし。83 の表内 h4 は承認済みレイアウトのため記録のみ)"
+    },
+    "KS-026": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (549・550・551・553 に訂正依頼の行、本番公開)。訂正履歴は「今は載せない」とオーナーが決定 (2026-09-16)。内部記録にとどめる"
+    },
+    "KS-029": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (ガイドの articleSection をハブ名に、/without-installation/ の親を /purposes/ に、方針ページは BreadcrumbList を出さない。本番公開)。ItemList を採らない理由を公開するかはオーナー判断"
+    },
+    "KS-107": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/kitchen/ #compare を置き場所・機能・費用への導線に作り直し、本番公開)"
+    },
+    "KS-108": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/travel/ の準備中カード 3 枚を削除し、82 と 19 を注記付きで追加。本番公開)"
+    },
+    "KS-116": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/prepare-outage/ を 5 列の記入式シートにし、記事 28 の計算例へリンク。本番公開)"
+    },
+    "KS-120": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (549 から置き場所・洗剤・手入れのガイドへのリンク。本番公開)"
+    },
+    "KS-122": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (551 の主表 6 行に本体寸法と開扉時の奥行を公式値で追加。本番公開)"
+    },
+    "KS-130": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (552 に 3 か所の確認表と容量別の比較への導線を置き、本番公開)。ヒーロー画像と機種の列挙は未実施"
+    },
+    "KS-024": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (条件フィルター)。必要性の判定 (KS-031) と試行の承認が前提"
+    },
+    "KS-202": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "不採用 (現時点)。接続済み ASP に該当案件が無く、新規の提携申請はしない方針"
+    },
+    "KS-203": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (型番差分・新旧比較)。需要の根拠と KS-201/014/005 の完了が前提。2026-10-14 以降に再評価"
+    },
+    "KS-204": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (セール特設)。価格再取得の公開運用と KS-022 の評価が前提"
+    },
+    "KS-205": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (SNS 図解)。SNS アカウントと媒体の追加登録、楽天画像を使わない自前の図解が前提"
+    },
+    "KS-206": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (隣接する高単価 ASP)。既存カテゴリの成果の基準と上限工数の承認が前提"
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"

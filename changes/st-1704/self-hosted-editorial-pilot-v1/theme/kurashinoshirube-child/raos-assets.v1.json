@@ -1264,8 +1264,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "4a8049fb40973f4a31304768a311cf75f9937e3541341a1cc8b2f8364dafeef0",
+  "theme_runtime_revision": "07bab618bf81b978270457068323bd6c72637e490131c7ce134410c7c02535ae",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "4a8049fb40973f4a31304768a311cf75f9937e3541341a1cc8b2f8364dafeef0",
+  "theme_source_fingerprint": "07bab618bf81b978270457068323bd6c72637e490131c7ce134410c7c02535ae",
   "theme_version": "1.6.0"
 }

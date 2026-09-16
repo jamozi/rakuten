@@ -4,6 +4,7 @@ import copy
 from datetime import datetime, timezone
 import json
 from pathlib import Path
+import re
 import unittest
 
 from raos.application.editorial.purchase_support import hub_sales_record, render_hub
@@ -70,6 +71,185 @@ class EntryCompletion(unittest.TestCase):
         ):
             self.assertNotIn(stale_inventory, doc.text)
         self.assertNotRegex(doc.text, r"[0-9,]+円")
+
+    def test_kitchen_compare_routes_to_capacity_comparisons_and_cost_guide(self):
+        template = (
+            ROOT / "changes/reader-purchase-support-v1/articles/kitchen.html"
+        ).read_text()
+        doc = Document(render_hub({}, self.catalog, template, now=self.now))
+        compare = doc.ids["compare"]
+        html = doc.text[compare.start : compare.end]
+        self.assertIn("<h2>置き場所・機能・費用を確かめる</h2>", html)
+        self.assertIn(
+            "採寸する箇所の考え方と費用の式の立て方は参考にできますが、数値と手順は選んだ型番の取扱説明書で確かめてください。型番別の数値を載せたガイドは、対象機種をガイド側に明記しています。",
+            html,
+        )
+        self.assertNotIn("ほかの条件も確かめる", doc.text)
+        registry = json.loads(
+            (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
+        )
+        rows = {row["slug"]: row for row in registry["articles"]}
+        hrefs = [n.attrs.get("href") or "" for n in doc.nodes if n.tag == "a"]
+        compare_hrefs = [
+            n.attrs.get("href") or ""
+            for n in doc.nodes
+            if n.tag == "a" and compare.start < n.start < compare.end
+        ]
+        for href in (
+            "/dishwasher-installation-measurement/#guide-measurement-diagram",
+            "/compact-dishwasher-comparison/#compact-compare",
+            "/standard-dishwasher-comparison/#std-comparison",
+            "/large-dishwasher-comparison/#large-compare",
+            "/compact-dishwasher-comparison/#compact-cost",
+            "/standard-dishwasher-comparison/#std-reference-details",
+            "/large-dishwasher-comparison/#large-cost",
+            "/dishwasher-running-cost/#guide-cost-example",
+        ):
+            with self.subTest(href=href):
+                self.assertIn(href, compare_hrefs)
+                slug, fragment_id = href.strip("/").split("/#")
+                body = Document((ROOT / rows[slug]["body_source"]).read_text())
+                self.assertIn(fragment_id, body.ids)
+        purchase = doc.ids["purchase-checks"]
+        self.assertTrue(compare.start < purchase.start < purchase.end <= compare.end)
+        purchase_html = doc.text[purchase.start : purchase.end]
+        # The cost card's lead promises totals, so it links to the total-cost
+        # sections rather than repeating the 機能 card's comparison tables.
+        self.assertIn("送料・必要品を含む総額と、毎月。", purchase_html)
+        for href in (
+            "/compact-dishwasher-comparison/#compact-cost",
+            "/standard-dishwasher-comparison/#std-reference-details",
+            "/large-dishwasher-comparison/#large-cost",
+            "/dishwasher-running-cost/#guide-cost-example",
+        ):
+            self.assertIn('href="' + href + '"', purchase_html)
+        for repeated in (
+            "#compact-compare",
+            "#std-comparison",
+            "#large-compare",
+            "#std-purchases",
+            "#large-purchase",
+        ):
+            self.assertNotIn(repeated + '"', purchase_html)
+        tank = [
+            h
+            for h in hrefs
+            if h.startswith("/countertop-dishwasher-for-small-households/")
+        ]
+        self.assertEqual(tank, ["/countertop-dishwasher-for-small-households/"])
+        self.assertIn(
+            '<a href="/countertop-dishwasher-for-small-households/">タンク式4機種の給水作業を詳しく比べる</a>',
+            html,
+        )
+        for removed in ("#ps-specs", "#dish-meal-work-title", "#ps-offers"):
+            self.assertFalse(any(h.endswith(removed) for h in hrefs), removed)
+
+    def test_branch_faucet_guide_routes_to_capacity_comparisons(self):
+        registry = json.loads(
+            (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
+        )
+        rows = {row["slug"]: row for row in registry["articles"]}
+        row = rows["dishwasher-branch-faucet-guide"]
+        doc = Document((ROOT / row["body_source"]).read_text())
+        consult = doc.ids["branch-consult"]
+        consult_html = doc.text[consult.start : consult.end]
+        for slug, anchor in (
+            ("standard-dishwasher-comparison", "std-comparison"),
+            ("large-dishwasher-comparison", "large-compare"),
+        ):
+            self.assertIn('href="/' + slug + "/#" + anchor + '"', consult_html)
+            self.assertIn(
+                anchor, Document((ROOT / rows[slug]["body_source"]).read_text()).ids
+            )
+        self.assertIn("給水方式（タンク／分岐水栓など）", consult_html)
+        self.assertIn("標準容量の比較（掲載機種は16〜28点）", consult_html)
+        self.assertNotIn("「給水」欄", doc.text)
+        check = doc.ids["branch-check"]
+        check_html = doc.text[check.start : check.end]
+        self.assertEqual(
+            re.findall(r'<th scope="row">([^<]+)</th>', check_html),
+            ["本体側", "水栓側", "設置条件"],
+        )
+        table = check_html[check_html.index("<table") :]
+        # Routes only: no measured or model-specific values in the new table.
+        self.assertNotRegex(
+            re.sub(r"<[^>]+>", "", table[: table.index("</table>")]),
+            r"[0-9]+(?:mm|cm|m|L|MPa|kPa|円|℃|W)",
+        )
+        self.assertIn("仕様欄にある給水方式", table)
+        notes = (
+            ROOT
+            / "changes/site-improvements-20260913/article-sources/dishwasher-branch-faucet-guide.md"
+        ).read_text()
+        self.assertIn("#std-comparison", notes)
+        self.assertIn("本体側", notes)
+
+    def test_travel_source_lists_published_comparisons_without_pending_cards(self):
+        from scripts.build_site_editorial_pages import PAGE_SOURCE_PATHS
+
+        source = (ROOT / PAGE_SOURCE_PATHS["travel"]).read_text()
+        notes = (
+            ROOT / "changes/site-improvements-20260913/entry-pages/travel.sources.md"
+        ).read_text()
+        doc = Document(source)
+        self.assertNotIn("準備中", source)
+        self.assertNotIn("kt-card-pending", source)
+        self.assertNotIn("飛行機に乗るなら", source)
+        for image in ("travel-medium-", "travel-large-", "travel-move-"):
+            self.assertNotIn(image, source)
+        for heading in (
+            "荷物の量から選ぶ",
+            "使いやすさから選ぶ",
+            "便やブランドが決まっているなら",
+        ):
+            self.assertEqual(
+                len(re.findall("<h2[^>]*>" + heading + "</h2>", source)), 1
+            )
+        flight = next(
+            n
+            for n in doc.nodes
+            if n.tag == "section"
+            and "便やブランドが決まっているなら" in doc.text[n.start : n.end]
+        )
+        flight_html = doc.text[flight.start : flight.end]
+        self.assertLess(doc.ids["travel-comparisons"].end, flight.start)
+        cards = [
+            doc.text[n.start : n.end]
+            for n in doc.nodes
+            if n.tag == "article" and flight.start < n.start < flight.end
+        ]
+        self.assertEqual(len(cards), 2)
+        under_100, ace = cards
+        self.assertIn('href="/carry-on-suitcase-under-100-seats/"', under_100)
+        self.assertIn(
+            "100席未満の便の条件です。100席以上の便とは条件が違います", under_100
+        )
+        self.assertIn('href="/carry-on-suitcase-comparison/"', ace)
+        self.assertIn("エース系の3モデルで迷ったら", ace)
+        self.assertIn("同じメーカーの3モデルで、軽さ・容量・開き方の違いを。", ace)
+        self.assertNotIn("ブランド内", ace)
+        self.assertIn(
+            "エース系3モデル（外寸はANA国内線100席以上の基準で照合。重量は荷物込みで別途確認）",
+            ace,
+        )
+        self.assertNotIn("<img", flight_html)
+        if "45×35×20cm" in under_100:
+            for url in (
+                "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+                "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/",
+            ):
+                self.assertIn(url, notes)
+            self.assertIn("45×35×20cm", notes)
+            self.assertIn("#carry-on-rules", notes)
+        details = doc.ids["purchase-checks"]
+        details_html = doc.text[details.start : details.end]
+        for slug in (
+            "carry-on-suitcase-under-100-seats",
+            "carry-on-suitcase-comparison",
+        ):
+            for anchor in ("ps-specs", "ps-offers"):
+                self.assertIn('href="/' + slug + "/#" + anchor + '"', details_html)
+        self.assertIn("再掲", notes)
 
     def test_seller_record_is_model_bound_historical_and_keeps_unknown(self):
         product = self.catalog["products"][0]

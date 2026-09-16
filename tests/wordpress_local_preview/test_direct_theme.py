@@ -78,5 +78,8 @@ echo json_encode(array('valid'=>$valid,'invalid'=>$invalid,'guide'=>$guide,'drif
     assert value["invalid"] is None
 
     assert value['guide']['article_id'] == 'dishwasher-running-cost'
-    assert value['guide']['section'] == '家事'
+    # KS-029-a: this stub post is not a WP_Post, so no hub registers the guide and the
+    # neutral fallback applies. The hub label itself is covered by
+    # tests/st1704/test_site_audit_theme_fixes.py::test_reader_guide_article_section_uses_category_hub_label.
+    assert value['guide']['section'] == '記事'
     assert value['drift'] is None

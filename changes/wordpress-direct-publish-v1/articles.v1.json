@@ -2052,7 +2052,7 @@
           "question": "分岐水栓で使える大容量の機種は？",
           "target": "large-dishwasher-comparison",
           "anchor": "",
-          "status": "planned:J1"
+          "status": "live"
         },
         "scope": {
           "primary_product_ids": [
