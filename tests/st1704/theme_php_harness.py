@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 
 import pytest
+
+from scripts.raos_test_runtime import PHP_EXTRA_MOUNTS_VARIABLE, PHP_MOUNTS
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -132,16 +136,55 @@ $GLOBALS['pages'] = array();
 """
 
 
-def run_theme_php(program: str, *extra_args: str, timeout: int = 60) -> dict[str, object]:
-    """Run ``program`` after the stubs and the theme; return its JSON stdout."""
+def _visible_to_php(path: Path, mounts: tuple[Path, ...]) -> bool:
+    """The sandboxed PHP sees only the declared mounts (and /tmp is its own empty tmpfs)."""
+    return any(
+        path == mount or path.is_relative_to(mount)
+        for mount in (*(ROOT / relative for relative in PHP_MOUNTS), *mounts)
+    )
+
+
+def run_theme_php(
+    program: str,
+    *extra_args: str,
+    timeout: int = 60,
+    mounts: Sequence[Path | str] = (),
+) -> dict[str, object]:
+    """Run ``program`` after the stubs and the theme; return its JSON stdout.
+
+    A directory the program reads - a theme copy with one asset rewritten, say - has to be
+    named in ``mounts``. The fallback runtime runs PHP in a container with only the declared
+    source mounted and its own tmpfs over ``/tmp``, so an undeclared ``tmp_path`` copy is not
+    there: ``get_stylesheet_directory()`` would point at nothing, every asset read would come
+    back empty and the assertions would fail against silence instead of behaviour. The check
+    below turns that into a loud failure at the call site.
+    """
 
     php = shutil.which("php")
     if php is None:
         pytest.skip("PHP is required for the theme behavior harness")
+    declared = tuple(Path(mount) for mount in mounts)
+    undeclared = [
+        argument
+        for argument in extra_args
+        if argument.startswith("/")
+        and Path(argument).is_dir()
+        and not _visible_to_php(Path(argument), declared)
+    ]
+    assert undeclared == [], (
+        "the PHP runtime cannot see these directories; pass them as mounts=(...): "
+        f"{undeclared}"
+    )
     source = STUBS + "\nrequire $argv[1] . '/functions.php';\n" + program
+    environment = dict(os.environ)
+    if declared:
+        environment[PHP_EXTRA_MOUNTS_VARIABLE] = os.pathsep.join(
+            str(mount) for mount in declared
+        )
     result = subprocess.run(
         [php, "-r", source, str(THEME), *extra_args],
         cwd=ROOT,
+        env=environment,
         capture_output=True,
         text=True,
         timeout=timeout,

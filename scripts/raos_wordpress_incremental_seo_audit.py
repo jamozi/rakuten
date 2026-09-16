@@ -68,6 +68,23 @@ def fail(code: str) -> NoReturn:
     raise seo.AuditError("INCREMENTAL_" + code) from None
 
 
+def _refuse_while_price_overlay_live() -> None:
+    """Contract §8: no fetch of the live site while price overlay values may be published.
+
+    This audit keeps every response it fetches on ``_ObservedTransport.responses`` for the whole
+    run and writes each ``body_sha256`` into its report, and an injected body's hash is
+    price-recoverable (§3). It reaches the site only through ``seo.BoundedHttpsTransport``,
+    which refuses at its own ``get``; this call makes the refusal this file's own, so a future
+    edit that gives it a transport of its own is still closed. Fail closed: an unreadable run
+    state refuses too.
+    """
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal()
+    if code is not None:
+        raise seo.AuditError(code)
+
+
 def canonical(value: object) -> bytes:
     return publication.canonical_json_bytes(value)
 
@@ -1490,6 +1507,7 @@ def run_verified_incremental_public_audit(
             fail("PUBLISHED_DATE_OR_TAXONOMY_CHANGED")
         if slug not in prepared and replayed[slug] != baseline_metadata[slug]:
             fail("UNTOUCHED_METADATA_CHANGED")
+    _refuse_while_price_overlay_live()
     observed_http = _ObservedTransport(
         transport
         or seo.BoundedHttpsTransport(

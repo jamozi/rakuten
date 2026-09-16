@@ -273,6 +273,68 @@ def test_excluded_database_tests_do_not_require_runtime(tmp_path, marker):
     assert "ERROR" not in result.stdout
 
 
+def test_php_container_mounts_a_declared_copy_read_only_and_refuses_anything_else(tmp_path):
+    """A harness rendering a tmp copy of tracked source has to be able to read it.
+
+    The container masks /tmp with its own tmpfs and binds only the declared source, so an
+    undeclared copy is silently empty inside it (the batch F theme harness read nothing and
+    asserted against silence). RAOS_PHP_EXTRA_MOUNTS names the copy; it stays read-only and
+    never reaches a private store.
+    """
+    import subprocess
+    from scripts.raos_test_runtime import (
+        PHP_EXTRA_MOUNTS_VARIABLE,
+        PHP_IMAGE,
+        extra_php_mounts,
+        php_command,
+    )
+
+    copy = tmp_path / "theme-copy"
+    copy.mkdir()
+    docker = tmp_path / "docker"
+    docker.write_text(
+        "#!" + sys.executable + "\nimport json,sys\nprint(json.dumps(sys.argv[1:]))\n"
+    )
+    docker.chmod(0o755)
+    declared = extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(copy)})
+    assert declared == (copy,)
+    result = subprocess.run(
+        php_command(["-r", "echo 1;"], docker=str(docker), extra_mounts=declared),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    args = json.loads(result.stdout)
+    mounts = [args[index + 1] for index, value in enumerate(args) if value == "--mount"]
+    assert mounts[-1] == f"type=bind,src={copy},dst={copy},readonly"
+    assert args[-3:] == [PHP_IMAGE, "-r", "echo 1;"]
+    # Nothing declared, nothing bound: the default command is unchanged.
+    unchanged = php_command(["-r", "echo 1;"], docker=str(docker))
+    assert str(copy) not in " ".join(unchanged)
+    assert extra_php_mounts({}) == ()
+    private = tmp_path / ".secrets" / "wordpress-mcp"
+    private.mkdir(parents=True)
+    link = tmp_path / "link"
+    link.symlink_to(copy)
+    for refused in (private, link, copy / "missing", Path("relative/copy")):
+        with pytest.raises(RuntimeError, match=PHP_EXTRA_MOUNTS_VARIABLE):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(refused)})
+
+
+def test_the_theme_harness_refuses_a_directory_the_php_runtime_cannot_see(tmp_path):
+    """The tripwire that would have caught the batch F harness on the day it was written."""
+    from tests.st1704 import theme_php_harness as harness
+
+    copy = tmp_path / "kurashinoshirube-child"
+    copy.mkdir()
+    with pytest.raises(AssertionError, match="pass them as mounts"):
+        harness.run_theme_php("echo '{}';", str(copy))
+    assert harness._visible_to_php(copy, (copy,)) is True
+    assert harness._visible_to_php(copy / "assets", (copy,)) is True
+    assert harness._visible_to_php(copy, ()) is False
+    assert harness._visible_to_php(harness.THEME / "functions.php", ()) is True
+
+
 def test_missing_php_override_exits_unsuccessfully(tmp_path):
     import subprocess
 

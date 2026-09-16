@@ -1068,6 +1068,60 @@ PREVIEW_RESULT = {
 }
 
 
+PREVIEW_CANDIDATE_ID = "b" * 64
+BOUND = {
+    "schema": "RAOS_OWNER_DIRECT_PRICE_OVERLAY_V1",
+    "mode": "PUBLISH",
+    "run_id": RUN_ID,
+}
+
+
+def prepared_owner_checkout(tmp_path, monkeypatch, *, state="live", prepared=True):
+    """An owner checkout whose approval record prepared ``PREVIEW_CANDIDATE_ID``.
+
+    The run-bound preview resolves the candidate's ``price_overlay`` claim against this
+    record, so the fixture has to be the real thing: the run the publisher wrote, and the id
+    ``prepare`` recorded under ``prepared_candidates``.
+    """
+    from scripts import raos_wordpress_price_overlay as price_overlay
+    from raos.adapters.rakuten_price_refresh_client import PrivateStore
+
+    owner = owner_with_state(tmp_path, state)
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", owner)
+    monkeypatch.setattr(operator, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(preview_cli, "ROOT", owner)
+    if state == "empty":
+        ks020.write_run(owner)
+    if prepared:
+        price_overlay._remember_prepared(
+            PrivateStore(owner), RUN_ID, "PUBLISH", PREVIEW_CANDIDATE_ID
+        )
+    return owner
+
+
+def bound_candidate_path(owner, candidate, name=PREVIEW_CANDIDATE_ID):
+    directory = owner / ".secrets/wordpress-mcp/owner-direct-v1" / name
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / "candidate.json"
+    path.write_text(json.dumps(candidate))
+    return path
+
+
+def preview_cli_for(monkeypatch, path):
+    """Run the CLI on an existing candidate file with the renderer replaced."""
+    monkeypatch.setattr(
+        preview_cli, "prepare_candidate_preview", lambda *a, **k: dict(PREVIEW_RESULT)
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["raos_wordpress_direct_preview.py", "--candidate", str(path)]
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        code = preview_cli.main()
+    return code, buffer.getvalue()
+
+
 def preview_cli_stdout(monkeypatch, tmp_path, candidate):
     path = tmp_path / "candidate.json"
     path.write_text(json.dumps(candidate))
@@ -1083,13 +1137,13 @@ def preview_cli_stdout(monkeypatch, tmp_path, candidate):
     return code, buffer.getvalue()
 
 
-def test_the_preview_cli_redacts_a_run_bound_candidate(tmp_path, monkeypatch):
+def test_the_preview_cli_redacts_a_verified_run_bound_candidate(tmp_path, monkeypatch):
     """The publisher's own redaction, plus counts for the fields that carry paths and hashes."""
-    code, printed = preview_cli_stdout(
-        monkeypatch,
-        tmp_path,
-        {"candidate_id": "b" * 64, "price_overlay": {"mode": "PUBLISH", "run_id": RUN_ID}},
+    owner = prepared_owner_checkout(tmp_path, monkeypatch)
+    path = bound_candidate_path(
+        owner, {"candidate_id": PREVIEW_CANDIDATE_ID, "price_overlay": BOUND}
     )
+    code, printed = preview_cli_for(monkeypatch, path)
     assert code == 1
     assert json.loads(printed) == {
         "candidate": f"price-overlay:{RUN_ID}:publish",
@@ -1102,6 +1156,115 @@ def test_the_preview_cli_redacts_a_run_bound_candidate(tmp_path, monkeypatch):
     }
     assert re.search(r"[0-9a-f]{64}", printed) is None, printed
     assert ".secrets" not in printed
+
+
+@pytest.mark.parametrize(
+    ("change", "code"),
+    [
+        ("forged-key", "DIRECT_PREVIEW_PRICE_OVERLAY_BINDING_INVALID"),
+        ("not-an-object", "DIRECT_PREVIEW_PRICE_OVERLAY_BINDING_INVALID"),
+        ("wrong-schema", "DIRECT_PREVIEW_PRICE_OVERLAY_BINDING_INVALID"),
+        ("unknown-mode", "DIRECT_PREVIEW_PRICE_OVERLAY_FLAG_REQUIRED"),
+        ("unknown-run", "DIRECT_PREVIEW_PRICE_OVERLAY_APPROVAL_MISSING"),
+        ("not-prepared", "DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_HANDLE_UNKNOWN"),
+        ("other-candidate-id", "DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN"),
+        ("wrong-directory", "DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN"),
+        ("outside-the-candidate-base", "DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED"),
+    ],
+)
+def test_the_preview_cli_refuses_a_price_overlay_claim_that_does_not_resolve(
+    tmp_path, monkeypatch, change, code
+):
+    """`price_overlay` is a claim resolved against the approval record, not a flag.
+
+    Without this, one hand-written key switched the live refusal off for any candidate file
+    (round 8 review, finding 2) and let the run-bound branch freeze the injected theme.
+    """
+    owner = prepared_owner_checkout(
+        tmp_path, monkeypatch, prepared=change != "not-prepared"
+    )
+    candidate = {"candidate_id": PREVIEW_CANDIDATE_ID, "price_overlay": dict(BOUND)}
+    name = PREVIEW_CANDIDATE_ID
+    if change == "forged-key":
+        candidate["price_overlay"] = {"mode": "publish", "run_id": RUN_ID}
+    elif change == "not-an-object":
+        candidate["price_overlay"] = f"price-overlay:{RUN_ID}:publish"
+    elif change == "wrong-schema":
+        candidate["price_overlay"]["schema"] = "RAOS_OWNER_DIRECT_PRICE_OVERLAY_V2"
+    elif change == "unknown-mode":
+        candidate["price_overlay"]["mode"] = "PREVIEW"
+    elif change == "unknown-run":
+        candidate["price_overlay"]["run_id"] = "ks020-synthetic-9999"
+    elif change == "other-candidate-id":
+        candidate["candidate_id"] = "c" * 64
+    elif change == "wrong-directory":
+        name = "c" * 64
+    if change == "outside-the-candidate-base":
+        path = tmp_path / "loose-candidate.json"
+        path.write_text(json.dumps(candidate))
+    else:
+        path = bound_candidate_path(owner, candidate, name=name)
+    calls = []
+    monkeypatch.setattr(
+        preview_cli, "prepare_candidate_preview", recorder(calls, "preview")
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["raos_wordpress_direct_preview.py", "--candidate", str(path)]
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        assert preview_cli.main() == 1
+    assert json.loads(buffer.getvalue()) == {"status": "FAIL", "code": code}
+    assert calls == []
+
+
+@pytest.mark.parametrize("state", ["live", "empty"])
+def test_the_preview_cli_refuses_a_run_bound_candidate_outside_the_owner_checkout(
+    tmp_path, monkeypatch, state
+):
+    """The frozen theme copy is written under the *running* checkout.
+
+    ``prepare_candidate_preview`` copies the injected theme to
+    ``<ROOT>/.secrets/wordpress-direct-preview/theme-<tree sha256>``, and the §5 sweep walks
+    that directory in the owner checkout only, so a run-bound preview from a worktree would
+    leave injected bytes - in a directory named after a price-recoverable hash - where no
+    purge looks. Refused whether or not anything is live.
+    """
+    owner = prepared_owner_checkout(tmp_path, monkeypatch, state=state)
+    path = bound_candidate_path(
+        owner, {"candidate_id": PREVIEW_CANDIDATE_ID, "price_overlay": BOUND}
+    )
+    worktree = (tmp_path / "worktree").resolve()
+    worktree.mkdir()
+    monkeypatch.setattr(preview_cli, "ROOT", worktree)
+    calls = []
+    monkeypatch.setattr(
+        preview_cli, "prepare_candidate_preview", recorder(calls, "preview")
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["raos_wordpress_direct_preview.py", "--candidate", str(path)]
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        assert preview_cli.main() == 1
+    assert json.loads(buffer.getvalue()) == {
+        "status": "FAIL",
+        "code": "DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED",
+    }
+    assert calls == []
+
+
+def test_the_preview_cli_renders_a_verified_candidate_when_nothing_is_live(
+    tmp_path, monkeypatch
+):
+    """The blessed route still works: a prepared candidate previewed from the owner checkout."""
+    owner = prepared_owner_checkout(tmp_path, monkeypatch, state="empty")
+    path = bound_candidate_path(
+        owner, {"candidate_id": PREVIEW_CANDIDATE_ID, "price_overlay": BOUND}
+    )
+    code, printed = preview_cli_for(monkeypatch, path)
+    assert code == 1
+    assert json.loads(printed)["candidate"] == f"price-overlay:{RUN_ID}:publish"
 
 
 def test_the_preview_cli_prints_a_flag_free_candidate_unchanged(tmp_path, monkeypatch):
@@ -1162,33 +1325,72 @@ def stub_owner_checkout(tmp_path, name="stub-owner-checkout"):
     return root
 
 
+CANDIDATE_BASE = "/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1"
+PREVIEW_BASE = "/home/minami/rakuten/.secrets/wordpress-direct-preview"
+CANDIDATE_ID = "a" * 64
+
+
 @pytest.mark.parametrize(
     ("destination", "purged"),
     [
-        ("/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1/a/screenshots", True),
-        ("/home/minami/rakuten/.secrets/wordpress-direct-preview/theme-a/x.png", True),
+        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/screenshots", True),
+        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/screenshots/0-home-390.png", True),
+        # The unit `delete_owner_direct_candidate` removes whole, and the interrupted sibling
+        # `owner_direct_candidates_containing` always reports.
+        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}", True),
+        (f"{CANDIDATE_BASE}/.staging-derive-1/theme/functions.php", True),
+        (f"{PREVIEW_BASE}/theme-{CANDIDATE_ID}/functions.php", True),
+        # Inside the swept base but not inside a unit the sweep deletes: a full-page PNG holds
+        # the prices as pixels, not as the needle bytes the sweep greps for, so neither the
+        # loose file nor the caller-named directory is ever reported or removed (§5).
+        (f"{CANDIDATE_BASE}/perf-shots/home-390.png", False),
+        (f"{CANDIDATE_BASE}/loose-capture.png", False),
+        (f"{CANDIDATE_BASE}/.staging-/x.png", False),
+        (f"{PREVIEW_BASE}/shots/home-390.png", False),
+        (f"{PREVIEW_BASE}/downloads/x.html", False),
+        # `preview_copies_containing` reports fixture files one by one and only when the file
+        # itself carries a needle, which a rendering does not.
+        (f"{PREVIEW_BASE}/fixtures/home-390.png", False),
+        (f"{PREVIEW_BASE}/theme-a/x.png", False),
         ("/home/minami/rakuten/output/ks-20260915/x.png", False),
-        ("/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1", False),
+        (CANDIDATE_BASE, False),
         ("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-snapshots/x", False),
         # The segment appearing somewhere in the path is not enough: the sweep walks the two
         # directories in the owner checkout only (§5), so each of these outlives a purge.
-        ("/tmp/anything/.secrets/wordpress-mcp/owner-direct-v1/x", False),
+        (f"/tmp/anything/.secrets/wordpress-mcp/owner-direct-v1/{CANDIDATE_ID}/x", False),
         (
-            "/home/minami/rakuten/.worktrees/w/.secrets/wordpress-mcp/owner-direct-v1/x",
+            "/home/minami/rakuten/.worktrees/w/.secrets/wordpress-mcp/owner-direct-v1/"
+            + CANDIDATE_ID,
             False,
         ),
-        ("/home/minami/evil/.secrets/wordpress-direct-preview/out", False),
-        ("/home/minami/rakuten/output/.secrets/wordpress-direct-preview/x", False),
+        (f"/home/minami/evil/.secrets/wordpress-direct-preview/theme-{CANDIDATE_ID}", False),
         (
-            "/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1/../../../output/x.png",
+            "/home/minami/rakuten/output/.secrets/wordpress-direct-preview/theme-"
+            + CANDIDATE_ID,
             False,
         ),
+        (f"{CANDIDATE_BASE}/{CANDIDATE_ID}/../../../output/x.png", False),
         ("output/ks-20260915/x.png", False),
         ("", False),
     ],
 )
 def test_the_node_destination_rule_answers_for_every_shape(destination, purged):
     assert kept_where_purge_reaches(ROOT, destination) is purged, destination
+
+
+def test_a_relative_destination_is_refused_even_from_the_owner_checkout(tmp_path):
+    """The absolute-path requirement is the check's, not the caller's working directory.
+
+    ``kept_where_purge_reaches`` runs node with cwd set to the stubbed owner checkout, so this
+    relative path resolves into the swept candidate directory. It must still be refused: the
+    documented guarantee is that a relative destination runs the live check.
+    """
+    root = stub_owner_checkout(tmp_path, name="relative-destination-owner")
+    inside = root / ".secrets/wordpress-mcp/owner-direct-v1" / CANDIDATE_ID / "screenshots"
+    inside.mkdir(parents=True)
+    relative = f".secrets/wordpress-mcp/owner-direct-v1/{CANDIDATE_ID}/screenshots/x.png"
+    assert kept_where_purge_reaches(root, inside / "x.png") is True
+    assert kept_where_purge_reaches(root, relative) is False
 
 
 def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
@@ -1198,8 +1400,8 @@ def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
     real.mkdir(parents=True)
     private = root / ".secrets/wordpress-mcp/owner-direct-v1"
     private.mkdir(parents=True)
-    (private / "candidate").symlink_to(real)
-    assert kept_where_purge_reaches(root, private / "candidate/screenshots/a.png") is False
+    (private / ("b" * 64)).symlink_to(real)
+    assert kept_where_purge_reaches(root, private / ("b" * 64) / "screenshots/a.png") is False
     kept = private / ("a" * 64) / "screenshots"
     kept.mkdir(parents=True)
     assert kept_where_purge_reaches(root, kept / "0-home-390.png") is True
@@ -1208,8 +1410,8 @@ def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
 @pytest.mark.parametrize(
     "relative",
     [
-        ".secrets/wordpress-mcp/owner-direct-v1/a/screenshots/x.png",
-        ".secrets/wordpress-direct-preview/theme-a/x.png",
+        f".secrets/wordpress-mcp/owner-direct-v1/{'a' * 64}/screenshots/x.png",
+        f".secrets/wordpress-direct-preview/theme-{'a' * 64}/x.png",
     ],
 )
 def test_the_same_directory_outside_the_owner_checkout_is_not_purge_reachable(
@@ -1258,7 +1460,7 @@ def test_the_destination_list_is_exempt_only_when_the_purge_reaches_every_entry(
     root = fake_check_root(tmp_path, [ANSWER_LIVE], name="destination-list-root")
     candidate = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
     candidate.mkdir(parents=True)
-    theme = root / ".secrets/wordpress-direct-preview/theme-a"
+    theme = root / ".secrets/wordpress-direct-preview" / ("theme-" + "a" * 64)
     theme.mkdir(parents=True)
     unpurged = root / "output/ks-20260915"
     destinations = {
@@ -1544,6 +1746,25 @@ CANDIDATE_MARKERS = re.compile(
     r"|\.secrets/wordpress-direct-preview|PREVIEW_PRIVATE_RELATIVE"
     r"|\.PRIVATE\b"
 )
+# A page-driving fragment reaches a browser without opening one: it is `eval`ed with a
+# Playwright `page` handed in, so it matches none of the markers above while navigating to a
+# URL and writing full-page screenshots wherever its caller points it.
+PAGE_MARKERS = re.compile(r"page\.screenshot\(|page\.goto\(|context\.newPage\(")
+# The third class: a tool that fetches the live site over HTTP and keeps the body or its
+# sha256. Both halves are required - naming the site, and a fetch primitive (the repository's
+# own bounded transport included) - so the walk sees the readers, not every file that mentions
+# the origin. Round 8 left this class to the hand-written table below; it now has its own
+# tripwire, and scripts/raos_wordpress_runtime_audit.py is a reader that table never listed.
+LIVE_SITE_MARKERS = re.compile(
+    r"kurashinoshirube\.com"
+    r"|SELF_HOSTED_WORDPRESS_HOST|WORDPRESS_OPERATOR_HOST|PUBLICATION_OPERATOR_HOST"
+    r"|PILOT_ORIGIN|publication\.ORIGIN"
+)
+FETCH_MARKERS = re.compile(
+    r"\burlopen\(|build_opener\(|HTTPSConnection\(|HTTPConnection\("
+    r"|requests\.(?:get|post)\(|BoundedHttpsTransport"
+    r"|\bfetch\(|\bcurl\b|wp_remote_(?:get|post)\("
+)
 GUARD_MARKERS = re.compile(
     r"refuseWhilePriceOverlayLive|raos_price_overlay_live_check|price_overlay_live_guard"
     r"|refuse_while_price_overlay_live|price_overlay_refusal|price-overlay-live-check"
@@ -1633,6 +1854,88 @@ UNGUARDED_BY_REVIEW = {
     "tests/wordpress_seo_audit_v1/test_incremental_preserved_theme_images.py": (
         "same temporary incremental-preview directory"
     ),
+    "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js": (
+        "a page-driving fragment with no entry point of its own: it is evaluated only by "
+        "browser/check.sh and browser/lighthouse_check.sh, both of which refuse "
+        "unconditionally while values may be live"
+    ),
+    "scripts/wordpress_public_ui_audit.function.js": (
+        "the same shape: evaluated only by scripts/check_wordpress_public_ui_playwright.sh, "
+        "which runs the blanket refusal before the browser is started"
+    ),
+    "tests/wordpress_local_preview/test_contract.py": (
+        "asserts on the preview recipe's source text (page.goto('about:blank')); it starts "
+        "no browser"
+    ),
+    "tests/wordpress_local_preview/test_public_ui_audit_contract.py": (
+        "asserts on the audit fragment's source text, including its screenshot call"
+    ),
+    "changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/assets/"
+    "reader-measurement.js": (
+        "a plugin asset that runs in the reader's own browser and posts to the site's own "
+        "endpoint, refusing unless location.origin matches; nothing in this repository "
+        "starts it and it reads no rendering"
+    ),
+    "packages/web-ui/src/decision-support-v2/preview/render_preview.py": (
+        "its `fetch(` is an entry in the forbidden-token list it scans rendered HTML for, "
+        "and the site name is a netloc equality check; the only urllib import is urlsplit"
+    ),
+    "python/raos/adapters/self_hosted_editorial_rakuten_capture.py": (
+        "refuses any host outside the Rakuten API and image hosts: it reads the price "
+        "source, never an injected page"
+    ),
+    "python/raos/adapters/self_hosted_editorial_source_capture.py": (
+        "connects only to a validated target host with a fixed allowed-query table; the site "
+        "name is the User-Agent's comparison-policy URL"
+    ),
+    "python/raos/application/editorial/product_safety_manufacturer_capture.py": (
+        "its reviewed endpoint table is empty today, so it fetches nothing; the site name is "
+        "again the User-Agent"
+    ),
+    "python/raos/application/editorial/product_safety_query_capture.py": (
+        "refuses any host outside www.recall.caa.go.jp and safe-lite.nite.go.jp"
+    ),
+    "tests/editorial_measurement_v1/measurement_client_harness.mjs": (
+        "defines fetch() as a stub that records the call and resolves {ok:true}"
+    ),
+    "tests/raos_v2/test_source_import.py": (
+        "replaces build_opener with a recorder and asserts the validator's own refusals; no "
+        "socket is opened"
+    ),
+    "tests/raos_v2/test_ui_contracts.py": (
+        "`fetch(` is a forbidden token the renderer must strip, and the canonical URLs are "
+        "assertions on generated HTML"
+    ),
+    "tests/st1506_operator/test_client_surface.py": (
+        "asserts the launcher script contains neither curl nor wget"
+    ),
+    "tests/st1506_operator/test_contract.py": "asserts the makefile names no curl",
+    "tests/verified_incremental_v1/test_baseline_media.py": (
+        "its fetch() is a local fixture function handed to the baseline media planner"
+    ),
+    "tests/wordpress_local_preview/test_direct_preview.py": (
+        "its fetch() are local stubs passed to the product image mirror"
+    ),
+    "tests/wordpress_mcp_v1/e2e/client.py": (
+        "loopback only: main builds site_url as http://127.0.0.1:$RAOS_WORDPRESS_E2E_PORT "
+        "and every request goes there; the site name is a Host header for the disposable "
+        "container and three assertions on what that container reports"
+    ),
+    "tests/wordpress_mcp_v1/e2e/run.sh": (
+        "curl only against that same loopback port; the site name is the container's own "
+        "--url configuration"
+    ),
+    "tests/wordpress_mcp_v1/e2e/run_owner_direct.py": (
+        "its one urlopen is the pinned wordpress-seo plugin zip from downloads.wordpress.org, "
+        "sha256-checked before use; the site name is the throwaway container's WP_HOME"
+    ),
+    "tests/wordpress_seo_audit_v1/test_reader_measurement_runtime.py": (
+        "monkeypatches seo.BoundedHttpsTransport with a fake; the fetch( strings are HTML "
+        "fixtures the runtime check has to reject"
+    ),
+    "tests/wordpress_seo_audit_v1/test_runtime_resources.py": (
+        "the same: fetch( appears only inside HTML fixtures the resource check must reject"
+    ),
 }
 
 
@@ -1655,6 +1958,10 @@ def files_that_can_reach_an_overlay_value():
             reasons.append("browser")
         if CANDIDATE_MARKERS.search(text):
             reasons.append("candidate")
+        if PAGE_MARKERS.search(text):
+            reasons.append("page")
+        if LIVE_SITE_MARKERS.search(text) and FETCH_MARKERS.search(text):
+            reasons.append("fetch")
         if reasons:
             found[relative.as_posix()] = (reasons, bool(GUARD_MARKERS.search(text)))
     return found
@@ -1662,9 +1969,9 @@ def files_that_can_reach_an_overlay_value():
 
 def test_every_browser_and_candidate_reader_is_guarded_or_reviewed():
     found = files_that_can_reach_an_overlay_value()
-    # The widened suffixes and markers see 50 files today; a floor well above the
-    # round 7 count catches a marker that stops matching as much as a missing guard.
-    assert len(found) >= 45, sorted(found)
+    # The page-driving and live-fetch classes take the walk from 50 files to 82; a floor well
+    # above the round 8 count catches a marker that stops matching as much as a missing guard.
+    assert len(found) >= 78, sorted(found)
     unreviewed = sorted(
         name
         for name, (_, guarded) in found.items()
@@ -1704,6 +2011,112 @@ def test_the_reviewed_exceptions_are_all_still_present_and_still_unguarded():
 def test_the_round_seven_additions_stay_guarded(relative):
     """The six paths round 6 missed, plus the local preview recipes, named one by one."""
     assert GUARD_MARKERS.search((ROOT / relative).read_text(encoding="utf-8")), relative
+
+
+# ---------------------------------------------------------------------------
+# The HTTP readers of the live site the walk now sees
+# ---------------------------------------------------------------------------
+#
+# The legacy self-hosted adapters were refused by their CLI's main() only, so an in-process
+# importer reached the site unchecked; the two seo-transport audits carried no refusal of their
+# own and relied on BoundedHttpsTransport.get. Both are now closed at the point the connection
+# is built, where every caller passes.
+
+SYSTEM_TRANSPORTS = {
+    "st1703-self-hosted-wordpress": (
+        "raos.adapters.self_hosted_wordpress_https",
+        "SystemSelfHostedWordPressHttpsConnectionFactory",
+        "SELF_HOSTED_WORDPRESS_HOST",
+        "SELF_HOSTED_WORDPRESS_PORT",
+    ),
+    "st1506-wordpress-operator": (
+        "raos.adapters.self_hosted_wordpress_operator_https",
+        "SystemWordPressOperatorHttpsConnectionFactory",
+        "WORDPRESS_OPERATOR_HOST",
+        "WORDPRESS_OPERATOR_PORT",
+    ),
+    "st1704-publication-operator-v2": (
+        "raos.adapters.self_hosted_wordpress_publication_operator_https_v2",
+        "SystemPublicationOperatorHttpsConnectionFactory",
+        "PUBLICATION_OPERATOR_HOST",
+        "PUBLICATION_OPERATOR_PORT",
+    ),
+}
+
+
+def open_system_transport(name, monkeypatch, calls):
+    """Open the production connection factory, with the socket replaced by a recorder."""
+    import importlib
+
+    module_name, factory_name, host_name, port_name = SYSTEM_TRANSPORTS[name]
+    module = importlib.import_module(module_name)
+    monkeypatch.setattr(module.http.client, "HTTPSConnection", recorder(calls, name))
+    getattr(module, factory_name)().open(
+        host=getattr(module, host_name),
+        port=getattr(module, port_name),
+        connect_timeout_seconds=module.CONNECT_TIMEOUT_SECONDS,
+        tls_context=ssl.create_default_context(),
+    )
+
+
+@pytest.mark.parametrize("name", sorted(SYSTEM_TRANSPORTS))
+def test_every_legacy_system_transport_refuses_before_the_socket(
+    name, refused, monkeypatch
+):
+    """The adapter itself refuses, not only the CLI that usually drives it.
+
+    The adapters keep their own failure protocol, so the refusal surfaces as their
+    TRANSPORT_REFUSED; what matters here is that no connection is opened.
+    """
+    calls = []
+    with pytest.raises(Exception) as error:  # noqa: PT011 - each adapter's own failure type
+        open_system_transport(name, monkeypatch, calls)
+    assert calls == [], error.value
+    assert "TRANSPORT_REFUSED" in str(error.value), error.value
+
+
+@pytest.mark.parametrize("name", sorted(SYSTEM_TRANSPORTS))
+def test_every_legacy_system_transport_reaches_its_socket_when_nothing_is_live(
+    name, not_live, monkeypatch
+):
+    calls = []
+    with pytest.raises(Reached):
+        open_system_transport(name, monkeypatch, calls)
+    assert calls == [name]
+
+
+SEO_TRANSPORT_AUDITS = (
+    "scripts/raos_wordpress_incremental_seo_audit.py",
+    "scripts/raos_wordpress_runtime_audit.py",
+)
+
+
+@pytest.mark.parametrize("relative", SEO_TRANSPORT_AUDITS)
+def test_the_seo_transport_audits_refuse_before_they_build_a_transport(relative):
+    """Ordering, so deleting the call is caught even though the helper would still match."""
+    source = (ROOT / relative).read_text(encoding="utf-8")
+    call = "    _refuse_while_price_overlay_live()\n"
+    assert source.count(call) == 1, relative
+    assert source.index(call) < source.index("seo.BoundedHttpsTransport("), relative
+
+
+@pytest.mark.parametrize("relative", SEO_TRANSPORT_AUDITS)
+def test_the_seo_transport_audits_answer_for_every_run_state(
+    relative, tmp_path, monkeypatch
+):
+    module = _load("raos_seo_transport_audit_" + Path(relative).stem, relative)
+    for state, expected in (("live", LIVE), ("unreadable", STATE_INVALID), ("empty", None)):
+        directory = tmp_path / state
+        directory.mkdir()
+        owner = owner_with_state(directory, state)
+        monkeypatch.setattr(guard, "OWNER_CHECKOUT", owner)
+        monkeypatch.setattr(guard, "REPOSITORY_ROOT", owner)
+        if expected is None:
+            assert module._refuse_while_price_overlay_live() is None
+            continue
+        with pytest.raises(module.seo.AuditError) as error:
+            module._refuse_while_price_overlay_live()
+        assert str(error.value) == expected
 
 
 # ---------------------------------------------------------------------------

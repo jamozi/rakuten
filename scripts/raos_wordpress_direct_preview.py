@@ -34,6 +34,9 @@ THEME = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
 )
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+# The owner checkout's own candidate base (rakuten_price_refresh_client.py
+# OWNER_DIRECT_CANDIDATE_RELATIVE): the only place a run-bound candidate may be previewed from.
+OWNER_DIRECT_CANDIDATES = ".secrets/wordpress-mcp/owner-direct-v1"
 
 
 def digest(value: bytes) -> str:
@@ -645,6 +648,68 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     }
 
 
+def _price_overlay_modules():
+    """The guard and the publisher's price-overlay module, imported from this checkout."""
+    for entry in (str(ROOT), str(ROOT / "python")):
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from raos.adapters import price_overlay_live_guard as live_guard
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return live_guard, price_overlay
+
+
+class _Refusal:
+    """``direct.fail`` for the price-overlay resolver: its codes keep this CLI's prefix."""
+
+    @staticmethod
+    def fail(code: str) -> None:
+        raise ValueError("DIRECT_PREVIEW_" + code)
+
+
+def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> None:
+    """Contract §8: the one route left unrefused while a run is live has to be earned.
+
+    Two things are checked before ``prepare_candidate_preview`` may run, because that call
+    copies the injected theme to ``<ROOT>/.secrets/wordpress-direct-preview/theme-<tree>``
+    (the directory name is itself a price-recoverable hash) and downloads the product images:
+
+    * the running checkout is the fixed owner checkout, so the copy lands where the §5 purge
+      sweep walks (``rakuten_price_refresh_client.preview_copies_containing`` scans
+      ``store.owner_checkout / <relative>`` only), and the candidate file is one of that
+      checkout's own owner-direct candidates rather than a file handed in from anywhere;
+    * the ``price_overlay`` key is a claim resolved against the owner checkout's private
+      approval record - the schema, the mode and the run of the publisher's own
+      ``resolve_binding``, then the id ``prepare`` recorded in ``prepared_candidates`` - not a
+      flag whose mere presence switches the live refusal off.
+
+    Anything that does not resolve raises, and ``main`` prints only the code.
+    """
+    live_guard, price_overlay = _price_overlay_modules()
+    if ROOT.resolve() != Path(live_guard.OWNER_CHECKOUT).resolve():
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
+    base = Path(live_guard.OWNER_CHECKOUT) / OWNER_DIRECT_CANDIDATES
+    directory = candidate_path.resolve().parent
+    if directory.parent != base.resolve():
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
+    bound = candidate.get("price_overlay")
+    if not isinstance(bound, dict):
+        # resolve_binding owns the schema rule (BINDING_SCHEMA); it only needs a mapping.
+        _Refusal.fail("PRICE_OVERLAY_BINDING_INVALID")
+    mode, run_id = bound.get("mode"), bound.get("run_id")
+    price_overlay.resolve_binding(
+        _Refusal,
+        candidate,
+        run_id if mode == price_overlay.MODE_PUBLISH else None,
+        run_id if mode == price_overlay.MODE_PURGE else None,
+    )
+    recorded = price_overlay.resolve_handle(
+        _Refusal, ROOT, price_overlay.handle(candidate)
+    )
+    if recorded != candidate.get("candidate_id") or directory.name != recorded:
+        raise ValueError("DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN")
+
+
 def price_overlay_output(candidate: dict, result: dict) -> dict:
     """Contract §8: what a run-bound preview may print.
 
@@ -674,7 +739,12 @@ def main() -> int:
     try:
         candidate = json.loads(args.candidate.read_bytes())
         run_bound = "price_overlay" in candidate
-        if not run_bound:
+        if run_bound:
+            # Contract §8: the run-bound route is verified, never asserted - a hand-written
+            # key cannot switch the live refusal off, and the injected copies this preview
+            # writes can only land in the checkout the §5 purge sweep walks.
+            verify_price_overlay_candidate(candidate, args.candidate)
+        else:
             # Contract §8: only a run-bound candidate may be previewed while values are live
             # (the publisher refuses the same way; this CLI takes any candidate file).
             root = str(Path(__file__).resolve().parents[1] / "python")

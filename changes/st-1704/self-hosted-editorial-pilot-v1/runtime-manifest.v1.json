@@ -377,9 +377,9 @@
       "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
     },
     {
-      "bytes": 19086,
+      "bytes": 19917,
       "path": "python/raos/adapters/self_hosted_wordpress_https.py",
-      "sha256": "40613aaaffa20086e0c913da15376fd6ddc3046d2c58d6efe3ab23ccffb1d1f1"
+      "sha256": "ad78779fc9880836cc1cea8448edfff3e2b1b19d1eb66a6c59d0b492f104474f"
     },
     {
       "bytes": 9698,

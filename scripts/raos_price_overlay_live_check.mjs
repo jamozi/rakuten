@@ -119,10 +119,21 @@ export async function refuseWhilePriceOverlayLive(root = REPOSITORY_ROOT) {
 // `store.owner_checkout / <relative>`). So the rule is anchored to the same fixed owner
 // checkout price_overlay_live_guard.py pins, not to the segment appearing anywhere in a path:
 // a worktree, a temporary directory or `<root>/output/.secrets/...` is not swept.
+//
+// The sweep is not a prefix sweep, so neither is this rule. It deletes whole units:
+// `owner_direct_candidates_containing` / `delete_owner_direct_candidate` walk the candidate
+// base and remove a directory named `<64-hex candidate id>` or `.staging-<name>`;
+// `preview_copies_containing` / `delete_preview_copy` remove a frozen theme `theme-<64-hex>`.
+// A loose file directly under either base, or a directory of any other shape, is never
+// enumerated and never deleted - a full-page PNG holds the prices as pixels, not as the needle
+// bytes the sweep greps for, so only being inside a unit the sweep deletes whole makes a
+// rendering purge-reachable. `fixtures/` is deliberately not accepted: the sweep reports
+// fixture files one by one and only when the file itself carries a needle, which a rendering
+// does not.
 export const OWNER_CHECKOUT = '/home/minami/rakuten';
-export const PURGE_REACHABLE_DIRECTORIES = Object.freeze([
-  '.secrets/wordpress-mcp/owner-direct-v1',
-  '.secrets/wordpress-direct-preview',
+export const PURGE_REACHABLE_SHAPES = Object.freeze([
+  ['.secrets/wordpress-mcp/owner-direct-v1', /^(?:[0-9a-f]{64}|\.staging-[^/]+)$/],
+  ['.secrets/wordpress-direct-preview', /^theme-[0-9a-f]{64}$/],
 ]);
 
 /** The path with its deepest existing ancestor resolved, so a symlink cannot fake the prefix. */
@@ -139,13 +150,13 @@ function resolvedThroughSymlinks(destination) {
   return null;
 }
 
-/** `<owner checkout>/<swept directory>/` for each swept directory, or [] when unresolvable. */
-function purgeReachablePrefixes() {
+/** `[<owner checkout>/<swept base>/, <shape of the unit it deletes>]`, or [] when unresolvable. */
+function purgeReachableBases() {
   const base = resolvedThroughSymlinks(OWNER_CHECKOUT);
   if (base === null) return [];
   const posix = base.split(sep).join('/').replace(/\/+$/, '');
   if (posix === '') return [];
-  return PURGE_REACHABLE_DIRECTORIES.map((relative) => `${posix}/${relative}/`);
+  return PURGE_REACHABLE_SHAPES.map(([relative, unit]) => [`${posix}/${relative}/`, unit]);
 }
 
 export function keptWherePurgeReaches(destination) {
@@ -155,15 +166,22 @@ export function keptWherePurgeReaches(destination) {
   const resolved = resolvedThroughSymlinks(destination);
   if (resolved === null) return false;
   const posix = resolved.split(sep).join('/');
-  // A prefix match under the owner checkout, not a substring match: `..` is already normalised
-  // away by resolve(), and a symlink in an existing ancestor is resolved before the compare.
-  return purgeReachablePrefixes().some((prefix) => posix.startsWith(prefix));
+  // Anchored at the owner checkout, not a substring match: `..` is already normalised away by
+  // resolve(), and a symlink in an existing ancestor is resolved before the compare. Then the
+  // first segment below the base has to be a unit the sweep deletes whole; the base itself and
+  // anything of another shape under it outlives the purge.
+  return purgeReachableBases().some(([prefix, unit]) => {
+    if (!posix.startsWith(prefix)) return false;
+    // The first segment below the base is the unit; an empty remainder matches no unit.
+    return unit.test(posix.slice(prefix.length).split('/')[0]);
+  });
 }
 
 /**
  * Refuse a capture whose artifacts would outlive the purge. Fail closed: a destination that is
- * missing, relative, unresolvable or outside the purged directories runs the live check, and a
- * missing or empty destination list refuses too.
+ * missing, relative, unresolvable or outside a unit the purge deletes whole runs the live check,
+ * and a missing or empty destination list refuses too. Relative is refused by the check itself,
+ * never by where the process happens to be running.
  */
 export async function refuseWhilePriceOverlayLiveUnlessPurged(
   destinations,

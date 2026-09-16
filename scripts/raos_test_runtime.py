@@ -48,6 +48,11 @@ PG_PACKAGES = (
         "f6e9bdf50c9683cd9a74ad92d51dde085f40baf0a5fcd8a56fc68425c1bd3c5f",
     ),
 )
+# A harness that renders a *copy* of tracked source (a theme with one asset rewritten) has to
+# name that copy here, through RAOS_PHP_EXTRA_MOUNTS: the container masks /tmp with its own
+# tmpfs, so a pytest tmp_path is invisible inside it and PHP silently reads nothing instead of
+# failing. Read-only, existing directories only, and never a private store.
+PHP_EXTRA_MOUNTS_VARIABLE = "RAOS_PHP_EXTRA_MOUNTS"
 PHP_MOUNTS = (
     "tests/editorial_measurement_v1",
     "tests/reader_measurement_v1",
@@ -199,8 +204,29 @@ def setup_postgres(environment: Mapping[str, str]) -> dict[str, str]:
     return result
 
 
+def extra_php_mounts(environment: Mapping[str, str]) -> tuple[Path, ...]:
+    """Directories the caller asked to bind read-only, validated (fail closed)."""
+    value = environment.get(PHP_EXTRA_MOUNTS_VARIABLE, "")
+    found: list[Path] = []
+    for entry in value.split(os.pathsep):
+        if not entry:
+            continue
+        path = Path(entry)
+        if not path.is_absolute() or path.is_symlink() or not path.is_dir():
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} is not an existing directory: {entry}")
+        if ".secrets" in path.parts or path.resolve() != path:
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} refuses this path: {entry}")
+        if path not in found:
+            found.append(path)
+    return tuple(found)
+
+
 def php_command(
-    arguments: Sequence[str], *, root: Path = ROOT, docker: str = "docker"
+    arguments: Sequence[str],
+    *,
+    root: Path = ROOT,
+    docker: str = "docker",
+    extra_mounts: Sequence[Path] = (),
 ) -> list[str]:
     """Run pure PHP harnesses, with only declared source and synthetic fixtures."""
     command = [
@@ -231,6 +257,8 @@ def php_command(
         source = root / relative
         if source.exists():
             command.extend(["--mount", f"type=bind,src={source},dst={source},readonly"])
+    for source in extra_mounts:
+        command.extend(["--mount", f"type=bind,src={source},dst={source},readonly"])
     command.extend([PHP_IMAGE, *arguments])
     return command
 
@@ -241,7 +269,7 @@ def php_main(arguments: Sequence[str]) -> int:
         command = (
             [resolve_php_override(configured, os.environ), *arguments]
             if configured
-            else php_command(arguments)
+            else php_command(arguments, extra_mounts=extra_php_mounts(os.environ))
         )
         return subprocess.run(command, check=False).returncode
     except (OSError, RuntimeError) as exc:

@@ -26854,7 +26854,7 @@
       "outputs": [
         {
           "bytes": 7283,
-          "sha256": "a63c978492ef206f6375e16756fdd3ea988ac9f040c6702f6a47fb4c654e04ae",
+          "sha256": "76cf95892c094d8c7fed0e459b186a258e4d73e609f7112cc9329df09a93bb27",
           "uri": "repo://changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "a91d42d454b1e454c34b3e0ae0fcfbee7c8a367dab5a3bee927ad0a8dcc97d94",
+          "sha256": "c074345840c0c6e7d828a1533b803776dde3f41320aa96d572a0fde851276748",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28434,
-          "sha256": "15e0aee433df16c5e1c3f77273c58228fb98279ad284e436e1c2b274d76ae16e",
+          "sha256": "a79f93a60b3a8542b4a6351519d15231f26723a0ecd3769bcd00b899ce3dc8e8",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31169,7 +31169,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "ffb9e8e7b550c15088e4023d5ebf4ee10dc0705595eb2f520b6dd87eef8fa437",
+          "sha256": "6520bcdffd3b55cfc3929497fc4bb17d969c2bf3e9773126acbd8b2adbc56b72",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
