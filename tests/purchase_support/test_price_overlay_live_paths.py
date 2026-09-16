@@ -439,7 +439,11 @@ def test_every_python_path_reaches_its_transport_when_nothing_is_live(
 
 
 def request_json_outcome(monkeypatch, calls, bound):
-    monkeypatch.setattr(operator, "credentials", lambda: ("synthetic", "x" * 24))
+    def credentials():
+        calls.append("credentials")
+        return ("synthetic", "x" * 24)
+
+    monkeypatch.setattr(operator, "credentials", credentials)
     monkeypatch.setattr(
         operator.urllib.request, "build_opener", recorder(calls, "operator-transport")
     )
@@ -472,16 +476,17 @@ def test_the_operator_transport_serves_only_the_run_bound_context(
     calls = []
     text = request_json_outcome(monkeypatch, calls, bound=False)
     if refused is None:
-        assert calls == ["operator-transport"], text
+        assert calls == ["credentials", "operator-transport"], text
     else:
         assert refused in text, text
+        # Refused before the application password is read, not only before the socket.
         assert calls == [], text
 
     # The publisher's run-bound calls reach the transport whatever the run state is.
     bound_calls = []
     bound_text = request_json_outcome(monkeypatch, bound_calls, bound=True)
     assert "PRICE_OVERLAY" not in bound_text, bound_text
-    assert bound_calls == ["operator-transport"], bound_text
+    assert bound_calls == ["credentials", "operator-transport"], bound_text
     assert operator._price_overlay_bound.get() is False
 
 
@@ -614,19 +619,22 @@ EDITOR_ENDPOINT_TOOLS = tuple(
 )
 
 
-def write_live_check(root):
-    """The Node check with its owner checkout pointed at this fixture.
+def write_live_check(root, owner=None):
+    """The Node check with its owner checkout pointed at ``owner`` (``root`` by default).
 
     The destination rule is anchored to a fixed absolute path in production (the launcher is
-    stubbed the same way, see ``launcher_root``), so a fixture that wants a purge-reachable
-    destination has to stand in for the owner checkout.
+    stubbed the same way, see ``launcher_root``), so a fixture that wants an exempt destination
+    has to stand in for the owner checkout. Passing a different ``owner`` separates that anchor
+    from the checkout the module itself is running in.
     """
     source = (ROOT / "scripts/raos_price_overlay_live_check.mjs").read_text(encoding="utf-8")
     pinned = "export const OWNER_CHECKOUT = '/home/minami/rakuten';"
     assert source.count(pinned) == 1, pinned
     (root / "scripts/raos_price_overlay_live_check.mjs").write_text(
         source.replace(
-            pinned, f"export const OWNER_CHECKOUT = {json.dumps(str(root))};", 1
+            pinned,
+            f"export const OWNER_CHECKOUT = {json.dumps(str(owner or root))};",
+            1,
         ),
         encoding="utf-8",
     )
@@ -1413,6 +1421,34 @@ def test_the_preview_cli_renders_a_verified_candidate_when_nothing_is_live(
     assert json.loads(printed)["candidate"] == f"price-overlay:{RUN_ID}:publish"
 
 
+def test_the_preview_cli_renders_the_directory_it_verified(tmp_path, monkeypatch):
+    """The renderer is handed ``candidate_path.resolve().parent``, not ``--candidate``'s parent.
+
+    The named path here walks out of the candidate directory and back in, so the two differ:
+    the unresolved parent is the candidate *base*, which would put the screenshots and the
+    frozen theme one level above the directory the purge deletes.
+    """
+    owner = prepared_owner_checkout(tmp_path, monkeypatch, state="empty")
+    path = bound_candidate_path(
+        owner, {"candidate_id": PREVIEW_CANDIDATE_ID, "price_overlay": BOUND}
+    )
+    named = path.parent / ".." / PREVIEW_CANDIDATE_ID / "candidate.json"
+    assert named.parent != path.parent
+    calls = []
+    monkeypatch.setattr(
+        preview_cli,
+        "prepare_candidate_preview",
+        lambda candidate, directory: calls.append(directory) or dict(PREVIEW_RESULT),
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["raos_wordpress_direct_preview.py", "--candidate", str(named)]
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        assert preview_cli.main() == 1
+    assert calls == [path.parent.resolve()]
+
+
 def test_the_preview_cli_prints_a_flag_free_candidate_unchanged(tmp_path, monkeypatch):
     """Nothing about the flag-free shape changes: it still prints the whole report."""
     empty = (tmp_path / "empty-checkout").resolve()
@@ -1717,6 +1753,23 @@ def test_the_same_directory_outside_the_owner_checkout_is_not_accepted(tmp_path)
             json.dumps({"candidate_id": CANDIDATE_ID, "price_overlay": BINDING})
         )
         assert bound_candidate_destination(root, other / relative) is None, other
+
+
+def test_the_anchor_is_the_owner_checkout_not_the_running_repository(tmp_path):
+    """§5 walks the owner checkout only, so a worktree's own candidate directory is not it.
+
+    The module runs from ``worktree`` and is pinned to ``owner``: the identical bound candidate
+    under the checkout it is running in must still answer null.
+    """
+    owner = (tmp_path / "owner-checkout").resolve()
+    worktree = (tmp_path / "worktree").resolve()
+    for root in (owner, worktree):
+        (root / "scripts").mkdir(parents=True)
+        bound_candidate(root)
+    write_live_check(worktree, owner=owner)
+    inside = f"{CANDIDATE_RELATIVE}/{CANDIDATE_ID}/screenshots"
+    assert bound_candidate_destination(worktree, owner / inside) is not None
+    assert bound_candidate_destination(worktree, worktree / inside) is None
 
 
 def refuse_unless_bound(root, destination):

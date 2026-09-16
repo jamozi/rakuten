@@ -1303,9 +1303,16 @@ def test_cli_names_price_overlay_candidates_by_handle_only(owner, publisher, mon
     write_run(owner)
     server = FakeWordPress(owner)
     monkeypatch.setattr(direct, "ROOT", owner)
-    monkeypatch.setattr(
-        operator, "run", lambda name, body: server(name.removeprefix("owner-direct-"), body)
-    )
+    # Contract §8: every WordPress call a run-bound command makes has to happen inside the
+    # context the operator's request_json serves while the run is live; the flag-free `invoke`
+    # would be refused where the connection is built, which would make the values unremovable.
+    bound_flags = []
+
+    def operator_run(name, body):
+        bound_flags.append(operator._price_overlay_bound.get())
+        return server(name.removeprefix("owner-direct-"), body)
+
+    monkeypatch.setattr(operator, "run", operator_run)
     from scripts import raos_wordpress_direct_preview as preview_module
 
     monkeypatch.setattr(
@@ -1351,6 +1358,8 @@ def test_cli_names_price_overlay_candidates_by_handle_only(owner, publisher, mon
     outputs.append(cli("status", "--candidate", publish_handle))
     outputs.append(cli("publish", "--candidate", publish_handle, "--price-overlay-run", RUN_ID))
     assert f'{rpr.ATTR_PRICE_YEN}="{PRICE}"' in server.docs[101]["block_markup"]
+    # The values are live from here on: the run-bound status reads the applied operations back.
+    outputs.append(cli("status", "--candidate", publish_handle))
     outputs.append(cli("prepare", "--articles", ",".join(KEYS), "--theme", "--price-overlay-purge", RUN_ID))
     purge_id = approval_record(owner)["prepared_candidates"]["PURGE"]
     outputs.append(cli("preview", "--candidate", purge_handle))
@@ -1366,7 +1375,8 @@ def test_cli_names_price_overlay_candidates_by_handle_only(owner, publisher, mon
         for line in text.splitlines()
         if isinstance(json.loads(line).get("git_sync"), dict)
     ]
-    assert printed_syncs == [{"status": "pushed"}, {"status": "pushed"}], text
+    # publish, the run-bound status that reads the same journal back, and the purge publish.
+    assert printed_syncs == [{"status": "pushed"}] * 3, text
     assert "1" * 40 not in text and "synthetic-branch" not in text and "PUSHED" not in text
     assert publish_id not in text and purge_id not in text
     assert all(json.loads(line)["candidate_id"] == "REDACTED_PRICE_OVERLAY" for line in text.splitlines())
@@ -1374,6 +1384,7 @@ def test_cli_names_price_overlay_candidates_by_handle_only(owner, publisher, mon
     assert record["prepared_candidates"] == {"PUBLISH": publish_id, "PURGE": "PURGED"}
     assert record["purge_publish"]["wordpress_redaction"] == "COMPLETE"
     assert not (owner / direct.PRIVATE / purge_id).exists()
+    assert bound_flags and all(bound_flags), bound_flags
 
     calls = len(server.calls)
     for value, code in (

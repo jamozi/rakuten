@@ -366,6 +366,16 @@ def test_a_declared_mount_that_holds_a_private_store_is_refused(tmp_path, monkey
     (linked / "into-the-checkout").symlink_to(checkout)
     assert holds_private_store(linked) is False
 
+    # A mount the walk cannot read is refused rather than taken for empty.
+    unreadable = tmp_path / "unreadable"
+    unreadable.mkdir(mode=0o000)
+    try:
+        assert holds_private_store(unreadable) is True
+        with pytest.raises(RuntimeError, match="holds a private store"):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(unreadable)})
+    finally:
+        unreadable.chmod(0o700)
+
 
 def test_the_theme_harness_refuses_a_directory_the_php_runtime_cannot_see(tmp_path):
     """The tripwire that would have caught the batch F harness on the day it was written."""

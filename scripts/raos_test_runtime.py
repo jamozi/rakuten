@@ -220,16 +220,16 @@ def holds_private_store(path: Path) -> bool:
     """
     seen = 0
     walked = False
-    for current, directories, _files in os.walk(path, followlinks=False, onerror=None):
+    # os.walk does not descend into a symlinked directory unless followlinks says so, so a
+    # link out of the mount is not walked and not what refuses it (the bind is read-only and
+    # does not follow the link into the container either).
+    for _current, directories, _files in os.walk(path, followlinks=False, onerror=None):
         walked = True
         if PRIVATE_STORE in directories:
             return True
         seen += len(directories)
         if seen > MAX_MOUNT_DIRECTORIES:
             return True
-        directories[:] = [
-            name for name in directories if not Path(current, name).is_symlink()
-        ]
     return not walked
 
 
