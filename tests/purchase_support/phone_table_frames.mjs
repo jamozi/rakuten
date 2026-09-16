@@ -19,6 +19,12 @@
 // container's clientWidth (the frame), and the rendered width of every column.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLive } from '../../scripts/raos_price_overlay_live_check.mjs';
+
+// Contract §8: this reads only tracked bodies and opens no network, but it does drive a
+// browser over a published body, so it refuses to run while a price-overlay run is live
+// rather than leaving the one browser in this directory unguarded.
+await refuseWhilePriceOverlayLive();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');

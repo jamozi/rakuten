@@ -71,6 +71,19 @@ def _fail(code: str) -> NoReturn:
     raise AuditError(code) from None
 
 
+def _refuse_while_price_overlay_live() -> None:
+    """Contract §8: no anonymous fetch of the live site while price values may be published.
+
+    The audit stores sha256 of each page body as evidence, and an injected body's hash is
+    price-recoverable (§3).
+    """
+    from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+    code = price_overlay_refusal()
+    if code is not None:
+        _fail(code)
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -422,6 +435,7 @@ class BoundedHttpsTransport:
         self._allowed_resource_urls = allowed_resource_urls
 
     def get(self, url: str) -> HttpResponse:
+        _refuse_while_price_overlay_live()
         parts = urlsplit(url)
         if (
             parts.scheme != "https"

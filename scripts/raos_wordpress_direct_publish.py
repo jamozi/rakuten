@@ -176,6 +176,18 @@ def invoke(command, body):
     return operator.run("owner-direct-" + command, body)
 
 
+def bound_invoke(command, body):
+    """Contract §8: the run-bound calls the operator's ``request_json`` serves while live.
+
+    The purge is what takes published values back down, so ``prepare --price-overlay-purge``
+    (which reads the live injected documents as its baseline) and the purge ``publish`` have to
+    reach WordPress while a run is live. Every other in-process caller of ``operator.run`` is
+    refused where the connection is built.
+    """
+    with operator.price_overlay_bound_calls():
+        return operator.run("owner-direct-" + command, body)
+
+
 def checkpoint_git(root, paths, snapshot_id):
     from scripts.raos_wordpress_publish_git import checkpoint
 
@@ -290,9 +302,43 @@ def taxonomy_keys(value):
     return frozenset(value)
 
 
-def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
+PRICE_OVERLAY_RUNS = ".secrets/rakuten-price-refresh"
+
+
+def price_overlay_live_run_ids(root):
+    """Run ids whose price-overlay values may be live (contract §8).
+
+    Runs live in the owner checkout while the publisher usually runs from a worktree, so the
+    validated --owner-checkout and the fixed OWNER_CHECKOUT are checked whether or not the
+    option was given or differs from ROOT; ROOT's own runs count too.
+    """
+    checkouts = [
+        Path(value)
+        for value in (operator._private_owner.get(), operator.OWNER_CHECKOUT, root)
+        if value is not None
+    ]
+    if not any(
+        (c / PRICE_OVERLAY_RUNS).exists() or (c / PRICE_OVERLAY_RUNS).is_symlink()
+        for c in checkouts
+    ):
+        return []
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.live_runs(sys.modules[__name__], checkouts)
+
+
+def refuse_while_price_overlay_live(root):
+    """Every flag-free prepare and publish is refused while any run may be live: a candidate
+    would freeze live injected pages or the injected theme tree and print its id."""
+    if price_overlay_live_run_ids(root):
+        fail("PRICE_OVERLAY_LIVE")
+
+
+def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False, price_overlay_bound=False):
     if affiliate_plan is None and (affiliate_config is not None or affiliate_fetch):
         fail("AFFILIATE_PLAN_REQUIRED")
+    if not price_overlay_bound:
+        refuse_while_price_overlay_live(root)
     registry = read_json(root / REGISTRY)
     if (
         registry.get("schema") != "RAOSOwnerDirectArticlesV1"
@@ -638,7 +684,7 @@ def finish_batch(journal, action, call):
     return result
 
 
-def finish_publication(root, directory, candidate, journal, call):
+def finish_publication(root, directory, candidate, journal, call, binding=None):
     journal["readback"] = readback(candidate, journal, call)
     if (
         journal.get("batch")
@@ -653,21 +699,23 @@ def finish_publication(root, directory, candidate, journal, call):
     journal.pop("pending_operation", None)
     journal.pop("result_code", None)
     save(directory / "journal.json", journal)
-    print(
-        json.dumps(
-            {
-                "candidate_id": candidate["candidate_id"],
-                "publication_status": journal["publication_status"],
-                "git_sync": "PENDING",
-            }
-        ),
-        flush=True,
-    )
+    if binding is not None:
+        binding.after_readback(root, directory, candidate, journal, call)
+    summary = {
+        "candidate_id": candidate["candidate_id"],
+        "publication_status": journal["publication_status"],
+        "git_sync": "PENDING",
+    }
+    if binding is not None:
+        summary = price_overlay_output(candidate, summary)
+    print(json.dumps(summary), flush=True)
     try:
         journal["git_sync"] = sync_git(root, journal["checkpoint"])
     except Exception:
         journal["git_sync"] = {"status": "error", "error": "GIT_SYNC_FAILED"}
     save(directory / "journal.json", journal)
+    if binding is not None:
+        binding.after_publication(root, candidate)
     return journal
 
 
@@ -680,7 +728,69 @@ def verify_preview(candidate, directory, report):
         fail("PREVIEW_STALE")
 
 
-def publish(root, directory, candidate_id, call=invoke):
+def price_overlay_binding(candidate, run=None, purge=None):
+    """None for every candidate prepared without --price-overlay-run/--price-overlay-purge."""
+    if run is None and purge is None and "price_overlay" not in candidate:
+        return None
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.resolve_binding(sys.modules[__name__], candidate, run, purge)
+
+
+def price_overlay_live_status(run_ids):
+    """status without --candidate while a run may be live: run ids and a marker only."""
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.live_status_output(run_ids)
+
+
+def price_overlay_scrubbed(result):
+    """Other status output while a run may be live: hashes and revisions become a marker."""
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.scrub_live_hashes(result)
+
+
+def price_overlay_output(candidate, result):
+    """Printed output of a price-overlay candidate: a handle instead of ids and hashes."""
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.public_output(candidate, result)
+
+
+def preview_candidate(candidate):
+    if "price_overlay" not in candidate:
+        return candidate
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return price_overlay.preview_view(candidate)
+
+
+def prepare_price_overlay(root, keys, theme=False, call=bound_invoke, *, run=None, purge=None,
+                          affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
+    """prepare with exactly one of --price-overlay-run / --price-overlay-purge."""
+    if bool(run) == bool(purge):
+        fail("PRICE_OVERLAY_FLAGS_EXCLUSIVE")
+    if not theme:
+        fail("PRICE_OVERLAY_THEME_REQUIRED")
+    if affiliate_plan is not None or affiliate_config is not None or affiliate_fetch:
+        fail("PRICE_OVERLAY_AFFILIATE_UNSUPPORTED")
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    module = sys.modules[__name__]
+    if run:
+        return price_overlay.prepare_publish(module, root, keys, run, call)
+    return price_overlay.prepare_purge(module, root, keys, purge, call)
+
+
+def publish(root, directory, candidate_id, call=invoke, *, price_overlay_run=None,
+            price_overlay_purge=None):
+    if price_overlay_run is None and price_overlay_purge is None:
+        refuse_while_price_overlay_live(root)
+    elif call is invoke:
+        # Contract §8: the run-bound publish is the one caller the operator's request_json
+        # serves while a run is live. A caller that passed its own `call` keeps it.
+        call = bound_invoke
     safe_ancestors(directory)
     descriptor = os.open(
         directory / "operation.lock", os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o600
@@ -691,7 +801,8 @@ def publish(root, directory, candidate_id, call=invoke):
         except BlockingIOError:
             fail("OPERATION_BUSY")
         try:
-            return _publish(root, directory, candidate_id, call)
+            return _publish(root, directory, candidate_id, call,
+                            price_overlay_run, price_overlay_purge)
         except (
             DirectFailure,
             operator.OperatorFailure,
@@ -808,8 +919,12 @@ def affiliate_bounded_call(candidate, invoke_call):
     return call
 
 
-def _publish(root, directory, candidate_id, call):
+def _publish(root, directory, candidate_id, call, price_overlay_run=None,
+             price_overlay_purge=None):
     candidate = load_candidate(directory, candidate_id)
+    binding = price_overlay_binding(candidate, price_overlay_run, price_overlay_purge)
+    if binding is not None:
+        binding.precheck(root, candidate)
     path = directory / "journal.json"
     journal = (
         read_json(path)
@@ -832,7 +947,7 @@ def _publish(root, directory, candidate_id, call):
     if not set(journal.get("proposals", {})).issubset(identities):
         fail("JOURNAL_MISMATCH")
     if journal["publication_status"] in {"APPLIED", "PUBLISHED_AND_READBACK_VERIFIED"}:
-        return finish_publication(root, directory, candidate, journal, call)
+        return finish_publication(root, directory, candidate, journal, call, binding)
     call = affiliate_bounded_call(candidate, call)
     preview = read_json(directory / "preview.json")
     if (
@@ -841,7 +956,7 @@ def _publish(root, directory, candidate_id, call):
         or preview.get("source_sha256") != candidate["source_sha256"]
     ):
         fail("PREVIEW_REQUIRED")
-    verify_preview(candidate, directory, preview)
+    verify_preview(preview_candidate(candidate), directory, preview)
     validate_sources(root, candidate)
     if not candidate["publication_ready"]:
         fail("BASELINE_UNAVAILABLE_REPREPARE")
@@ -858,6 +973,9 @@ def _publish(root, directory, candidate_id, call):
         != candidate["baseline_theme_tree_sha256"]
     ):
         fail("THEME_CONFLICT")
+    if binding is not None:
+        # Gate, injection re-derivation and the one-publish approval record precede writes.
+        binding.before_writes(root, directory, candidate, journal)
     # Persist deterministic keys before any write, including first draft creation.
     save(path, journal)
     for article in candidate["articles"]:
@@ -974,7 +1092,7 @@ def _publish(root, directory, candidate_id, call):
         journal["apply_receipt"] = receipt
         journal["publication_status"] = "APPLIED"
     save(path, journal)
-    return finish_publication(root, directory, candidate, journal, call)
+    return finish_publication(root, directory, candidate, journal, call, binding)
 
 
 def parser():
@@ -988,9 +1106,14 @@ def parser():
     create.add_argument("--affiliate-plan", type=Path)
     create.add_argument("--affiliate-config", type=Path)
     create.add_argument("--affiliate-fetch", action="store_true")
+    create.add_argument("--price-overlay-run")
+    create.add_argument("--price-overlay-purge")
     for name in ("preview", "publish", "status", "sync"):
         command = commands.add_parser(name)
         command.add_argument("--candidate", required=name != "status")
+        if name == "publish":
+            command.add_argument("--price-overlay-run")
+            command.add_argument("--price-overlay-purge")
     return result
 
 
@@ -1013,7 +1136,22 @@ def execute_cli(args):
         if args.command == "import-existing":
             result = import_existing(ROOT)
         elif args.command == "status" and args.candidate is None:
-            result = invoke("status", {})
+            live = price_overlay_live_run_ids(ROOT)
+            result = price_overlay_live_status(live) if live else invoke("status", {})
+        elif args.command == "prepare" and (
+            args.price_overlay_run or args.price_overlay_purge
+        ):
+            candidate, directory = prepare_price_overlay(
+                ROOT, [x for x in args.articles.split(",") if x], args.theme,
+                run=args.price_overlay_run, purge=args.price_overlay_purge,
+                affiliate_plan=args.affiliate_plan,
+                affiliate_config=args.affiliate_config,
+                affiliate_fetch=args.affiliate_fetch,
+            )
+            # The id stays in the private approval record; output shows the handle only.
+            result = price_overlay_output(
+                candidate, {"publication_ready": candidate["publication_ready"]}
+            )
         elif args.command == "prepare":
             candidate, directory = prepare(
                 ROOT, [x for x in args.articles.split(",") if x], args.theme,
@@ -1027,18 +1165,42 @@ def execute_cli(args):
                 "publication_ready": candidate["publication_ready"],
             }
         else:
-            operator.require_sha256(args.candidate)
-            directory = ROOT / PRIVATE / args.candidate
-            candidate = load_candidate(directory, args.candidate)
+            candidate_id = args.candidate
+            if candidate_id.startswith("price-overlay:"):
+                from scripts import raos_wordpress_price_overlay as price_overlay
+
+                candidate_id = price_overlay.resolve_handle(
+                    sys.modules[__name__], ROOT, candidate_id
+                )
+            operator.require_sha256(candidate_id)
+            directory = ROOT / PRIVATE / candidate_id
+            candidate = load_candidate(directory, candidate_id)
+            if "price_overlay" not in candidate:
+                # Contract §8: while values may be live, only run-bound candidates may reach
+                # WordPress, the preview downloads or the git sync. publish() refuses again.
+                refuse_while_price_overlay_live(ROOT)
+            else:
+                from scripts import raos_wordpress_price_overlay as price_overlay
+
+                # Contract §8: a run-bound candidate is read, previewed, published and
+                # reported from the owner checkout only - by its raw id as well as through
+                # the handle form, which resolve_handle already pinned above. The preview
+                # freezes the injected theme under the running checkout, and the §5 sweep
+                # walks the owner checkout.
+                price_overlay.require_owner_checkout(sys.modules[__name__], ROOT)
             if args.command == "preview":
                 from scripts.raos_wordpress_direct_preview import (
                     prepare_candidate_preview,
                 )
 
-                result = prepare_candidate_preview(candidate, directory)
+                result = prepare_candidate_preview(preview_candidate(candidate), directory)
                 save(directory / "preview.json", result)
             elif args.command == "publish":
-                journal = publish(ROOT, directory, args.candidate)
+                journal = publish(
+                    ROOT, directory, candidate_id,
+                    price_overlay_run=args.price_overlay_run,
+                    price_overlay_purge=args.price_overlay_purge,
+                )
                 result = {
                     key: journal[key]
                     for key in ("candidate_id", "publication_status", "git_sync")
@@ -1049,7 +1211,7 @@ def execute_cli(args):
                     read_json(journal_path)
                     if journal_path.exists()
                     else {
-                        "candidate_id": args.candidate,
+                        "candidate_id": candidate_id,
                         "publication_status": "PREPARED",
                         "publication_ready": candidate["publication_ready"],
                     }
@@ -1063,14 +1225,22 @@ def execute_cli(args):
                     journal["git_sync"] = sync_git(ROOT, journal["checkpoint"])
                     save(directory / "journal.json", journal)
                 elif journal.get("proposal_ids"):
+                    # Contract §8: a run-bound candidate's status is read while the run is
+                    # live, so it uses the call request_json serves; a flag-free candidate
+                    # never gets here (refused above).
+                    observe = bound_invoke if "price_overlay" in candidate else invoke
                     journal = {
                         **journal,
                         "observed_operations": [
-                            invoke("operation-status", {"operation_id": value})
+                            observe("operation-status", {"operation_id": value})
                             for value in journal["proposal_ids"]
                         ],
                     }
                 result = journal
+            if "price_overlay" in candidate:
+                result = price_overlay_output(candidate, result)
+            elif args.command == "status" and price_overlay_live_run_ids(ROOT):
+                result = price_overlay_scrubbed(result)
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except (DirectFailure, operator.OperatorFailure) as error:

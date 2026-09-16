@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "8251832b7ddc42cd4209b6751429be9b23c3edc85fd2ddb33331193934ef9226",
+          "sha256": "79f3bf54a40695cbd38d15157fd034d60b493170318750f2d294c4abe7d7030e",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -366,7 +366,7 @@
       "outputs": [
         {
           "bytes": 2625,
-          "sha256": "facbc0bb7dcb0ea2179bdd81bd94f05b39eca082760089f3c0ec59a9d17c7f37",
+          "sha256": "d5fcca8730204b580153372cafcad3ac5e92d381fa12409bc11c997d8c2e55db",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -964,8 +964,8 @@
           "uri": "repo://changes/raos-v2/phase-3/preview/carry-on-suitcase-comparison/index.html"
         },
         {
-          "bytes": 11999,
-          "sha256": "6fb6db4141c4f8aaae368dad099f8898e6bc16398456645af1b8dfbb12f3f975",
+          "bytes": 12249,
+          "sha256": "646e6261db5ad9db4072d7753ee039b80800983fe22d927755d3017cc889a457",
           "uri": "repo://changes/raos-v2/phase-3/production-backup-export-runbook.md"
         },
         {
@@ -26854,7 +26854,7 @@
       "outputs": [
         {
           "bytes": 7283,
-          "sha256": "a63c978492ef206f6375e16756fdd3ea988ac9f040c6702f6a47fb4c654e04ae",
+          "sha256": "76cf95892c094d8c7fed0e459b186a258e4d73e609f7112cc9329df09a93bb27",
           "uri": "repo://changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "f8101e9c80afd9e9b02402d74c213bd9ad3f87692eea4cadfb92c724f8babbf5",
+          "sha256": "5322b1e0432f9c51cc19968ea7254c32e871231ba743c34b6132afa03ec68cb7",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "8c837010b6ea7590a9a7d1ea0d4c64526d5ee02a3a7a9f36698e613a663bac12",
+          "sha256": "eb798e6979b6e80a17d18a0794e325d5fe7e169029b4d3e3e37ae090940b8721",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30301,12 +30301,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "5b27192199b0404a4c13a1c497c4e6a01c1c651d94e8ef857dcae322afd41cc2",
+          "sha256": "eba69fbf5991498b05dfdcbb6c9a8a8449ef35554501d5f5fd97b2df20b2da7f",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 28259,
-          "sha256": "0d7572086c430544ef4fc6f0fdb27c4f1d6b21d5d8f400d976ca9a925e0b3943",
+          "bytes": 28434,
+          "sha256": "7f59b12094e42dd4d691c400f77b7bf50a9eb70aad55a4084f4a85e18f34fd01",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30887,6 +30887,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_price_overlay_live_check.mjs",
+          "uri": "repo://scripts/raos_price_overlay_live_check.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_reader_release_pages.py",
           "uri": "repo://scripts/raos_reader_release_pages.py",
           "version": 2
@@ -31163,7 +31169,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "a6cb93cbe504c59d850ea1983d7ce76dadc02188aa5f504dd0758da90a1f1af6",
+          "sha256": "bf7be8f747223ce127d3ff716b74b3604b0e9075962ecb499898b0e11998f5ee",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

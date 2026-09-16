@@ -1506,6 +1506,61 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+# Contract §8 (changes/reader-purchase-support-v1/price-refresh-contract.md): while Rakuten
+# price overlay values may be published, nothing in this repository may reach the live site.
+# The check is the deployment operator's local-only command, run as a child process so no
+# module outside the verified runtime is imported; anything but its exact negative answer
+# refuses (fail closed).
+_PRICE_OVERLAY_REFUSAL: Final = "SELF_HOSTED_WORDPRESS_PRICE_OVERLAY_LIVE"
+_PRICE_OVERLAY_CHECK_RELATIVE: Final = "scripts/raos_wordpress_deployment_operator.py"
+_PRICE_OVERLAY_NOT_LIVE: Final = b'{"price_overlay_live":false}\n'
+
+
+def _price_overlay_root(fallback: Path) -> Path:
+    """The repository this command was started from.
+
+    Under stage zero the verified source is piped in, so ``__file__`` is not a path and the
+    fixed root is used; an imported module (tests, tooling) checks its own checkout.
+    """
+    source = globals().get("__file__")
+    if type(source) is str and source.endswith(".py"):
+        return Path(source).resolve().parents[1]
+    return fallback
+
+
+def _price_overlay_live(root: Path) -> bool:
+    import subprocess
+
+    try:
+        completed = subprocess.run(
+            (
+                str(root / ".venv/bin/python"),
+                "-B",
+                str(root / _PRICE_OVERLAY_CHECK_RELATIVE),
+                "price-overlay-live-check",
+            ),
+            input=b"{}",
+            capture_output=True,
+            cwd=str(root),
+            env={
+                "LANG": "C.UTF-8",
+                "LC_ALL": "C.UTF-8",
+                "PATH": "/usr/bin:/bin",
+                "TZ": "UTC",
+            },
+            timeout=120,
+            check=False,
+        )
+    except OSError, subprocess.SubprocessError:
+        return True
+    return completed.returncode != 0 or completed.stdout != _PRICE_OVERLAY_NOT_LIVE
+
+
+def _price_overlay_refuse() -> NoReturn:
+    print(_PRICE_OVERLAY_REFUSAL, file=sys.stderr)
+    raise SystemExit(69) from None
+
+
 def main(
     argv: list[str] | None = None,
     *,
@@ -1513,6 +1568,8 @@ def main(
     tty_reader: Callable[[bytes], bytes] = _read_private_tty,
 ) -> int:
     os.umask(0o077)
+    if _price_overlay_live(_price_overlay_root(EXPECTED_REPOSITORY_ROOT)):
+        _price_overlay_refuse()
     if not _runtime_authorized or _verified_runtime_bytes is None:
         print(
             json.dumps(

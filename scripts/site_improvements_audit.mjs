@@ -1,12 +1,18 @@
 /** Read-only public/local audit. Never stores query values, cookie values, or request bodies. */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { chromium } from 'playwright';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 const args = process.argv.slice(2);
 const option = (k, d) => (args.includes(k) ? args[args.indexOf(k) + 1] : d);
 const origin = new URL(option('--origin', 'https://kurashinoshirube.com')).origin;
 const mode = option('--mode', 'public-baseline');
 const output = option('--output', 'output/site-improvements-20260913/public-baseline.json');
+// Contract §8: a capture while Rakuten price overlay values may be published stores the
+// rendered prices and their hashes, wherever it writes them. The destination is no exemption
+// any more (round 10): only the publisher's run-bound preview writes into the candidate
+// directory the run itself deletes, so every other capture refuses while values are live.
+await refuseWhilePriceOverlayLive();
+const { chromium } = await import('playwright');
 const inventory = JSON.parse(
   readFileSync('changes/site-improvements-20260913/audit-inventory.json', 'utf8'),
 );

@@ -12,7 +12,8 @@
   };
   const time = value => typeof value === 'string' && /(?:Z|[+-]\d\d:\d\d)$/.test(value) ? Date.parse(value) : NaN;
   const offerCost = (offer, now) => {
-    const amounts = COST_FIELDS.map(key => offer[key]);
+    // A tax-excluded price (data-ps-tax-included="false") is shown, never summed with other costs.
+    const amounts = COST_FIELDS.map(key => key === 'price_yen' && offer.tax_included === false ? null : offer[key]);
     const known = amounts.filter(money);
     const result = { state: 'INCOMPLETE', total: null, subtotal: known.length ? known.reduce((a, b) => a + b, 0) : null };
     const checked = time(offer.checked_at), deadline = time(offer.valid_until);
@@ -32,8 +33,10 @@
       text: `${cost.state === 'EXPIRED' ? '販売条件の表示期限切れ。' : '販売条件を再確認中。'}現在の価格・送料・必須品は販売先で確認してください。購入総額や予算内とは判断できません。`,
     };
     const format = new Intl.NumberFormat('ja-JP');
-    const labels = ['本体税込', '送料', '必須品'];
-    const amounts = COST_FIELDS.map((key, i) => `${labels[i]}：${money(offer[key]) ? format.format(offer[key]) + '円' : '未確認'}`).join('／');
+    const taxExcluded = offer.tax_included === false;
+    const labels = [taxExcluded ? '本体税別' : '本体税込', '送料', '必須品'];
+    const note = i => i === 0 && taxExcluded ? '（税別のため小計・総額に含めません）' : '';
+    const amounts = COST_FIELDS.map((key, i) => `${labels[i]}：${money(offer[key]) ? format.format(offer[key]) + '円' + note(i) : '未確認'}`).join('／');
     const total = cost.state === 'CURRENT' ? `購入総額：${format.format(cost.total)}円。` :
       `${cost.subtotal === null ? '' : `確認できた費目の小計：${format.format(cost.subtotal)}円。`}購入総額は未確認です。`;
     return { state: cost.state, text: `${amounts}。${total}表示期限：${new Date(expiry).toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'})}（日本時間）。現在の販売条件は販売先で再確認してください。` };
@@ -165,7 +168,8 @@
   const readOffer = node => {
     const d = node.dataset;
     const offer = { checked_at: d.psCheckedAt, valid_until: d.psValidUntil, identity_verified: d.psIdentity === 'true',
-      state: d.psState, total_scope_complete: d.psComplete === 'true', condition: d.psCondition };
+      state: d.psState, total_scope_complete: d.psComplete === 'true', condition: d.psCondition,
+      tax_included: d.psTaxIncluded === 'true' ? true : d.psTaxIncluded === 'false' ? false : null };
     for (const [key, attr] of [['price_yen', 'data-ps-price-yen'], ['shipping_yen', 'data-ps-shipping-yen'], ['required_items_yen', 'data-ps-required-items-yen']]) {
       offer[key] = node.hasAttribute(attr) ? numberInput(node.getAttribute(attr)).value : null;
     }
@@ -378,6 +382,6 @@
     });
     root.dataset.psMounted = '1';
   };
-  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationConflictKeys, installationReferenceText, installationSummary, watchClock, mount };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, readOffer, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationConflictKeys, installationReferenceText, installationSummary, watchClock, mount };
   if (typeof document !== 'undefined' && typeof window !== 'undefined') document.querySelectorAll('.ps-article').forEach(root => mount(root, document, window));
 })();

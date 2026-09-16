@@ -25,4 +25,5 @@ Excel (`統合タスク管理.xlsx`) が運用台帳。この directory は着�
 | KS-019 | 次バッチ | 描画器の状態別文言は既存。冒頭/比較表/詳細の一致検査と価格再取得はバッチ B |
 | KS-109 | 完了 (公開済み) | /cleaning/ 上部に記事 30・85 へのリンク 2 本 (2026-09-15 ユーザー決定: 削除済み節は復活させない) |
 
-`output/ks-20260915/` (Git 管理外) に Before/After の画像とテキスト差分を置く (`scripts/ks_before_after.py`)。
+`output/ks-20260915/` (`.gitignore` 済み) に Before/After の画像とテキスト差分を置く (`scripts/ks_before_after.py`)。
+楽天価格 overlay の値が配信中は `scripts/ks_before_after.py` と `scripts/ks_render_review.py` が終了 69 で拒否する (候補の screenshot は注入本文の描画で、`output/` は消去走査の外。契約 §8)。purge 公開の後に実行する。

@@ -563,6 +563,24 @@ def fail(code: str) -> NoReturn:
     raise PublicationFailure(code) from None
 
 
+def refuse_while_price_overlay_live(owner_checkout: Path | None = None) -> None:
+    """Contract §8: no request to the live site while Rakuten price values may be published.
+
+    The editor MCP endpoint returns the injected published bodies and their hashes, and the
+    public readback returns the injected pages, so every authenticated and anonymous request
+    of this module is checked (per request: a run can go live mid-command).
+    """
+    from raos.adapters.price_overlay_live_guard import (
+        PriceOverlayLive,
+        refuse_while_price_overlay_live as guard,
+    )
+
+    try:
+        guard(owner_checkout)
+    except PriceOverlayLive as error:
+        fail("RAOS_WORDPRESS_REQUEST_" + error.code)
+
+
 def canonical_json_bytes(value: object) -> bytes:
     try:
         return json.dumps(
@@ -2110,6 +2128,8 @@ class EditorMcpClient:
 
     def __init__(self, *, owner_checkout: Path | None = None) -> None:
         self.endpoint = EDITOR_ENDPOINT
+        self.owner_checkout = owner_checkout
+        refuse_while_price_overlay_live(owner_checkout)
         self.username, self._basic_auth_value = (
             _secure_credential()
             if owner_checkout is None
@@ -2129,6 +2149,7 @@ class EditorMcpClient:
     def _request(
         self, value: object, *, notification: bool = False
     ) -> tuple[int, bytes, Mapping[str, str]]:
+        refuse_while_price_overlay_live(getattr(self, "owner_checkout", None))
         data = canonical_json_bytes(value)
         authorization = base64.b64encode(
             f"{self.username}:{self._basic_auth_value}".encode("utf-8")
@@ -3884,6 +3905,8 @@ def _deployment_mcp_call(
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
     owner_checkout: Path | None = None,
 ) -> dict[str, object]:
+    # The bridge and the operator refuse too (contract §8); this is the caller-side layer.
+    refuse_while_price_overlay_live(owner_checkout)
     if command not in {
         "deployment-status",
         "operation-status",
@@ -4946,6 +4969,7 @@ def _fetch_public_stylesheet_sentinels(
 ) -> dict[str, object]:
     """Fetch one fixed-origin CSS response without redirects and cache its verdict."""
 
+    refuse_while_price_overlay_live()
     url = _absolute_public_stylesheet_url(href)
     cached = cache.get(url)
     if cached is not None:
@@ -5305,6 +5329,7 @@ def _public_page_evidence(
     authorization: str | None = None,
     stylesheet_cache: dict[str, dict[str, object]] | None = None,
 ) -> dict[str, object]:
+    refuse_while_price_overlay_live()
     url = f"{ORIGIN}/{article.production_slug}/"
     request_headers = {
         "Accept": "text/html,application/xhtml+xml",

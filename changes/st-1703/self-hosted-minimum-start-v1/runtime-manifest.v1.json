@@ -15,9 +15,9 @@
       "sha256": "b1699aceb8baf785218c0f2bb7df4d3f0c761c5dca5ffd5fd2f4f423784746cd"
     },
     {
-      "bytes": 3580,
+      "bytes": 3562,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/Makefile",
-      "sha256": "a0556636a999e5fc7fa7bb9a714fe7299278d2d9a164c09f8cbf1dd48349f569"
+      "sha256": "3cd566a26f842232685a94779c7dcff4d1dd0ae3d2168cf3cf7aeeece557c96d"
     },
     {
       "bytes": 11841,
@@ -27,7 +27,7 @@
     {
       "bytes": 112138,
       "path": "changes/st-1703/self-hosted-minimum-start-v1/python-runtime-code-inventory.v1.sha256",
-      "sha256": "d9c5314744c45e8f441ceeabed113c17289520241ab83a6044de5100d43549e3"
+      "sha256": "da38912824da536f7d27ea043580746bdab74fe586d1e39ea275eace7b150ed3"
     },
     {
       "bytes": 70148,
@@ -100,9 +100,9 @@
       "sha256": "95d5aeb931b4a8ffdcb6c9d3afbddaf1cbdbb65f6f63dae8a5914e674e578e79"
     },
     {
-      "bytes": 19086,
+      "bytes": 19917,
       "path": "python/raos/adapters/self_hosted_wordpress_https.py",
-      "sha256": "40613aaaffa20086e0c913da15376fd6ddc3046d2c58d6efe3ab23ccffb1d1f1"
+      "sha256": "ad78779fc9880836cc1cea8448edfff3e2b1b19d1eb66a6c59d0b492f104474f"
     },
     {
       "bytes": 52630,
@@ -120,9 +120,9 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 31377,
+      "bytes": 31449,
       "path": "python/raos/application/editorial/self_hosted_minimum_start.py",
-      "sha256": "050ebecd90db82a3b33cd95672cb417e82ea25eb1c604272c91e12398da4ec5f"
+      "sha256": "26132e59c516f4c9d46fda18d7afd361154f6bc375892d4b6414a4b325f89620"
     },
     {
       "bytes": 26586,
@@ -155,24 +155,24 @@
       "sha256": "e962fec07de9846da994dafadce044f199251d9feafb471784a88c27cba5489b"
     },
     {
-      "bytes": 55913,
+      "bytes": 56931,
       "path": "scripts/build_st1703_self_hosted_theme.py",
-      "sha256": "c8f606909c8de91286fbd31a4cb39e641b9692e74c6d1585bac6757396abf2d4"
+      "sha256": "f4789f8585007ad2714329c46606aa3fdb83f68b2eeaefc419b4f71850c4ffdd"
     },
     {
-      "bytes": 41947,
+      "bytes": 41941,
       "path": "scripts/finalize_st1703_affiliate_links.py",
-      "sha256": "d3bb775e37a7eff41f7cdd76c0fb98055ef60452a3078bf877bacca06bc05cd0"
+      "sha256": "bff5552de5315bc257818593e0078c5849c5ca0ef198593a91de41b1ac8a63ad"
     },
     {
-      "bytes": 59137,
+      "bytes": 61237,
       "path": "scripts/self_hosted_wordpress.py",
-      "sha256": "2688abfa44e1715352952316627c74e45c43454ffe99d977d7906052aab8aabb"
+      "sha256": "ea66b7247bd7d41b3646d7611c4d55096d045be629f04ba976c6a2dfc0fc2423"
     },
     {
-      "bytes": 22611,
+      "bytes": 22605,
       "path": "scripts/self_hosted_wordpress_python.sh",
-      "sha256": "d5ae33eb239654e3bfc9aba75d5456254b5353974c87d0599228aad616259021"
+      "sha256": "9e370f9edead77f6d4a09dd9672dbaea0a1d681de1ee50e9fe2021cd07910b8b"
     }
   ],
   "schema": "SELF_HOSTED_WORDPRESS_RUNTIME_MANIFEST_V1",

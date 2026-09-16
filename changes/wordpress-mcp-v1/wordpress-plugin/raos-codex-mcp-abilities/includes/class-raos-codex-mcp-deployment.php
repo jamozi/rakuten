@@ -942,6 +942,16 @@ final class RAOS_Codex_MCP_Deployment
                 $result['members'][] = $member;
             }
             $result['state'] = 'rollback' === $action ? 'ROLLED_BACK' : 'FINALIZED';
+            if ('finalize' === $action) {
+                // A finalized price-overlay purge publish cannot be rolled back any more, so the
+                // stored injected bodies of its run are reduced to hashes now.
+                $redactions = array();
+                foreach ($rows as $row) {
+                    $redaction = RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies($row, $rows);
+                    if (is_array($redaction)) { $redactions[] = $redaction; }
+                }
+                if (! empty($redactions)) { $result['price_overlay_redaction'] = $redactions; }
+            }
             update_option($name, $result, false);
             return get_option($name, null) === $result ? $result : self::recoverable_error('raos_codex_owner_direct_finish_record_failed', 503);
         } finally { self::release_operation_lock($lock); }

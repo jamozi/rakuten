@@ -198,6 +198,20 @@ class _SystemConnection:
 class SystemSelfHostedWordPressHttpsConnectionFactory:
     __slots__ = ()
 
+    def _refuse_while_price_overlay_live(self) -> None:
+        """Contract §8: refuse before the socket while price overlay values may be published.
+
+        The CLI that normally drives this adapter refuses first, but an in-process importer
+        reaches the site without passing through it, and what this transport hands back - the
+        live theme ``tree_sha256``, the response and operation sha256 rows it prints - is
+        price-recoverable while a run is live (§3/§8). Fail closed: a refusal code, and a run
+        state that cannot be read, both refuse.
+        """
+        from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+        if price_overlay_refusal() is not None:
+            _fail(SelfHostedWordPressFailureCode.TRANSPORT_REFUSED)
+
     def open(
         self,
         *,
@@ -206,6 +220,7 @@ class SystemSelfHostedWordPressHttpsConnectionFactory:
         connect_timeout_seconds: int,
         tls_context: ssl.SSLContext,
     ) -> SelfHostedWordPressHttpsConnection:
+        self._refuse_while_price_overlay_live()
         if (
             host != SELF_HOSTED_WORDPRESS_HOST
             or port != SELF_HOSTED_WORDPRESS_PORT

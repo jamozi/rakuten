@@ -6,11 +6,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
 const input = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 // A local preview, or the public production origin when the published state is the Before.
 if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin) && input.origin !== 'https://kurashinoshirube.com') throw new Error('ORIGIN_NOT_ALLOWED');
+// Contract §8: a capture while Rakuten price overlay values may be published stores the
+// rendered prices and their hashes, wherever it writes them. The destination is no exemption
+// any more (round 10): only the publisher's run-bound preview writes into the candidate
+// directory the run itself deletes, so every other capture refuses while values are live.
+await refuseWhilePriceOverlayLive();
+const { chromium } = require('playwright');
 fs.mkdirSync(input.screenshots, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const failures = [];

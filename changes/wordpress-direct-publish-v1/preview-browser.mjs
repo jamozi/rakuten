@@ -3,11 +3,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLiveUnlessBoundCandidate } from '../../scripts/raos_price_overlay_live_check.mjs';
 
 const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
 const input = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(input.origin)) throw new Error('LOCAL_ORIGIN_REQUIRED');
+// Contract §8: the loopback origin this script requires is the one the candidate preview docker
+// serves the injected bodies on. This is the only capture left unrefused while values are
+// published, and only into an owner-direct candidate directory whose own candidate.json carries
+// a price-overlay binding - the directory the run deletes with itself. The verified path is what
+// the screenshots are written to, so the destination that was proved is the one that is used.
+const screenshotsDirectory = await refuseWhilePriceOverlayLiveUnlessBoundCandidate(input.screenshots);
+const { chromium } = require('playwright');
 const browser = await chromium.launch({ headless: true });
 const failures = [];
 const screenshots = [];
@@ -62,7 +69,7 @@ try {
         return failures;
       }, surface);
       failures.push(...result.map((code) => `${surface.path}:${width}:${code}`));
-      const destination = path.join(input.screenshots, `${index}-${surface.kind}-${width}.png`);
+      const destination = path.join(screenshotsDirectory, `${index}-${surface.kind}-${width}.png`);
       await page.screenshot({ path: destination, fullPage: true });
       screenshots.push({ path: destination, sha256: crypto.createHash('sha256').update(fs.readFileSync(destination)).digest('hex') });
       await page.close();

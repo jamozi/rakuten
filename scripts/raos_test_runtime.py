@@ -48,6 +48,18 @@ PG_PACKAGES = (
         "f6e9bdf50c9683cd9a74ad92d51dde085f40baf0a5fcd8a56fc68425c1bd3c5f",
     ),
 )
+# A harness that renders a *copy* of tracked source (a theme with one asset rewritten) has to
+# name that copy here, through RAOS_PHP_EXTRA_MOUNTS: the container masks /tmp with its own
+# tmpfs, so a pytest tmp_path is invisible inside it and PHP silently reads nothing instead of
+# failing. Read-only, existing directories only, and never a private store - neither one inside
+# a `.secrets` tree nor one that holds a `.secrets` tree anywhere beneath it (a mount of
+# `/home/minami/rakuten` would put the owner's runs, candidates and credentials in the
+# container just as surely as naming `.secrets` itself).
+PHP_EXTRA_MOUNTS_VARIABLE = "RAOS_PHP_EXTRA_MOUNTS"
+PRIVATE_STORE = ".secrets"
+# A declared mount is a harness's own copy of tracked source; a tree this large is not one, and
+# walking further to prove it holds no private store is not worth it, so it is refused.
+MAX_MOUNT_DIRECTORIES = 4096
 PHP_MOUNTS = (
     "tests/editorial_measurement_v1",
     "tests/reader_measurement_v1",
@@ -199,8 +211,53 @@ def setup_postgres(environment: Mapping[str, str]) -> dict[str, str]:
     return result
 
 
+def holds_private_store(path: Path) -> bool:
+    """Whether a private store lies anywhere under ``path``.
+
+    Fail closed twice over: a tree bigger than a harness copy, or one the walk cannot read,
+    counts as holding one, because the point is to refuse a mount that *may* carry the owner's
+    ``.secrets`` into the container - not to enumerate it.
+    """
+    seen = 0
+    walked = False
+    # os.walk does not descend into a symlinked directory unless followlinks says so, so a
+    # link out of the mount is not walked and not what refuses it (the bind is read-only and
+    # does not follow the link into the container either).
+    for _current, directories, _files in os.walk(path, followlinks=False, onerror=None):
+        walked = True
+        if PRIVATE_STORE in directories:
+            return True
+        seen += len(directories)
+        if seen > MAX_MOUNT_DIRECTORIES:
+            return True
+    return not walked
+
+
+def extra_php_mounts(environment: Mapping[str, str]) -> tuple[Path, ...]:
+    """Directories the caller asked to bind read-only, validated (fail closed)."""
+    value = environment.get(PHP_EXTRA_MOUNTS_VARIABLE, "")
+    found: list[Path] = []
+    for entry in value.split(os.pathsep):
+        if not entry:
+            continue
+        path = Path(entry)
+        if not path.is_absolute() or path.is_symlink() or not path.is_dir():
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} is not an existing directory: {entry}")
+        if PRIVATE_STORE in path.parts or path.resolve() != path:
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} refuses this path: {entry}")
+        if holds_private_store(path):
+            raise RuntimeError(f"{PHP_EXTRA_MOUNTS_VARIABLE} holds a private store: {entry}")
+        if path not in found:
+            found.append(path)
+    return tuple(found)
+
+
 def php_command(
-    arguments: Sequence[str], *, root: Path = ROOT, docker: str = "docker"
+    arguments: Sequence[str],
+    *,
+    root: Path = ROOT,
+    docker: str = "docker",
+    extra_mounts: Sequence[Path] = (),
 ) -> list[str]:
     """Run pure PHP harnesses, with only declared source and synthetic fixtures."""
     command = [
@@ -231,6 +288,8 @@ def php_command(
         source = root / relative
         if source.exists():
             command.extend(["--mount", f"type=bind,src={source},dst={source},readonly"])
+    for source in extra_mounts:
+        command.extend(["--mount", f"type=bind,src={source},dst={source},readonly"])
     command.extend([PHP_IMAGE, *arguments])
     return command
 
@@ -241,7 +300,7 @@ def php_main(arguments: Sequence[str]) -> int:
         command = (
             [resolve_php_override(configured, os.environ), *arguments]
             if configured
-            else php_command(arguments)
+            else php_command(arguments, extra_mounts=extra_php_mounts(os.environ))
         )
         return subprocess.run(command, check=False).returncode
     except (OSError, RuntimeError) as exc:
