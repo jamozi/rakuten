@@ -490,7 +490,7 @@ def test_pending_revision_summary_names_the_notation_correction() -> None:
             continue
         checked.append(slug)
         assert "「約」" in pending["summary"], slug
-    assert sorted(checked) == [
-        "compact-dishwasher-comparison",
-        "standard-dishwasher-comparison",
-    ]
+    # Non-vacuity only: the rule applies to whichever approved layouts carry the
+    # notation correction that day, so naming them here would have to be edited
+    # by every batch that adds one (83 joined in W4b's round 7).
+    assert len(checked) >= 2, checked
