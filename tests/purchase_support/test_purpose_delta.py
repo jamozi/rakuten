@@ -72,7 +72,7 @@ def test_hub_lead_and_cta_do_not_promise_budget_filtering(catalog):
     html, _ = compile(catalog)
     hub = html["kitchen"]
     assert "予算" not in hub
-    assert "洗う量と、給水方法から。" in hub
+    assert "台所の道具を、洗う量と手間から。" in hub
     for destination in ("/comparison-policy/", "/about-ad-policy/"):
         assert destination in hub
     assert "kitchen-after-buying" not in hub

@@ -169,3 +169,157 @@ def test_the_recorded_category_decision_matches_the_live_labels() -> None:
     assert laundry["delegated"] is False, laundry
     assert "laundry" not in categories, "laundry is already a category"
     assert "laundry" not in entry_pages["pages"], "laundry already has an entry page"
+
+
+# --- Deferred work -------------------------------------------------------
+# A deferral is work this wave deliberately did not do. It is only honest if
+# it names the wave that actually forces it: the record used to send the
+# category pages to W5/W7 while kitchen's shelf grows at W1. The waves are
+# derived here from the article rows and the candidate contents, so a wave
+# written by hand into a deferral cannot drift away from the plan.
+
+TRIGGERS = ("category_first_publishes", "wave_edits_document")
+CANDIDATES = ("A", "B")
+
+
+def wave_rows() -> list[dict]:
+    return decisions()["waves"]
+
+
+def wave_ids() -> list[str]:
+    return [wave["wave"] for wave in wave_rows()]
+
+
+def applied_candidates() -> set[tuple[str, str]]:
+    """Candidates already published from this branch, so nothing may defer to them."""
+    applied = decisions()["wave_zero_applied"]["applied_candidate"]
+    return {(applied["wave"], applied["candidate"])}
+
+
+def candidate_order() -> list[tuple[str, str, list[str]]]:
+    order = []
+    for wave in wave_rows():
+        for candidate in CANDIDATES:
+            key = "candidate_a" if candidate == "A" else "candidate_b"
+            order.append((wave["wave"], candidate, wave[key]["contents"]))
+    return order
+
+
+def lists_document(contents: list[str], document: str) -> bool:
+    """``kitchen`` matches ``kitchen (136)`` and ``kitchen（EX_KITCHEN→A07）``."""
+    return any(
+        re.match(rf"{re.escape(document)}(?![0-9a-z-])", entry) for entry in contents
+    )
+
+
+def first_wave_publishing(category: str) -> str | None:
+    rows = {row["article_id"]: row for row in article_rows()}
+    for wave in wave_rows():
+        for article_id in wave["articles"]:
+            if rows[article_id]["category"] == category:
+                return wave["wave"]
+    return None
+
+
+def deferrals() -> list[dict]:
+    return decisions()["deferrals"]
+
+
+def test_every_deferral_is_a_complete_record() -> None:
+    rows = deferrals()
+    assert rows, "the record defers work but writes none of it down"
+    ids = [row["id"] for row in rows]
+    assert ids == sorted(ids), ids
+    assert len(ids) == len(set(ids)), ids
+    for row in rows:
+        assert re.fullmatch(r"DF[0-9]{2}", row["id"]), row["id"]
+        for field in ("what", "why"):
+            assert row[field].strip(), (row["id"], field)
+        assert row["where"], row["id"]
+        for path in row["where"]:
+            assert (ROOT / path).exists(), (row["id"], path)
+        assert row["trigger"] in TRIGGERS, row
+        assert row["candidate"] in CANDIDATES, row
+        assert row["wave"] in wave_ids(), row
+
+
+def test_no_deferral_points_at_a_candidate_that_already_shipped() -> None:
+    for row in deferrals():
+        assert (row["wave"], row["candidate"]) not in applied_candidates(), row["id"]
+
+
+def test_every_deferral_names_the_wave_that_actually_triggers_it() -> None:
+    order = candidate_order()
+    applied = applied_candidates()
+    for row in deferrals():
+        documents = row.get("documents", [])
+        if row["trigger"] == "category_first_publishes":
+            expected = first_wave_publishing(row["category"])
+            assert expected is not None, row
+            assert row["wave"] == expected, (
+                f"{row['id']} defers to {row['wave']} but {row['category']} "
+                f"first publishes in {expected}"
+            )
+        else:
+            assert documents, row["id"]
+            earliest = next(
+                (wave, candidate)
+                for wave, candidate, contents in order
+                if (wave, candidate) not in applied
+                and all(lists_document(contents, name) for name in documents)
+            )
+            assert (row["wave"], row["candidate"]) == earliest, (row["id"], earliest)
+
+        # The named candidate has to have a slot for the work it defers.
+        contents = next(
+            contents
+            for wave, candidate, contents in order
+            if (wave, candidate) == (row["wave"], row["candidate"])
+        )
+        for name in documents:
+            assert lists_document(contents, name), (row["id"], name, contents)
+
+
+def test_a_deferral_that_repeats_lists_the_later_waves_in_order() -> None:
+    ids = wave_ids()
+    for row in deferrals():
+        later = row.get("later_waves", [])
+        assert later == sorted(later, key=ids.index), row["id"]
+        assert len(later) == len(set(later)), row["id"]
+        for wave in later:
+            assert wave in ids, (row["id"], wave)
+            assert ids.index(wave) > ids.index(row["wave"]), (row["id"], wave)
+
+
+def test_the_readme_no_longer_carries_the_deferrals_on_its_own() -> None:
+    text = README.read_text(encoding="utf-8")
+    assert "W5 / W7 で掲載内容が増えたときに" not in text, (
+        "the README still defers the category pages to the wrong waves"
+    )
+    assert "decisions.v1.json" in text
+    assert "deferrals" in text, "the README does not point at the deferral records"
+    for row in deferrals():
+        assert row["id"] in text, row["id"]
+
+
+def test_wave_zero_records_the_category_pages_as_widened() -> None:
+    applied = decisions()["wave_zero_applied"]
+    assert applied["applied_candidate"] == {"wave": "W0", "candidate": "A"}, applied
+    for untouched in applied["not_touched"]:
+        assert "カテゴリページのタイトル" not in untouched, untouched
+
+    widened = decisions()["owner_decisions"]["categories_widened"]
+    names = widened["page_names"]
+    ledger = {
+        row["article_key"]: row
+        for row in json.loads(
+            (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text(
+                encoding="utf-8"
+            )
+        )["articles"]
+    }
+    assert set(names) == {"kitchen", "cleaning"}, names
+    for key, change in names.items():
+        assert ledger[key]["title"] == change["after"], key
+        assert change["before"] != change["after"], key
+        assert ledger[key]["excerpt"] == change["excerpt_after"], key

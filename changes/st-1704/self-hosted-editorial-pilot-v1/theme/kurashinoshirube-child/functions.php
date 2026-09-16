@@ -13,12 +13,12 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '929a1bcad7a48ff73d9972813a2d0e1afebc1818c0500d1785a1c869c54de8c7';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'c7f056f78fc9bcf00f5c8117896f0e9f1b695f3e77656c42abaf818345c74aff';
+const KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256 = '81b458c7130ccb0555fcb24e8ce4a946843c697b2f6489512a51e8d2fa046a64';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '4cc4e577b76ee9e6281395151ad4b7de485d663cee358a4f4b0a4889ff509507';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = 'cb0d37be0686d3f0388ab780ba7c73d9be1ce4918f8ab62e9eb63bc2ee5ef270';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'd53f88b44a7c7b4d3311758193ae77fff670118d8d13576413a98d8c85e6f106';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'd53f88b44a7c7b4d3311758193ae77fff670118d8d13576413a98d8c85e6f106';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '1084382d1c79515c3c5bae7fa418a44ea63b7bae0fc8f062564bd3ddcb903e98';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '1084382d1c79515c3c5bae7fa418a44ea63b7bae0fc8f062564bd3ddcb903e98';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -4706,7 +4706,7 @@ function kurashinoshirube_post_listing_head_context(string $origin): ?array
     return array(
         'canonical_url' => $origin . ($page === 1 ? '/' : '/page/' . $page . '/')
             . '?post_type=post',
-        'description' => '食洗機・ロボット掃除機・スーツケース・ポータブル電源の記事一覧。用途や設置条件、仕様の違い、購入前の確認事項から、必要な比較やガイドを探せます。',
+        'description' => 'スーツケース・台所・掃除・ポータブル電源の記事一覧。用途や設置条件、仕様の違い、購入前の確認事項から、必要な比較やガイドを探せます。',
         'kind' => 'article_listing',
         'title' => '記事一覧' . ($page === 1 ? '' : '（' . $page . 'ページ目）')
             . '｜暮らしのしるべ',

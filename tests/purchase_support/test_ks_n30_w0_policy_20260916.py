@@ -131,3 +131,40 @@ def test_untouched_policy_pages_keep_their_own_revision_date(roots) -> None:
     for slug in ("comparison-policy", "privacy-policy"):
         times = [t for t in roots[slug].find(tag="time") if "最終更新日" in visible_text(t.parent)]
         assert [t.attrs.get("datetime") for t in times] == ["2026-09-15"], slug
+
+
+def paragraph(root: Element, identifier: str) -> Element:
+    items = [p for p in root.find(tag="p") if p.attrs.get("id") == identifier]
+    assert len(items) == 1, identifier
+    return items[0]
+
+
+def test_scope_says_which_declared_groups_have_no_article_yet(roots) -> None:
+    """The scope is declared before the articles exist, so it has to say so.
+
+    Between W0 and W7 the page names eight fields while four of them hold no
+    published article. Naming them keeps the present-tense claim exact in that
+    window; the deferral record removes each one as its wave lands.
+    """
+    scope = visible_text(bullet(roots["about-ad-policy"], "扱う領域："))
+    pending = [s for s in sentences(scope) if "準備中" in s]
+    assert len(pending) == 1, scope
+    for group in ADDED_GROUPS:
+        assert group in pending[0], group
+    for group in DECLARED_GROUPS:
+        assert group not in pending[0], group
+
+
+def test_reference_price_promise_covers_only_products_with_recorded_conditions(
+    roots,
+) -> None:
+    """No new product has an approved offer, so the dated price note is conditional."""
+    text = visible_text(
+        paragraph(roots["about-ad-policy"], "production-about-rakuten-price")
+    )
+    dated = [s for s in sentences(text) if "確認日時を併記" in s]
+    assert len(dated) == 1, text
+    assert "販売条件を記録した商品" in dated[0], dated
+    unmatched = [s for s in sentences(text) if "照合できた販売先がない商品" in s]
+    assert len(unmatched) == 1, text
+    assert "価格は確認中" in unmatched[0], unmatched

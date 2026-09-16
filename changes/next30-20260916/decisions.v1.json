@@ -49,7 +49,23 @@
         "preparedness": "ポータブル電源"
       },
       "applied_in": "W0-A",
-      "existing_articles_recategorised": 0
+      "existing_articles_recategorised": 0,
+      "page_names": {
+        "kitchen": {
+          "before": "食洗機の選び方・比較",
+          "after": "台所の道具の選び方・比較",
+          "excerpt_before": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。",
+          "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
+        },
+        "cleaning": {
+          "before": "ロボット掃除機の選び方・比較",
+          "after": "掃除の道具の選び方・比較",
+          "excerpt_before": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
+          "excerpt_after": "掃除の道具を、置き場所と任せたい作業、残る手入れから選ぶ入口。いま掲載しているのはロボット掃除機で、吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。"
+        }
+      },
+      "page_names_applied_in": "W0-A",
+      "page_names_note": "表示名だけを広げるとカテゴリページが 1 画面で 2 つの名前を名乗る（パンくずは 台所、見出しと <title> と JSON-LD は 食洗機の選び方・比較）。ページ名・excerpt・ハブ本文の見出しを同じ波でそろえた。掲載中の商品はハブ本文と excerpt の中で明示し、まだ無い記事は名乗らない。"
     },
     "laundry_category": {
       "key": "laundry",
@@ -695,7 +711,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 6,
+        "documents": 8,
         "theme": true,
         "contents": [
           "home",
@@ -703,13 +719,15 @@
           "updates",
           "comparisons",
           "guides",
-          "small-space"
+          "small-space",
+          "kitchen（水切りラックの棚と導線を足す）",
+          "about-ad-policy (10)（扱う領域の「準備中」から水切りラックを外す）"
         ]
       },
       "depends_on": [
         "W0-A"
       ],
-      "note": "候補 A の時点では 3 行とも未公開なので validate_reader_roles は相互リンクを検査しない。候補 B で 3 行が同時に published になる。"
+      "note": "候補 A の時点では 3 行とも未公開なので validate_reader_roles は相互リンクを検査しない。候補 B で 3 行が同時に published になる。台所の棚が増える最初の波なので、kitchen のハブ本文と方針ページの「準備中」の断りも同じ候補で直す（DF02・DF03）。"
     },
     {
       "wave": "W2",
@@ -946,9 +964,11 @@
     "sources_edited": [
       "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
       "changes/reader-purchase-support-v1/articles/kitchen.html",
+      "changes/reader-purchase-support-v1/purchase-support.v1.json",
       "changes/site-improvements-20260913/entry-pages.v1.json",
       "changes/site-improvements-20260913/entry-pages/cleaning.html",
       "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+      "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
       "changes/wordpress-direct-publish-v1/articles.v1.json",
       "changes/wordpress-direct-publish-v1/reader-sync/site-map.v2.json",
       "changes/wordpress-direct-publish-v1/reader-sync/tools/hub_pages_20260912.py",
@@ -960,19 +980,83 @@
         "field": "excerpt",
         "before": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
         "after": "スーツケース・台所・掃除・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。"
+      },
+      {
+        "article_key": "kitchen",
+        "field": "title",
+        "before": "食洗機の選び方・比較",
+        "after": "台所の道具の選び方・比較"
+      },
+      {
+        "article_key": "kitchen",
+        "field": "excerpt",
+        "before": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。",
+        "after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
+      },
+      {
+        "article_key": "cleaning",
+        "field": "title",
+        "before": "ロボット掃除機の選び方・比較",
+        "after": "掃除の道具の選び方・比較"
+      },
+      {
+        "article_key": "cleaning",
+        "field": "excerpt",
+        "before": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
+        "after": "掃除の道具を、置き場所と任せたい作業、残る手入れから選ぶ入口。いま掲載しているのはロボット掃除機で、吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。"
       }
     ],
     "not_touched": [
       "既存記事の listing.category（1 件も動かしていない）",
-      "カテゴリページのタイトルと excerpt（W5 / W7 で内容が増えたときに広げる）",
+      "記事本文（比較表の値・商品データ・記事タイトル・記事の excerpt）",
       "洗濯・乾燥カテゴリ（post 701 は下書き・未委譲）",
-      "画像の alt（商品種別の説明であって表示名ではない）"
-    ]
+      "画像の alt（商品種別ではなく画像そのものの説明）",
+      "テーマの記事パンくずのハブ label（キッチン・家事 / 掃除・時短。もともと広い語）",
+      "検索ヒットの案内文（読者が入力した語への応答）"
+    ],
+    "applied_candidate": {
+      "wave": "W0",
+      "candidate": "A"
+    },
+    "stale_outputs_left_alone": [
+      {
+        "path": "changes/wordpress-local-preview-v1/content/home.html",
+        "why": "休眠ツール hub_pages_20260912.py だけが書き、誰も読まない死んだ出力。生成物なので手編集せず、再実行すると現行の生成器が持つ記事本文を上書きするため走らせない。ツール側の定数（CAT_NAME・HUB_TITLE・lead）は新しい表示名へ直したので、再実行しても巻き戻らない。"
+      }
+    ],
+    "ledger_listing_field_changes": [
+      {
+        "article_key": "compact-robot-vacuum-shortlist",
+        "field": "listing.short_title",
+        "before": "省スペースの掃除機を比べる",
+        "after": "省スペースのロボット掃除機を比べる",
+        "why": "home のカテゴリカードの CTA は代表記事の short_title を刷る。「掃除」の見出しの下に置くと、まだ扱っていないスティック掃除機まで含むように読める。台帳は hub の main_cta.label を short_title と同じ値に保つ規約なので、両方を動かした。"
+      }
+    ],
+    "publish_candidate": {
+      "candidate": "W0-A",
+      "documents": 7,
+      "theme": true,
+      "proposals": 8,
+      "limit": 20,
+      "contents": [
+        "about-ad-policy (10)",
+        "home (15)",
+        "categories (130)",
+        "cleaning (131)",
+        "comparisons (133)",
+        "guides (135)",
+        "kitchen (136)"
+      ]
+    }
   },
   "unresolved": [
-    "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W3 は開始できない）",
+    "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
     "本番プロファイルの allow_new_posts の現在値（W1-A の前にオーナー確認が要る）",
     "approved-layout-baselines.v1.json の Before/After 了承（W0-A の公開前提）",
+    "/categories/ のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。4 つとも品目でそろえるか場所・行為でそろえるかはオーナー判断",
+    "カテゴリページのパンくずの区切り記号が 4 ページで不揃い（＞ ／ /）。揃えると travel・preparedness の本文が公開候補に増えるので、別の波でまとめる",
+    "/guides/ のジャンプ先 3 つがカテゴリ名を書いた見出しではなく記事カードに着地する",
     "AF04 / YCW-C120 のハンドル質量とパンくずトレイの帰属（公式は「ハンドルは含まれていません」だけ）",
     "DH03 / F-YEX90D のケア「衣類」22W の条件（仕様ページと取扱説明書で不一致・メーカー確認待ち）",
     "DH03 / F-YEX90D の「※50cm以上（ルーバーを閉じて使うとき）」の方向（図に印字なし）",
@@ -980,5 +1064,115 @@
     "AF04 / YCW-C120 の食洗機対応（UNKNOWN のまま）",
     "catalog 全 284 facts の再監査（各波の候補 A で、その波が使う fact だけを再照合する運用）",
     "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）"
+  ],
+  "deferrals": [
+    {
+      "id": "DF01",
+      "what": "/categories/ と home のリード文に「洗濯・乾燥」を足す",
+      "where": [
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "python/raos/application/editorial/reader_experience_v1.py",
+        "changes/wordpress-direct-publish-v1/articles.v1.json"
+      ],
+      "trigger": "wave_edits_document",
+      "documents": [
+        "home",
+        "categories"
+      ],
+      "wave": "W0",
+      "candidate": "B",
+      "why": "laundry の固定ページが公開・委譲されるまでカテゴリが存在しないので、リードに書くと行き先のない名前になる。W0-B が laundry の本文と同じ候補で home・categories を出す。"
+    },
+    {
+      "id": "DF02",
+      "what": "/kitchen/ のハブ本文（見出し・棚・導線）と excerpt を水切りラックまで広げる",
+      "where": [
+        "changes/reader-purchase-support-v1/articles/kitchen.html",
+        "changes/wordpress-direct-publish-v1/articles.v1.json",
+        "changes/site-improvements-20260913/entry-pages.v1.json"
+      ],
+      "trigger": "category_first_publishes",
+      "category": "kitchen",
+      "documents": [
+        "kitchen"
+      ],
+      "wave": "W1",
+      "candidate": "B",
+      "later_waves": [
+        "W2",
+        "W5",
+        "W6"
+      ],
+      "why": "台所の棚が増えるのは W1（A01〜A03 が listing.category=kitchen で published になる）。W0 でページ名は広げたが、本文と excerpt は「いま掲載しているのは卓上食洗機」と書いてあるので、水切りラックが載る候補と同じ候補で直さないと偽になる。以前の記録は W5 に送っていた。"
+    },
+    {
+      "id": "DF03",
+      "what": "方針ページの「扱う領域」から、公開が済んだ群を準備中の断りから外す",
+      "where": [
+        "changes/reader-purchase-support-v1/articles/about-ad-policy.html"
+      ],
+      "trigger": "category_first_publishes",
+      "category": "kitchen",
+      "documents": [
+        "about-ad-policy"
+      ],
+      "wave": "W1",
+      "candidate": "B",
+      "later_waves": [
+        "W3",
+        "W5",
+        "W7"
+      ],
+      "why": "「このうち水切りラック…は準備中」は W0〜W1 の窓でだけ真。水切りラック（W1）、衣類乾燥除湿機（W3）、ノンフライヤー・熱風調理器（W5）、軽量コードレス掃除機（W7）の順に 1 群ずつ外す。"
+    },
+    {
+      "id": "DF04",
+      "what": "カード画像が無い記事の alt フォールバックがカテゴリ表示名を差し込む（「掃除のある暮らしの編集イメージ」になる）のを、カテゴリ名に依存しない文へ直す",
+      "where": [
+        "python/raos/application/editorial/site_editorial_pages.py"
+      ],
+      "trigger": "category_first_publishes",
+      "category": "kitchen",
+      "documents": [
+        "home",
+        "categories"
+      ],
+      "wave": "W1",
+      "candidate": "B",
+      "why": "listing.card_image は新 25 本すべて null なので、新着カードが出る最初の波で発火する。いま発火している記事はないため W0 では出力が 1 文字も変わらず、直しても検証できない。"
+    },
+    {
+      "id": "DF05",
+      "what": "記事本文から /kitchen/ へ戻るリンクの文言が旧ページ名（食洗機の選び方）を引用している",
+      "where": [
+        "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
+        "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html"
+      ],
+      "trigger": "wave_edits_document",
+      "documents": [
+        "compact-dishwasher-comparison",
+        "standard-dishwasher-comparison"
+      ],
+      "wave": "W2",
+      "candidate": "B",
+      "why": "リンク文言なので偽ではないが、着地したページ名と揃わない。この 2 本を再公開する最初の候補が W2-B。残りの記事は本文を触る波で同時に直す。"
+    },
+    {
+      "id": "DF06",
+      "what": "/cleaning/ のハブ本文と excerpt を軽量コードレス掃除機まで広げ、掃除の記事から戻るリンクの文言も揃える",
+      "where": [
+        "changes/site-improvements-20260913/entry-pages/cleaning.html",
+        "changes/wordpress-direct-publish-v1/articles.v1.json",
+        "changes/site-improvements-20260913/entry-pages.v1.json"
+      ],
+      "trigger": "category_first_publishes",
+      "category": "cleaning",
+      "documents": [
+        "cleaning"
+      ],
+      "wave": "W7",
+      "candidate": "B",
+      "why": "掃除の棚が増えるのは W7 だけ。それまで本文の「いま掲載しているのはロボット掃除機です」は真。"
+    }
   ]
 }

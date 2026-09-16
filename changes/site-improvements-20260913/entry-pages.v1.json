@@ -39,7 +39,7 @@
       "description": "スーツケースの各辺・総外寸・重量・容量・開口構造を比較します。利用便の制約と拡張時の条件を分けて案内します。"
     },
     "kitchen": {
-      "title": "食洗機の選び方・比較",
+      "title": "台所の道具の選び方・比較",
       "post_id": 136,
       "anchors": [
         "kitchen-start",
@@ -55,10 +55,10 @@
       "images": [
         "<figure class=\"ks-category-visual\" id=\"ks-visual-kitchen\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-kitchen-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"食器と小型食洗機のあるキッチンのイメージ\"><figcaption>AI生成の編集イメージ。実物写真・収納例・設置図ではありません。</figcaption></figure>"
       ],
-      "description": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。"
+      "description": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
     },
     "cleaning": {
-      "title": "ロボット掃除機の選び方・比較",
+      "title": "掃除の道具の選び方・比較",
       "post_id": 131,
       "anchors": [
         "cleaning-start",
@@ -71,7 +71,7 @@
       "images": [
         "<figure class=\"ks-category-visual\" id=\"ks-visual-cleaning\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-cleaning-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"木の床と家具の間にロボット掃除機を配置した暮らしのイメージ\"><figcaption>AI生成の編集イメージ。実物写真や清掃性能の検証ではありません。</figcaption></figure>"
       ],
-      "description": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。"
+      "description": "掃除の道具を、置き場所と任せたい作業、残る手入れから選ぶ入口。いま掲載しているのはロボット掃除機で、吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。"
     },
     "preparedness": {
       "title": "ポータブル電源の選び方・比較",
@@ -234,7 +234,7 @@
     "kitchen": {
       "post_id": 136,
       "name": "台所",
-      "lead": "置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
+      "lead": "いまは卓上食洗機。置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
       "choose": {
         "article_key": "dishwasher-installation-measurement",
         "anchor": "guide-measurement-steps",
@@ -243,12 +243,12 @@
       "checks": "設置と給排水、洗いたい食器の適合、必要部品、送料込みの購入総額、洗剤と手入れを確認します。「工事不要」はすべての設置確認が不要という意味ではありません。",
       "hold": "置き場所やアースの条件が分からない、普段の食器が入るか不明、給水や手入れを続けにくい場合は、メーカーや適切な施工業者へ確認してください。",
       "representative": "standard-dishwasher-comparison",
-      "decides": "食器量と給水方法を決める"
+      "decides": "卓上食洗機の食器量と給水方法を決める"
     },
     "cleaning": {
       "post_id": 131,
       "name": "掃除",
-      "lead": "本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
+      "lead": "いまはロボット掃除機。本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
       "choose": {
         "article_key": "compact-robot-vacuum-shortlist",
         "anchor": "ps-choose",
@@ -257,7 +257,7 @@
       "checks": "本体と台の寸法に加え、帰還と部品交換の空間、床材、通信条件、セット構成、消耗品、販売元と保証を確認します。",
       "hold": "毛や砂の取り残し、障害物回避、段差の通過が最優先なら、寸法や公称吸引力だけでは決められません。同機種・似た住環境の比較可能な検証を確認してください。",
       "representative": "compact-robot-vacuum-shortlist",
-      "decides": "本体と台の置き場所と、自動ゴミ収集・水拭きのどれを使うかを決める"
+      "decides": "ロボット掃除機の本体と台の置き場所と、自動ゴミ収集・水拭きのどれを使うかを決める"
     },
     "preparedness": {
       "post_id": 138,

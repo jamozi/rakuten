@@ -133,7 +133,7 @@ $GLOBALS['raos_state']['search_query'] = '食洗機';
 $out['search_canonical'] = kurashinoshirube_archive_canonical_url();
 $hub = new WP_Post();
 foreach (array('ID' => 136, 'post_type' => 'page', 'post_status' => 'publish', 'post_password' => '', 'post_name' => 'kitchen',
-    'post_title' => '食洗機の選び方・比較', 'post_excerpt' => '', 'post_content' => '') as $key => $value) { $hub->$key = $value; }
+    'post_title' => '台所の道具の選び方・比較', 'post_excerpt' => '', 'post_content' => '') as $key => $value) { $hub->$key = $value; }
 $GLOBALS['pages']['kitchen'] = $hub;
 kurashinoshirube_flush_reader_hub_page_cache();
 $out['hint_kitchen'] = kurashinoshirube_search_hub_hint('食洗機');
