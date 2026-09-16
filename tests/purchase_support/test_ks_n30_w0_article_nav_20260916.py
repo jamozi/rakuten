@@ -26,6 +26,7 @@ import subprocess
 
 import pytest
 
+from raos.adapters.price_overlay_live_guard import refuse_while_price_overlay_live
 from tests.st1704.theme_php_harness import run_theme_php
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -121,6 +122,10 @@ def stylesheets(tmp_path_factory) -> dict[str, list[str]]:
 
 @pytest.fixture(scope="module")
 def rendered(stylesheets, tmp_path_factory) -> dict[str, dict]:
+    # Contract §8: this fixture starts the browser that article_nav_frames.mjs drives at
+    # the site's own origin, so it refuses -- it does not skip -- while a price-overlay run
+    # is live. The harness refuses again on its own side.
+    refuse_while_price_overlay_live()
     node = shutil.which("node")
     if node is None or not (ROOT / "node_modules/playwright/package.json").is_file():
         pytest.skip("Node and the locked Playwright runtime are required")

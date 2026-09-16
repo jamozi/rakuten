@@ -20,6 +20,12 @@
 // visible text printed between them.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLive } from '../../scripts/raos_price_overlay_live_check.mjs';
+
+// Contract §8: this reads only tracked bodies and fulfils every request from the document
+// it built (anything that is not the navigation is aborted), but it does drive a browser at
+// the site's own origin, so it refuses to run while a price-overlay run is live.
+await refuseWhilePriceOverlayLive();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');

@@ -410,9 +410,6 @@ W4A_BRANCH = "claude/ks-w4a-20260916"
 RECORD_TERMS = ("軸名", "座席下", "開閉構造")
 
 
-ARTICLE_BODIES = builder.ROOT / "changes/wordpress-direct-publish-v1/articles"
-
-
 def articles_record() -> dict[str, dict]:
     return json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
 
@@ -584,22 +581,50 @@ def test_accepted_records_name_the_body_a_reader_can_open() -> None:
     ``ps-0…`` left tests/purchase_support and tests/wordpress_public_acceptance
     green, so the record could drift away from the article at the next
     regeneration without a word.
+
+    The body is read from ``ks_w4_batch.PUBLISHED_COMMIT``, not from the working
+    tree. On main the two are the same file; on a branch they are not, because
+    the tree carries the *next* candidate -- this wave renamed the hub link in
+    three of these five bodies -- and reading the tree would turn a record that
+    is still exactly right into a red rule, one that could only be quieted by
+    rewriting the owner's acceptance. Reading the published commit keeps the
+    rule saying what it says on main and on every branch after it. A missing
+    object fails; it does not skip, for the reason given in
+    ``test_the_before_record_is_the_bodies_at_the_pinned_main_commit``.
     """
+    commit = ks_w4_batch.PUBLISHED_COMMIT
+    assert ks_w4_batch.commit_is_present(commit), (
+        f"{commit} is not in this clone, so an acceptance cannot be checked "
+        "against the body it names. CI checks out with fetch-depth: 0 "
+        "(.github/workflows/ci.yml), so fetch the full history rather than "
+        "letting this rule pass unmeasured."
+    )
+    # The pin has to be the *after* of the 2026-09-16 publish. Re-pointing it at
+    # the commit the batch was written against would make the rule read the
+    # bodies these acceptances replaced.
+    assert commit != ks_w4_batch.PRE_PUBLISH_COMMIT
+
     documents = published_documents()
+    checked = []
     for slug, entry in sorted(articles_record().items()):
         accepted = entry.get("latest_accepted")
         if accepted is None:
             continue
-        raw = (ARTICLE_BODIES / f"{slug}.html").read_bytes()
+        raw = ks_w4_batch.published_body(slug)
         assert accepted["body_sha256"] == hashlib.sha256(raw).hexdigest(), slug
         assert accepted["snapshot_id"] in raw.decode("utf-8"), (
             slug,
             accepted["snapshot_id"],
         )
+        before = ks_w4_batch.before_record()["bodies"].get(slug)
+        if before is not None:
+            assert accepted["body_sha256"] != before["body_sha256"], slug
         # The candidate the record names must be the one that carried this body.
         published = documents.get(accepted["shared_candidate"])
         assert published is not None, (slug, accepted["shared_candidate"])
         assert slug in published, (slug, sorted(published))
+        checked.append(slug)
+    assert len(checked) == 5, checked
 
 
 def test_the_previous_acceptance_is_the_body_this_batch_corrected() -> None:
