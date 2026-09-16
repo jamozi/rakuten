@@ -2241,6 +2241,48 @@ def test_preview_copies_behind_a_symlink_or_outside_the_preview_directory_are_ne
     assert frozen.read_text() == RUN_MARKER
 
 
+@pytest.mark.parametrize(
+    "name", ["compose.override.yaml", "compose.override.yaml.0a1b2c3d4e5f6071.tmp"]
+)
+def test_a_loose_file_under_the_preview_base_blocks_until_it_is_swept(owner, capsys, name):
+    """Round 10 review: the preview writes its own bookkeeping directly under the base.
+
+    ``prepare_candidate_preview`` used to leave ``compose.override.yaml`` there, and its body
+    named the candidate directory (the sha256 of the injected bodies) and the frozen theme
+    ``theme-<injected tree sha256>``; an interrupted atomic write leaves a ``.tmp`` beside it.
+    The sweep walked ``theme-*`` and ``fixtures/`` only, so such a file survived every purge.
+    The needle stands in for those ids here because the record is already redacted.
+    """
+    from raos.adapters.rakuten_price_refresh_client import expired_unpurged_runs, run_status
+
+    root, _plan_path = owner
+    store, _directory = purged_run(root)
+    base = root / PREVIEW_RELATIVE
+    kept = base / "downloads"
+    kept.mkdir(parents=True)
+    pinned = kept / "wordpress-seo.zip"
+    pinned.write_text("synthetic price-free archive")
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+    loose = base / name
+    loose.write_text(f"services:\n  wordpress:\n    volumes:\n    - {RUN_MARKER}\n")
+    assert run_status(store, RUN_ID)[0] == "REDACTION_PENDING"
+    assert expired_unpurged_runs(store, T0) == [RUN_ID]
+    # Only a *file* one level down: the directories holding the pinned plugin archive, the
+    # materialized plugin and the mirrored thumbnails are neither reported nor deletable.
+    for relative in ("downloads", "downloads/wordpress-seo.zip", "no-such-file"):
+        with pytest.raises(rpr.RefreshError, match="PRIVATE_PATH_UNSAFE"):
+            store.delete_preview_copy(relative)
+    code, lines = run(["purge-expired", "--owner-checkout", root, "--run-id", RUN_ID], capsys)
+    report = lines[-1]["runs"][0]
+    assert (code, report["result"], report["preview_copies_deleted"]) == (
+        0,
+        "ALREADY_PURGED",
+        1,
+    )
+    assert not loose.exists() and pinned.exists()
+    assert run_status(store, RUN_ID)[0] == "PURGED"
+
+
 @pytest.mark.parametrize("kind", ["mode-0644", "hardlink"])
 def test_a_stale_leftover_that_is_not_a_private_single_link_file_is_refused(owner, kind):
     from raos.adapters.rakuten_price_refresh_client import STALE_TMP_SECONDS

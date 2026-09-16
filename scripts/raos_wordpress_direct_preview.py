@@ -392,6 +392,30 @@ def verify_preview(candidate: dict, candidate_dir: Path, report: dict) -> None:
             raise ValueError("DIRECT_PREVIEW_SCREENSHOT_CHANGED")
 
 
+def compose_override(candidate_dir: Path, mounts: list[dict]) -> Path:
+    """The compose overlay, written inside the unit the run deletes (contract §5, §8).
+
+    Its body names the mount sources: the candidate directory - whose name is the sha256 of
+    the injected bodies - and the frozen display theme ``theme-<injected tree sha256>``. Both
+    are price-recoverable, and §8 redacts exactly those ids from the approval record at purge.
+    Written under the preview base (``.secrets/wordpress-direct-preview/compose.override.yaml``)
+    the file outlived every purge: the §5 sweep deletes candidate directories and ``theme-*``,
+    never a loose file directly under that base, and ``delete_preview_copy`` refused such a path
+    even when it was named. ``docker compose --file`` takes any path, so the override goes into
+    the candidate directory, which ``delete_local_injected_copies``/``_finish_purge`` remove by
+    the recorded id and which the needle sweep finds as well. An interrupted ``_write`` leaves
+    its ``.tmp`` in the same directory, so that dies with the candidate too.
+    """
+    override = candidate_dir / "compose.override.yaml"
+    _write(
+        override,
+        yaml.safe_dump(
+            {"services": {name: {"volumes": mounts} for name in ("wordpress", "cli")}}
+        ).encode(),
+    )
+    return override
+
+
 def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     planned = preview_plan(candidate, candidate_dir)
     images = product_image_mirror(candidate, candidate_dir, fetch=download_product_image)
@@ -480,13 +504,7 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
             "read_only": True,
         },
     ]
-    override = private / "compose.override.yaml"
-    _write(
-        override,
-        yaml.safe_dump(
-            {"services": {name: {"volumes": mounts} for name in ("wordpress", "cli")}}
-        ).encode(),
-    )
+    override = compose_override(candidate_dir, mounts)
     docker = environment.get("RAOS_WORDPRESS_PREVIEW_DOCKER_BIN", "docker")
     compose = [
         docker,

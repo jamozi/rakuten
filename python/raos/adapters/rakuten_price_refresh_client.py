@@ -480,6 +480,14 @@ class PrivateStore:
         A frozen display theme ``theme-<tree>`` is reported as a whole when any of its
         files does (the injected runtime JSON holds injected body hashes, functions.php the
         rebound runtime hash); fixture files are reported one by one.
+
+        A file directly under the base is reported by itself: the preview's own bookkeeping
+        lands there (a ``compose.override.yaml`` naming the candidate directory and the frozen
+        theme, the ``.tmp`` an interrupted atomic write leaves beside it), and until round 11
+        nothing in this sweep ever looked at it, so those ids outlived the purge that redacted
+        them from the approval record. Directories that are neither ``theme-*`` nor ``fixtures``
+        (``downloads``, ``plugins``, ``media``) are still not walked: they hold the pinned Yoast
+        archive and the mirrored thumbnails, never injected bytes.
         """
         base = self._safe_base(PREVIEW_PRIVATE_RELATIVE)
         variants = _needle_variants(needles)
@@ -498,20 +506,30 @@ class PrivateStore:
                     for p in sorted(entry.rglob("*"))
                     if _file_contains(p, variants)
                 )
+            elif entry.is_file() and _file_contains(entry, variants):
+                found.append(entry.name)
         return found
 
     def delete_preview_copy(self, relative: str) -> bool:
         base = self._safe_base(PREVIEW_PRIVATE_RELATIVE)
         parts = PurePosixPath(relative).parts
-        if not parts or any(part in {"", ".", ".."} for part in parts) or not (
-            (len(parts) == 1 and parts[0].startswith("theme-")) or parts[0] == "fixtures"
-        ):
+        if not parts or any(part in {"", ".", ".."} for part in parts):
             fail("PRIVATE_PATH_UNSAFE")
         current = base
         for part in parts:
             current = current / part
             if current.is_symlink():
                 fail("PRIVATE_PATH_UNSAFE")
+        # ``theme-*`` and the ``fixtures`` subtree are deleted as before; a *file* directly
+        # under the base (the preview's compose override, an interrupted ``.tmp``) is deleted
+        # as a file, which is what ``preview_copies_containing`` now reports. Never a directory
+        # of another name: ``downloads``, ``plugins`` and ``media`` stay whole.
+        if not (
+            (len(parts) == 1 and parts[0].startswith("theme-"))
+            or parts[0] == "fixtures"
+            or (len(parts) == 1 and current.is_file())
+        ):
+            fail("PRIVATE_PATH_UNSAFE")
         if current.is_dir():
             shutil.rmtree(current)
             return True

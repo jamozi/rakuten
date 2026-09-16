@@ -2054,6 +2054,79 @@ def test_a_run_is_unblocked_only_when_no_local_copy_of_its_values_remains(
     assert not fixture.exists() and run_status(store, RUN_ID)[0] == "PURGED"
 
 
+def test_the_preview_override_lives_in_the_unit_the_run_deletes(
+    owner, publisher, capsys
+):
+    """Round 10 review: the compose override outlived every purge.
+
+    ``prepare_candidate_preview`` wrote ``<preview base>/compose.override.yaml`` on every run,
+    and its body names both price-recoverable ids - the candidate directory (the sha256 of the
+    injected bodies) and the frozen theme ``theme-<injected tree sha256>``. The §5 sweep deletes
+    candidate directories and ``theme-*``; a loose file directly under the preview base was on
+    no list, and ``delete_preview_copy`` refused such a path even when it was named. So a purge
+    that redacted those ids from the approval record left them on disk indefinitely.
+
+    Now the override is written inside the candidate directory, which the run deletes by the
+    recorded id, and a copy an older or interrupted preview left under the base is swept by
+    content before the record is redacted.
+    """
+    from raos.adapters.rakuten_price_refresh_client import run_status
+    from scripts import raos_wordpress_direct_preview as preview_script
+
+    write_run(owner)
+    server = FakeWordPress(owner)
+    candidate, directory = prepare_overlay(owner, server)
+    preview = owner / price_overlay.PREVIEW_PRIVATE
+    frozen = preview / ("theme-" + preview_script._theme_tree(directory / "theme"))
+    shutil.copytree(directory / "theme", frozen)
+    override = preview_script.compose_override(
+        directory,
+        [
+            {"type": "bind", "source": str(frozen), "target": "/themes", "read_only": True},
+            {
+                "type": "bind",
+                "source": str(directory.resolve()),
+                "target": "/var/www/raos-direct-candidate",
+                "read_only": True,
+            },
+        ],
+    )
+    body = override.read_bytes()
+    assert override.parent == directory
+    assert candidate["candidate_id"].encode() in body and frozen.name.encode() in body
+    # The shape round 10 left behind, and the .tmp an interrupted atomic write leaves beside it.
+    stale = preview / "compose.override.yaml"
+    stale.write_bytes(body)
+    leftover = preview / "compose.override.yaml.0a1b2c3d4e5f6071.tmp"
+    leftover.write_bytes(body)
+    publish(owner, directory, candidate, server, price_overlay_run=RUN_ID)
+    store = PrivateStore(owner)
+    expired = T0 + timedelta(hours=25)
+    capsys.readouterr()
+    assert (
+        refresh_cli.main(
+            ["purge-expired", "--owner-checkout", str(owner), "--run-id", RUN_ID],
+            clock=lambda: expired,
+        )
+        == 0
+    )
+    report = json.loads(capsys.readouterr().out.splitlines()[-1])["runs"][0]
+    assert report["preview_copies_deleted"] == 3
+    assert not stale.exists() and not leftover.exists() and not frozen.exists()
+    # The candidate directory is gone, so the override inside it went with it.
+    assert not directory.exists() and not override.exists()
+    # No purge publish yet: the run stays blocked, but nothing it left is recoverable.
+    assert run_status(store, RUN_ID)[0] == "PUBLISHED_NOT_PURGED"
+    surviving = [
+        path.relative_to(preview).as_posix()
+        for path in sorted(preview.rglob("*"))
+        if path.is_file()
+        and not path.is_symlink()
+        and candidate["candidate_id"].encode() in path.read_bytes()
+    ]
+    assert surviving == []
+
+
 @pytest.mark.parametrize(
     ("reported", "reason"),
     [

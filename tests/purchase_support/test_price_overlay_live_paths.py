@@ -1609,6 +1609,12 @@ DESTINATION_SHAPES = {
         lambda root: _candidate_json_directory(root) / "screenshots",
         False,
     ),
+    # The rule reads a file under `.secrets` in a browser-driving process: it reads at most
+    # 4 MiB, and a candidate.json larger than that is refused rather than read.
+    "oversized-candidate-json": (
+        lambda root: _oversized_candidate(root) / "screenshots",
+        False,
+    ),
     # `.staging-*` is reported by the sweep unconditionally, but nothing writes a rendering
     # there and it carries no binding to read: not a shape this rule accepts any more.
     "staging-sibling": (
@@ -1644,12 +1650,31 @@ DESTINATION_SHAPES = {
         False,
     ),
     "symlinked-candidate-directory": (lambda root: _symlinked_unit(root), False),
+    # The rule anchors at the *start* of the path, not anywhere in it.
+    "the-base-at-a-non-zero-offset": (
+        lambda root: _padded_to_the_base_length(root),
+        False,
+    ),
 }
 
 
 def _unparsable_candidate(root):
     directory = write_candidate(root)
     (directory / "candidate.json").write_text("{not json")
+    return directory
+
+
+def _oversized_candidate(root):
+    """A bound candidate whose candidate.json is larger than the rule will read."""
+    directory = write_candidate(
+        root,
+        candidate={
+            "candidate_id": CANDIDATE_ID,
+            "price_overlay": BINDING,
+            "filler": "0" * (4 * 1024 * 1024 + 1024),
+        },
+    )
+    assert (directory / "candidate.json").stat().st_size > 4 * 1024 * 1024
     return directory
 
 
@@ -1663,6 +1688,21 @@ def _beside_a_bound_candidate(root, relative):
     """A real bound candidate exists; the destination is somewhere else under the base."""
     base = bound_candidate(root).parent
     return base / relative if relative else base
+
+
+def _padded_to_the_base_length(root):
+    """Outside the checkout, but holding the base at a non-zero offset (round 10 review).
+
+    ``posix.startsWith(base)`` is load-bearing: the unit is taken from ``posix.slice(
+    base.length)``, so a substring test would read that slice from the wrong place. The prefix
+    here is padded to exactly the base's length, so the slice lands on a real bound candidate's
+    64-hex name and the binding read succeeds - a capture written entirely outside the owner
+    checkout, where the §5 sweep never looks, would be granted the exemption.
+    """
+    base = f"{bound_candidate(root).parent}/"
+    prefix = f"{root.parent}/{'p' * (len(base) - len(str(root.parent)) - 2)}/"
+    assert len(prefix) == len(base) and not prefix.startswith(base)
+    return f"{prefix}{CANDIDATE_ID}{base}outside.png"
 
 
 def _symlinked_unit(root):

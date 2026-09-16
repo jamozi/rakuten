@@ -192,10 +192,11 @@ confirm-plugin-cleanup --owner-checkout /home/minami/rakuten --run-id <run_id> -
       - owner checkout の `.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/` の全ファイル（`candidate.json` / `journal.json` / `preview.json` のほか `bodies/`・`theme/`・`*.tmp` など。一致すればディレクトリごと削除）と、承認記録にある id の candidate ディレクトリ（中身にかかわらず削除）
       - 同じ場所の `.staging-*`（注入 candidate の書き出しが中断して残るもの。記録に無い注入後の hash しか持たないことがあるので、中身にかかわらずディレクトリごと削除）
       - `.secrets/wordpress-direct-preview/` の凍結テーマ `theme-<tree>`（中の 1 ファイルでも一致すればディレクトリごと）と、`fixtures/` 以下のファイル
+      - 同じ preview 直下の**ファイル 1 枚**（一致すればそのファイルだけ）。preview 自身の書き出しがここに落ちるためです（中断した `_write` の `<name>.<hex>.tmp` など）。`downloads/`・`plugins/`・`media/`（固定の Yoast 配布物とサムネイル）は walk も削除もしません。
     - 探すもの: 承認記録にある candidate id、run の目印 `data-ps-overlay-run="<run_id>"`、値を持つ entry の観測時刻・期限・`response_row_sha256`、承認記録に残る注入後の hash（生の形と JSON エスケープ形）。
     - これで見つかる例: 値の公開中にフラグ無しで prepare した candidate（baseline に注入本文）、値を持つ preview の凍結テーマと fixture。
     - 注入テーマの凍結コピーは目印を持たず、注入後の hash でしか見つかりません。そのため `purge-expired`・purge 公開・`resolve-incident` は、承認記録の hash を redact する**前に**走査します。
-    - candidate の置き場や preview ディレクトリ（またはその中の途中のパス）が symlink なら `PRIVATE_PATH_UNSAFE` で止まり、何も消しません（run は `UNDATED`）。`delete_preview_copy()` は `theme-*` 1 段か `fixtures/` 以下だけを受け付け、`..` を含むパスを拒否します。
+    - candidate の置き場や preview ディレクトリ（またはその中の途中のパス）が symlink なら `PRIVATE_PATH_UNSAFE` で止まり、何も消しません（run は `UNDATED`）。`delete_preview_copy()` は `theme-*` 1 段・`fixtures/` 以下・preview 直下の 1 ファイルだけを受け付け、`..` を含むパスとそれ以外のディレクトリを拒否します。
     - 走査しないもの: `.secrets` 外のコピー、ほかの clone・worktree、preview のデータベース（§10.1-3）、上記以外の `.secrets` 内のファイル。worktree の `.secrets` へ複製が入る経路は、配信中のフラグ無し prepare / publish の拒否（§8、owner checkout を基準に判定）で塞いでいます。
   - `purge-expired` の報告（`result`）: `PURGED` / `ALREADY_PURGED` のほか、残っている条件に応じて `PURGE_PUBLISH_MISSING`（上の 1）、`REDACTION_PENDING`（2〜4。通常は同じ実行で解消）、`WORDPRESS_REDACTION_UNCONFIRMED`（5）、承認記録が無い・読めない `UNDATED` を返します。`candidate_directories_deleted`・`preview_copies_deleted`・`stale_tmp_files_deleted` も出します。
   - **`PUBLISHED_NOT_PURGED` の解除**は次のどちらかだけです。
@@ -401,6 +402,7 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 - **run 付き preview の固定**: 単体の `scripts/raos_wordpress_direct_preview.py` は、`price_overlay` キーがあるだけでは live の拒否を外しません。
   - 実行中の checkout が固定の `OWNER_CHECKOUT` でない、または candidate ファイルが `<OWNER_CHECKOUT>/.secrets/wordpress-mcp/owner-direct-v1/<candidate id>/` の中に無ければ `DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED` で拒否します。理由: `prepare_candidate_preview()` は注入 theme を `<ROOT>/.secrets/wordpress-direct-preview/theme-<tree sha256>` に複製し、そのディレクトリ名自体が価格復元可能な hash だからです（§5 の走査は owner checkout しか歩きません）。
   - `price_overlay` は publisher と同じ `resolve_binding()`（`schema` は `BINDING_SCHEMA`、mode と run_id が一致）と `resolve_handle()`（承認記録の `prepared_candidates` にある id）で検証します。解決できなければ `DIRECT_PREVIEW_PRICE_OVERLAY_*` で拒否し、描画も画像の取得も行いません。
+  - preview が candidate ディレクトリの外に書くもののうち、価格復元可能な値を持つのは 2 つだけです。凍結テーマ `theme-<tree sha256>`（§5 の走査が消します）と、compose の上書きファイル（mount の source として candidate ディレクトリと凍結テーマの名前を持つ）です。後者は `docker compose --file` が任意のパスを受けるので、**candidate ディレクトリの中**に `compose.override.yaml` として書きます（`compose_override()`）。run の後始末が id で消す単位に入るため、purge 後に残りません。preview 直下のほかの書き出し（`fixtures/posts.json` は `{}`、`credentials.env` は乱数、`downloads/`・`plugins/` は固定の Yoast 配布物、`media/` は空）は値を持ちません。古い形や中断で preview 直下に残った 1 枚は、§5 の走査が中身で見つけて消します。
   - 照合は `candidate_path.resolve().parent` で行い、**その検証済みディレクトリをそのまま `prepare_candidate_preview()` に渡します**（`args.candidate.parent` は使いません）。candidate ディレクトリ自体が symlink の場合、resolve すると base の外に出るので `DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED` になり、描画が link 越しの場所へ書くことはありません（§5 の走査は `is_symlink()` のディレクトリを飛ばすため、そこは消去が届きません）。
 - **run 付きコマンドの実行場所の固定**: publisher の run 付き `prepare` / `publish` と、price overlay の handle を使う `preview` / `status` / `sync` は、ROOT が固定の `OWNER_CHECKOUT` でなければ `PRICE_OVERLAY_OWNER_CHECKOUT_REQUIRED` で拒否します（承認記録を開く前）。
   - 理由: 承認記録は owner checkout にしかなく、注入 candidate のローカル複製の走査（§5）も owner checkout の candidate ディレクトリしか見ません。worktree から実行すると、purge が届かない場所に注入バイト列を作ってしまいます。
@@ -429,7 +431,7 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
    - overlay や承認記録が壊れていて期限が読めない run は、期限を待たずに消します（保持は安全側に倒す）。
    - candidate ディレクトリ（`.secrets/wordpress-mcp/owner-direct-v1/<candidate_id>/`）: 注入後本文・runtime・theme.zip・manifest・journal を持つので、ディレクトリごと削除します。
      - purge 公開の成功時: publisher が注入 candidate、purge 用の元 candidate（`base_candidate_id`）、preview が凍結した注入テーマの複製（`.secrets/wordpress-direct-preview/theme-<tree>`）を削除し、git 同期の後に purge 用 candidate 自身（baseline に live の注入後本文を持つ）と、§5 の走査で見つかるこの run のローカル複製をすべて削除して、その id を承認記録から消します（§4）。readback で価格なしを確かめられなかった purge 公開は、再試行のために candidate を残します。
-     - `purge-expired`: §5 のローカル複製の走査で、承認記録にある candidate（公開・purge 公開・`base_candidate_id`・`prepared_candidates`）、この run の目印・観測時刻・注入後 hash が残る candidate（値の公開中に別途 prepare した candidate など）、preview の凍結テーマと fixture を削除します（`candidate_directories_deleted`・`preview_copies_deleted`）。
+     - `purge-expired`: §5 のローカル複製の走査で、承認記録にある candidate（公開・purge 公開・`base_candidate_id`・`prepared_candidates`）、この run の目印・観測時刻・注入後 hash が残る candidate（値の公開中に別途 prepare した candidate など）、preview の凍結テーマ・fixture・preview 直下の一致したファイルを削除します（`candidate_directories_deleted`・`preview_copies_deleted`）。
    - 引数なしの `purge-expired` は、期限を過ぎた全 run を掃除します。
 7. 公開後の確認
    - ブラウザで JS を実行した後の状態を照合します（静的 HTML の `data-ps-price-state` は CURRENT にならない）。
@@ -478,7 +480,8 @@ publisher は、gate の拒否を `RAOS_WORDPRESS_DIRECT_PRICE_OVERLAY_GATE_REFU
 2. ~~**candidate ディレクトリと journal の purge**~~ **済（2026-09-16）**: §8-5・§8-6 のとおり、purge 公開の成功時と `purge-expired` で candidate ディレクトリ（journal を含む）を削除します。残る限界:
    - purge 公開をせず `purge-expired` だけを実行しても、WordPress 上の値は消えません（期限前の purge 公開は運用で行う）。その run は `PURGE_PUBLISH_MISSING` と報告され、`PUBLISHED_NOT_PURGED` として `fetch` / `gate` を拒否し続けます。解除は purge 公開の記録（期限後でも可。完了時に purge candidate と id も消える）か、オーナーの `resolve-incident`（plugin の後始末の確認とローカル複製の走査を含む）だけです（§5）。
    - preview のローカル WordPress（docker のデータベース）に取り込まれた注入後本文は消しません（§10.1-3 の残る作業 3）。
-   - ローカル複製の走査（§5）が見るのは、owner checkout の candidate ディレクトリ（全ファイルと `.staging-*`）と、preview の凍結テーマ・fixture だけです。`.secrets` 外のコピー、ほかの clone・worktree の `.secrets`、preview のデータベースは対象外です。worktree から実行した publisher が配信中の値を複製する経路は、§8 の拒否（owner checkout を基準に判定）で塞いでいます。
+   - ローカル複製の走査（§5）が見るのは、owner checkout の candidate ディレクトリ（全ファイルと `.staging-*`）と、preview の凍結テーマ・`fixtures/`・preview 直下のファイル 1 枚だけです。`.secrets` 外のコピー、ほかの clone・worktree の `.secrets`、preview のデータベース、preview 直下の `downloads/`・`plugins/`・`media/`（固定の配布物とサムネイル）は対象外です。worktree から実行した publisher が配信中の値を複製する経路は、§8 の拒否（owner checkout を基準に判定）で塞いでいます。
+   - **docker 側の状態**（このリポジトリの外、オーナー作業）: preview は compose の project `raos-direct-preview-<repo hash>` を立てたままにします。container の設定には bind mount の source、つまり candidate ディレクトリ（= 注入本文の sha256）と `theme-<注入 tree sha256>` のパスが残ります。値を下ろした後、`docker compose ... down -v` で project とデータベースの volume を落とすまでは `docker inspect` から読めます。§5 の走査はここに届きません。
    - purge 用 candidate は、公開時と同じ `source_sha256` を要求します（`PURGE_SOURCE_DRIFT`）。公開後に git の本文を変えた場合は、checkpoint の内容に戻してから purge します。
 3. **WordPress 側に残る注入本文**（一部実装、未解決。**初回の実値公開の前提条件**）
    - **実装済み（plugin ソースのみ、未デプロイ）**: owner-direct plugin は、proposal 行の `payload.before` / `payload.after`（公開時は `after`、purge 公開時は `before` が注入本文）と、option `raos_codex_owner_direct_undo_<proposal_id>`（`applied_document`・`public_before`）に注入本文を保存します。purge 公開の batch を finalize したとき（rollback できなくなった時点）、`RAOS_Codex_MCP_Owner_Direct::redact_price_overlay_copies()` がこれらを redact します。
