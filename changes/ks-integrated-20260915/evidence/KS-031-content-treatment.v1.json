@@ -1,0 +1,644 @@
+{
+  "schema": "RAOSContentTreatmentV1",
+  "version": 1,
+  "task": "KS-031a",
+  "decided_on": "2026-09-16",
+  "decided_by": "Claude (2026-09-15 オーナー決定: 編集判断は Claude が決め、オーナーが Before/After で確認)",
+  "publication": "非公開の判定台帳。公開物は変えない",
+  "ledger": "changes/wordpress-direct-publish-v1/articles.v1.json",
+  "enums": {
+    "treatment": [
+      "keep",
+      "update",
+      "merge_candidate",
+      "new_candidate"
+    ],
+    "approval_state": [
+      "owner_review_pending",
+      "approved",
+      "changes_requested",
+      "rejected"
+    ]
+  },
+  "search_facts": {
+    "sources": [
+      "evidence/KS-004.md",
+      "evidence/KS-005.md",
+      "evidence/KS-021.md",
+      "evidence/KS-027.md"
+    ],
+    "gsc_28d": {
+      "start": "2026-08-16",
+      "end": "2026-09-12",
+      "impressions": 241,
+      "clicks": 7,
+      "ctr_pct": 2.9,
+      "avg_position": 9.1
+    },
+    "page_rows_recorded": [
+      {
+        "post_id": 85,
+        "clicks": 4,
+        "impressions": 59
+      },
+      {
+        "post_id": 83,
+        "clicks": 2,
+        "impressions": 60
+      },
+      {
+        "post_id": 86,
+        "clicks": 1,
+        "impressions": 42
+      },
+      {
+        "post_id": 15,
+        "clicks": 0,
+        "impressions": 73
+      },
+      {
+        "post_id": 84,
+        "clicks": 0,
+        "impressions": 57
+      },
+      {
+        "post_id": 10,
+        "clicks": 0,
+        "impressions": 48
+      },
+      {
+        "post_id": 3,
+        "clicks": 0,
+        "impressions": 45
+      },
+      {
+        "post_id": 28,
+        "clicks": 0,
+        "impressions": 23
+      },
+      {
+        "post_id": 41,
+        "clicks": 0,
+        "impressions": 20
+      },
+      {
+        "post_id": 120,
+        "clicks": 0,
+        "impressions": 15
+      }
+    ],
+    "page_rows_scope": "全26ページ中の上位10ページだけを記録。ほかのページの行は未記録で、0とは扱わない",
+    "queries_recorded": [
+      {
+        "query": "プロテカ エアロフレックスdx2",
+        "clicks": 1,
+        "page": null
+      },
+      {
+        "query": "スーツケース フロントオープン 大型 とは",
+        "impressions": 14,
+        "page": null
+      }
+    ],
+    "index_report": {
+      "as_of": "2026-09-04",
+      "indexed": 12,
+      "not_indexed": 11,
+      "note": "549〜553 公開前の版"
+    },
+    "url_inspection_2026_09_15": {
+      "indexed": [
+        "/",
+        "/kitchen/",
+        549,
+        550,
+        551,
+        552,
+        553,
+        85,
+        28
+      ],
+      "noindex_stale_copy": [
+        19
+      ],
+      "discovered_not_indexed": [
+        29
+      ]
+    },
+    "inbound_links": "inbound_links_20260915 は 2026-09-15 の本番匿名取得から数えた、ほかの公開ページからのリンク元の数 (W3 の導線追加より前)",
+    "limits": "ページ行が無い記事を0と扱わない。549〜553は28日窓の外。流入が少ないことだけを削除・noindex・統合の根拠にしない"
+  },
+  "articles": [
+    {
+      "article_key": "small-carry-on-suitcase-comparison",
+      "post_id": 553,
+      "cluster": "suitcase",
+      "question": "小型・機内持ち込みの候補を、軽さ・開き方・車輪で横断して選ぶ",
+      "inbound_links_20260915": 1,
+      "search": "URL検査で登録済み (2026-09-15)。2026-09-13 公開のため28日窓の外",
+      "treatment": "update",
+      "reason": "12型番を横断する総合比較で、航空会社の規定表 (#carry-on-rules) もある。一方、規定表と型番表が照合されておらず、便ごとに持ち込めるかは読者が計算するしかない。被リンクは /travel/ の1件だけ",
+      "actions": [
+        "KS-131: 冒頭に要点と近道を置き、#carry-on-rules を比較表の後ろへ移す",
+        "KS-201b: 便の条件と型番の適合マトリクスを追加 (車輪込みが過半で確認できなければ、拡張時に上限を超える型番の問いに切り替える)",
+        "KS-014: 19・82・83・84 から553への導線"
+      ],
+      "linked_tasks": [
+        "KS-131",
+        "KS-201",
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "lightweight-carry-on-suitcase-under-3kg",
+      "post_id": 83,
+      "cluster": "suitcase",
+      "question": "30L以上・本体3kg以下の機内持ち込みスーツケース",
+      "inbound_links_20260915": 10,
+      "search": "2クリック / 60表示",
+      "treatment": "keep",
+      "reason": "4型番はすべて553に含まれるが、30L以上・3kg以下という数値条件の問いは独立している。表示は記事の中で最多の60回。統合すると条件別の答えを失う",
+      "actions": [
+        "KS-014: 553への導線を追加",
+        "editorial-portfolio v3 の範囲の記述『5モデル』を実際の4に直す"
+      ],
+      "consolidation_check_id": "suitcase-83-553",
+      "linked_tasks": [
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "front-open-carry-on-suitcase-with-stopper",
+      "post_id": 84,
+      "cluster": "suitcase",
+      "question": "前開きとストッパーを両方備える候補を開き方の違いで選ぶ",
+      "inbound_links_20260915": 9,
+      "search": "0クリック / 57表示",
+      "treatment": "keep",
+      "reason": "機能条件の問いが独立している。553と INV50・60561、19と05721を共有するが、4型番の組み合わせはこの記事だけ",
+      "actions": [
+        "KS-014: 553への導線"
+      ],
+      "linked_tasks": [
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "carry-on-suitcase-under-100-seats",
+      "post_id": 82,
+      "cluster": "suitcase",
+      "question": "100席未満の国内線に持ち込める候補",
+      "inbound_links_20260915": 8,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "100席未満の便を条件にする記事はこれだけで、4型番は553の12型番と重複しない",
+      "actions": [
+        "KS-014: 553への導線"
+      ],
+      "linked_tasks": [
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "carry-on-suitcase-comparison",
+      "post_id": 19,
+      "cluster": "suitcase",
+      "question": "同じメーカー (エース) の3モデル 06316・05721・01471 の違い",
+      "inbound_links_20260915": 8,
+      "search": "URL検査で「noindex タグによって除外」(現行 HTML に noindex は無い)。再クロール依頼済み",
+      "treatment": "keep",
+      "reason": "メーカー内の比較として問いが独立しており、01471を扱う記事はこれだけ。Google の保持コピーが noindex の旧版で、流入では判断しない",
+      "actions": [
+        "KS-014: 553への導線 (テーマの関連記事は10件制約のため broader は83のまま)"
+      ],
+      "reevaluate": {
+        "on_or_after": "2026-10-14",
+        "trigger": "ページレポートで19が登録済みになった後に、ページ×クエリを確認する"
+      },
+      "linked_tasks": [
+        "KS-014",
+        "KS-303"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "compact-dishwasher-comparison",
+      "post_id": 549,
+      "cluster": "dishwasher",
+      "question": "少量をこまめに洗う。SOLOTA とラクアmini系3製品のどれか",
+      "inbound_links_20260915": 3,
+      "search": "URL検査で登録済み (2026-09-15)。28日窓の外",
+      "treatment": "update",
+      "reason": "容量別の入口で、86の2製品を含む上位記事。ラクアmini系3製品で置き場に必要な空間が違うことと、冒頭カードの購入枠の重複を直す",
+      "actions": [
+        "KS-016: 冒頭カードを3枚・購入枠を4に整理",
+        "KS-201a: 置き場に必要な空間の表 (余白の出典の種類を分ける)",
+        "KS-014: 41への導線"
+      ],
+      "consolidation_check_id": "dishwasher-5",
+      "linked_tasks": [
+        "KS-016",
+        "KS-201",
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "countertop-dishwasher-for-small-households",
+      "post_id": 41,
+      "cluster": "dishwasher",
+      "question": "タンク式4機種 (SOLOTA・ラクアmini color・SS-MA251・NP-TSP1) の給水と設置を、容量をまたいで比べる",
+      "inbound_links_20260915": 13,
+      "search": "0クリック / 20表示 / 平均順位5.3 (evidence/KS-021.md)",
+      "treatment": "update",
+      "reason": "4機種は549と550に含まれるが、給水方式ガイド263の主な4機種と同じ組み合わせを横断する比較はこの記事だけで、被リンクは13本。旧題名の『1〜2人暮らし向け』は、人数より食器の量で選ぶ /kitchen/ の方針と合わず、549の問いとぶつかる。2026-08-16〜09-12 の表示は20回で、人数を含む検索語は確認できなかった (検索語の表は匿名化で非表示)",
+      "actions": [
+        "題名を「タンク式食洗機4モデルの給水と設置を比較」に変える (slug は維持)。台帳の title・excerpt、catalog、editorial-portfolio v3 の元データ、/comparisons/・/updates/ の生成、262の関連導線の文言、test_purpose_delta の題名テストを同じ変更でそろえる",
+        "KS-123: 導入文・条件ラベル・比較表の列の順 (給水方式を先頭) と、容量別の549・550・551への入口"
+      ],
+      "consolidation_check_id": "dishwasher-5",
+      "reevaluate": {
+        "on_or_after": "2026-10-14",
+        "trigger": "ページ×クエリの28日分で41の固有クエリが0、かつ549・550がタンク式の関連クエリを得た場合に merge_candidate へ再判定する"
+      },
+      "linked_tasks": [
+        "KS-123",
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "solota-vs-rakua-mini-plus",
+      "post_id": 86,
+      "cluster": "dishwasher",
+      "question": "SOLOTA NP-TMLK1-K とラクアmini Plus TK-MDW22B のどちらか",
+      "inbound_links_20260915": 7,
+      "search": "1クリック / 42表示",
+      "treatment": "update",
+      "reason": "型番名の2者比較で、食洗機の記事でクリックの記録があるのはこの記事だけ。549へ統合すると型番名の検索の受け皿を広い記事に置き換えることになる。URLは残し、549を上位記事として示す",
+      "actions": [
+        "549への導線を #ks-next-read か mini-plus-alternative 節に置く",
+        "末尾の『1〜2人暮らし向けの候補比較』を、食器の量で選ぶ容量別3本とタンク式4機種の比較 (41) への案内に置き換える"
+      ],
+      "consolidation_check_id": "dishwasher-5",
+      "reevaluate": {
+        "on_or_after": "2026-10-14",
+        "trigger": "86のページ×クエリで型番名クエリが0、かつ549が同じクエリを得た場合に再判定する"
+      },
+      "linked_tasks": [
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "standard-dishwasher-comparison",
+      "post_id": 550,
+      "cluster": "dishwasher",
+      "question": "公称16〜28点の卓上食洗機",
+      "inbound_links_20260915": 4,
+      "search": "URL検査で登録済み (2026-09-15)。28日窓の外",
+      "treatment": "keep",
+      "reason": "容量帯で問いが独立しており、549・551と型番が重複しない",
+      "actions": [
+        "KS-121: 主表6項目と範囲注記"
+      ],
+      "linked_tasks": [
+        "KS-121"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "large-dishwasher-comparison",
+      "post_id": 551,
+      "cluster": "dishwasher",
+      "question": "公称40点の大容量卓上型の給水と置き場",
+      "inbound_links_20260915": 4,
+      "search": "URL検査で登録済み (2026-09-15)。28日窓の外",
+      "treatment": "keep",
+      "reason": "ほかの比較記事と型番が重複しない",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-branch-faucet-guide",
+      "post_id": 552,
+      "cluster": "dishwasher",
+      "question": "分岐水栓で使う前の蛇口の適合・住まい・費用",
+      "inbound_links_20260915": 3,
+      "search": "URL検査で登録済み (2026-09-15)。28日窓の外",
+      "treatment": "keep",
+      "reason": "給水方式ガイド263の先の詳しい手順で、問いが独立している",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-installation-measurement",
+      "post_id": 262,
+      "cluster": "dishwasher",
+      "question": "置き場所を測る順番",
+      "inbound_links_20260915": 14,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "手順ガイドで、比較記事と役割が違う",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-water-supply-methods",
+      "post_id": 263,
+      "cluster": "dishwasher",
+      "question": "タンク・ポンプ・分岐水栓の違い",
+      "inbound_links_20260915": 15,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "給水方式の入口ガイドで、比較記事と役割が違う",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-detergent-guide",
+      "post_id": 264,
+      "cluster": "dishwasher",
+      "question": "型番ごとの専用洗剤の量と投入先",
+      "inbound_links_20260915": 10,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "手順ガイドで、ほかに同じ問いの記事が無い",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-cleaning-guide",
+      "post_id": 265,
+      "cluster": "dishwasher",
+      "question": "機種ごとの清掃箇所と時期",
+      "inbound_links_20260915": 11,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "手順ガイドで、ほかに同じ問いの記事が無い",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dishwasher-running-cost",
+      "post_id": 266,
+      "cluster": "dishwasher",
+      "question": "電気・水道・洗剤を式で確認する",
+      "inbound_links_20260915": 12,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "計算ガイドで、ほかに同じ問いの記事が無い",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "compact-robot-vacuum-shortlist",
+      "post_id": 30,
+      "cluster": "robot-vacuum",
+      "question": "本体と台の寸法・自動手入れで4機種を絞る",
+      "inbound_links_20260915": 9,
+      "search": "ページ行は未記録 (上位10ページに無い)",
+      "treatment": "keep",
+      "reason": "ロボット掃除機の比較の入口で、4機種を扱う記事はこれだけ",
+      "actions": [
+        "訂正: Roomba Plus 515 の本体・台の幅と奥行 (公式仕様の表記どおり)",
+        "KS-136: 置く・戻る・手入れの空間の表"
+      ],
+      "linked_tasks": [
+        "KS-136"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "roomba-mini-vs-switchbot-k11-pro",
+      "post_id": 85,
+      "cluster": "robot-vacuum",
+      "question": "Roomba Mini + AutoEmpty F155260 と SwitchBot K11+ Pro の2者比較",
+      "inbound_links_20260915": 7,
+      "search": "4クリック / 59表示。URL検査で登録済み (2026-09-15)",
+      "treatment": "keep",
+      "reason": "型番名の2者比較で、記事の中で最多のクリックがある",
+      "actions": [
+        "editorial-portfolio v3 の範囲の記述の型番を F115060 から F155260 に直す (元データ editorial-identities.v1.json と market-candidate-audit.v1.json の変更と再生成が要る)"
+      ],
+      "linked_tasks": [
+        "KS-014"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "portable-power-station-guide",
+      "post_id": 28,
+      "cluster": "power",
+      "question": "使う機器から容量・出力・重さで4機種を選ぶ",
+      "inbound_links_20260915": 7,
+      "search": "0クリック / 23表示。URL検査で登録済み (2026-09-15)",
+      "treatment": "keep",
+      "reason": "ポータブル電源の比較の入口",
+      "actions": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "anker-solix-c300-c800-c1000-differences",
+      "post_id": 29,
+      "cluster": "power",
+      "question": "Anker Solix 4型番の違い",
+      "inbound_links_20260915": 5,
+      "search": "URL検査で「検出 - インデックス未登録」。再クロール依頼済み",
+      "treatment": "keep",
+      "reason": "メーカー内の型番差の記事で、インデックス未反映のため流入では判断しない",
+      "actions": [],
+      "reevaluate": {
+        "on_or_after": "2026-10-14",
+        "trigger": "登録状態を確認してからページ×クエリを評価する"
+      },
+      "linked_tasks": [
+        "KS-303"
+      ],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    }
+  ],
+  "consolidation_checks": [
+    {
+      "id": "dishwasher-5",
+      "members": [
+        41,
+        86,
+        549,
+        550,
+        551
+      ],
+      "model_overlap": "41の4型番は549 (NP-TMLK1-K・TDWS25S) と550 (SS-MA251・NP-TSP1-W) に含まれる。86の2型番は549に含まれる。549と550、550と551に共通の型番は無い",
+      "internal_links": "被リンク 41:13 / 86:7 / 549:3 / 550:4 / 551:4。41から549・550・551へのリンクは無く、86から549へのリンクも無い。ガイド262〜266はすべて41へリンクする (2026-09-15)",
+      "redirect": "WordPress コアの old-slug 転送は slug を変えた同じ記事の旧 URL のためのもので、別の記事への統合には使えない。統合するには転送の追加 (テーマ改修・テスト・公開) が別に要る",
+      "search": "86は1クリック / 42表示、41は0クリック / 20表示。549〜551は2026-09-13公開で28日窓の外",
+      "options": [
+        {
+          "id": "A",
+          "desc": "86を549へ統合する",
+          "chosen": false,
+          "rejected_because": "クリックの記録がある型番名の URL を失う"
+        },
+        {
+          "id": "B",
+          "desc": "41を549と550へ分ける",
+          "chosen": false,
+          "rejected_because": "ガイド262〜266がそろってリンクする横断比較と、被リンク13本を失う。転送先が1つに決まらない"
+        },
+        {
+          "id": "C",
+          "desc": "URLはすべて残し、役割を分けて相互にリンクする (41=タンク式4機種の給水と設置、86=型番名の2者、549〜551=容量別)",
+          "chosen": true
+        }
+      ],
+      "reevaluate_on_or_after": "2026-10-14"
+    },
+    {
+      "id": "suitcase-83-553",
+      "members": [
+        83,
+        553
+      ],
+      "model_overlap": "83の4型番はすべて553に含まれる",
+      "internal_links": "被リンク 83:10 / 553:1。83から553へのリンクは無い (2026-09-15)",
+      "redirect": "WordPress コアの old-slug 転送は slug を変えた同じ記事の旧 URL のためのもので、別の記事への統合には使えない。統合するには転送の追加 (テーマ改修・テスト・公開) が別に要る",
+      "search": "83は2クリック / 60表示。553は28日窓の外",
+      "options": [
+        {
+          "id": "A",
+          "desc": "83を553へ統合する",
+          "chosen": false,
+          "rejected_because": "30L以上・3kg以下という数値条件の答えと、記事の中で最多の表示を失う"
+        },
+        {
+          "id": "C",
+          "desc": "両方残し、83=数値条件、553=総合として相互にリンクする",
+          "chosen": true
+        }
+      ],
+      "reevaluate_on_or_after": "2026-10-14"
+    }
+  ],
+  "summary": {
+    "update": [
+      553,
+      549,
+      41,
+      86
+    ],
+    "keep": 16,
+    "merge_candidate": 0,
+    "new_candidate": 0
+  },
+  "new_candidates": [],
+  "model_diff_trial": {
+    "task": "KS-203",
+    "state": "deferred",
+    "earliest_review_on": "2026-10-14",
+    "start_conditions": [
+      {
+        "id": "C1",
+        "text": "KS-201 の2記事がオーナーに承認されて公開済みで、制作時間が記録されている"
+      },
+      {
+        "id": "C2",
+        "text": "KS-014 の役割登録と、41・86・549・553 の導線の修正が公開済み"
+      },
+      {
+        "id": "C3",
+        "text": "2026-09-14 以降の28日分の GSC ページ×クエリの出力が evidence に保存され、ページレポートに 549〜553・19・29 が反映されている"
+      },
+      {
+        "id": "C4",
+        "text": "候補ごとに需要の根拠がある (自サイトの GSC に、候補の型番か条件語を含むクエリの表示行がある)。無い場合は、オーナーが探索枠として明示承認した1本に限る"
+      },
+      {
+        "id": "C5",
+        "text": "KS-005 の基準値 (費用・工数・確定報酬を含む) と、offer_click を評価に使うかの判断が記録されている"
+      },
+      {
+        "id": "C6",
+        "text": "更新担当が決まり、楽天価格の再取得で販売先を保守できる"
+      }
+    ],
+    "deferral_reasons": [
+      "549〜553 は2026-09-13公開で、GSC の28日窓 (08-16〜09-12) の外にある",
+      "ページのインデックス登録のレポートが 2026-09-04 版",
+      "GSC の母数が241表示と小さい",
+      "KS-201 は未着手、KS-014 と KS-005 は一部完了 (status.v1.json)"
+    ],
+    "candidate_pool": [
+      {
+        "id": "N1",
+        "question": "LCC の各辺条件と7kgに収まる機内持ち込みスーツケース",
+        "hold": "条件内と確認できた型番が3つ以上になるまでは、553の中の回答に留める"
+      }
+    ],
+    "answered_in_existing_articles": "型番差分の候補は、新しい URL にせず既存記事 (549・550・551・29・85・30) への追記で答える",
+    "cap": "最大3本は上限でノルマではない。1本ずつ承認する"
+  }
+}

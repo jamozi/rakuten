@@ -1,8 +1,16 @@
-"""KS W3 batch 5: approved-layout comparisons 549 / 550 / 551 (and 553 for KS-026).
+"""Approved-layout comparisons 549 / 550 / 551 / 83 / 30 (and 553 for KS-026).
 
-KS-120 guide links and KS-129 (549 side) cost cross-reference, KS-122 large-row
-dimensions backed by catalog facts, KS-026 one correction contact per curated
-comparison, KS-015/017 matrix group labels and no horizontal-scroll claims.
+W3 batch 5: KS-120 guide links and KS-129 (549 side) cost cross-reference,
+KS-122 large-row dimensions backed by catalog facts, KS-026 one correction
+contact per curated comparison, KS-015/017 matrix group labels and no
+horizontal-scroll claims.
+
+The record section at the end holds every rule about
+``approved-layout-baselines.v1.json``, W3's and W4's together. A revision of an
+approved layout is written as ``pending_revision`` while the owner has not seen
+the Before/After and moves into ``latest_accepted`` once the owner accepts the
+body that was published, so each rule reads the revision through
+``revision()`` and holds in either form.
 
 Bodies are compiled in memory from the tracked sources, so these checks do not
 depend on regenerated outputs. No `\\b` is used next to Japanese text.
@@ -11,6 +19,7 @@ depend on regenerated outputs. No `\\b` is used next to Japanese text.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import hashlib
 import json
 import re
 
@@ -23,6 +32,7 @@ from raos.application.editorial.purchase_support import (
     resolve_product_media,
 )
 from raos.application.editorial.reader_html import Element, fragment
+from tests.purchase_support import ks_w4_batch, phone_table_frames
 
 THEME_CSS = (
     builder.ROOT
@@ -386,6 +396,144 @@ def test_curated_history_block_requires_one_article_root(compiled) -> None:
 
 
 W3_CANDIDATE = "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf"
+STATUS = (
+    builder.ROOT / "changes/ks-integrated-20260915/status.v1.json"
+)
+PUBLICATION_20260913 = (
+    builder.ROOT / "changes/site-improvements-20260913/publication-result.v1.json"
+)
+PUBLISHED = "PUBLISHED_AND_READBACK_VERIFIED"
+LARGE_SLUG = "large-dishwasher-comparison"
+ROBOT_SLUG = "compact-robot-vacuum-shortlist"
+W4A_BRANCH = "claude/ks-w4a-20260916"
+#: Terms a summary may only use about the article whose body carries them.
+RECORD_TERMS = ("軸名", "座席下", "開閉構造")
+
+
+ARTICLE_BODIES = builder.ROOT / "changes/wordpress-direct-publish-v1/articles"
+
+
+def articles_record() -> dict[str, dict]:
+    return json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
+
+
+def revision(entry: dict) -> dict:
+    """The record of the revision of this approved layout that the site carries.
+
+    ``pending_revision`` and ``latest_accepted`` are the same record in two
+    states and spell two fields differently: the prose is ``summary`` before the
+    owner accepts it and ``accepted_scope`` afterwards, and only the accepted
+    form names the candidate that published it. Reading either keeps every rule
+    below true across the moment the owner says 公開して.
+    """
+    pending = entry.get("pending_revision")
+    if pending is not None:
+        return {
+            "accepted": False,
+            "summary": pending["summary"],
+            "branches": pending.get("branches", []),
+            "tasks": pending["tasks"],
+            "source_paths": pending["source_paths"],
+            "publication_authorized": pending["publication_authorized"],
+            "review": pending["review"],
+        }
+    accepted = entry["latest_accepted"]
+    return {
+        "accepted": True,
+        "summary": accepted["accepted_scope"],
+        "branches": accepted.get("branches", []),
+        "tasks": accepted["tasks"],
+        "source_paths": accepted["source_paths"],
+        "publication_authorized": accepted["publication_authorized"],
+        "candidate": accepted["shared_candidate"],
+    }
+
+
+def published_candidates() -> set[str]:
+    """Candidate ids the publication records say reached production."""
+    status = json.loads(STATUS.read_text(encoding="utf-8"))
+    ids = {
+        batch["candidate_id"]
+        for batch in status["batches"].values()
+        if batch.get("publication_status") == PUBLISHED
+    }
+    earlier = json.loads(PUBLICATION_20260913.read_text(encoding="utf-8"))
+    ids |= {
+        batch["candidate_id"]
+        for batch in earlier["batches"]
+        if batch.get("publication_status") == PUBLISHED
+    }
+    return ids
+
+
+def test_every_approved_layout_records_the_revision_it_carries() -> None:
+    """Each approved layout names the revision on the site, pending or accepted.
+
+    An accepted record must name the candidate that *published* that body. The
+    2026-09-13 acceptances name 80fd2d0e…, a candidate built only to show the
+    owner a shared layout, which no publication record lists -- so a record that
+    names it says the owner accepted something that never reached a reader.
+    """
+    published = published_candidates()
+    assert published, "no published candidate in the publication records"
+    for slug, entry in sorted(articles_record().items()):
+        record = revision(entry)
+        assert record["summary"].strip(), slug
+        assert record["branches"] and all(
+            branch.startswith("claude/") for branch in record["branches"]
+        ), slug
+        assert record["tasks"] and all(t.startswith("KS-") for t in record["tasks"]), slug
+        assert record["source_paths"], slug
+        assert record["publication_authorized"] is False, slug
+        if record["accepted"]:
+            assert record["candidate"] in published, (slug, record["candidate"])
+        else:
+            assert record["review"] == "PENDING_OWNER_BEFORE_AFTER", slug
+
+
+def test_large_revision_record_names_the_branch_that_wrote_it() -> None:
+    """551's W4 revision withdrew the open-door origin; the record must say so."""
+    record = revision(articles_record()[LARGE_SLUG])
+    assert W4A_BRANCH in record["branches"], record["branches"]
+    assert "起点" in record["summary"], record["summary"]
+    assert (
+        "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
+        in record["source_paths"]
+    )
+
+
+def test_revision_summaries_only_claim_text_their_own_body_carries(compiled) -> None:
+    """The owner reads the Before/After against this record, article by article.
+
+    83's entry said it listed the six carriers that publish no axis names -- that
+    note is in 553, and 83's body has no 軸名 anywhere -- so the record credited
+    one article with another's change.
+    """
+    _, _, outputs, _ = compiled
+    for slug, entry in sorted(articles_record().items()):
+        summary = revision(entry)["summary"]
+        body = re.sub(r"<[^>]+>", "", outputs.get(slug, ""))
+        for term in RECORD_TERMS:
+            if term in summary:
+                assert term in body, (slug, term)
+
+
+def test_robot_revision_states_the_width_the_theme_uses() -> None:
+    """The record said the first column was narrowed; the real fix was the table.
+
+    An earlier round wrote 「先頭列を7remに詰めてデータ列が枠内に収まるようにした」
+    against a 302px frame. The frame is 286px, so the first column at 7rem was
+    never the binding term -- the table's own min-width was.
+    """
+    summary = revision(articles_record()[ROBOT_SLUG])["summary"]
+    phone = phone_table_frames.phone_block(THEME_CSS.read_text(encoding="utf-8"))
+    width = re.search(
+        r"table\.robot-space-table\{min-width:(\d+(?:\.\d+)?)rem!important", phone
+    )
+    assert width, "phone min-width"
+    assert f"{width.group(1)}rem" in summary, (width.group(1), summary)
+    frame = int(phone_table_frames.ARTICLE_SCROLL_FRAME[320])
+    assert f"{frame}px" in summary, summary
 
 
 def test_changed_approved_layouts_record_the_owner_review() -> None:
@@ -415,3 +563,60 @@ def test_changed_approved_layouts_record_the_owner_review() -> None:
         assert len(w3) == 1, slug
         assert w3[0]["tasks"] and all(t.startswith("KS-") for t in w3[0]["tasks"])
         assert w3[0]["source_paths"]
+
+
+def published_documents() -> dict[str, set[str]]:
+    """Candidate id -> the documents that candidate published."""
+    status = json.loads(STATUS.read_text(encoding="utf-8"))
+    return {
+        batch["candidate_id"]: set(batch.get("documents", []))
+        for batch in status["batches"].values()
+        if batch.get("publication_status") == PUBLISHED
+    }
+
+
+def test_accepted_records_name_the_body_a_reader_can_open() -> None:
+    """The two identifiers in an acceptance must resolve to the published body.
+
+    ``body_sha256`` and ``snapshot_id`` are the whole point of the record -- they
+    say *which* body the owner accepted -- and nothing checked them against the
+    body. Overwriting 549's digest with 64 zeros and its snapshot id with
+    ``ps-0…`` left tests/purchase_support and tests/wordpress_public_acceptance
+    green, so the record could drift away from the article at the next
+    regeneration without a word.
+    """
+    documents = published_documents()
+    for slug, entry in sorted(articles_record().items()):
+        accepted = entry.get("latest_accepted")
+        if accepted is None:
+            continue
+        raw = (ARTICLE_BODIES / f"{slug}.html").read_bytes()
+        assert accepted["body_sha256"] == hashlib.sha256(raw).hexdigest(), slug
+        assert accepted["snapshot_id"] in raw.decode("utf-8"), (
+            slug,
+            accepted["snapshot_id"],
+        )
+        # The candidate the record names must be the one that carried this body.
+        published = documents.get(accepted["shared_candidate"])
+        assert published is not None, (slug, accepted["shared_candidate"])
+        assert slug in published, (slug, sorted(published))
+
+
+def test_the_previous_acceptance_is_the_body_this_batch_corrected() -> None:
+    """The recorded before-state and the previous acceptance are the same body.
+
+    ``ks_w4_published_before.json`` holds what each body showed before the
+    2026-09-16 publish, for the card rules that have no git history to read. For
+    the three dishwasher comparisons the owner also accepted that exact body at
+    W3, so the digest recorded then is an independent check that the captured
+    before is the state readers actually saw.
+    """
+    checked = []
+    for slug, entry in sorted(articles_record().items()):
+        history = entry.get("previous_accepted") or []
+        if not history or slug not in ks_w4_batch.before_record()["bodies"]:
+            continue
+        before = ks_w4_batch.published_before(slug)
+        assert history[0]["body_sha256"] == before["body_sha256"], slug
+        checked.append(slug)
+    assert len(checked) == 3, checked

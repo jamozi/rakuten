@@ -27,7 +27,7 @@ LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
 INTERNAL_TOKENS = re.compile(
     r"(?<![A-Za-z0-9_])(?:UNKNOWN|UNAVAILABLE|SOLD_OUT|PREORDER|RECHECK_REQUIRED|newPurchaseSku)"
     r"(?![A-Za-z0-9_])"
-    r"|レビュー中|本文候補|TODO|FIXME|lorem ipsum",
+    r"|レビュー中|本文候補|担当記事|公式検索本文|直接取得は失敗|TODO|FIXME|lorem ipsum",
     re.IGNORECASE,
 )
 SKIPPED_TAGS = frozenset({"script", "style", "template", "code", "pre", "kbd", "samp"})
@@ -323,3 +323,47 @@ def test_product_image_label_adds_the_model_only_when_missing() -> None:
     # The KS-132 case: the name already carries the base model, so it is not repeated.
     assert product_image_label({"name": "PROTECA エアロフレックスDX2 01521", "exact_model": "01521-09"}) == \
         "PROTECA エアロフレックスDX2 01521"
+
+
+# The stylesheets the theme serves to every visitor. Their comments ship with
+# the site, so they are held to the same rule as the article bodies above: no
+# internal task or batch code, and no post id standing in for an article name.
+THEME_ROOT = ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+BATCH_CODE = re.compile(r"KS-[A-Z0-9]")
+CSS_UNIT = re.compile(r"(?:px|rem|em|%|cm|mm|ms|s|vh|vw|ch|deg|fr|x)")
+# A plain integer: not part of a decimal, a date or a version string.
+CSS_NUMBER = re.compile(r"(?<![0-9.\-])(\d{2,})(?![0-9])")
+
+
+def shipped_stylesheets() -> dict[str, str]:
+    files = sorted(THEME_ROOT.glob("assets/*.css")) + [THEME_ROOT / "style.css"]
+    sheets = {path.name: path.read_text(encoding="utf-8") for path in files}
+    assert "theme.css" in sheets and len(sheets) >= 4, sorted(sheets)
+    return sheets
+
+
+def test_shipped_stylesheet_comments_name_no_internal_identifier() -> None:
+    """KS-008, shipped assets: a served comment must read as site wording.
+
+    Post ids and batch codes are production bookkeeping. They stayed out of the
+    stylesheets until this batch wrote 「549 space table」 and 「KS-W4A phone table
+    widths」, next to an older 「552 tables」 line.
+    """
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    post_ids = {
+        str(article["post_id"])
+        for article in ledger["articles"]
+        if article.get("post_id") and len(str(article["post_id"])) > 1
+    }
+    leaks = []
+    for name, css in shipped_stylesheets().items():
+        for comment in re.findall(r"/\*.*?\*/", css, re.S):
+            flat = " ".join(comment.split())
+            if BATCH_CODE.search(flat):
+                leaks.append((name, "batch code", flat[:80]))
+            for match in CSS_NUMBER.finditer(flat):
+                if match.group(1) in post_ids and not CSS_UNIT.match(
+                    flat[match.end() : match.end() + 4]
+                ):
+                    leaks.append((name, "post id " + match.group(1), flat[:80]))
+    assert leaks == []

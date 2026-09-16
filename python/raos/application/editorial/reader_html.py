@@ -111,7 +111,8 @@ def readable_tables(html: str) -> str:
     root = fragment(html)
     changed = False
     for table in root.find(tag="table"):
-        if table.has("ps-row-comparison"):
+        # A wide matrix that must keep its column widths opts into sideways scrolling.
+        if table.has("ps-row-comparison") or table.attrs.get("data-ks-table-layout") == "scroll":
             continue
         rows = table.find(tag="tr")
         if not rows or table.parent is None:
