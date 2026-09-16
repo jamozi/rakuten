@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 78201da42a4973c976ac18dd2b6bd38adc2efd41850565a6332809aace2e1f77;
+  --raos-theme-runtime-revision-base: 386fd6e3574132847b502f0793313a412858d2517482dc4bd7d023df7eb4e067;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4747,6 +4747,11 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ps-article.ks-branch-guide .ks-branch-table :is(th,td) { min-width:0; }
 .ps-article.ks-branch-guide .ks-branch-table tbody th { position:static; min-width:0; max-width:none; }
 .ks-branch-guide .ks-branch-consult { padding-left:1.25em; }
+/* This guide is outside the purchase-support runtime, so inc/purchase-support.php returns
+   before enqueueing purchase-support.css, where .ps-article .ps-toc gets its flex gap. Without
+   it the three navigation links rendered edge to edge as one string. Same spacing, from the
+   one sheet this page does load. */
+.ks-branch-guide .ps-toc { display:flex; flex-wrap:wrap; gap:.5em 1.2em; }
 @media (max-width:42em) {
   .ks-branch-guide .ks-branch-opening { grid-template-columns:minmax(0,1fr); gap:1rem; }
   .ks-branch-guide .ks-branch-steps { grid-template-columns:minmax(0,1fr); gap:.85rem; }

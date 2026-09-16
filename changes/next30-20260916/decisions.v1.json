@@ -723,7 +723,7 @@
         ]
       },
       "candidate_b": {
-        "documents": 8,
+        "documents": 9,
         "theme": true,
         "contents": [
           "home",
@@ -733,7 +733,8 @@
           "guides",
           "small-space",
           "kitchen（水切りラックの棚と導線を足す）",
-          "about-ad-policy (10)（扱う領域の「準備中」から水切りラックを外す）"
+          "about-ad-policy (10)（扱う領域の「準備中」から水切りラックを外す）",
+          "easy-maintenance (134)（棚見出しを「台所」「掃除」にそろえる）"
         ]
       },
       "depends_on": [
@@ -994,6 +995,7 @@
       "changes/reader-purchase-support-v1/purchase-support.v1.json",
       "changes/site-improvements-20260913/entry-pages.v1.json",
       "changes/site-improvements-20260913/entry-pages/cleaning.html",
+      "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
       "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
       "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
       "changes/wordpress-direct-publish-v1/articles.v1.json",
@@ -1098,9 +1100,9 @@
       },
       "documents": 12,
       "before": [
-        "食洗機の選び方・記事一覧（4 本）",
+        "食洗機の選び方・記事一覧（2 本）",
         "食洗機選びの全体像に戻る（5 本）",
-        "食洗機の選び方（分岐水栓ガイドの 2 か所）",
+        "食洗機の選び方（5 本・6 か所）",
         "食洗機選び／食洗機選びの全体へ（給水方法ガイド）",
         "食洗機の選び方に戻る →／食洗機の選び方へ戻る（標準・大容量の比較）",
         "ロボット掃除機の選び方・記事一覧（2 本）",
@@ -1118,10 +1120,17 @@
       {
         "page": "about-ad-policy (10)",
         "before": "扱う領域に準備中の4群の断りを添え…カテゴリページの名前を表示名にそろえ、",
-        "after": "扱う領域のうち、まだ記事のない4分野にその断りを添え…「食洗機の選び方・比較」を「台所の道具の選び方・比較」に、「ロボット掃除機の選び方・比較」を「掃除の道具の選び方・比較」に改称し、この2ページで台所と掃除の道具全般を扱うことにした。カードやパンくず、記事一覧での呼び方は「台所」「掃除」にそろえ、記事からこの2ページへ戻るリンクの文言は新しいページ名に合わせた。台所と掃除のページの見出しは、いま掲載しているのが卓上食洗機とロボット掃除機であることが分かるように改め、台所のページの広告の断りは掲載中の記事に合わせて書き直した",
-        "why": "「群」「表示名」は作業側の語で、同じページが同じ対象を「分野」と数えている。改定内容の最初の書き直しは「メニューやカードで使っている名前にそろえ」と書いたが、ヘッダー・フッターのメニューは商品カテゴリ／悩み・目的／選び方ガイド／比較・条件別の候補／最近更新したガイドの 5 項目だけで、この 2 ページを一度も名乗っていない。カードの「台所」「掃除」も同じ波で改称したもので、そろえる先として先にあったわけではない。読者が知る必要があるのは旧名と新名なので、両方を書いて改称と名乗る。/cleaning/ の見出しも同じ波で動いているので、見出しの文も 2 ページ分に直した。"
+        "after": "扱う領域のうち、まだ記事のない4分野にその断りを添え…「食洗機の選び方・比較」を「台所の道具の選び方・比較」に、「ロボット掃除機の選び方・比較」を「掃除の道具の選び方・比較」に改称し、この2ページで台所と掃除の道具全般を扱うことにした。この2ページへ案内するカードの呼び方は「台所」「掃除」にそろえ、記事のパンくずと、記事からこの2ページへ戻るリンクの文言は新しいページ名に合わせた。台所と掃除のページの見出しは、いま掲載しているのが卓上食洗機とロボット掃除機であることが分かるように改め、台所のページの広告の断りは掲載中の記事に合わせて書き直した",
+        "why": "「群」「表示名」は作業側の語で、同じページが同じ対象を「分野」と数えている。改定内容の最初の書き直しは「メニューやカードで使っている名前にそろえ」と書いたが、ヘッダー・フッターのメニューは商品カテゴリ／悩み・目的／選び方ガイド／比較・条件別の候補／最近更新したガイドの 5 項目だけで、この 2 ページを一度も名乗っていない。カードの「台所」「掃除」も同じ波で改称したもので、そろえる先として先にあったわけではない。読者が知る必要があるのは旧名と新名なので、両方を書いて改称と名乗る。/cleaning/ の見出しも同じ波で動いているので、見出しの文も 2 ページ分に直した。「記事一覧での呼び方」は、この波がそろえ切れていない面まで名乗っていた: 記事カードを並べる公開ページのうち /easy-maintenance/（134）だけが同じ記事の束をいまも「食洗機」「掃除機」と呼び、134 は候補に入っていない（19 documents＋テーマ＝上限）。そこで一文を、実際にそろえた面だけ——この 2 ページへ案内するカード、記事のパンくず、記事からこの 2 ページへ戻るリンク——に狭めた。134 は DF07 として W1-B に載せた。測り方は tests/site_editorial_pages/test_ks_n30_w0_revision_note_20260916.py が持つ。"
       }
     ],
+    "theme_rendering_fix": {
+      "where": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "what": "/dishwasher-branch-faucet-guide/（552）の記事内ナビ 3 本が区切りなしで 1 本の文字列として描画されていた（「台所の道具の選び方・比較蛇口を確認費用を確認」）。.ks-branch-guide .ps-toc に、他の記事のナビと同じ間隔（display:flex; flex-wrap:wrap; gap:.5em 1.2em）を足した。",
+      "why": "552 は purchase-support ランタイムの 23 本に無いので inc/purchase-support.php が context なしで return し、.ps-article .ps-toc に間隔を持つ唯一のシート purchase-support.css を enqueue しない。editorial-v2.css も本文の先頭が <!-- wp:html --> で始まるため付かない。読者に届くのは theme.css だけで、そこの .ps-toc 規則は.sm-page 配下の 2 件しかなかった。本波はまさにこのナビの 1 本目のリンク文言を書き換えている。",
+      "measured": "テーマの PHP に実際の enqueue を尋ね（552 だけが theme.css 単独）、320・390・1440px の実描画で隣接リンクを測った。修正前は 3 幅とも水平間隔 0px。修正後は同じ行なら 19.19px、折り返す場合は縦 8px で、他 18 本の最小 14.39px は1 件も動いていない。記事本文は 1 バイトも変えていないので公開候補は 19 本のまま。",
+      "test": "tests/purchase_support/test_ks_n30_w0_article_nav_20260916.py"
+    },
     "advertising_promise": {
       "claim": "about-ad-policy の「広告を含まない記事は、その旨を記事側で明示する運用にしています。」",
       "holds": true,
@@ -1147,7 +1156,7 @@
     "/categories/ のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。4 つとも品目でそろえるか場所・行為でそろえるかはオーナー判断",
     "カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は W0-A の候補内なので揃えても公開候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには travel・preparedness の本文が加わるため別の候補が要る",
     "/guides/ のジャンプ先 3 つがカテゴリ名を書いた見出しではなく記事カードに着地する（W0 はジャンプのラベルだけを「台所」「掃除」に改称したので、ラベルと着地先の食い違いは新しくなっている）",
-    "/easy-maintenance/（134）の棚見出しが「食洗機」「掃除機」のまま。home・categories・comparisons・guides は同じ束を「台所」「掃除」と呼ぶ。134 は W0-A の 19 本に入っていないので、直すと 20 documents＋テーマ＝上限超過になる。home・categories を持つ次の候補（W1-B など）に載せる判断が要る",
+    "方針ページの改定内容が 1 つの丸括弧に 5 文・435 文字（320px では最長の段落）。読者に見える変更（改称・呼び方・戻るリンク・見出し・広告の断り）と、方針文そのものの改定（扱う領域・確認手順・参考価格）に分けるかは編集判断。分けると「最終更新日：…（改定内容：…）」という改定履歴の体裁そのものを変えることになるので、この波では狭める修正だけにとどめた",
     "ハブの編集方針の一文が 2 通りある。/kitchen/ は「広告リンクを含む記事は、記事の中でその旨を示します。」、他の 12 本（categories・cleaning・comparisons・guides・updates・purposes と悩み別 5 本・preparedness）は site_editorial_pages.py が刷る共通文「記事ごとの広告表示は実際のリンクに基づきます。」。共通文を書き換えると候補に無い 8 本が動いて上限を超え、cleaning だけ差し替えると今度は共通文を持つ 11 本から外れる。どちらに寄せるかは編集判断",
     "tests/purchase_support/test_ks_w4b_round7_20260916.py の _batch_shipped は「候補本文が origin/main とバイト一致するか」で公開済みを判定している。W0-A を公開するとこの条件が崩れ、公開済みの W4b の 2 件が再び発火する。origin/main は squash merge なので（9fa8ee45 は b5618eed の祖先ではない）コミットの祖先関係でも判定できず、batch の公開を記録する仕組みが要る",
     "AF04 / YCW-C120 のハンドル質量とパンくずトレイの帰属（公式は「ハンドルは含まれていません」だけ）",
@@ -1264,6 +1273,23 @@
       "where_quote": {
         "changes/site-improvements-20260913/entry-pages/cleaning.html": "いま掲載しているのはロボット掃除機です。",
         "changes/site-improvements-20260913/entry-pages.v1.json": "いまはロボット掃除機。"
+      }
+    },
+    {
+      "id": "DF07",
+      "what": "/easy-maintenance/（134）の棚見出し「食洗機」「掃除機」を、同じ記事の束を並べる他の一覧と同じ「台所」「掃除」へそろえる",
+      "where": [
+        "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
+      ],
+      "trigger": "wave_edits_document",
+      "documents": [
+        "easy-maintenance"
+      ],
+      "wave": "W1",
+      "candidate": "B",
+      "why": "home・categories・comparisons は同じ記事の束を「台所」「掃除」と呼ぶのに、134 の棚見出しだけが「食洗機」「掃除機」のまま。W0-A は 19 documents＋テーマ＝20 で上限ちょうどなので、この波では 134 を足せない（足すと 21）。方針ページの改定内容はこの面を名乗らないように直したので、読者向けの文と記録は食い違わない。W1-B は同じ一覧 4 本（home・categories・updates・comparisons）と悩み別の small-space を持つ最初の未公開候補で、134 を足しても 9＋テーマ＝10 で枠に収まる。",
+      "where_quote": {
+        "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>食洗機</h2>"
       }
     }
   ]

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "8a322baac0d64386b2f26a46b888480388143480f22b8fc89c52015fba0064b4",
+          "sha256": "cf288f8c722af9d9391e5e1e3a248142c526febbb9b7bec4fee75507ebb79848",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,12 +1962,12 @@
       "outputs": [
         {
           "bytes": 697071,
-          "sha256": "b05e63d9b356dbbca7b4927341dd358aaea462255cc79c00e2ffbf7c8ca92dc3",
+          "sha256": "8dc166d73c83ea8dd4544f04ff3c643379d45f61e943407ef5ed5eb2cc5638ac",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
-          "bytes": 10431,
-          "sha256": "cd98b33a889a8b26eae61212b30e8701fe8cf8d775dbba9c787c7714169c184e",
+          "bytes": 10456,
+          "sha256": "65e1eac70c62baa92d4e6f7b26a9fc2e4e79626000722b6360fea90ae9a6d8f4",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/about-ad-policy.html"
         },
         {
@@ -27135,7 +27135,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "e6ce7a3e1d8a54af6eea52c79aa8c6edf042f97b71285f66da71f711ef6b8c93",
+          "sha256": "6a40e1db5523c86748929bd43bd6fe01383bd33806477d8b86b6e4a1618f3b9c",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27366,7 +27366,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "c8e6a4861e9048215f6561a9c1ddcf97c888bdf12a05df425a5c76c61dd948bf",
+          "sha256": "7a9c65d842649fc70810cda553b68d54e5ecb2e2a0777de3d6267fa2e9159bb2",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30306,7 +30306,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "7d6e759062c23867feba6fd82ce3f3d23d2800d88d053c769f9f1b8281211703",
+          "sha256": "a2eca2c382c3ba3283c3e274c0a6d2fe11e599cbd1085bdbb77042af8b1a5430",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31163,7 +31163,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "9cc1d48aefcd224733de8ea9ff6823131e8892be025302ab5d55c8a31dbdc1d8",
+          "sha256": "6de2a2ae8e32cbdaee5dd258a1ea650b87910de53c6a9944e9678041eae4852f",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

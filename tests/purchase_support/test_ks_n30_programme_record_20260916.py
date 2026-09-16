@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 from raos.application.editorial.reader_html import fragment
@@ -481,3 +482,71 @@ def test_the_wave_zero_table_counts_the_hub_links_it_says_it_rewrote() -> None:
             )
         ]
         assert len(links) == int(count), (slug, hub, count, len(links))
+
+
+# --- the hub-link table answers to the bodies it rewrote --------------------
+# ``hub_link_labels_rewritten.before`` lists the wording this wave replaced. The
+# counts beside each label were written by hand and two of them were wrong: the
+# 「・記事一覧」 label was credited to four articles when two carry it, and the bare
+# 「食洗機の選び方」 row named only the branch-faucet guide, leaving out the four
+# guides that carry it once each. Counted on the bodies published at the base
+# commit, the seven rows have to add up to every hub link the wave rewrote.
+HUB_ANCHOR_HREF = re.compile(r"/(kitchen|cleaning)/$")
+LABEL_COUNT = re.compile(r"(\d+)\s*(本|か所)")
+
+
+def _git(*arguments: str) -> str:
+    return subprocess.run(
+        ("git", *arguments), cwd=ROOT, check=True, capture_output=True, text=True
+    ).stdout
+
+
+def hub_link_record() -> dict:
+    return decisions()["wave_zero_applied"]["hub_link_labels_rewritten"]
+
+
+def hub_links_at_the_base_commit() -> dict[str, list[str]]:
+    """Link text → the articles that carried it, as published before this wave."""
+    base = decisions()["wave_zero_applied"]["base_commit"]
+    ledger = json.loads(
+        _git("show", f"{base}:changes/wordpress-direct-publish-v1/articles.v1.json")
+    )["articles"]
+    carried: dict[str, list[str]] = {}
+    for row in ledger:
+        source = row.get("body_source") or row.get("patch_source")
+        if row["post_type"] != "post" or not source:
+            continue
+        for anchor in fragment(_git("show", f"{base}:{source}")).find(tag="a"):
+            href = (anchor.attrs.get("href") or "").split("#")[0].split("?")[0]
+            if HUB_ANCHOR_HREF.search(href):
+                carried.setdefault(anchor.text().strip(), []).append(row["slug"])
+    return carried
+
+
+def labels_of(row: str) -> list[str]:
+    return [label for label in row.split("（")[0].split("／") if label]
+
+
+def test_the_record_names_every_hub_link_label_the_wave_replaced() -> None:
+    """Seven rows, and between them every hub link the 12 bodies carried."""
+    record = hub_link_record()
+    carried = hub_links_at_the_base_commit()
+    named = [label for row in record["before"] for label in labels_of(row)]
+    assert len(named) == len(set(named)), named
+    assert sorted(named) == sorted(carried), (sorted(named), sorted(carried))
+    occurrences = sum(len(articles) for articles in carried.values())
+    articles = {slug for articles in carried.values() for slug in articles}
+    assert len(articles) == record["documents"], (sorted(articles), record["documents"])
+    assert occurrences == 21, occurrences
+
+
+def test_each_hub_link_row_counts_what_the_published_bodies_carried() -> None:
+    """「4 本」 for a label two articles carry is a number nobody can check."""
+    carried = hub_links_at_the_base_commit()
+    for row in hub_link_record()["before"]:
+        labels = labels_of(row)
+        occurrences = sum(len(carried.get(label, [])) for label in labels)
+        articles = {slug for label in labels for slug in carried.get(label, [])}
+        for number, unit in LABEL_COUNT.findall(row):
+            measured = len(articles) if unit == "本" else occurrences
+            assert int(number) == measured, (row, unit, measured)
