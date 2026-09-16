@@ -4,6 +4,7 @@ No production access, credentials, merchant identifiers, or publish calls.
 The prefix loads on Python 3.13 as well as the repository's newer runtime;
 unchanged CLI handlers below it use the newer exception-tuple syntax.
 """
+import contextvars
 import copy
 import json
 from pathlib import Path
@@ -29,6 +30,8 @@ class PreparePatchTests(unittest.TestCase):
         self.operator.THEME_ROOT = self.root / 'theme'
         self.operator.OperatorFailure = type('OperatorFailure', (RuntimeError,), {})
         self.operator.require_sha256 = lambda value: value
+        self.operator.OWNER_CHECKOUT = self.root / 'fixed-owner-checkout'
+        self.operator._private_owner = contextvars.ContextVar('owner', default=None)
         self.registry = 'changes/wordpress-direct-publish-v1/articles.v1.json'
         self.source = 'changes/wordpress-direct-publish-v1/articles/demo.patch.json'
         self.row = {'article_key': 'demo', 'mode': 'existing', 'post_id': 99, 'post_type': 'post', 'slug': 'demo', 'title': '既存タイトル', 'patch_source': self.source}

@@ -1,11 +1,17 @@
 /** Ephemeral consent checks, with passive requests only and aggregate host/category output. */
-import { chromium } from 'playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 const args = process.argv.slice(2),
   opt = (k, d) => (args.includes(k) ? args[args.indexOf(k) + 1] : d);
 const origin = new URL(opt('--origin', 'https://kurashinoshirube.com')).origin;
 const output = opt('--output', 'output/site-improvements-20260913/consent-lab-baseline.json');
+// Contract §8: a capture while Rakuten price overlay values may be published stores the
+// rendered prices and their hashes, wherever it writes them. The destination is no exemption
+// any more (round 10): only the publisher's run-bound preview writes into the candidate
+// directory the run itself deletes, so every other capture refuses while values are live.
+await refuseWhilePriceOverlayLive();
+const { chromium } = await import('playwright');
 const browser = await chromium.launch({ headless: true });
 const flows = [];
 const category = (u) =>

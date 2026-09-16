@@ -2,16 +2,25 @@
 
 These records are internal evidence, not reader-facing text. The checks keep them honest:
 every metric names its denominator, source, period and missing-data handling; unmeasured
-values are never written as 0; the evaluation lists every published batch and does not
-treat the 2026-08-16〜09-12 reference period as an unchanged pre-change baseline; and no
-numeric multipliers or bounce rates from the attached PDFs are copied in.
+values are never written as 0; the evaluation lists every published batch in its own §1
+table and does not treat the 2026-08-16〜09-12 reference period as an unchanged pre-change
+baseline; every published batch has an evidence file of its own; and no numeric multipliers
+or bounce rates from the attached PDFs are copied in.
+
+The last check here is the one that keeps the others honest: the batch a record describes
+must be the same set of bodies that the ledger and the reader-facing /updates/ page name,
+so a record cannot narrow the scope of its own audit by dropping a document.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import subprocess
 from pathlib import Path
+
+from tests.purchase_support import ks_w4_batch
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = ROOT / "changes/ks-integrated-20260915"
@@ -29,6 +38,13 @@ PDF_NUMERIC_PHRASE = re.compile(
 )
 EMPTY_CELL = re.compile(r"^(?:|-|—|–|n/?a|null|none)$", re.IGNORECASE)
 PUBLISHED = "PUBLISHED_AND_READBACK_VERIFIED"
+EVIDENCE = PACKAGE / "evidence"
+#: Per-batch evidence files. KS-303 is the evaluation record, not a batch record.
+BATCH_EVIDENCE = sorted(
+    path
+    for pattern in ("KS-301*.md", "KS-302*.md")
+    for path in EVIDENCE.glob(pattern)
+)
 
 
 def markdown_tables(text: str) -> list[tuple[list[str], list[list[str]]]]:
@@ -163,6 +179,24 @@ def test_baseline_metrics_define_denominator_source_period_and_missing_data() ->
     assert not PDF_NUMERIC_PHRASE.search(text), PDF_NUMERIC_PHRASE.search(text)
 
 
+def section(text: str, heading: str) -> str:
+    """One `## ` section of a markdown record, without the sections after it."""
+    start = text.index(heading)
+    rest = text[start + len(heading) :]
+    end = rest.find("\n## ")
+    return rest if end < 0 else rest[:end]
+
+
+def table_cells(text: str) -> set[str]:
+    """Every cell of every pipe table in `text`."""
+    return {
+        cell
+        for _, rows in markdown_tables(text)
+        for row in rows
+        for cell in row
+    }
+
+
 def published_candidates() -> dict[str, str]:
     status = json.loads(STATUS.read_text(encoding="utf-8"))
     candidates = {
@@ -179,15 +213,22 @@ def published_candidates() -> dict[str, str]:
 
 
 def test_evaluation_record_lists_every_published_batch_and_defers_decision() -> None:
+    """§1 says a publish is added to *that table*, so the table is what is checked.
+
+    Searching the whole file passed while the W4b row was deleted, because §5
+    still names the candidate in a sentence about confounding -- the record's own
+    rule was stronger than the check behind it.
+    """
     assert KS303.is_file(), "evidence/KS-303.md is missing"
     text = KS303.read_text(encoding="utf-8")
 
+    published_table = " | ".join(sorted(table_cells(section(text, "\n## 1. 対象の公開"))))
     missing = {
         name: cid[:8]
         for name, cid in published_candidates().items()
-        if cid[:8] not in text
+        if cid not in published_table
     }
-    assert not missing, f"KS-303.md does not list published candidates: {missing}"
+    assert not missing, f"KS-303.md §1 does not list published candidates: {missing}"
 
     # 2026-08-16〜09-12 is a reference period that already contains production changes.
     assert "参照期間" in text and "変更前ではない" in text
@@ -213,3 +254,158 @@ def test_evaluation_record_lists_every_published_batch_and_defers_decision() -> 
             rf"^- {re.escape(field)}[:：]\s*未記入\s*$", text, re.MULTILINE
         ), field
     assert not PDF_NUMERIC_PHRASE.search(text), PDF_NUMERIC_PHRASE.search(text)
+
+
+#: One `## ` section of a record, heading included.
+SECTION = re.compile(r"^## .*?(?=^## |\Z)", re.M | re.S)
+#: The sections that describe a batch: where its candidate is prepared, approved,
+#: inspected or published. 「## 復元」「## 受入条件」「## 途中の失敗と対処」 and the
+#: Before/After notes are not, so a candidate named only there does not count.
+BATCH_HEADING = re.compile(r"候補|承認|KS-30[12]")
+
+
+def evidence_sections() -> list[tuple[str, str, str]]:
+    """(file, heading, section text) for the KS-301 / KS-302 records."""
+    found = []
+    for path in BATCH_EVIDENCE:
+        for match in SECTION.finditer(path.read_text(encoding="utf-8")):
+            text = match.group(0)
+            found.append((path.name, text.splitlines()[0], text))
+    return found
+
+
+def test_every_published_batch_has_an_evidence_file() -> None:
+    """A batch that reached production owes a record of its own, not just a table row.
+
+    KS-303 is the evaluation record and names every candidate by design, so it
+    does not count here: the check is that each publish also has a KS-301 / KS-302
+    evidence file naming the candidate that carried it.
+
+    The name has to be the full 64-hex id, on a line that names it as the
+    candidate, in the section that prepares, approves, inspects or publishes it.
+    An 8-character prefix anywhere in the file was not enough: deleting the full
+    id from W4b's 候補 line left this rule green, because 「作り直した候補
+    `7cea2e0a…` でも同じ」 -- a parenthetical about screenshot counts -- still
+    carried the prefix. It is the same looseness the KS-303 §1 rule above had to
+    drop, for the same reason.
+    """
+    assert BATCH_EVIDENCE, "no KS-301 / KS-302 evidence files"
+    sections = evidence_sections()
+    assert sections, "no `## ` sections in the KS-301 / KS-302 evidence"
+    status = json.loads(STATUS.read_text(encoding="utf-8"))
+    named: dict[str, list[str]] = {}
+    missing = {}
+    for name, batch in status["batches"].items():
+        if batch.get("publication_status") != PUBLISHED:
+            continue
+        candidate = batch["candidate_id"]
+        found = [
+            f"{file} {heading}"
+            for file, heading, text in sections
+            if BATCH_HEADING.search(heading)
+            and any(
+                candidate in line and "candidate" in line
+                for line in text.splitlines()
+            )
+        ]
+        if found:
+            named[name] = found
+        else:
+            missing[name] = candidate[:8]
+    assert not missing, (
+        "no KS-301 / KS-302 evidence section names these publishes by their full "
+        f"candidate id: {missing}"
+    )
+    assert len(named) >= 10, sorted(named)
+
+
+def test_the_batch_records_agree_with_the_ledger_and_the_updates_page() -> None:
+    """What a batch says it published must be what the site says changed that day.
+
+    The W4 rules read their scope out of ``status.v1.json``; dropping a document
+    there would silently narrow every one of them instead of failing. The ledger's
+    2026-09-16 cards and the generated /updates/ page are two observations that do
+    not come from that record, so requiring all three to agree in both directions
+    is what gives the record a scope it cannot set for itself.
+    """
+    rows = ks_w4_batch.ledger_rows()
+    # A published document is a page this repository has: a row of the ledger the
+    # publisher reads, with a body on disk. Without this, a slug that never
+    # existed could be added to the record and simply be filtered back out.
+    unknown = sorted(
+        doc
+        for doc in ks_w4_batch.batch_documents()
+        if doc not in rows
+        or not (ks_w4_batch.ARTICLES / f"{doc}.html").is_file()
+    )
+    assert unknown == [], unknown
+
+    documents = ks_w4_batch.batch_article_documents()
+    cards = set(ks_w4_batch.carded())
+    page = ks_w4_batch.updates_page_slugs()
+    assert len(documents) == 13, sorted(documents)
+    assert documents == cards, sorted(documents ^ cards)
+    assert documents == page, sorted(documents ^ page)
+    # /updates/ itself is republished by each candidate that writes a card.
+    for name in ks_w4_batch.BATCH_NAMES:
+        assert "updates" in ks_w4_batch.batch_documents(name), name
+
+
+def git(*args: str) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(("git", *args), cwd=ROOT, capture_output=True)
+
+
+def test_the_before_record_is_the_bodies_at_the_pinned_main_commit() -> None:
+    """The "before" every card rule is measured against comes from outside itself.
+
+    ``tests/purchase_support/ks_w4_published_before.json`` is written by the same
+    commit as the cards it validates, so until this rule nothing constrained it.
+    Measured on this tree: appending 「背面は5cm必要」 to 551's ``text`` and to its
+    AQUA ADW-L40B row (``body_sha256`` untouched, because no check recomputes it
+    from those fields) and prepending a 訂正 card quoting that phrase -- a state
+    the published body never showed -- left the eight record and batch files at
+    `146 passed`. The digest is not enough on its own either: the card rules read
+    ``text``/``rows``/``sections``/``links``/``openings``, none of which a digest
+    covers, so the whole record is re-derived here.
+
+    The record is re-derived from ``ks_w4_batch.PRE_PUBLISH_COMMIT`` (batch G,
+    PR #292): a commit of *main*, so it is in every clone that has history, and
+    it changed no article body, so it holds the bodies this batch published over.
+
+    A missing object fails; it does not skip. The job that runs pytest checks
+    this repository out with ``fetch-depth: 0`` -- ``.github/workflows/ci.yml``,
+    job ``tests``, and so do ``plan``, ``static``, ``php``, ``contracts``,
+    ``data``, ``storage``, ``secrets`` and ``final``; only ``lock``, which runs
+    no test, takes the default shallow checkout. So the commit is always
+    reachable where this rule runs, and a skip would let the one thing that
+    binds the record to an observation outside itself disappear without a word.
+    """
+    record = ks_w4_batch.before_record()
+    commit = ks_w4_batch.PRE_PUBLISH_COMMIT
+    assert record["captured_from"]["commit"] == commit, record["captured_from"]
+
+    present = git("cat-file", "-e", commit + "^{commit}")
+    assert present.returncode == 0, (
+        f"{commit} is not in this clone, so the before-record cannot be checked "
+        "against the bodies it claims to hold. CI checks out with fetch-depth: 0 "
+        "(.github/workflows/ci.yml), so fetch the full history rather than "
+        "letting this rule pass unmeasured."
+    )
+
+    bodies = record["bodies"]
+    documents = ks_w4_batch.batch_article_documents()
+    assert set(bodies) == documents, sorted(set(bodies) ^ documents)
+
+    published_over = {}
+    for slug in sorted(bodies):
+        blob = git("show", f"{commit}:{ks_w4_batch.ARTICLE_PREFIX}{slug}.html")
+        assert blob.returncode == 0, (slug, blob.stderr.decode("utf-8", "replace"))
+        published_over[slug] = hashlib.sha256(blob.stdout).hexdigest()
+    assert {slug: body["body_sha256"] for slug, body in bodies.items()} == (
+        published_over
+    )
+
+    # Every field the card rules actually read, which no digest can cover.
+    rebuilt = ks_w4_batch.capture(commit)["bodies"]
+    edited = sorted(slug for slug in bodies if bodies[slug] != rebuilt[slug])
+    assert edited == [], edited

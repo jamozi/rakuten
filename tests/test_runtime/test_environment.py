@@ -273,6 +273,124 @@ def test_excluded_database_tests_do_not_require_runtime(tmp_path, marker):
     assert "ERROR" not in result.stdout
 
 
+def test_php_container_mounts_a_declared_copy_read_only_and_refuses_anything_else(tmp_path):
+    """A harness rendering a tmp copy of tracked source has to be able to read it.
+
+    The container masks /tmp with its own tmpfs and binds only the declared source, so an
+    undeclared copy is silently empty inside it (the batch F theme harness read nothing and
+    asserted against silence). RAOS_PHP_EXTRA_MOUNTS names the copy; it stays read-only and
+    never reaches a private store.
+    """
+    import subprocess
+    from scripts.raos_test_runtime import (
+        PHP_EXTRA_MOUNTS_VARIABLE,
+        PHP_IMAGE,
+        extra_php_mounts,
+        php_command,
+    )
+
+    copy = tmp_path / "theme-copy"
+    copy.mkdir()
+    docker = tmp_path / "docker"
+    docker.write_text(
+        "#!" + sys.executable + "\nimport json,sys\nprint(json.dumps(sys.argv[1:]))\n"
+    )
+    docker.chmod(0o755)
+    declared = extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(copy)})
+    assert declared == (copy,)
+    result = subprocess.run(
+        php_command(["-r", "echo 1;"], docker=str(docker), extra_mounts=declared),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    args = json.loads(result.stdout)
+    mounts = [args[index + 1] for index, value in enumerate(args) if value == "--mount"]
+    assert mounts[-1] == f"type=bind,src={copy},dst={copy},readonly"
+    assert args[-3:] == [PHP_IMAGE, "-r", "echo 1;"]
+    # Nothing declared, nothing bound: the default command is unchanged.
+    unchanged = php_command(["-r", "echo 1;"], docker=str(docker))
+    assert str(copy) not in " ".join(unchanged)
+    assert extra_php_mounts({}) == ()
+    private = tmp_path / ".secrets" / "wordpress-mcp"
+    private.mkdir(parents=True)
+    link = tmp_path / "link"
+    link.symlink_to(copy)
+    for refused in (private, link, copy / "missing", Path("relative/copy")):
+        with pytest.raises(RuntimeError, match=PHP_EXTRA_MOUNTS_VARIABLE):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(refused)})
+
+
+def test_a_declared_mount_that_holds_a_private_store_is_refused(tmp_path, monkeypatch):
+    """Refusing only a `.secrets` component refused the store and accepted every ancestor.
+
+    ``extra_php_mounts({"RAOS_PHP_EXTRA_MOUNTS": "/home/minami/rakuten"})`` used to answer with
+    that path, and ``php_command`` then bound the owner's whole checkout - runs, owner-direct
+    candidates and credential files included - read-only into the PHP container.
+    """
+    from scripts import raos_test_runtime as runtime
+    from scripts.raos_test_runtime import (
+        PHP_EXTRA_MOUNTS_VARIABLE,
+        extra_php_mounts,
+        holds_private_store,
+    )
+
+    copy = tmp_path / "theme-copy"
+    (copy / "assets").mkdir(parents=True)
+    assert holds_private_store(copy) is False
+    assert extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(copy)}) == (copy,)
+
+    checkout = tmp_path / "checkout"
+    (checkout / "a/b/.secrets/rakuten-price-refresh").mkdir(parents=True)
+    shallow = tmp_path / "shallow"
+    (shallow / ".secrets").mkdir(parents=True)
+    for refused in (checkout, shallow):
+        assert holds_private_store(refused) is True
+        with pytest.raises(RuntimeError, match="holds a private store"):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(refused)})
+
+    # A tree too big to be a harness copy is refused rather than walked to the end.
+    big = tmp_path / "big"
+    for index in range(6):
+        (big / f"d{index}").mkdir(parents=True)
+    assert holds_private_store(big) is False
+    monkeypatch.setattr(runtime, "MAX_MOUNT_DIRECTORIES", 4)
+    assert holds_private_store(big) is True
+    with pytest.raises(RuntimeError, match="holds a private store"):
+        extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(big)})
+    monkeypatch.undo()
+
+    # A symlinked subtree is not followed, and a store behind the link is not what refuses.
+    linked = tmp_path / "linked"
+    linked.mkdir()
+    (linked / "into-the-checkout").symlink_to(checkout)
+    assert holds_private_store(linked) is False
+
+    # A mount the walk cannot read is refused rather than taken for empty.
+    unreadable = tmp_path / "unreadable"
+    unreadable.mkdir(mode=0o000)
+    try:
+        assert holds_private_store(unreadable) is True
+        with pytest.raises(RuntimeError, match="holds a private store"):
+            extra_php_mounts({PHP_EXTRA_MOUNTS_VARIABLE: str(unreadable)})
+    finally:
+        unreadable.chmod(0o700)
+
+
+def test_the_theme_harness_refuses_a_directory_the_php_runtime_cannot_see(tmp_path):
+    """The tripwire that would have caught the batch F harness on the day it was written."""
+    from tests.st1704 import theme_php_harness as harness
+
+    copy = tmp_path / "kurashinoshirube-child"
+    copy.mkdir()
+    with pytest.raises(AssertionError, match="pass them as mounts"):
+        harness.run_theme_php("echo '{}';", str(copy))
+    assert harness._visible_to_php(copy, (copy,)) is True
+    assert harness._visible_to_php(copy / "assets", (copy,)) is True
+    assert harness._visible_to_php(copy, ()) is False
+    assert harness._visible_to_php(harness.THEME / "functions.php", ()) is True
+
+
 def test_missing_php_override_exits_unsuccessfully(tmp_path):
     import subprocess
 

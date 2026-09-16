@@ -1,7 +1,7 @@
 {
   "schema": "RAOSKSIntegratedStatusV1",
   "package": "tmp/20260915/kurashinoshirube_integrated_tasks_20260914",
-  "updated_at": "2026-09-16T12:00+09:00",
+  "updated_at": "2026-09-16T19:45+09:00",
   "branch": "claude/ks-emergency-20260915",
   "base": "codex/all-pages-improvements-20260913@c506e75c",
   "batches": {
@@ -256,6 +256,118 @@
       "effort_hours": null,
       "cost_yen": null,
       "confirmed_reward_yen": null
+    },
+    "W3": {
+      "tasks": [
+        "KS-015",
+        "KS-017",
+        "KS-026",
+        "KS-028",
+        "KS-029",
+        "KS-107",
+        "KS-108",
+        "KS-116",
+        "KS-120",
+        "KS-122",
+        "KS-129",
+        "KS-130"
+      ],
+      "commit": "d65048f3",
+      "candidate_id": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+      "published_at": "2026-09-15T21:53:47Z〜21:54:17Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "categories",
+        "compact-dishwasher-comparison",
+        "dishwasher-branch-faucet-guide",
+        "kitchen",
+        "large-dishwasher-comparison",
+        "prepare-outage",
+        "small-carry-on-suitcase-comparison",
+        "standard-dishwasher-comparison",
+        "travel",
+        "without-installation"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
+    },
+    "W4a": {
+      "tasks": [
+        "KS-111",
+        "KS-112",
+        "KS-113",
+        "KS-114",
+        "KS-016",
+        "KS-121",
+        "KS-123",
+        "KS-031b",
+        "KS-201a"
+      ],
+      "commit": "ad936713",
+      "candidate_id": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
+      "published_at": "2026-09-16T10:08:15Z〜10:09:47Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "categories",
+        "compact-dishwasher-comparison",
+        "comparisons",
+        "countertop-dishwasher-for-small-households",
+        "dishwasher-installation-measurement",
+        "easy-maintenance",
+        "guides",
+        "large-dishwasher-comparison",
+        "purposes",
+        "save-housework",
+        "small-space",
+        "solota-vs-rakua-mini-plus",
+        "standard-dishwasher-comparison",
+        "updates",
+        "without-installation"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "note": "公式資料の再確認からの訂正 7 (SOLOTA NP-TMLK1 の開扉時奥行 485mm の出典を spec.html に) と 8 (TK-MDW22B 説明書の TK-STTDPSWH との共通範囲) を含む。台帳の公開項目の変更は 41 の title・excerpt と without-installation の excerpt の 3 件",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
+    },
+    "W4b": {
+      "tasks": [
+        "KS-131",
+        "KS-201b",
+        "KS-136",
+        "KS-014",
+        "KS-031a"
+      ],
+      "commit": "9fa8ee45",
+      "candidate_id": "7cea2e0a2db6cdb19087768af3800bd2a75ab4db730a77d31b39123d088160b4",
+      "published_at": "2026-09-16T10:20:51Z〜10:22:18Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "documents": [
+        "carry-on-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "compact-robot-vacuum-shortlist",
+        "comparisons",
+        "easy-maintenance",
+        "front-open-carry-on-suitcase-with-stopper",
+        "guides",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "save-housework",
+        "small-carry-on-suitcase-comparison",
+        "small-space",
+        "updates"
+      ],
+      "theme": true,
+      "state": "本番公開済み・匿名照合済み (KS-302 完了)",
+      "note": "公式資料の再確認からの訂正 1〜6 (Roomba Plus 515 の幅と奥行、553 の「約」、JAL・ANA の軸名、ジェットスターの 14kg) と 12〜15 (K11+ Pro の高さ、553 のブランド表記・工程語、ホームの元データ) を含む。台帳の公開項目の変更は 82 の excerpt のみ",
+      "not_published": "candidate deaf1c31… (同じ commit 9fa8ee45 から作成)。オーナーが固定ページ「洗濯・乾燥」(post 701) を公開ツールの対象に足してプロファイルが変わり、publish が RAOS_WORDPRESS_DIRECT_PROFILE_CHANGED で停止。同じ commit から作り直した候補を公開した",
+      "effort_hours": null,
+      "cost_yen": null,
+      "confirmed_reward_yen": null
     }
   },
   "items": {
@@ -384,23 +496,26 @@
     },
     "KS-301": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 / W4a / W4b 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W4.md",
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
         "evidence/KS-301-302-batch-E.md",
         "evidence/KS-301-batch-A.md",
         "evidence/KS-301-batch-B.md"
-      ],
-      "note": "553 を公開するたびに航空会社の持ち込み規定 (catalog の carry_on_fit.rules) を公式ページで再確認する (evidence/KS-131.md)"
+      ]
     },
     "KS-302": {
       "priority": "P0",
-      "status": "バッチ A / B / C / D / E / W2-F / W2-23 完了",
+      "status": "バッチ A / B / C / D / E / W2-F / W2-23 / W3 / W4a / W4b 完了",
       "batch": "A",
       "evidence": [
+        "evidence/KS-301-302-W4.md",
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-C.md",
         "evidence/KS-301-302-batch-D.md",
@@ -411,12 +526,13 @@
     },
     "KS-020": {
       "priority": "P1",
-      "status": "一部完了 (免責文リンク)。価格再取得の仕組みは保留",
-      "batch": "B",
+      "batch": "G",
       "evidence": [
+        "evidence/KS-020-price-overlay.md",
         "evidence/KS-019.md",
         "evidence/KS-006.md"
-      ]
+      ],
+      "status": "一部完了 (免責文リンクは W2 で公開)。価格の再取得はバッチ G で実装中。WordPress DB に残る hash はオーナーが許容と決定 (2026-09-16)。plugin 配置・リビジョン/キャッシュ実測・preview DB の後始末が残り"
     },
     "KS-133": {
       "priority": "P1",
@@ -490,12 +606,13 @@
     },
     "KS-118": {
       "priority": "P1",
-      "batch": "W2-23",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-118.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (広告表示の位置と楽天ウェブサービス段落の範囲、本番公開)。問い合わせ先の到達試験と名義はオーナー"
+      "status": "完了 (広告表示の位置と楽天ウェブサービス段落は W2-23 で公開。問い合わせ先は 2026-09-16 の試験メールで到達を確認)。名義と返信の運用はオーナー判断"
     },
     "KS-115": {
       "priority": "P1",
@@ -508,12 +625,13 @@
     },
     "KS-129": {
       "priority": "P1",
-      "batch": "W2-23",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md",
         "evidence/KS-301-302-batch-D.md"
       ],
-      "status": "一部完了 (266 側で SOLOTA の計算例と単価前提の違いを明記、本番公開)。549 側のリンクは承認済みレイアウトのバッチ"
+      "status": "完了 (266 側は W2-23、549 から 266 #guide-cost-example への相互参照は W3 で本番公開)"
     },
     "KS-018": {
       "priority": "P1",
@@ -533,11 +651,12 @@
     },
     "KS-017": {
       "priority": "P1",
-      "batch": "W2-1",
-      "status": "記録済み (幅7・文字拡大3・39ページ・キーボード6ページ)。実際にはスクロールしない案内文の削除は承認ゲート待ち",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-017.md"
-      ]
+      ],
+      "status": "完了 (記録は W2-1。実際にはスクロールしない案内文を 549・550・551 の本文と theme.css の ::before から削除し、W3 で本番公開)"
     },
     "KS-030": {
       "priority": "P1",
@@ -575,11 +694,12 @@
     },
     "KS-015": {
       "priority": "P1",
-      "batch": "W2-23",
-      "status": "一部完了 (553 の仕様グループのラベルと誤ったスクロール案内の削除、本番公開)。549〜551 は承認済みレイアウトのバッチ",
+      "batch": "W3",
       "evidence": [
+        "evidence/KS-301-302-W3.md",
         "evidence/KS-301-302-W2.md"
-      ]
+      ],
+      "status": "完了 (553 は W2-23、549・551 の表内ラベルは W3 で本番公開)"
     },
     "KS-012": {
       "priority": "P1",
@@ -600,10 +720,11 @@
     "KS-014": {
       "priority": "P1",
       "evidence": [
+        "evidence/KS-301-302-W4.md",
         "evidence/KS-301-302-W2.md"
       ],
-      "status": "一部完了 (39 ページの役割と次の疑問を台帳に登録、本番公開)。planned の導線は後続バッチ (I・J1・J2)。W4b (未公開): 19・82・83・84 から 553 への本文リンクを追加し、82・83・84 の next_question を live に (J2 分の planned は 0 件。残る planned 5 件は I の 4 件と J1 の 1 件)",
-      "batch": "W2-F"
+      "status": "一部完了 (台帳の役割と次の疑問に加え、19・82・83・84 から 553 への導線を本文末尾の #ks-next-read に、550 の範囲注記から 262・266 へ、/small-space/ から 549 へを本番公開)。next_question の planned は 4 件 (I 3・J1 1) が残り",
+      "batch": "W4b"
     },
     "KS-101": {
       "priority": "P1",
@@ -718,88 +839,238 @@
     },
     "KS-028": {
       "priority": "P1",
-      "batch": "W3 (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (source)。KS-028-d: categories のカード見出しを h2 にし、theme.css でカードの見た目を維持。purposes と updates は節見出し h2 の下に h3 のカードがあり見出しレベルが飛ばないため変更なし。266 の費用ルート見出しは W2 時点で h3 (飛びなし)。83 (lightweight-carry-on-suitcase-under-3kg) の表内 h4 は承認済みレイアウトのため記録のみで変更しない",
-      "evidence": []
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (KS-028-d: /categories/ のカード見出しを h2 にして本番公開。purposes と updates は見出しレベルが飛ばないので変更なし。83 の表内 h4 は承認済みレイアウトのため記録のみ)"
     },
-    "KS-131": {
+    "KS-026": {
       "priority": "P1",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (source)。553 の冒頭に便の条件の要点と近道、#carry-on-rules を比較表の後ろへ移動、APPLITE・LIEVE の「約」と無印良品の本体重量・最大積載量を反映、制作工程の語を読者向けの文に。具体作業 3 の対応状況は evidence に記録",
+      "batch": "W3",
       "evidence": [
-        "evidence/KS-131.md"
-      ]
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (549・550・551・553 に訂正依頼の行、本番公開)。訂正履歴は「今は載せない」とオーナーが決定 (2026-09-16)。内部記録にとどめる"
     },
-    "KS-201": {
+    "KS-029": {
       "priority": "P1",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (source)。KS-201b: 553 に適合表。外寸に車輪を含むと確認できたのは 12 モデル中 2 (Samsonite は高さのみ記載) のため、事前に決めた代わりの問い「各社の上限を超える型番 (通常時・拡張時)」に切り替え。KS-201a (549) は未着手",
+      "batch": "W3",
       "evidence": [
-        "evidence/KS-131.md"
-      ]
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (ガイドの articleSection をハブ名に、/without-installation/ の親を /purposes/ に、方針ページは BreadcrumbList を出さない。本番公開)。ItemList を採らない理由を公開するかはオーナー判断"
     },
-    "KS-136": {
+    "KS-107": {
       "priority": "P1",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (source)。30 に #robot-space (4 機種 × 本体の高さ・台の周囲の空間・出し入れ)。515 の寸法の幅と奥行の取り違えを訂正、K11+ Pro の台に高さ約25cm・底面240×180mm を追記 (30・85)。editorial-portfolio v3 の 83 の comparison_scope「5モデル」は本文・カード (4モデル) と食い違うが未反映。build_editorial_portfolio_v3.py:404 が editorial-identities.v1.json と market-candidate-audit.v1.json の comparison_scope の一致を要求し、後者は build_st1704_reader_claim_coverage.py の独立レビュー済みハッシュ (REVIEWED/DEVELOPMENT_READER_LEDGER_SHA256) で内容が固定されているため、2つを同時に直すにはそのレビューをやり直す必要がある。読者に出る文言ではない。85 (F115060→F155260) は audit の選定品・販売状態の記録と整合させる必要があり未反映",
-      "evidence": []
-    },
-    "KS-031": {
-      "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "一部完了 (判定台帳を作成、オーナー確認待ち)。update 4 (553・549・41・86)、keep 16、統合 0、新規 0。再判定は 2026-10-14 以降",
+      "batch": "W3",
       "evidence": [
-        "evidence/KS-031-content-treatment.v1.json"
-      ]
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/kitchen/ #compare を置き場所・機能・費用への導線に作り直し、本番公開)"
     },
-    "KS-203": {
-      "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "保留 (開始条件 C1〜C6 と再評価日 2026-10-14 を判定台帳に記録)",
+    "KS-108": {
+      "priority": "P1",
+      "batch": "W3",
       "evidence": [
-        "evidence/KS-031-content-treatment.v1.json",
-        "evidence/KS-P2-deferrals.md"
-      ]
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/travel/ の準備中カード 3 枚を削除し、82 と 19 を注記付きで追加。本番公開)"
+    },
+    "KS-116": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (/prepare-outage/ を 5 列の記入式シートにし、記事 28 の計算例へリンク。本番公開)"
+    },
+    "KS-120": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (549 から置き場所・洗剤・手入れのガイドへのリンク。本番公開)"
+    },
+    "KS-122": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "完了 (551 の主表 6 行に本体寸法と開扉時の奥行を公式値で追加。本番公開)"
+    },
+    "KS-130": {
+      "priority": "P1",
+      "batch": "W3",
+      "evidence": [
+        "evidence/KS-301-302-W3.md"
+      ],
+      "status": "一部完了 (552 に 3 か所の確認表と容量別の比較への導線を置き、本番公開)。ヒーロー画像と機種の列挙は未実施"
     },
     "KS-024": {
       "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "保留 (必要性の判定 KS-031 がオーナー確認待ち、試行の承認なし)",
+      "batch": "P2 保留",
       "evidence": [
         "evidence/KS-P2-deferrals.md"
-      ]
+      ],
+      "status": "保留 (条件フィルター)。必要性の判定 (KS-031) と試行の承認が前提"
     },
     "KS-202": {
       "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "不採用 (現時点。接続済み ASP に該当案件なし、新規申請はしない方針)",
+      "batch": "P2 保留",
       "evidence": [
         "evidence/KS-P2-deferrals.md"
-      ]
+      ],
+      "status": "不採用 (現時点)。接続済み ASP に該当案件が無く、新規の提携申請はしない方針"
+    },
+    "KS-203": {
+      "priority": "P2",
+      "batch": "P2 保留",
+      "evidence": [
+        "evidence/KS-P2-deferrals.md"
+      ],
+      "status": "保留 (型番差分・新旧比較)。需要の根拠と KS-201/014/005 の完了が前提。2026-10-14 以降に再評価"
     },
     "KS-204": {
       "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "保留 (24 時間以内の価格再取得の仕組みが無い、KS-022 未評価)",
+      "batch": "P2 保留",
       "evidence": [
         "evidence/KS-P2-deferrals.md"
-      ]
+      ],
+      "status": "保留 (セール特設)。価格再取得の公開運用と KS-022 の評価が前提"
     },
     "KS-205": {
       "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "保留 (投稿先の SNS と自前の図解素材が無い)",
+      "batch": "P2 保留",
       "evidence": [
         "evidence/KS-P2-deferrals.md"
-      ]
+      ],
+      "status": "保留 (SNS 図解)。SNS アカウントと媒体の追加登録、楽天画像を使わない自前の図解が前提"
     },
     "KS-206": {
       "priority": "P2",
-      "batch": "W4b (未公開、オーナーの Before/After 待ち)",
-      "status": "保留 (上限工数の承認なし、成果の基準値が未整備)",
+      "batch": "P2 保留",
       "evidence": [
         "evidence/KS-P2-deferrals.md"
-      ]
+      ],
+      "status": "保留 (隣接する高単価 ASP)。既存カテゴリの成果の基準と上限工数の承認が前提"
+    },
+    "KS-016": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (549 の冒頭を「向く人・決め手2つ・注意」の3枚のカードに整理し、購入枠を 7 から 4 へ。03 のカードは購入枠なしの内部リンクだけにした。本番公開)"
+    },
+    "KS-111": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (/small-space/ に「本体が入る空間・動かす範囲・作業と周囲の空間」の3枠の表と、SOLOTA NP-TMLK1-K と K11+ Pro の模式図2つ (figure+pre) を追加し、数字の起点と未確認の範囲を書いた。本番公開)"
+    },
+    "KS-112": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (/save-housework/ に「任せる作業／残る作業」「自分の作業時間を書き出す」「困っていることから比較を選ぶ」の3表を置き、記録値の例は型番と出典つき、記入欄と仮定を分けた。本番公開)"
+    },
+    "KS-113": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (/without-installation/ の給水を「タンクへ注ぐ・ポンプで補う・容器から吸う」の3経路に分け、給水補助ポンプを使える機種の表と機種表 (np-model-table) を追加。本番公開)"
+    },
+    "KS-114": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (/easy-maintenance/ の食洗機・掃除機・スーツケースの3表を「毎回・必要に応じて／定期／交換部品／部品代」の列で埋め、出典と確認日を各セルに付けた。未確認は「未確認」のままで費用ゼロとして扱っていない。本番公開)"
+    },
+    "KS-121": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (550 の主表を6項目 (商品・写真／食器量／本体寸法・開扉時の奥行／給水／乾燥／参考価格・販売先) にし、13行の開扉時の奥行と乾燥を details から主表へ移し、設置条件の注記を閉じない std-note に、262・266 へ範囲注記を付けた。本番公開)"
+    },
+    "KS-123": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (41 を「毎回の給水の手順と、扉やタンクの出し入れに必要な空間」で比べる構成にし、比較表の先頭列を給水方式に、容量別3記事への導線 (capacity_routes 3 件) を追加。本番公開)"
+    },
+    "KS-031a": {
+      "priority": "P1",
+      "batch": "W4b",
+      "evidence": [
+        "evidence/KS-031-content-treatment.v1.json",
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (公開済み20記事の保持・更新・統合・新規の判定台帳と検証を作成。update 4 件 (553・549・41・86)、keep 16 件、統合候補・新規候補 0 件。非公開の内部記録で公開物は変えていない。オーナー確認待ち、再判定は 2026-10-14 以降)"
+    },
+    "KS-031b": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (41 の題名を「タンク式食洗機4モデルを1〜2人暮らし向けに比較」から「タンク式食洗機4モデルの給水と設置を比較」に変更し、/comparisons/・/updates/・目的ページ・テーマの metadata・ナビゲーション生成物をそろえた。本番公開)"
+    },
+    "KS-131": {
+      "priority": "P1",
+      "batch": "W4b",
+      "evidence": [
+        "evidence/KS-131.md",
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (553 の冒頭に要点と近道を置き、航空会社の条件 (#carry-on-rules) を比較表の後ろへ移動。AIRDO の条件と、スカイマーク・AIRDO・ソラシドエアの対象便「公式ページに記載なし」を訂正し、開き方の出典を5行で書き直した。本番公開)"
+    },
+    "KS-136": {
+      "priority": "P1",
+      "batch": "W4b",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (30 に #robot-space の4列表 (本体の高さ／台の周囲に空ける空間／ふた・タンク・紙パックの出し入れ) を新設し、Roomba Plus 515 の幅と奥行の取り違えを訂正。未取得の値は「公式の日本語資料で確認できていません」と書いた。本番公開)。83 の comparison_scope の「5モデル」→4 は未反映。`market-candidate-audit.v1.json` を変えると reader-claim-bindings の証拠ハッシュと独立レビュー済みの台帳ハッシュの再承認が要るため、読者に表示されない項目として別レビューに回した"
+    },
+    "KS-201": {
+      "priority": "P1",
+      "batch": "W4b",
+      "evidence": [
+        "evidence/KS-301-302-W4.md",
+        "evidence/KS-131.md"
+      ],
+      "status": "完了 (KS-201a の 549 の必要空間の表と、KS-201b の 553 の適合表を本番公開)。外寸に車輪を含むと公式に書いているのは 12 モデル中 2 (PROTECA エアロフレックスDX2 01521・ACE クレスタ 06316)。Samsonite は高さのみ記載。残り 9 モデルは確認できないため、通常時に持ち込めるかは判定しない"
+    },
+    "KS-201a": {
+      "priority": "P1",
+      "batch": "W4a",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (549 の #compact-space に、設置の余白を出典の種類ごとに分けた6列の表を新設。551・262 では開扉時の奥行の起点を公式図で確かめる書き方にそろえ、確認できない型番は判定保留にした。本番公開)"
+    },
+    "KS-201b": {
+      "priority": "P1",
+      "batch": "W4b",
+      "evidence": [
+        "evidence/KS-301-302-W4.md"
+      ],
+      "status": "完了 (553 に航空会社別の適合表 (sc-fit-table) を新設し、各辺・3辺合計・総重量の超過を公式規定から判定。83 の航空会社表も同じ carry_on_fit.rules から描き直した。本番公開)"
     }
   },
   "owner_tasks": "owner-tasks-20260915.md"

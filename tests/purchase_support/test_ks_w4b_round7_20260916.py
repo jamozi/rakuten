@@ -15,101 +15,59 @@ section 553 moved below the comparison table -- and 83's outer-dimension column,
 which prints 幅×奥行×高さ for four models while two of the four official pages
 give no axis names at all.
 
-Every check derives its subject from the diff between the published body
-(origin/main, which is also this batch's base for every article body) and the
-body this candidate compiles, so none of them can go stale by naming a slug.
-Each test here failed before the round-7 source edits. No ``\b`` is used next to
-Japanese text.
+Every check derives its subject from the difference between the body readers
+saw before this batch and the body this candidate compiles, so none of them can
+go stale by naming a slug. The before is not read from git: the commit subject
+and the position of ``origin/main`` are properties of the branch, and a squash
+merge rewrites the first and moves the second onto these very bodies, which
+would turn every rule here either red or vacuous. It is read from
+``ks_w4_published_before.json``, captured from the commit this batch was written
+against; ``test_the_recorded_before_is_not_the_published_body`` keeps that
+record from decaying into a copy of the current state. Each test here failed
+before the round-7 source edits. No ``\b`` is used next to Japanese text.
 """
 
 from __future__ import annotations
 
-import html
 import json
 import re
-import subprocess
 from pathlib import Path
 
 import pytest
 
 from scripts import build_reader_purchase_support_v1 as builder
+from tests.purchase_support import ks_w4_batch
 
 ROOT = Path(__file__).resolve().parents[2]
 LEDGER = ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json"
-ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
-BATCH_SUBJECT = "KS W4b"
-PUBLISHED = "origin/main"
-DAY = "2026-09-16"
+BATCH_NAME = "W4b"
+DAY = ks_w4_batch.PUBLISH_DAY
 LIGHT = "lightweight-carry-on-suitcase-under-3kg"
 SMALL = "small-carry-on-suitcase-comparison"
 
 
-def _git(*arguments: str) -> str:
-    return subprocess.run(
-        ("git", *arguments), cwd=ROOT, check=True, capture_output=True, text=True
-    ).stdout
+_text = ks_w4_batch.text
 
 
-def _published(slug: str) -> str:
-    """The body readers see today. origin/main == this batch's base for bodies."""
-    return _git("show", f"{PUBLISHED}:{ARTICLE_PREFIX}{slug}.html")
+def _before(slug: str) -> dict:
+    """What the body showed before this batch published it.
 
-
-def _batch_shipped() -> bool:
-    """True once origin/main carries this batch's own bodies.
-
-    Two rules below read an /updates/ card against the body readers can see.
-    That only says anything while the batch waits to publish: until then the
-    published body is the card's 「…から」 before, and the compiled body is its
-    after. Once the batch publishes, origin/main *is* the after, the before it
-    names is history, and nothing has moved between the two -- so the rules have
-    no subject rather than a violation. They stay armed for the next unpublished
-    batch and step aside for a batch that has already shipped.
+    The published bodies live in the repository, so "before" cannot be a git ref
+    once this branch is merged. It is the record captured from the commit the
+    batch was written against.
     """
-    log = _git("log", "--format=%H%x1f%s", "HEAD").splitlines()
-    tips = [
-        line.split("\x1f")[0]
-        for line in log
-        if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
-    ]
-    bodies = sorted(_candidate_bodies())
-    if not tips or not bodies:
-        return False
-    return all(
-        _published(slug) == _git("show", f"{tips[0]}:{ARTICLE_PREFIX}{slug}.html")
-        for slug in bodies
-    )
-
-
-def _text(body: str) -> str:
-    stripped = re.sub(r"(?s)<(script|style).*?</\1>", "", body)
-    return html.unescape(re.sub(r"<[^>]+>", "\n", stripped))
+    return ks_w4_batch.published_before(slug)
 
 
 def _candidate_bodies() -> set[str]:
-    """Every article body this candidate changed, as a slug set."""
-    log = _git("log", "--format=%H%x1f%s", "HEAD")
-    shas = [
-        line.split("\x1f")[0]
-        for line in log.splitlines()
-        if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
-    ]
-    paths: set[str] = set()
-    for sha in shas:
-        paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
-    # Uncommitted work belongs to this batch only while the batch is the branch
-    # tip. Once a later batch commits on top, its edits are its own to report,
-    # and sweeping them in here would judge them against this batch's base.
-    lines = log.splitlines()
-    if lines and lines[0].split("\x1f")[1].startswith(BATCH_SUBJECT):
-        paths.update(
-            _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines()
-        )
-    return {
-        Path(path).stem
-        for path in paths
-        if path.startswith(ARTICLE_PREFIX) and path.endswith(".html")
-    }
+    """Every article body this candidate published, as a slug set.
+
+    W4a publishes first and owns its own records, so its bodies are out of scope
+    here. The list comes from the publication record, which
+    ``test_ks_integrated_records.py`` holds against the ledger and the generated
+    /updates/ page in both directions.
+    """
+    return ks_w4_batch.batch_article_documents(BATCH_NAME)
 
 
 @pytest.fixture(scope="module")
@@ -129,6 +87,29 @@ def cards() -> dict[str, str]:
     return found
 
 
+def test_the_recorded_before_is_not_the_published_body(outputs, cards) -> None:
+    """The record of the before-state has to be a *different* state.
+
+    Every rule below compares a card with the body it corrects, so the whole
+    file goes quietly vacuous if the record is ever re-captured from a commit
+    that already carries this batch -- exactly what a squash merge does to
+    ``origin/main``. A recorded body that matches the published one is that
+    failure, and it fails here instead of passing everywhere.
+    """
+    record = ks_w4_batch.before_record()
+    assert record["publish_day"] == DAY, record["publish_day"]
+    bodies = record["bodies"]
+    assert set(bodies) == ks_w4_batch.batch_article_documents(), sorted(bodies)
+    same = [
+        slug
+        for slug, before in sorted(bodies.items())
+        if slug in outputs and before["text"] == ks_w4_batch.flat(outputs[slug])
+    ]
+    assert same == [], same
+    # Every body in the batch owes a card, and every card corrects a body.
+    assert set(bodies) == set(cards), sorted(set(bodies) ^ set(cards))
+
+
 # major: a card names a before the published body never showed ---------------------
 
 # 「…」から / 「…」だけでした / 「…」と表示していました: the quote is the state the
@@ -139,17 +120,7 @@ BEFORE_QUOTE = re.compile(r"「([^「」]+)」(?:から|だけでした|と表�
 AFTER_QUOTE = re.compile(r"「([^「」]+)」(?:に直しました|と表示しました)")
 
 
-def _rows(body: str) -> dict[str, str]:
-    """Each comparison row's visible text, keyed by how the card could name it."""
-    found = {}
-    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", body, re.S):
-        products = re.findall(r'data-raos-product-id="([^"]+)"', row)
-        name = re.search(r"<th[^>]*>(.*?)</th>", row, re.S)
-        if not products or name is None:
-            continue
-        identity = " ".join(re.sub(r"<[^>]+>", " ", name.group(1)).split() + products[:1])
-        found[identity] = " ".join(_text(row).split())
-    return found
+_rows = ks_w4_batch.rows
 
 
 def _tokens(identity: str) -> list[str]:
@@ -186,17 +157,15 @@ def test_card_before_states_are_what_the_published_body_shows(outputs, cards) ->
     so a whole-body check passes while the claim is still false; the before has
     to be read from the row the sentence names.
     """
-    if _batch_shipped():
-        pytest.skip("the W4b candidate is published; its cards are history now")
     assert len(cards) >= 13, sorted(cards)
     checked = []
     wrong = []
     for slug, summary in sorted(cards.items()):
-        published = _published(slug)
-        rows = _rows(published)
+        published = _before(slug)
+        rows = published["rows"]
         for sentence in summary.split("。"):
             for quote in BEFORE_QUOTE.findall(sentence):
-                scopes = _named(sentence, rows) or [" ".join(_text(published).split())]
+                scopes = _named(sentence, rows) or [published["text"]]
                 checked.append((slug, quote))
                 if not any(quote in scope for scope in scopes):
                     wrong.append((slug, quote))
@@ -220,15 +189,14 @@ def test_card_reports_the_notation_change_its_body_made(outputs, cards) -> None:
     """
     missing = []
     for slug, summary in sorted(cards.items()):
-        before = _text(_published(slug)).count("約")
+        before = _before(slug)["approximations"]
         after = _text(outputs[slug]).count("約")
         if after > before and "約" not in summary:
             missing.append((slug, before, after))
     assert missing == [], missing
 
 
-def _links(body: str) -> set[str]:
-    return set(re.findall(r'href="(/[^"#?]*/)"', body))
+_links = ks_w4_batch.internal_links
 
 
 def test_card_names_an_article_the_body_did_not_link_before(outputs, cards) -> None:
@@ -244,7 +212,7 @@ def test_card_names_an_article_the_body_did_not_link_before(outputs, cards) -> N
     assert len(candidate) >= 7, sorted(candidate)
     missing = []
     for slug in sorted(candidate & set(cards)):
-        gained = _links(outputs[slug]) - _links(_published(slug))
+        gained = _links(outputs[slug]) - set(_before(slug)["links"])
         for target in sorted(gained):
             row = rows.get(target.strip("/"))
             if row is None:
@@ -260,8 +228,7 @@ def test_card_names_an_article_the_body_did_not_link_before(outputs, cards) -> N
 MOVED_WORDS = ("移し", "移動", "下へ", "上へ", "末尾へ", "冒頭へ", "後ろへ", "前へ")
 
 
-def _sections(body: str) -> list[str]:
-    return re.findall(r'<section[^>]*id="([^"]+)"', body)
+_sections = ks_w4_batch.sections
 
 
 def _moved(before: list[str], after: list[str]) -> list[str]:
@@ -294,12 +261,10 @@ def test_card_reports_the_section_this_candidate_moved(outputs, cards) -> None:
     the card has to name its new heading. The moved set is computed from the two
     bodies, not written down here.
     """
-    if _batch_shipped():
-        pytest.skip("the W4b candidate is published; its cards are history now")
     moved = {}
     for slug in sorted(_candidate_bodies() & set(cards)):
-        published = _published(slug)
-        for section in _moved(_sections(published), _sections(outputs[slug])):
+        published = _before(slug)["sections"]
+        for section in _moved(published, _sections(outputs[slug])):
             heading = re.search(
                 r'<section[^>]*id="' + re.escape(section) + r'".*?<h2[^>]*>(.*?)</h2>',
                 outputs[slug],

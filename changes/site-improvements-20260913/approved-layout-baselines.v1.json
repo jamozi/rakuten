@@ -9,41 +9,65 @@
       "snapshot_id": "ps-8d00cc73210b7f0cf9fd28bed19631af",
       "new_layout_review": "USER_REVIEW_COMPLETE",
       "latest_accepted": {
-        "body_sha256": "583554a996d775ff67887e7c27385e378c7e206ee9a3f766c833c07150c283a8",
-        "snapshot_id": "ps-b60d676cf7db4cbc68d3b48e12fec0a5",
-        "source_commit": "c4876162",
-        "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
-        "user_statement": "うん、オッケー",
-        "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
-        "accepted_scope": "旧了承版から共通の結論1列・実表に変わった現行共有版を再確認して了承",
-        "recorded_at": "2026-09-13T09:31:08.523623+00:00",
-        "publication_authorized": false
-      },
-      "pending_revision": {
-        "review": "PENDING_OWNER_BEFORE_AFTER",
-        "recorded_on": "2026-09-16",
+        "body_sha256": "9895c584b8feaaf6557e417a3467d6800cdc2bd8354c02a757a7358fc49bfd00",
+        "snapshot_id": "ps-2fb4eacb76d9dc4fe6d950319a73b1f5",
+        "source_commit": "ad936713",
+        "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
         "branches": [
-          "claude/ks-w3-20260916",
           "claude/ks-w4a-20260916"
         ],
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。冒頭カードを3枚（向く人1行・決め手2つ・注意1つ）にして購入枠を7から4へ、03のカードは内部リンクだけ、#compact-care に41への導線、#compact-space に説明書の設置余白を出典の種類ごとに分けた表（6列。水栓・蛇口に当たりにくい奥行の目安はSOLOTAだけ設置案内の図の50.2cm以上と代替テキストの「背面から」を併記し、mini系3製品は判定保留。スマートフォンでは表の枠内で横に動かす）。mini TK-MDW22W の別売ポンプの記載をFAQの「使用できません」と過去のセット販売品の例外にそろえた。公式仕様の表記に合わせ、扉を開いたときの奥行と本体の奥行に「約」を付けた（約48.5cm・約22.5cm）。",
         "tasks": [
-          "KS-120",
-          "KS-129",
-          "KS-015",
-          "KS-017",
-          "KS-026",
           "KS-016",
           "KS-201a"
         ],
-        "summary": "置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：冒頭カードを3枚（向く人1行・決め手2つ・注意1つ）にして購入枠を7から4へ、03のカードは内部リンクだけ、#compact-care に41への導線、#compact-space に説明書の設置余白を出典の種類ごとに分けた表（6列。水栓・蛇口に当たりにくい奥行の目安はSOLOTAだけ設置案内の図の50.2cm以上と代替テキストの「背面から」を併記し、mini系3製品は判定保留。スマートフォンでは表の枠内で横に動かす）。mini TK-MDW22W の別売ポンプの記載をFAQの「使用できません」と過去のセット販売品の例外にそろえた。公式仕様の表記に合わせ、扉を開いたときの奥行と本体の奥行に「約」を付けた（約48.5cm・約22.5cm）。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",
           "changes/site-improvements-20260913/article-sources/compact-dishwasher-comparison.md",
           "changes/reader-purchase-support-v1/purchase-support.v1.json"
         ],
+        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
-      }
+      },
+      "previous_accepted": [
+        {
+          "body_sha256": "c108be8d61765ab6aa31034f91a9189c89194385942896c9f7fae7a391ba3b72",
+          "snapshot_id": "ps-0e7bcebd09f89df0f55017bb3ff05b60",
+          "source_commit": "d65048f3",
+          "shared_candidate": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W3 の Before/After (output/ks-20260915/w3-review/review.html) を確認して了承。置き場所・洗剤・手入れのガイドへのリンク、ランニングコストの計算例（#guide-cost-example）への相互参照、主表の2列に列名ラベル、横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+          "tasks": [
+            "KS-120",
+            "KS-129",
+            "KS-015",
+            "KS-017",
+            "KS-026"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/site-improvements-20260913/article-sources/compact-dishwasher-comparison.md"
+          ],
+          "recorded_at": "2026-09-15T21:58:56.903491+00:00",
+          "publication_authorized": false
+        },
+        {
+          "body_sha256": "583554a996d775ff67887e7c27385e378c7e206ee9a3f766c833c07150c283a8",
+          "snapshot_id": "ps-b60d676cf7db4cbc68d3b48e12fec0a5",
+          "source_commit": "c4876162",
+          "shared_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+          "user_statement": "うん、オッケー",
+          "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+          "accepted_scope": "旧了承版から共通の結論1列・実表に変わった現行共有版を再確認して了承",
+          "recorded_at": "2026-09-13T09:31:08.523623+00:00",
+          "publication_authorized": false
+        }
+      ]
     },
     "lightweight-carry-on-suitcase-under-3kg": {
       "body_sha256": "1c4f1d2497a4b3b4da87d7f4b076718fdba3f1ea3dc000dc3737a4abc311df04",
@@ -61,19 +85,23 @@
       "shared_validation": "PASS_320_375_390_600_768_1440",
       "shared_parity": "PASS_320_390_768_1440_ALL_CELL_WIDTHS_IDENTICAL",
       "narrow_layout": "Approved dedicated layout retained",
-      "pending_revision": {
-        "review": "PENDING_OWNER_BEFORE_AFTER",
-        "recorded_on": "2026-09-16",
+      "latest_accepted": {
+        "body_sha256": "91fe742925fa0e5ac1b16ed6b5027889b0c0b2623c3cda025941fcf1810a6a36",
+        "snapshot_id": "ps-dbf794f88c820783d9020d5dc17c753e",
+        "source_commit": "9fa8ee45",
+        "shared_candidate": "7cea2e0a2db6cdb19087768af3800bd2a75ab4db730a77d31b39123d088160b4",
         "branches": [
           "claude/ks-w4b5-20260916",
           "claude/ks-w4b6-20260916"
         ],
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "accepted_scope": "W4b の Before/After (output/ks-20260915/w4b-review/review.html) を確認して了承。航空会社別の条件を、553と同じ carry_on_fit.rules から描く9行の表に作り直した（スマートフォンでは1社1枚のカード、横幅の広い画面では表）。AIRDOの持ち込み条件を2026年9月16日の公式ページの表記（各辺55×40×25cm以内のみ・3辺合計の記載なし、身の回り品は2026年10月1日から40×30×20cm以内）に合わせ、スカイマーク・AIRDO・ソラシドエアの対象便を「公式ページに記載なし」に訂正。車輪・ハンドルを寸法に含む記載は、明記しているJAL・ANA・Peach・ジェットスターだけに限った。車輪・ハンドルの記載を確認できていない4社（スカイマーク・AIRDO・ソラシドエア・スターフライヤー）を注記に列挙。末尾に553への入口を追加し、確認・更新履歴に2026年9月16日の1行を足した。APPLITE 4.0とLIEVEの容量・本体重量に公式どおり「約」を付け、注意点の一文を「軽い3候補より約600g重い」に直した。比較表の下に、通常時外寸の軸名の出どころを機種ごとに分けた注記を1つ足した（PROTECA 01521-09はエース公式通販の「H55×W36×D23 cm」、LIEVEは公式の「横35cm×縦55cm×奥行23m」が出典で、SamsoniteとAMERICAN TOURISTERは3辺の数値だけのため編集部の割り当て。いずれも2026年9月16日に再取得）。",
         "tasks": [
           "KS-131",
-          "KS-201",
+          "KS-201b",
           "KS-014"
         ],
-        "summary": "航空会社別の条件を、553と同じ carry_on_fit.rules から描く9行の表に作り直した（スマートフォンでは1社1枚のカード、横幅の広い画面では表）。AIRDOの持ち込み条件を2026年9月16日の公式ページの表記（各辺55×40×25cm以内のみ・3辺合計の記載なし、身の回り品は2026年10月1日から40×30×20cm以内）に合わせ、スカイマーク・AIRDO・ソラシドエアの対象便を「公式ページに記載なし」に訂正。車輪・ハンドルを寸法に含む記載は、明記しているJAL・ANA・Peach・ジェットスターだけに限った。車輪・ハンドルの記載を確認できていない4社（スカイマーク・AIRDO・ソラシドエア・スターフライヤー）を注記に列挙。末尾に553への入口を追加し、確認・更新履歴に2026年9月16日の1行を足した。APPLITE 4.0とLIEVEの容量・本体重量に公式どおり「約」を付け、注意点の一文を「軽い3候補より約600g重い」に直した。比較表の下に、通常時外寸の軸名の出どころを機種ごとに分けた注記を1つ足した（PROTECA 01521-09はエース公式通販の「H55×W36×D23 cm」、LIEVEは公式の「横35cm×縦55cm×奥行23m」が出典で、SamsoniteとAMERICAN TOURISTERは3辺の数値だけのため編集部の割り当て。いずれも2026年9月16日に再取得）。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
           "changes/reader-purchase-support-v1/purchase-support.v1.json",
@@ -81,6 +109,7 @@
           "changes/wordpress-direct-publish-v1/articles.v1.json",
           "changes/ks-integrated-20260915/evidence/KS-131.md"
         ],
+        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
       }
     },
@@ -96,17 +125,21 @@
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345122+00:00",
       "publication_authorized": false,
-      "pending_revision": {
-        "review": "PENDING_OWNER_BEFORE_AFTER",
-        "recorded_on": "2026-09-16",
+      "latest_accepted": {
+        "body_sha256": "7c1e18a789dd7b4a54d3188934c8304b288e46be2c556facf16241de22aa8d00",
+        "snapshot_id": "ps-ba5c93ed5cbc727898d51083cb9ccf48",
+        "source_commit": "9fa8ee45",
+        "shared_candidate": "7cea2e0a2db6cdb19087768af3800bd2a75ab4db730a77d31b39123d088160b4",
         "branches": [
           "claude/ks-w4b5-20260916",
           "claude/ks-w4b6-20260916"
         ],
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "accepted_scope": "W4b の Before/After (output/ks-20260915/w4b-review/review.html) を確認して了承。Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記どおりに訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。#robot-space の節と、4機種の本体の高さ・台の周囲に空ける空間・ふたやタンクの出し入れを公式資料で比べる4列の表を新設し、スマートフォンでは、先頭列を7rem（112px）に保ったまま表のmin-widthを39remにして、320pxの実測の枠286px（記事シェルの左右1remと枠の1px境界で viewport−34）にデータ列1つ（170.7px）が収まるようにした。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記し、未確認なのは底面の幅と奥行の対応であることを明記。確認・更新履歴に2026年9月16日の1行を足した。",
         "tasks": [
           "KS-136"
         ],
-        "summary": "Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記どおりに訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。#robot-space の節と、4機種の本体の高さ・台の周囲に空ける空間・ふたやタンクの出し入れを公式資料で比べる4列の表を新設し、スマートフォンでは、先頭列を7rem（112px）に保ったまま表のmin-widthを39remにして、320pxの実測の枠286px（記事シェルの左右1remと枠の1px境界で viewport−34）にデータ列1つ（170.7px）が収まるようにした。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記し、未確認なのは底面の幅と奥行の対応であることを明記。確認・更新履歴に2026年9月16日の1行を足した。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
           "changes/reader-purchase-support-v1/purchase-support.v1.json",
@@ -114,6 +147,7 @@
           "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
           "changes/wordpress-direct-publish-v1/articles.v1.json"
         ],
+        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
       }
     },
@@ -129,27 +163,51 @@
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345147+00:00",
       "publication_authorized": false,
-      "pending_revision": {
-        "review": "PENDING_OWNER_BEFORE_AFTER",
-        "recorded_on": "2026-09-16",
+      "latest_accepted": {
+        "body_sha256": "ba7dab3311a2a3432099215d018ad891d2f352bc08bc1a4404618a2ab66f5fa5",
+        "snapshot_id": "ps-f22b7a96095110e7e978f29d3a678109",
+        "source_commit": "ad936713",
+        "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
         "branches": [
-          "claude/ks-w3-20260916",
           "claude/ks-w4a-20260916"
         ],
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約75cm）。NP-TSK2の扉を開いた奥行は公式仕様の＜上433,下362＞に合わせて上約43.3cm・下約36.2cmの2値にし、設置の目安62cm以上は設置案内のスリムタイプ（分岐水栓式）の図「62cm以上あればOK」の表記どおり「約」を外して出典を注記に加えた。",
         "tasks": [
-          "KS-015",
-          "KS-017",
-          "KS-026",
           "KS-121"
         ],
-        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約75cm）。NP-TSK2の扉を開いた奥行は公式仕様の＜上433,下362＞に合わせて上約43.3cm・下約36.2cmの2値にし、設置の目安62cm以上は設置案内のスリムタイプ（分岐水栓式）の図「62cm以上あればOK」の表記どおり「約」を外して出典を注記に加えた。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",
           "changes/site-improvements-20260913/article-sources/standard-dishwasher-comparison.md"
         ],
+        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
-      }
+      },
+      "previous_accepted": [
+        {
+          "body_sha256": "88eb26d713d4c5404ea4e284f3a1fa307cdf55f892a6c639455699badde20278",
+          "snapshot_id": "ps-e82ed726319e4628a2389d58766dba20",
+          "source_commit": "d65048f3",
+          "shared_candidate": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W3 の Before/After (output/ks-20260915/w3-review/review.html) を確認して了承。テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。",
+          "tasks": [
+            "KS-015",
+            "KS-017",
+            "KS-026"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/site-improvements-20260913/article-sources/standard-dishwasher-comparison.md"
+          ],
+          "recorded_at": "2026-09-15T21:58:56.903491+00:00",
+          "publication_authorized": false
+        }
+      ]
     },
     "large-dishwasher-comparison": {
       "body_sha256": "3a42ba10de33ce014f4711a267701bad7e6d97e9a62c3af25d725391a068e1b3",
@@ -163,21 +221,20 @@
       "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
       "recorded_at": "2026-09-13T09:19:55.345151+00:00",
       "publication_authorized": false,
-      "pending_revision": {
-        "review": "PENDING_OWNER_BEFORE_AFTER",
-        "recorded_on": "2026-09-16",
+      "latest_accepted": {
+        "body_sha256": "228198b9be4a3e36b358a0d67eebdeee84e8bb4e197708674829259fb9fa35c3",
+        "snapshot_id": "ps-f861ed5de09ded5a45fdf37a2ebdc960",
+        "source_commit": "ad936713",
+        "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
         "branches": [
-          "claude/ks-w3-20260916",
           "claude/ks-w4a-20260916"
         ],
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。開扉時の奥行を「本体背面から開いた扉の先端まで」と断定していた注記と図の説明を、262と同じ「起点は型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしない」書き方に直した。起点を図で確認できたのはAQUA ADW-L40Bだけ（カタログ p.1〈側面〉の728mmとp.2の設置図が、本体奥行36cmと同じ背面の線から測る）で、パナソニック3機種とシロカ2機種は未確認と明記。長さの比較図は本体と扉の内訳（緑・薄緑）をやめ、公表値の比だけを示す1本のバーにした（theme.css の .lg-depth-track b と3機種分の b の幅を削除し、i の幅を公表値の比に直した）。公表値の57.9cm・72.0cm・72.8cmは変えていない。",
         "tasks": [
-          "KS-122",
-          "KS-015",
-          "KS-017",
-          "KS-026",
           "KS-201a"
         ],
-        "summary": "主表6行に本体寸法（幅×奥行×高さ）と開扉時の奥行（catalog facts と照合）と注記1文、「選ぶ前に」列に列名ラベル、非表示の横スクロール案内と aria-label の文言の削除、theme.css の640px以下の ::before 案内の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：開扉時の奥行を「本体背面から開いた扉の先端まで」と断定していた注記と図の説明を、262と同じ「起点は型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしない」書き方に直した。起点を図で確認できたのはAQUA ADW-L40Bだけ（カタログ p.1〈側面〉の728mmとp.2の設置図が、本体奥行36cmと同じ背面の線から測る）で、パナソニック3機種とシロカ2機種は未確認と明記。長さの比較図は本体と扉の内訳（緑・薄緑）をやめ、公表値の比だけを示す1本のバーにした（theme.css の .lg-depth-track b と3機種分の b の幅を削除し、i の幅を公表値の比に直した）。公表値の57.9cm・72.0cm・72.8cmは変えていない。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
           "changes/reader-purchase-support-v1/purchase-support.v1.json",
@@ -185,8 +242,35 @@
           "python/raos/application/editorial/purchase_support.py",
           "changes/site-improvements-20260913/article-sources/large-dishwasher-comparison.md"
         ],
+        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
         "publication_authorized": false
-      }
+      },
+      "previous_accepted": [
+        {
+          "body_sha256": "dc7c3f25b57b6836d88f98800fd2ebdc9181d5f039ae9d793ad1ad04fefaf35f",
+          "snapshot_id": "ps-644f1396a865df3f1dde11915282ccf2",
+          "source_commit": "d65048f3",
+          "shared_candidate": "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf",
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W3 の Before/After (output/ks-20260915/w3-review/review.html) を確認して了承。主表6行に本体寸法（幅×奥行×高さ）と開扉時の奥行（catalog facts と照合）と注記1文、「選ぶ前に」列に列名ラベル、非表示の横スクロール案内と aria-label の文言の削除、theme.css の640px以下の ::before 案内の削除、末尾に訂正依頼の連絡先1行。",
+          "tasks": [
+            "KS-122",
+            "KS-015",
+            "KS-017",
+            "KS-026"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
+            "changes/reader-purchase-support-v1/purchase-support.v1.json",
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/site-improvements-20260913/article-sources/large-dishwasher-comparison.md"
+          ],
+          "recorded_at": "2026-09-15T21:58:56.903491+00:00",
+          "publication_authorized": false
+        }
+      ]
     }
   }
 }

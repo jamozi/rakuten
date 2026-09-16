@@ -22,9 +22,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { createRequire } from 'node:module';
+import { refuseWhilePriceOverlayLive } from './raos_price_overlay_live_check.mjs';
 
 const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
 
 const PAGES = ['/', '/standard-dishwasher-comparison/', '/dishwasher-installation-measurement/', '/dishwasher-running-cost/'];
 const WIDTHS = [390, 1280];
@@ -42,6 +42,12 @@ const option = (name, fallback) => {
 const ORIGIN = option('--origin', 'https://kurashinoshirube.com');
 if (!/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(ORIGIN) && ORIGIN !== 'https://kurashinoshirube.com') throw new Error('ORIGIN_NOT_ALLOWED');
 const OUT = option('--out', 'output/ks-20260915/w2-measure/ks-030');
+// Contract §8: a capture while Rakuten price overlay values may be published stores the
+// rendered prices and their hashes, wherever it writes them. The destination is no exemption
+// any more (round 10): only the publisher's run-bound preview writes into the candidate
+// directory the run itself deletes, so every other capture refuses while values are live.
+await refuseWhilePriceOverlayLive();
+const { chromium } = require('playwright');
 const RUNS = Number(option('--runs', '3'));
 const ONLY = option('--only', '');
 const pages = ONLY ? ONLY.split(',') : PAGES;

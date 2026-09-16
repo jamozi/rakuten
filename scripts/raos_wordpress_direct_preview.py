@@ -34,6 +34,9 @@ THEME = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
 )
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+# The owner checkout's own candidate base (rakuten_price_refresh_client.py
+# OWNER_DIRECT_CANDIDATE_RELATIVE): the only place a run-bound candidate may be previewed from.
+OWNER_DIRECT_CANDIDATES = ".secrets/wordpress-mcp/owner-direct-v1"
 
 
 def digest(value: bytes) -> str:
@@ -389,6 +392,86 @@ def verify_preview(candidate: dict, candidate_dir: Path, report: dict) -> None:
             raise ValueError("DIRECT_PREVIEW_SCREENSHOT_CHANGED")
 
 
+def compose_override(candidate_dir: Path, mounts: list[dict]) -> Path:
+    """The compose overlay, written inside the unit the run deletes (contract §5, §8).
+
+    Its body names the mount sources: the candidate directory - whose name is the sha256 of
+    the injected bodies - and the frozen display theme ``theme-<injected tree sha256>``. Both
+    are price-recoverable, and §8 redacts exactly those ids from the approval record at purge.
+    Written under the preview base (``.secrets/wordpress-direct-preview/compose.override.yaml``)
+    the file outlived every purge: the §5 sweep deletes candidate directories and ``theme-*``,
+    never a loose file directly under that base, and ``delete_preview_copy`` refused such a path
+    even when it was named. ``docker compose --file`` takes any path, so the override goes into
+    the candidate directory, which ``delete_local_injected_copies``/``_finish_purge`` remove by
+    the recorded id and which the needle sweep finds as well. An interrupted ``_write`` leaves
+    its ``.tmp`` in the same directory, so that dies with the candidate too.
+    """
+    override = candidate_dir / "compose.override.yaml"
+    _write(
+        override,
+        yaml.safe_dump(
+            {"services": {name: {"volumes": mounts} for name in ("wordpress", "cli")}}
+        ).encode(),
+    )
+    return override
+
+
+def record_preview_copy_for_run(candidate: dict, relative: str) -> None:
+    """Contract §5/§8: a run-bound preview records the copy it is about to freeze.
+
+    ``theme-<injected tree sha256>`` is written under the preview base at *preview* time, which
+    is before ``publish`` reserves anything, and the §5 needle sweep can only find such a copy
+    through the injected hashes the approval records at publish. A candidate that is previewed
+    and never published - the documented "the preview showed a problem, do not publish" case,
+    and any abandoned prepare - therefore left the whole frozen injected theme on disk while
+    the run still answered PURGED. The run's own record closes that: ``sweep_local_copies``
+    enumerates and deletes the copy from it, and ``run_status`` refuses PURGED while it exists.
+
+    Fail closed: a candidate that names a run but cannot be recorded freezes nothing. Only
+    this CLI's own code leaves the function, so nothing the store refused reaches stdout.
+    """
+    bound = candidate.get("price_overlay")
+    if not isinstance(bound, dict):
+        # A plain owner-direct preview has no run and freezes no injected bytes.
+        return
+    live_guard, _price_overlay = _price_overlay_modules()
+    if Path(ROOT).resolve() != Path(live_guard.OWNER_CHECKOUT).resolve():
+        # The record and the copy land in the *running* checkout, and the §5 sweep walks the
+        # owner checkout: freezing anywhere else would leave a directory named after a
+        # price-recoverable hash where no purge looks. The publisher and this CLI both refuse
+        # a run-bound command from elsewhere; this is the last of the three.
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
+    from raos.adapters import rakuten_price_refresh_client as client
+
+    try:
+        # The record must live in the checkout the copy lands in, which for a run-bound
+        # preview is the owner checkout ``verify_price_overlay_candidate`` already pinned.
+        client.record_preview_copy(
+            client.PrivateStore(ROOT), bound.get("run_id"), relative
+        )
+    except client.RefreshError, OSError, ValueError, TypeError, KeyError:
+        raise ValueError("DIRECT_PREVIEW_PREVIEW_COPY_RECORD_FAILED") from None
+
+
+def freeze_display_theme(candidate: dict, private: Path, theme: Path) -> Path:
+    """Freeze the display theme as ``<preview base>/theme-<tree>``, recorded before it is written.
+
+    The directory name is the injected tree hash and its runtime JSON holds the injected body
+    hashes, so this copy is price-recoverable (contract §3, §8): recording comes first so an
+    interrupted copy is swept like a finished one.
+    """
+    theme_sha = _theme_tree(theme)
+    record_preview_copy_for_run(candidate, "theme-" + theme_sha)
+    frozen = private / ("theme-" + theme_sha)
+    if not frozen.exists():
+        shutil.copytree(theme, frozen, symlinks=False)
+    if _theme_tree(frozen) != theme_sha:
+        raise ValueError("DIRECT_PREVIEW_THEME_CHANGED")
+    for path in [frozen, *frozen.rglob("*")]:
+        path.chmod(0o755 if path.is_dir() else 0o644)
+    return frozen
+
+
 def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     planned = preview_plan(candidate, candidate_dir)
     images = product_image_mirror(candidate, candidate_dir, fetch=download_product_image)
@@ -433,15 +516,10 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
         if candidate.get("theme")
         else THEME
     )
-    theme_sha = _theme_tree(theme)
-    # Freeze the display theme even when it is not being deployed by this candidate.
-    frozen_theme = private / ("theme-" + theme_sha)
-    if not frozen_theme.exists():
-        shutil.copytree(theme, frozen_theme, symlinks=False)
-    if _theme_tree(frozen_theme) != theme_sha:
-        raise ValueError("DIRECT_PREVIEW_THEME_CHANGED")
-    for path in [frozen_theme, *frozen_theme.rglob("*")]:
-        path.chmod(0o755 if path.is_dir() else 0o644)
+    # Freeze the display theme even when it is not being deployed by this candidate. A
+    # run-bound candidate records the copy in its run directory before it is written, so the
+    # §5 sweep reaches it with no publish record to find it by.
+    frozen_theme = freeze_display_theme(candidate, private, theme)
     environment.update(
         {
             "RAOS_REPOSITORY_ROOT": str(ROOT),
@@ -477,13 +555,7 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
             "read_only": True,
         },
     ]
-    override = private / "compose.override.yaml"
-    _write(
-        override,
-        yaml.safe_dump(
-            {"services": {name: {"volumes": mounts} for name in ("wordpress", "cli")}}
-        ).encode(),
-    )
+    override = compose_override(candidate_dir, mounts)
     docker = environment.get("RAOS_WORDPRESS_PREVIEW_DOCKER_BIN", "docker")
     compose = [
         docker,
@@ -645,14 +717,128 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     }
 
 
+def _price_overlay_modules():
+    """The guard and the publisher's price-overlay module, imported from this checkout."""
+    for entry in (str(ROOT), str(ROOT / "python")):
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from raos.adapters import price_overlay_live_guard as live_guard
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    return live_guard, price_overlay
+
+
+class _Refusal:
+    """``direct.fail`` for the price-overlay resolver: its codes keep this CLI's prefix."""
+
+    @staticmethod
+    def fail(code: str) -> None:
+        raise ValueError("DIRECT_PREVIEW_" + code)
+
+
+def verify_price_overlay_candidate(candidate: dict, candidate_path: Path) -> Path:
+    """Contract §8: the one route left unrefused while a run is live has to be earned.
+
+    Two things are checked before ``prepare_candidate_preview`` may run, because that call
+    copies the injected theme to ``<ROOT>/.secrets/wordpress-direct-preview/theme-<tree>``
+    (the directory name is itself a price-recoverable hash) and downloads the product images:
+
+    * the running checkout is the fixed owner checkout, so the copy lands where the §5 purge
+      sweep walks (``rakuten_price_refresh_client.preview_copies_containing`` scans
+      ``store.owner_checkout / <relative>`` only), and the candidate file is one of that
+      checkout's own owner-direct candidates rather than a file handed in from anywhere;
+    * the ``price_overlay`` key is a claim resolved against the owner checkout's private
+      approval record - the schema, the mode and the run of the publisher's own
+      ``resolve_binding``, then the id ``prepare`` recorded in ``prepared_candidates`` - not a
+      flag whose mere presence switches the live refusal off.
+
+    Anything that does not resolve raises, and ``main`` prints only the code. The verified
+    directory is returned so that the path ``main`` hands the renderer is the one checked here
+    (``candidate_path.resolve().parent``), never the unresolved ``args.candidate.parent``: a
+    candidate directory that is a symlink resolves out of the base and is refused, and the
+    renderer can no longer be pointed through the link.
+    """
+    live_guard, price_overlay = _price_overlay_modules()
+    if ROOT.resolve() != Path(live_guard.OWNER_CHECKOUT).resolve():
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
+    base = Path(live_guard.OWNER_CHECKOUT) / OWNER_DIRECT_CANDIDATES
+    directory = candidate_path.resolve().parent
+    if directory.parent != base.resolve():
+        raise ValueError("DIRECT_PREVIEW_OWNER_CHECKOUT_REQUIRED")
+    bound = candidate.get("price_overlay")
+    if not isinstance(bound, dict):
+        # resolve_binding owns the schema rule (BINDING_SCHEMA); it only needs a mapping.
+        _Refusal.fail("PRICE_OVERLAY_BINDING_INVALID")
+    mode, run_id = bound.get("mode"), bound.get("run_id")
+    price_overlay.resolve_binding(
+        _Refusal,
+        candidate,
+        run_id if mode == price_overlay.MODE_PUBLISH else None,
+        run_id if mode == price_overlay.MODE_PURGE else None,
+    )
+    recorded = price_overlay.resolve_handle(
+        _Refusal, ROOT, price_overlay.handle(candidate)
+    )
+    if recorded != candidate.get("candidate_id") or directory.name != recorded:
+        raise ValueError("DIRECT_PREVIEW_PRICE_OVERLAY_CANDIDATE_UNKNOWN")
+    return directory
+
+
+def price_overlay_output(candidate: dict, result: dict) -> dict:
+    """Contract §8: what a run-bound preview may print.
+
+    The publisher scrubs the same payload with ``raos_wordpress_price_overlay.public_output``;
+    this CLI reuses that one helper rather than keeping a second rule. Only the handle, the run,
+    the status and the surface failures survive. The candidate id (the sha256 of the injected
+    bodies), the source and runtime hashes and the screenshot paths and hashes would all recover
+    the prices, and stdout - a terminal scrollback, an agent transcript, a CI log - is a place
+    the §5 purge never reaches.
+    """
+    for entry in (str(ROOT), str(ROOT / "python")):
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    view = price_overlay.public_output(candidate, result)
+    view["failures"] = list(result.get("failures") or ())
+    view["screenshots"] = len(result.get("screenshots") or ())
+    view["urls"] = len(result.get("urls") or ())
+    return view
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--candidate", required=True, type=Path)
     args = parser.parse_args()
     try:
         candidate = json.loads(args.candidate.read_bytes())
-        result = prepare_candidate_preview(candidate, args.candidate.parent)
-        print(json.dumps(result, ensure_ascii=False))
+        run_bound = "price_overlay" in candidate
+        directory, candidate_view = args.candidate.parent, candidate
+        if run_bound:
+            # Contract §8: the run-bound route is verified, never asserted - a hand-written
+            # key cannot switch the live refusal off, and the injected copies this preview
+            # writes can only land in the checkout the §5 purge sweep walks. The renderer is
+            # given the directory that was verified, not the one that was named.
+            directory = verify_price_overlay_candidate(candidate, args.candidate)
+            # Contract §8: the same view the publisher passes (``preview_candidate``). An
+            # injected body is checked against its own hash; handed the raw candidate,
+            # ``preview_plan`` compares it with the price-free checkpoint hash and this
+            # route would refuse every bound candidate (DIRECT_PREVIEW_BODY_CHANGED).
+            candidate_view = _price_overlay_modules()[1].preview_view(candidate)
+        else:
+            # Contract §8: only a run-bound candidate may be previewed while values are live
+            # (the publisher refuses the same way; this CLI takes any candidate file).
+            root = str(Path(__file__).resolve().parents[1] / "python")
+            if root not in sys.path:
+                sys.path.insert(0, root)
+            from raos.adapters.price_overlay_live_guard import price_overlay_refusal
+
+            code = price_overlay_refusal()
+            if code is not None:
+                raise ValueError("DIRECT_PREVIEW_" + code)
+        result = prepare_candidate_preview(candidate_view, directory)
+        printed = price_overlay_output(candidate, result) if run_bound else result
+        print(json.dumps(printed, ensure_ascii=False))
         return 0 if result["status"] == "PASS" else 1
     except (ValueError, OSError, subprocess.SubprocessError, KeyError) as error:
         print(

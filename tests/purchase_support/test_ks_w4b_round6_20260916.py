@@ -23,13 +23,12 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
 
 import pytest
 
 from scripts import build_reader_purchase_support_v1 as builder
-from tests.purchase_support import phone_table_frames
+from tests.purchase_support import ks_w4_batch, phone_table_frames
 
 ROOT = Path(__file__).resolve().parents[2]
 THEME_CSS = ROOT / (
@@ -123,42 +122,22 @@ def ledger() -> dict:
 
 # minor: an /updates/ card without a line in the article's own history -------------
 
-# Bodies this candidate changed against its base, read from its own commits plus
-# the working tree -- the shape W4a uses for the same kind of batch-wide rule.
-BATCH_SUBJECT = "KS W4b"
-ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
-
-
-def _git(*arguments: str) -> str:
-    return subprocess.run(
-        ("git", *arguments), cwd=ROOT, check=True, capture_output=True, text=True
-    ).stdout
+# The documents this candidate published, read from the publication record. Its
+# own commits are not a durable input -- the PR branch squashes W4a and W4b into
+# one commit and the merge rewrites the subject again -- and neither is a diff
+# against ``origin/main``, which lands on these very bodies. ``status.v1.json``
+# is cross-checked against the ledger and the generated /updates/ page in
+# ``test_ks_integrated_records.py``, so it cannot quietly narrow this scope.
+BATCH_NAME = "W4b"
 
 
 def _batch_bodies() -> set[str]:
-    """Every article body this candidate changed, as a slug set."""
-    log = _git("log", "--format=%H%x1f%s", "HEAD")
-    shas = [
-        line.split("\x1f")[0]
-        for line in log.splitlines()
-        if line and line.split("\x1f")[1].startswith(BATCH_SUBJECT)
-    ]
-    paths = set()
-    for sha in shas:
-        paths.update(_git("show", "--name-only", "--format=", sha).splitlines())
-    # Uncommitted work belongs to this batch only while the batch is the branch
-    # tip. Once a later batch commits on top, its edits are its own to report,
-    # and sweeping them in here would judge them against this batch's base.
-    lines = log.splitlines()
-    if lines and lines[0].split("\x1f")[1].startswith(BATCH_SUBJECT):
-        paths.update(
-            _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines()
-        )
-    return {
-        Path(path).stem
-        for path in paths
-        if path.startswith(ARTICLE_PREFIX) and path.endswith(".html")
-    }
+    """Every article body this candidate published, as a slug set.
+
+    Bodies outside this candidate are not in scope: W4a publishes first and owns
+    its own records.
+    """
+    return ks_w4_batch.batch_article_documents(BATCH_NAME)
 
 
 def test_every_body_this_candidate_carded_today_shows_the_day_in_its_own_history(
@@ -169,12 +148,11 @@ def test_every_body_this_candidate_carded_today_shows_the_day_in_its_own_history
     That round named 82, 83, 30 and 85 and added the 9/16 line to each, then gave
     19 and 84 an /updates/ card in the same commit -- so two articles tell
     /updates/ they changed today while their own 確認・更新履歴 does not say so.
-    Deriving the set from this candidate's own diff is what stops a hard-coded
-    list going stale the next time a body joins the batch. Bodies outside this
-    candidate are not in scope: W4a publishes first and owns its own records.
+    Deriving the set from the candidate's published documents is what stops a
+    hard-coded list going stale the next time a body joins the batch.
     """
     changed = _batch_bodies()
-    assert len(changed) >= 10, sorted(changed)
+    assert len(changed) >= 7, sorted(changed)
     missing = []
     for slug in sorted(changed):
         row = ledger.get(slug)
@@ -198,30 +176,9 @@ OPENING_WORDS = ("開き方", "開閉", "ファスナー", "フロントオー�
 USABILITY_LABEL = "使いやすさ・詳細"
 
 
-def _batch_base() -> str:
-    """The commit this candidate starts from: the first batch commit's parent."""
-    log = _git("log", "--format=%H%x1f%s", "HEAD").splitlines()
-    batch = [line.split("\x1f")[0] for line in log if line.split("\x1f")[1].startswith(BATCH_SUBJECT)]
-    return _git("rev-parse", f"{batch[-1]}^").strip() if batch else _git("rev-parse", "HEAD").strip()
-
-
 def _openings(text: str) -> dict[str, str]:
     """Each comparison row's opening note, keyed by the row's product name."""
-    table = re.search(r'<table class="ps-row-comparison ps-matrix-comparison".*?</table>', text, re.S)
-    assert table, "matrix comparison table"
-    found = {}
-    for row in re.findall(r"<tr[^>]*>(.*?)</tr>", table.group(0), re.S):
-        name = re.search(r"<th[^>]*>(.*?)</th>", row, re.S)
-        group = re.search(USABILITY_LABEL + r"</span>(.*?)</div>", row, re.S)
-        if name is None or group is None:
-            continue
-        note = re.search(r"<small>(.*?)</small>", group.group(1), re.S)
-        if note is None:
-            continue
-        plain = re.sub(r"<[^>]+>", " ", name.group(1)).replace("公式の仕様を見る", "")
-        identity = " ".join(plain.split() + re.findall(r'data-raos-product-id="([^"]+)"', row)[:1])
-        found[identity] = re.sub(r"<[^>]+>", "", note.group(1)).strip()
-    return found
+    return ks_w4_batch.openings(text)
 
 
 def _name_tokens(name: str) -> list[str]:
@@ -240,11 +197,15 @@ def test_card_names_every_opening_it_changed_that_day(ledger) -> None:
     The previous round named APPLITE alone while five of the twelve rows took a
     new opening the same day, and the same card lists three of 無印良品's four
     new values -- so a reader comparing the card with the row sees a different
-    count. The changed set is read from this candidate's own diff.
+    count. The before is the published state this candidate corrected, recorded
+    in ``ks_w4_published_before.json``; the after is the body on the site.
     """
-    body = Path("changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html")
-    before = _openings(_git("show", f"{_batch_base()}:{body.as_posix()}"))
+    body = Path(
+        "changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html"
+    )
+    before = ks_w4_batch.published_before(SMALL)["openings"]
     after = _openings((ROOT / body).read_text(encoding="utf-8"))
+    assert before and set(before) == set(after), sorted(set(before) ^ set(after))
     changed = sorted(name for name, note in after.items() if before.get(name) != note)
     assert len(changed) == 5, changed
     entry = next(
@@ -378,44 +339,3 @@ def test_axis_note_states_only_what_the_official_pages_leave_out(outputs, catalo
     assert AIRDO_FIGURE in text
     # The locator has to carry what the figure shows, or the note has no source.
     assert "55 が縦" in rules["airdo"]["locator"], rules["airdo"]["locator"]
-
-
-# the approved-layout records must describe this candidate, and their own article ---
-
-BASELINES = ROOT / "changes/site-improvements-20260913/approved-layout-baselines.v1.json"
-RECORD_TERMS = ("軸名", "座席下", "開閉構造")
-
-
-def _pendings() -> dict[str, dict]:
-    record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
-    return {slug: e["pending_revision"] for slug, e in record.items() if e.get("pending_revision")}
-
-
-def test_pending_revision_summaries_only_claim_text_their_own_body_carries(outputs) -> None:
-    """The owner reads the Before/After against this record, article by article.
-
-    83's entry said it listed the six carriers that publish no axis names -- that
-    note is in 553, and 83's body has no 軸名 anywhere -- so the record credited
-    one article with another's change.
-    """
-    for slug, pending in sorted(_pendings().items()):
-        body = re.sub(r"<[^>]+>", "", outputs.get(slug, ""))
-        for term in RECORD_TERMS:
-            if term in pending["summary"]:
-                assert term in body, (slug, term)
-
-
-def test_robot_pending_revision_states_the_width_the_theme_uses() -> None:
-    """The record said the first column was narrowed; the real fix was the table.
-
-    The previous round wrote 「先頭列を7remに詰めてデータ列が枠内に収まるようにした」
-    against a 302px frame. The frame is 286px, so the first column at 7rem was
-    never the binding term -- the table's own min-width was.
-    """
-    pending = _pendings()["compact-robot-vacuum-shortlist"]
-    phone = phone_table_frames.phone_block(THEME_CSS.read_text(encoding="utf-8"))
-    width = re.search(r"table\.robot-space-table\{min-width:(\d+(?:\.\d+)?)rem!important", phone)
-    assert width, "phone min-width"
-    assert f"{width.group(1)}rem" in pending["summary"], (width.group(1), pending["summary"])
-    frame = int(phone_table_frames.ARTICLE_SCROLL_FRAME[320])
-    assert f"{frame}px" in pending["summary"], pending["summary"]

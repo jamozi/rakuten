@@ -10,7 +10,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.mark.parametrize(
-    "harness", ["owner_direct_harness.php", "owner_direct_lease_harness.php"]
+    "harness",
+    [
+        "owner_direct_harness.php",
+        "owner_direct_lease_harness.php",
+        "owner_direct_overlay_redaction_harness.php",
+    ],
 )
 def test_owner_direct_authorization_and_draft_replay_behavior(harness):
     php = os.environ.get("RAOS_PHP_BIN") or shutil.which("php")

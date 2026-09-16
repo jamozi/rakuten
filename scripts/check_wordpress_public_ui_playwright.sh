@@ -25,6 +25,11 @@ refuse() {
 [ "$PWD" = "$repository_root" ] || refuse
 [ -x "$node_bin" ] || refuse
 [ "$($node_bin --version)" = v24.18.1 ] || refuse
+
+# Contract §8: no anonymous capture of the live site while Rakuten price overlay values may be
+# published; the screenshots this writes under output/playwright would carry rendered prices
+# and their sha256 is printed. The check exits 69 with its own code.
+"$node_bin" "$script_directory/raos_price_overlay_live_check.mjs" || exit 69
 [ -f "$cli_js" ] && [ ! -L "$cli_js" ] || refuse
 [ -f "$audit_function" ] && [ ! -L "$audit_function" ] || refuse
 [ -f "$audit_inventory" ] && [ ! -L "$audit_inventory" ] || refuse
