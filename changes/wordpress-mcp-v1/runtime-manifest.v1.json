@@ -602,8 +602,8 @@
     },
     {
       "path": "scripts/raos_price_overlay_live_check.mjs",
-      "sha256": "efca4ffa59369abfcbf0ab8b999d5c4af7c97c0120d977442417ba4098ecda0a",
-      "size": 5687
+      "sha256": "402a2d44fd53cd557ba781b5f6179dfb3bba987ad76a92b17a6afd3685b2a86f",
+      "size": 6989
     },
     {
       "path": "scripts/store_wordpress_mcp_credential.py",

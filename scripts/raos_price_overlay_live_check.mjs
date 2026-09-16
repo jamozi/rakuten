@@ -113,6 +113,13 @@ export async function refuseWhilePriceOverlayLive(root = REPOSITORY_ROOT) {
 // The destination, not the origin, is what decides: the candidate preview docker serves the
 // injected bodies on `http://127.0.0.1:<port>`, so a loopback capture is exactly as exposing
 // as a public one.
+//
+// The two directories are the ones the sweep walks, and it walks them in the owner checkout
+// only (rakuten_price_refresh_client.py `local_copies` / `preview_copies_containing` scan
+// `store.owner_checkout / <relative>`). So the rule is anchored to the same fixed owner
+// checkout price_overlay_live_guard.py pins, not to the segment appearing anywhere in a path:
+// a worktree, a temporary directory or `<root>/output/.secrets/...` is not swept.
+export const OWNER_CHECKOUT = '/home/minami/rakuten';
 export const PURGE_REACHABLE_DIRECTORIES = Object.freeze([
   '.secrets/wordpress-mcp/owner-direct-v1',
   '.secrets/wordpress-direct-preview',
@@ -132,6 +139,15 @@ function resolvedThroughSymlinks(destination) {
   return null;
 }
 
+/** `<owner checkout>/<swept directory>/` for each swept directory, or [] when unresolvable. */
+function purgeReachablePrefixes() {
+  const base = resolvedThroughSymlinks(OWNER_CHECKOUT);
+  if (base === null) return [];
+  const posix = base.split(sep).join('/').replace(/\/+$/, '');
+  if (posix === '') return [];
+  return PURGE_REACHABLE_DIRECTORIES.map((relative) => `${posix}/${relative}/`);
+}
+
 export function keptWherePurgeReaches(destination) {
   if (typeof destination !== 'string' || destination === '' || !isAbsolute(destination)) {
     return false;
@@ -139,7 +155,9 @@ export function keptWherePurgeReaches(destination) {
   const resolved = resolvedThroughSymlinks(destination);
   if (resolved === null) return false;
   const posix = resolved.split(sep).join('/');
-  return PURGE_REACHABLE_DIRECTORIES.some((relative) => posix.includes(`/${relative}/`));
+  // A prefix match under the owner checkout, not a substring match: `..` is already normalised
+  // away by resolve(), and a symlink in an existing ancestor is resolved before the compare.
+  return purgeReachablePrefixes().some((prefix) => posix.startsWith(prefix));
 }
 
 /**
@@ -152,6 +170,9 @@ export async function refuseWhilePriceOverlayLiveUnlessPurged(
   root = REPOSITORY_ROOT,
 ) {
   const list = Array.isArray(destinations) ? destinations : [destinations];
+  // every(), not some(): a caller that writes into two directories is exempt only when the
+  // purge reaches all of them, so one purged destination cannot carry an artifact written
+  // under output/ past the check.
   if (list.length === 0 || !list.every(keptWherePurgeReaches)) {
     await refuseWhilePriceOverlayLive(root);
   }

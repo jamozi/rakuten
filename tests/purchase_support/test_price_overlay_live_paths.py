@@ -482,12 +482,30 @@ EDITOR_ENDPOINT_TOOLS = tuple(
 )
 
 
+def write_live_check(root):
+    """The Node check with its owner checkout pointed at this fixture.
+
+    The destination rule is anchored to a fixed absolute path in production (the launcher is
+    stubbed the same way, see ``launcher_root``), so a fixture that wants a purge-reachable
+    destination has to stand in for the owner checkout.
+    """
+    source = (ROOT / "scripts/raos_price_overlay_live_check.mjs").read_text(encoding="utf-8")
+    pinned = "export const OWNER_CHECKOUT = '/home/minami/rakuten';"
+    assert source.count(pinned) == 1, pinned
+    (root / "scripts/raos_price_overlay_live_check.mjs").write_text(
+        source.replace(
+            pinned, f"export const OWNER_CHECKOUT = {json.dumps(str(root))};", 1
+        ),
+        encoding="utf-8",
+    )
+
+
 def fake_check_root(tmp_path, answers, name="check-root"):
     """A checkout whose .venv/bin/python is the fake operator with the given answer script."""
     root = (tmp_path / name).resolve()
     (root / "scripts").mkdir(parents=True)
     (root / "scripts/raos_wordpress_deployment_operator.py").write_text("")
-    shutil.copy2(ROOT / "scripts/raos_price_overlay_live_check.mjs", root / "scripts")
+    write_live_check(root)
     binary = root / ".venv/bin"
     binary.mkdir(parents=True)
     (binary / "python").write_text(FAKE_OPERATOR)
@@ -1020,8 +1038,128 @@ def test_the_before_after_helper_checks_the_candidate_root_it_was_given(
 
 
 # ---------------------------------------------------------------------------
+# The standalone candidate preview CLI: what a run-bound candidate may print
+# ---------------------------------------------------------------------------
+#
+# Contract §8 leaves this one route unrefused while a run is live (the publisher drives it for
+# the run-bound candidate), so the redaction has to happen in what it prints: stdout is a
+# terminal scrollback, an agent transcript and a CI log, none of which the §5 purge reaches.
+
+PREVIEW_RESULT = {
+    "schema": "RAOSOwnerDirectPreviewV1",
+    "status": "FAIL",
+    "candidate_id": "b" * 64,
+    "source_sha256": "c" * 64,
+    "runtime_sha256": "d" * 64,
+    "checked_at": "2026-09-16T00:00:00+00:00",
+    "urls": [
+        "http://127.0.0.1:41398/",
+        "http://127.0.0.1:41398/carry-on-suitcase-comparison/",
+    ],
+    "screenshots": [
+        {
+            "path": "/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1/"
+            + "b" * 64
+            + "/screenshots/0-home-390.png",
+            "sha256": "e" * 64,
+        }
+    ],
+    "failures": ["/carry-on-suitcase-comparison/:390:horizontal-overflow"],
+}
+
+
+def preview_cli_stdout(monkeypatch, tmp_path, candidate):
+    path = tmp_path / "candidate.json"
+    path.write_text(json.dumps(candidate))
+    monkeypatch.setattr(
+        preview_cli, "prepare_candidate_preview", lambda *a, **k: dict(PREVIEW_RESULT)
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["raos_wordpress_direct_preview.py", "--candidate", str(path)]
+    )
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        code = preview_cli.main()
+    return code, buffer.getvalue()
+
+
+def test_the_preview_cli_redacts_a_run_bound_candidate(tmp_path, monkeypatch):
+    """The publisher's own redaction, plus counts for the fields that carry paths and hashes."""
+    code, printed = preview_cli_stdout(
+        monkeypatch,
+        tmp_path,
+        {"candidate_id": "b" * 64, "price_overlay": {"mode": "PUBLISH", "run_id": RUN_ID}},
+    )
+    assert code == 1
+    assert json.loads(printed) == {
+        "candidate": f"price-overlay:{RUN_ID}:publish",
+        "candidate_id": "REDACTED_PRICE_OVERLAY",
+        "price_overlay": {"mode": "PUBLISH", "run_id": RUN_ID},
+        "status": "FAIL",
+        "failures": ["/carry-on-suitcase-comparison/:390:horizontal-overflow"],
+        "screenshots": 1,
+        "urls": 2,
+    }
+    assert re.search(r"[0-9a-f]{64}", printed) is None, printed
+    assert ".secrets" not in printed
+
+
+def test_the_preview_cli_prints_a_flag_free_candidate_unchanged(tmp_path, monkeypatch):
+    """Nothing about the flag-free shape changes: it still prints the whole report."""
+    empty = (tmp_path / "empty-checkout").resolve()
+    (empty / ".secrets").mkdir(parents=True, mode=0o700)
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", empty)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", empty)
+    code, printed = preview_cli_stdout(monkeypatch, tmp_path, {"candidate_id": "b" * 64})
+    assert code == 1
+    assert json.loads(printed) == PREVIEW_RESULT
+
+
+def test_the_preview_cli_still_refuses_a_flag_free_candidate_while_live(
+    tmp_path, monkeypatch
+):
+    owner = owner_with_state(tmp_path, "live")
+    monkeypatch.setattr(guard, "OWNER_CHECKOUT", owner)
+    monkeypatch.setattr(guard, "REPOSITORY_ROOT", owner)
+    code, printed = preview_cli_stdout(monkeypatch, tmp_path, {"candidate_id": "b" * 64})
+    assert code == 1
+    assert json.loads(printed) == {
+        "status": "FAIL",
+        "code": "DIRECT_PREVIEW_" + LIVE,
+    }
+
+
+# ---------------------------------------------------------------------------
 # The destination rule: a rendering may only be kept where the §5 purge reaches
 # ---------------------------------------------------------------------------
+
+
+def kept_where_purge_reaches(module_root, destination):
+    """``keptWherePurgeReaches`` as the module copied into ``module_root`` answers it."""
+    assert NODE is not None
+    module = (Path(module_root) / "scripts/raos_price_overlay_live_check.mjs").as_uri()
+    program = (
+        f"import {{ keptWherePurgeReaches }} from {json.dumps(module)};"
+        f"process.stdout.write(String(keptWherePurgeReaches({json.dumps(str(destination))})));"
+    )
+    completed = subprocess.run(
+        [NODE, "--input-type=module", "-e", program],
+        cwd=module_root,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout in {"true", "false"}, completed.stdout
+    return completed.stdout == "true"
+
+
+def stub_owner_checkout(tmp_path, name="stub-owner-checkout"):
+    """A checkout the copied Node check treats as the owner checkout (no operator answers)."""
+    root = (tmp_path / name).resolve()
+    (root / "scripts").mkdir(parents=True)
+    write_live_check(root)
+    return root
 
 
 @pytest.mark.parametrize(
@@ -1032,51 +1170,113 @@ def test_the_before_after_helper_checks_the_candidate_root_it_was_given(
         ("/home/minami/rakuten/output/ks-20260915/x.png", False),
         ("/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1", False),
         ("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-snapshots/x", False),
+        # The segment appearing somewhere in the path is not enough: the sweep walks the two
+        # directories in the owner checkout only (§5), so each of these outlives a purge.
+        ("/tmp/anything/.secrets/wordpress-mcp/owner-direct-v1/x", False),
+        (
+            "/home/minami/rakuten/.worktrees/w/.secrets/wordpress-mcp/owner-direct-v1/x",
+            False,
+        ),
+        ("/home/minami/evil/.secrets/wordpress-direct-preview/out", False),
+        ("/home/minami/rakuten/output/.secrets/wordpress-direct-preview/x", False),
+        (
+            "/home/minami/rakuten/.secrets/wordpress-mcp/owner-direct-v1/../../../output/x.png",
+            False,
+        ),
         ("output/ks-20260915/x.png", False),
         ("", False),
     ],
 )
-def test_the_node_destination_rule_answers_for_every_shape(tmp_path, destination, purged):
-    assert NODE is not None
-    program = (
-        "import { keptWherePurgeReaches } from "
-        f"{json.dumps((ROOT / 'scripts/raos_price_overlay_live_check.mjs').as_uri())};"
-        f"process.stdout.write(String(keptWherePurgeReaches({json.dumps(destination)})));"
-    )
-    completed = subprocess.run(
-        [NODE, "--input-type=module", "-e", program],
-        cwd=tmp_path,
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
-    assert completed.returncode == 0, completed.stderr
-    assert completed.stdout == ("true" if purged else "false"), destination
+def test_the_node_destination_rule_answers_for_every_shape(destination, purged):
+    assert kept_where_purge_reaches(ROOT, destination) is purged, destination
 
 
 def test_a_symlink_cannot_make_a_destination_look_purged(tmp_path):
     """The deepest existing ancestor is resolved, so `.secrets/...` -> output/ still refuses."""
-    assert NODE is not None
-    real = tmp_path / "output/ks-20260915"
+    root = stub_owner_checkout(tmp_path)
+    real = root / "output/ks-20260915"
     real.mkdir(parents=True)
-    private = tmp_path / ".secrets/wordpress-mcp/owner-direct-v1"
+    private = root / ".secrets/wordpress-mcp/owner-direct-v1"
     private.mkdir(parents=True)
     (private / "candidate").symlink_to(real)
+    assert kept_where_purge_reaches(root, private / "candidate/screenshots/a.png") is False
+    kept = private / ("a" * 64) / "screenshots"
+    kept.mkdir(parents=True)
+    assert kept_where_purge_reaches(root, kept / "0-home-390.png") is True
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        ".secrets/wordpress-mcp/owner-direct-v1/a/screenshots/x.png",
+        ".secrets/wordpress-direct-preview/theme-a/x.png",
+    ],
+)
+def test_the_same_directory_outside_the_owner_checkout_is_not_purge_reachable(
+    tmp_path, relative
+):
+    """Only the owner checkout's own copy of the directory is swept (§5)."""
+    root = stub_owner_checkout(tmp_path)
+    assert kept_where_purge_reaches(root, root / relative) is True
+    for other in (tmp_path / "another-clone", root / "output", root / ".worktrees/w"):
+        assert kept_where_purge_reaches(root, other / relative) is False, other
+
+
+def refuse_unless_purged(root, destinations):
+    """Run ``refuseWhilePriceOverlayLiveUnlessPurged`` against the copy in ``root``."""
+    assert NODE is not None
+    module = (root / "scripts/raos_price_overlay_live_check.mjs").as_uri()
     program = (
-        "import { keptWherePurgeReaches } from "
-        f"{json.dumps((ROOT / 'scripts/raos_price_overlay_live_check.mjs').as_uri())};"
-        "process.stdout.write(String(keptWherePurgeReaches("
-        f"{json.dumps(str(private / 'candidate' / 'screenshots' / 'a.png'))})));"
+        f"import {{ refuseWhilePriceOverlayLiveUnlessPurged }} from {json.dumps(module)};"
+        "await refuseWhilePriceOverlayLiveUnlessPurged("
+        f"{json.dumps([str(entry) for entry in destinations])});"
     )
-    completed = subprocess.run(
+    return subprocess.run(
         [NODE, "--input-type=module", "-e", program],
-        cwd=tmp_path,
+        cwd=root,
         capture_output=True,
         text=True,
-        timeout=120,
+        timeout=300,
     )
-    assert completed.returncode == 0, completed.stderr
-    assert completed.stdout == "false"
+
+
+@pytest.mark.parametrize(
+    ("shape", "refused"),
+    [
+        ("one-purged", False),
+        ("two-purged", False),
+        ("mixed", True),
+        ("mixed-reversed", True),
+        ("empty", True),
+    ],
+)
+def test_the_destination_list_is_exempt_only_when_the_purge_reaches_every_entry(
+    tmp_path, shape, refused
+):
+    """A caller that writes into two directories is exempt only when both are swept: one
+    purge-reachable entry must not carry an artifact written under output/ past the check."""
+    root = fake_check_root(tmp_path, [ANSWER_LIVE], name="destination-list-root")
+    candidate = root / ".secrets/wordpress-mcp/owner-direct-v1" / ("a" * 64) / "screenshots"
+    candidate.mkdir(parents=True)
+    theme = root / ".secrets/wordpress-direct-preview/theme-a"
+    theme.mkdir(parents=True)
+    unpurged = root / "output/ks-20260915"
+    destinations = {
+        "one-purged": [candidate],
+        "two-purged": [candidate, theme],
+        "mixed": [candidate, unpurged],
+        "mixed-reversed": [unpurged, candidate],
+        "empty": [],
+    }[shape]
+    completed = refuse_unless_purged(root, destinations)
+    if refused:
+        assert completed.returncode == 69, completed.stdout + completed.stderr
+        assert completed.stderr.strip() == "WORDPRESS_MCP_PRICE_OVERLAY_LIVE"
+        assert checks_run(root) == 1
+    else:
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+        assert "PRICE_OVERLAY" not in completed.stderr
+        assert checks_run(root) == 0
 
 
 # A loopback origin is no longer an exemption: the candidate preview docker serves the injected
@@ -1304,7 +1504,11 @@ def test_the_local_preview_shell_checks_before_opening_a_browser(tmp_path, relat
 # opens a browser, or that reads the owner-direct candidate directory, must either reference a
 # guard or carry a reviewed reason here.
 
-SOURCE_SUFFIXES = frozenset({".py", ".mjs", ".js", ".sh", ".ts"})
+# Every extension a capture or fetch tool can be written in, not only the ones in use today:
+# a new `.cjs` or `.mts` entry point must be seen by this walk on the day it is added.
+SOURCE_SUFFIXES = frozenset(
+    {".py", ".mjs", ".js", ".cjs", ".ts", ".mts", ".cts", ".sh", ".bash"}
+)
 SKIPPED_DIRECTORIES = frozenset(
     {
         ".git",
@@ -1319,17 +1523,26 @@ SKIPPED_DIRECTORIES = frozenset(
         "output",
     }
 )
+# A browser can be reached without importing playwright by name: a persistent context, an
+# attach to an already open browser over CDP or its websocket, a pipe, or the packaged CLIs.
 BROWSER_MARKERS = re.compile(
     r"require\('playwright'\)|require\(\"playwright\"\)"
     r"|from 'playwright'|from \"playwright\""
     r"|import\('playwright'\)|import\(\"playwright\"\)"
     r"|require\('puppeteer'\)|from 'puppeteer'"
+    r"|playwright-core|@playwright/mcp|@playwright/test"
+    r"|npx[^\n]{0,80}playwright"
     r"|\b(?:chromium|firefox|webkit)\.launch\("
-    r"|remote-debugging-port"
+    r"|launchPersistentContext|connectOverCDP|puppeteer\.connect\("
+    r"|remote-debugging-port|remote-debugging-pipe|webSocketDebuggerUrl"
     r"|node_modules/@playwright/cli|node_modules/lighthouse/cli"
 )
+# The candidate directory is also reached through the publisher's own constants
+# (`direct.PRIVATE`, `audit.PRIVATE`) and through the frozen preview themes.
 CANDIDATE_MARKERS = re.compile(
     r"\.secrets/wordpress-mcp/owner-direct-v1|OWNER_DIRECT_CANDIDATE_RELATIVE"
+    r"|\.secrets/wordpress-direct-preview|PREVIEW_PRIVATE_RELATIVE"
+    r"|\.PRIVATE\b"
 )
 GUARD_MARKERS = re.compile(
     r"refuseWhilePriceOverlayLive|raos_price_overlay_live_check|price_overlay_live_guard"
@@ -1377,6 +1590,49 @@ UNGUARDED_BY_REVIEW = {
     "tests/st1704/test_home_fragment_navigation.py": "renders a tracked theme asset, no origin",
     "tests/st1704/test_toc_saved_css_compatibility.py": "renders a tracked theme asset, no origin",
     "tests/wordpress_mcp_v1/test_contract.py": "pins a package version string only",
+    "tests/purchase_support/purchase_ui_harness.cjs": (
+        "setContent of a document the harness builds itself; it never navigates to an origin"
+    ),
+    "scripts/chatgpt_pro_mcp.sh": (
+        "the ChatGPT Pro Playwright MCP launcher: --allowed-origins https://chatgpt.com, so "
+        "the browser it starts can reach neither the site nor the candidate preview docker"
+    ),
+    "scripts/chatgpt_pro_orchestrator.py": (
+        "drives that launcher and only that launcher (a wrapper other than "
+        "scripts/chatgpt_pro_mcp.sh is refused before the process starts)"
+    ),
+    "scripts/chatgpt_pro_mcp_runtime/verify_runtime.py": (
+        "verifies the pinned @playwright/mcp package tree on disk; it has no subprocess and "
+        "starts nothing"
+    ),
+    "tests/st0101/test_chatgpt_pro_private_runtime.py": (
+        "pins that package tree and its lockfile; the browser is never started"
+    ),
+    "tests/st0101/test_chatgpt_pro_workflow.py": (
+        "pins the launcher's configuration (the playwright MCP server stays disabled)"
+    ),
+    "changes/st-0005/evidence/artifacts/"
+    "ff0afaf837c18131a5edc05670f8eb16910cd8a7473524f63e12d593e17b9644-chatgpt_pro_mcp.sh": (
+        "a frozen evidence copy of the launcher above; nothing executes it"
+    ),
+    "changes/st-0005/evidence/artifacts/"
+    "742ee4c7d8efda914f75c7851e407558952b77d832f481ee2779af6f72d77446-"
+    "test_chatgpt_pro_workflow.py": "a frozen evidence copy of the test above",
+    "tests/raos_v2/test_browser_contract.py": (
+        "replaces globalThis.fetch with a stub and asserts on the CDP helper's retry; no "
+        "browser and no socket"
+    ),
+    "tests/wordpress_mcp_v1/test_owner_direct_client.py": (
+        "asserts the candidate directory is absent under a temporary root; the client it "
+        "exercises is a fake"
+    ),
+    "tests/wordpress_seo_audit_v1/test_incremental.py": (
+        "writes its own incremental-preview directory beside PRIVATE under a temporary root; "
+        "it never reads the owner-direct candidates"
+    ),
+    "tests/wordpress_seo_audit_v1/test_incremental_preserved_theme_images.py": (
+        "same temporary incremental-preview directory"
+    ),
 }
 
 
@@ -1406,7 +1662,9 @@ def files_that_can_reach_an_overlay_value():
 
 def test_every_browser_and_candidate_reader_is_guarded_or_reviewed():
     found = files_that_can_reach_an_overlay_value()
-    assert len(found) >= 30, sorted(found)
+    # The widened suffixes and markers see 50 files today; a floor well above the
+    # round 7 count catches a marker that stops matching as much as a missing guard.
+    assert len(found) >= 45, sorted(found)
     unreviewed = sorted(
         name
         for name, (_, guarded) in found.items()

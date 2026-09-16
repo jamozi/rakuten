@@ -645,13 +645,36 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     }
 
 
+def price_overlay_output(candidate: dict, result: dict) -> dict:
+    """Contract §8: what a run-bound preview may print.
+
+    The publisher scrubs the same payload with ``raos_wordpress_price_overlay.public_output``;
+    this CLI reuses that one helper rather than keeping a second rule. Only the handle, the run,
+    the status and the surface failures survive. The candidate id (the sha256 of the injected
+    bodies), the source and runtime hashes and the screenshot paths and hashes would all recover
+    the prices, and stdout - a terminal scrollback, an agent transcript, a CI log - is a place
+    the §5 purge never reaches.
+    """
+    for entry in (str(ROOT), str(ROOT / "python")):
+        if entry not in sys.path:
+            sys.path.insert(0, entry)
+    from scripts import raos_wordpress_price_overlay as price_overlay
+
+    view = price_overlay.public_output(candidate, result)
+    view["failures"] = list(result.get("failures") or ())
+    view["screenshots"] = len(result.get("screenshots") or ())
+    view["urls"] = len(result.get("urls") or ())
+    return view
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--candidate", required=True, type=Path)
     args = parser.parse_args()
     try:
         candidate = json.loads(args.candidate.read_bytes())
-        if "price_overlay" not in candidate:
+        run_bound = "price_overlay" in candidate
+        if not run_bound:
             # Contract §8: only a run-bound candidate may be previewed while values are live
             # (the publisher refuses the same way; this CLI takes any candidate file).
             root = str(Path(__file__).resolve().parents[1] / "python")
@@ -663,7 +686,8 @@ def main() -> int:
             if code is not None:
                 raise ValueError("DIRECT_PREVIEW_" + code)
         result = prepare_candidate_preview(candidate, args.candidate.parent)
-        print(json.dumps(result, ensure_ascii=False))
+        printed = price_overlay_output(candidate, result) if run_bound else result
+        print(json.dumps(printed, ensure_ascii=False))
         return 0 if result["status"] == "PASS" else 1
     except (ValueError, OSError, subprocess.SubprocessError, KeyError) as error:
         print(

@@ -351,7 +351,7 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 | full redesign の匿名 capture（body 全文と hash を保存） | `scripts/prepare_full_redesign_audit_packet.py` の `_capture_public` | 同上 |
 | RAOS v2 の匿名 capture（body hash を出力・保存） | `scripts/validate_raos_v2_successor.py` の `_fetch` | `RAOS_V2_PRICE_OVERLAY_LIVE` |
 | harness の `inventory --wordpress-status`（実 MCP を起動） | `scripts/codex_harness.py` の `wordpress_status` | server を起動せず `REFUSED` 行 |
-| candidate preview の単体 CLI | `scripts/raos_wordpress_direct_preview.py` の `main`（フラグ無し candidate のみ） | `DIRECT_PREVIEW_PRICE_OVERLAY_LIVE` |
+| candidate preview の単体 CLI | `scripts/raos_wordpress_direct_preview.py` の `main` | フラグ無し candidate は `DIRECT_PREVIEW_PRICE_OVERLAY_LIVE`。run に束縛された candidate は拒否せず、標準出力を伏せます（下の「出力に candidate id を出しません」） |
 | ST-1506 / ST-1704v2 / ST-1703 / ST-1704 pilot の CLI（`raos-bounded-operator`・`wp/v2`） | 各 CLI の `_price_overlay_live()`（operator の check を子プロセスで実行） | `<CLI>_PRICE_OVERLAY_LIVE`（終了コード 69） |
 | 匿名のブラウザ計測（`ks_before_capture` / `ks_public_performance_probe` / `ks_viewport_matrix` / `site_improvements_audit` / `site_improvements_consent_lab` / `npm run wordpress:ui:check`） | `scripts/raos_price_overlay_live_check.mjs`（origin ではなく保存先で判定。下の「保存先の規則」） | 判定コードで終了 69（ブラウザを起動しない） |
 | Before/After の証跡（候補ディレクトリの screenshot を `output/` に複製し、candidate id を `index.md` に書く） | `scripts/ks_before_after.py` の `main()`。`--candidate-root` と `--owner-checkout` も判定対象 | `PRICE_OVERLAY_LIVE` / `PRICE_OVERLAY_STATE_INVALID` を stderr に出して終了 69（台帳も候補ディレクトリも開かない） |
@@ -370,9 +370,13 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 - **保存先の規則（ブラウザ撮影）**: 値の配信中、WordPress のページの描画（screenshot・保存した HTML・その sha256）を残してよいのは、§5 の消去走査が届く場所だけです。つまり `.secrets/wordpress-mcp/owner-direct-v1/` と `.secrets/wordpress-direct-preview/` の下です。
   - 判定するのは origin ではなく**保存先**です。候補 preview の docker は注入本文を `http://127.0.0.1:<port>` で配るので、loopback の撮影も公開の撮影と同じだけ値を持ちます（round 6 まではここが例外扱いでした）。
   - 保存先が上の 2 か所の外（`output/` 配下、呼び出し側が指定したディレクトリ、相対パス、空）なら、`refuseWhilePriceOverlayLiveUnlessPurged()` が同じ判定を実行し、配信中なら終了 69 で拒否します。保存先が消去範囲なら判定そのものを実行しません（run に束縛された正規の preview）。
-  - 保存先は、実在する最も深い祖先を realpath してから照合します。`.secrets/...` から `output/` への symlink は消去範囲として通りません（安全側）。
+  - 照合は**固定の owner checkout を起点にした前方一致**です（`OWNER_CHECKOUT = /home/minami/rakuten`、`price_overlay_live_guard.py` と同じ値）。消去走査（§5 の `local_copies` / `preview_copies_containing`）は owner checkout の下しか歩かないので、worktree の `.secrets/wordpress-mcp/owner-direct-v1/`、`/tmp/…/.secrets/…`、`<root>/output/.secrets/…` のように同じ名前を含むだけのパスは消去範囲ではありません（round 7 までは部分一致だったので通っていました）。
+  - 保存先は、実在する最も深い祖先を realpath してから照合します。`.secrets/...` から `output/` への symlink は消去範囲として通りません（安全側）。`..` は照合の前に正規化するので、`owner-direct-v1/../../../output/x.png` も通りません。
+  - 保存先が複数あるときは、**全部**が消去範囲のときだけ判定を省きます（`every`）。1 つが消去範囲でも、もう 1 つが `output/` なら判定を実行します。
   - 対象: `changes/wordpress-direct-publish-v1/preview-browser.mjs`、`scripts/ks_before_capture.mjs`、`scripts/ks_public_performance_probe.mjs`、`scripts/ks_viewport_matrix.mjs`、`scripts/site_improvements_audit.mjs`、`scripts/site_improvements_consent_lab.mjs`、`tests/purchase_support/purchase_paths_browser.mjs`、`changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs`、`changes/wordpress-local-preview-v1/browser/local_running_cost_audit.mjs`。
 - **経路の棚卸しはリポジトリの走査で行う**: `tests/purchase_support/test_price_overlay_live_paths.py` は、ブラウザを起動するファイルと owner-direct の候補ディレクトリを読むファイルをリポジトリ全体から数え上げ、どれもが判定を参照しているか、理由を書いた明示の許可リストに載っているかを確かめます。手書きの一覧だけだった round 1-6 では、この 6 本（上の新しい行）が 6 回の棚卸しをすり抜けました。
+  - 走査の対象は `.py` / `.mjs` / `.js` / `.cjs` / `.ts` / `.mts` / `.cts` / `.sh` / `.bash`、目印は playwright / puppeteer の import に加えて `launchPersistentContext`・`connectOverCDP`・`webSocketDebuggerUrl`・`remote-debugging-port` / `-pipe`・`npx … playwright`・`@playwright/mcp`・`playwright-core`、候補ディレクトリ側は `.secrets/wordpress-mcp/owner-direct-v1`・`OWNER_DIRECT_CANDIDATE_RELATIVE`・`.secrets/wordpress-direct-preview`・`PREVIEW_PRIVATE_RELATIVE`・`.PRIVATE` です（round 7 の走査は `.cjs` の capture や CDP 直結を見落としていました）。
+  - **この走査はブラウザと候補ディレクトリの tripwire で、経路の完全な列挙ではありません。** 公開ページを HTTP で取得して本文や hash を残す道具（SEO 監査・full redesign capture・RAOS v2 capture・snapshot）は、今も上の表と手書きの一覧で固定しています。新しい HTTP 読み取りを足すときは、走査ではなくこの表に追加してください。
 - **この判定が届かない範囲（オーナー作業。リポジトリの中では直せません）**
   - **owner checkout がまだこの branch に無い**: `.codex/config.toml` は `cwd=/home/minami/rakuten` を指します。その checkout が `claude/ks-g-integration-20260916` を取り込むまで、Codex が実際に起動する MCP サーバと、そこから動く CLI・ブラウザ計測は、ここで足した拒否を持ちません。**初回の実値公開の前に取り込みます。**
   - **ユーザー水準の MCP サーバ**: `~/.claude.json` や `~/.codex/config.toml` に別途登録された WordPress 系サーバは、このリポジトリの launcher・bridge を通らないので判定を受けません。値の配信中は使わない運用にします。
@@ -387,6 +391,7 @@ publish --candidate price-overlay:<run_id>:purge --price-overlay-purge <run_id> 
 - 出力に candidate id を出しません。注入 candidate の id は注入後本文の hash、purge candidate の id は live の注入後本文を baseline に持つ candidate の hash で、どちらも価格を総当たりで復元できるためです。
   - `prepare` は id を承認記録の `prepared_candidates` にだけ書き、`{"candidate": "price-overlay:<run_id>:<mode>", "candidate_id": "REDACTED_PRICE_OVERLAY", ...}` を出します。candidate ディレクトリのパスも出しません。
   - `preview` / `publish` / `status` / `sync` は price overlay の candidate について、handle、`REDACTED_PRICE_OVERLAY`、mode・run_id、状態（`publication_ready` / `publication_status` / `status` / `result_code`）、`git_sync.status` だけを出します（preview の runtime hash や journal の proposal id・receipt は出さない。`preview.json` と `journal.json` には従来どおり書く）。
+  - 単体の `scripts/raos_wordpress_direct_preview.py --candidate <run に束縛された candidate>` も、publisher と同じ `public_output()` を通してから出します。出るのは handle・`REDACTED_PRICE_OVERLAY`・mode・run_id・`status`・`failures`（`<surface path>:<width>:<code>`）と、`screenshots` / `urls` の**件数**だけです。candidate id・`source_sha256`・`runtime_sha256`・screenshot のパスと sha256 は出しません（標準出力は §5 の消去が届かないため）。
   - handle の形が違えば `PRICE_OVERLAY_CANDIDATE_HANDLE_INVALID`、承認記録に id が無い（purge 公開の後など）と `PRICE_OVERLAY_CANDIDATE_HANDLE_UNKNOWN` で、WordPress を呼ぶ前に拒否します。
   - 証跡（KS-020.md など）には run_id と結果コードだけを写します。
 
