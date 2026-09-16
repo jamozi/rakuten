@@ -419,3 +419,36 @@ def test_pending_revision_names_every_branch_its_summary_describes() -> None:
         assert len(set(branches)) == len(branches), slug
         named = set(re.findall(r"claude/ks-[0-9a-z-]+", pending["summary"]))
         assert named <= set(branches), (slug, named, branches)
+
+
+def test_pending_revision_summary_names_the_notation_correction() -> None:
+    """The owner reads this summary before authorising the layout.
+
+    The batch's own /updates/ card names the 約 correction on the displayed
+    dimensions of these layouts, so a summary that stops at the branches
+    describes less of the Before/After than the published card does.
+    """
+    record = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
+    ledger = json.loads(
+        (builder.ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    logs = {
+        article["slug"]: article["listing"]["change_log"]
+        for article in ledger["articles"]
+        if "change_log" in (article.get("listing") or {})
+    }
+    checked = []
+    for slug, entry in record.items():
+        pending = entry.get("pending_revision")
+        if not pending:
+            continue
+        if not any("「約」" in change["summary"] for change in logs.get(slug, [])):
+            continue
+        checked.append(slug)
+        assert "「約」" in pending["summary"], slug
+    assert sorted(checked) == [
+        "compact-dishwasher-comparison",
+        "standard-dishwasher-comparison",
+    ]

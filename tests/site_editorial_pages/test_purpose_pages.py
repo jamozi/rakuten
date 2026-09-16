@@ -484,7 +484,7 @@ class W4aReviewFixes(PurposeBase):
     # font. .np-model-code is nowrap, so the column has to be at least that wide
     # or the code is painted over the next column.
     MODEL_CODE_PX = 92
-    PHONE_MARKER = "/* KS-W4A phone table widths"
+    PHONE_MARKER = "/* Phone table widths"
 
     def phone_block(self, css: str) -> str:
         self.assertIn(self.PHONE_MARKER, css)

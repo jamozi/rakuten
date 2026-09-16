@@ -554,8 +554,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "817e66b4290352b3d3120ad1dcfb66bf2a4c5ff052120152e6c1c595a816092d",
-    "source_fingerprint": "817e66b4290352b3d3120ad1dcfb66bf2a4c5ff052120152e6c1c595a816092d",
+    "revision": "940fa3edd5b9cff362610f86b8d5aa7f84706d9f57030d18d01fee6468fc053c",
+    "source_fingerprint": "940fa3edd5b9cff362610f86b8d5aa7f84706d9f57030d18d01fee6468fc053c",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/consent-controls.js",

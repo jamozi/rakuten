@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 817e66b4290352b3d3120ad1dcfb66bf2a4c5ff052120152e6c1c595a816092d;
+  --raos-theme-runtime-revision-base: 940fa3edd5b9cff362610f86b8d5aa7f84706d9f57030d18d01fee6468fc053c;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4743,7 +4743,7 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-branch-guide .ks-branch-table tr > :first-child { width:25%; }
 .ks-branch-guide .ks-branch-table tbody th { position:static; min-width:0; max-width:none; }
 /* purchase-support.css loads later and its .ps-article .ps-comparison min-widths (40em table, 9em cells)
-   won over the rules above, so the two-column 552 tables scrolled at 320px. Same values, higher specificity. */
+   won over the rules above, so the branch-faucet guide's two-column tables scrolled at 320px. Same values, higher specificity. */
 .ps-article.ks-branch-guide .ks-branch-table { min-width:0; }
 .ps-article.ks-branch-guide .ks-branch-table :is(th,td) { min-width:0; }
 .ps-article.ks-branch-guide .ks-branch-table tbody th { position:static; min-width:0; max-width:none; }
@@ -4887,7 +4887,7 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 
 .small-carry-on-comparison .sc-airline-table thead th:first-child { z-index:5; background:#eef3ed; }
 .small-carry-on-comparison .sc-airline-table small { display:block; }
-/* 549 space table: same frame and sticky first column as .sc-airline-table; the 6 columns scroll inside .ps-table-scroll on phones. */
+/* Compact comparison space table: same frame and sticky first column as .sc-airline-table; the 6 columns scroll inside .ps-table-scroll on phones. */
 .compact-draft .ps-table-scroll > table#compact-space-table { min-width:44rem!important; }
 .compact-draft #compact-space-table th:first-child { position:sticky!important; left:0; z-index:2; }
 .compact-draft #compact-space-table thead th:first-child { z-index:5; }
@@ -5317,7 +5317,7 @@ table.ks-readable-table td::before { display:none!important; content:none!import
 .single-post .raos-article-title-grid h1 { grid-column:1 / -1; width:100%; margin-inline:auto; }
 .ks-branch-guide .ks-branch-opening { grid-template-columns:minmax(0,1fr); }
 
-/* KS-W4A phone table widths: the sticky first column stays narrow so one whole
+/* Phone table widths: the sticky first column stays narrow so one whole
    data column fits beside it. table-layout is fixed, so the data columns share
    (min-width - first column); at a 320px viewport the scroll frame is 240px
    (238px inside the .np-table border). */

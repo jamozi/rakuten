@@ -236,13 +236,18 @@
       "has_ads": true,
       "published_at": "2026-08-29T09:34:10Z",
       "published_on": "2026-08-29",
-      "updated_on": "2026-09-13",
-      "change_summary": "mini Plusの別型番を共通台帳に加え、公式の再入荷通知表示と代替候補を確認しました。",
+      "updated_on": "2026-09-16",
+      "change_summary": "開扉時の寸法欄に入っていた設置案内の値（蛇口までの奥行502mm・高さ490mm）を外し、仕様表の「約485mm（ドア開閉時の最大寸法）」に直しました。製品ページの仕様値は黒のTK-MDW22B、取扱説明書はTK-MDW22BとTK-STTDPSWHの共通版という出典の違いも書き分けています。",
       "change_log": [
         {
           "date": "2026-09-13",
           "kind": "content",
           "summary": "mini Plusの別型番を共通台帳に加え、公式の再入荷通知表示と代替候補を確認しました。"
+        },
+        {
+          "date": "2026-09-16",
+          "kind": "correction",
+          "summary": "開扉時の寸法欄に入っていた設置案内の値（蛇口までの奥行502mm・高さ490mm）を外し、仕様表の「約485mm（ドア開閉時の最大寸法）」に直しました。製品ページの仕様値は黒のTK-MDW22B、取扱説明書はTK-MDW22BとTK-STTDPSWHの共通版という出典の違いも書き分けています。"
         }
       ],
       "specification_checked_on": null,
@@ -271,13 +276,18 @@
       "has_ads": false,
       "published_at": "2026-09-08T18:16:01Z",
       "published_on": "2026-09-09",
-      "updated_on": "2026-09-13",
-      "change_summary": "採寸図を追加し、NP-TSP1の上方空間115mmと総高さからの計算値120mmを区別しました。",
+      "updated_on": "2026-09-16",
+      "change_summary": "開扉時の奥行を「本体背面から扉の先端まで」と断定していた説明を、起点は型番の公式図で確かめる書き方に直しました。SOLOTAの約485mmは仕様表の＜485＞を出典にし、50.2cmの読み取りの注記と、ラクアmini colorの余白を取扱説明書p.10の語にそろえています。",
       "change_log": [
         {
           "date": "2026-09-13",
           "kind": "content",
           "summary": "採寸図を追加し、NP-TSP1の上方空間115mmと総高さからの計算値120mmを区別しました。"
+        },
+        {
+          "date": "2026-09-16",
+          "kind": "correction",
+          "summary": "開扉時の奥行を「本体背面から扉の先端まで」と断定していた説明を、起点は型番の公式図で確かめる書き方に直しました。SOLOTAの約485mmは仕様表の＜485＞を出典にし、50.2cmの読み取りの注記と、ラクアmini colorの余白を取扱説明書p.10の語にそろえています。"
         }
       ],
       "specification_checked_on": null,
@@ -698,9 +708,15 @@
       "has_ads": true,
       "published_at": "2026-09-13T10:58:27Z",
       "published_on": "2026-09-13",
-      "updated_on": null,
-      "change_summary": null,
-      "change_log": [],
+      "updated_on": "2026-09-16",
+      "change_summary": "13機種の扉を開いた奥行と乾燥方式を、折りたたみの中の表から主表へ移し、周囲の余白と出典の注記を開いたまま読めるようにしました。型番別の数値が対象とする機種を明記し、公式仕様の表記に合わせて扉を開いたときの寸法に「約」を付けました。",
+      "change_log": [
+        {
+          "date": "2026-09-16",
+          "kind": "content",
+          "summary": "13機種の扉を開いた奥行と乾燥方式を、折りたたみの中の表から主表へ移し、周囲の余白と出典の注記を開いたまま読めるようにしました。型番別の数値が対象とする機種を明記し、公式仕様の表記に合わせて扉を開いたときの寸法に「約」を付けました。"
+        }
+      ],
       "specification_checked_on": null,
       "sales_checked_at": null
     },

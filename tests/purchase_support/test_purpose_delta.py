@@ -309,7 +309,7 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
                 "公式資料で値が異なる項目："
                 + ps.INSTALLATION_LABELS[key]
                 + "（"
-                + ps.conflict_values(record)
+                + ps.matching_value(ps.conflict_values(record))
                 + "）"
             ) in text
             assert "確認できていない項目：" + ps.INSTALLATION_LABELS[key] not in text

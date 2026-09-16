@@ -421,11 +421,10 @@ class LedgerListings(unittest.TestCase):
         )
         self.assertNotIn("主比較6製品", html)
         self.assertIn(
-            "公開日：2026-09-13", card_for(html, "standard-dishwasher-comparison")
+            "公開日：2026-09-13", card_for(html, "large-dishwasher-comparison")
         )
-        self.assertIn(
-            "内容更新日：2026-09-16", card_for(html, "compact-dishwasher-comparison")
-        )
+        for slug in ("compact-dishwasher-comparison", "standard-dishwasher-comparison"):
+            self.assertIn("内容更新日：2026-09-16", card_for(html, slug))
         record = self.meta["large-dishwasher-comparison"]
         self.assertEqual(
             (record["comparison_count"], record["reference_count"]), (4, 2)

@@ -275,7 +275,9 @@ def test_conflict_door_depth_names_both_official_values_without_choosing(tracked
     model = by_id(guide, p["anchor"])
     assert DOOR_NOTE in model.text()
     reference = model.find(cls="ps-installation-reference")[0].text()
-    assert "公式資料で値が異なる項目：開扉時の奥行（個別仕様 上約386mm・下約362mm、比較表 約433mm）" in reference
+    # The 照合基準 list is the fit check's input, so it prints plain numbers; the
+    # official 約 stays in the cell and the prose above (round 5, minor).
+    assert "公式資料で値が異なる項目：開扉時の奥行（個別仕様 上386mm・下362mm、比較表 433mm）" in reference
     assert "確認できていない項目：開扉時の奥行" not in reference
     assert "どちらの値かはメーカー（相談窓口）へ確認してください" in reference
     assert "取扱説明書" not in reference

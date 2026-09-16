@@ -241,6 +241,18 @@ def validate_fact_state(p: Mapping[str, Any], record: Mapping[str, Any]) -> None
         raise ValueError("PURCHASE_CONFLICT_VALUE_ASSERTED")
 
 
+def matching_value(text: str) -> str:
+    """A 照合基準 value: the number as the fit check receives it.
+
+    The 照合基準 list is the input handed to the measuring tool, so every value
+    in it is a plain number. The official 約 notation belongs to the prose and
+    the fact tables, where the reader compares a value with its source; mixing
+    the two registers inside one sentence states neighbouring values from the
+    same official row with two different precisions.
+    """
+    return text.replace("約", "")
+
+
 def conflict_values(record: Mapping[str, Any]) -> str:
     """Every official value of a CONFLICT record, each named by its source.
 
@@ -1359,7 +1371,7 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     differing = [
         escape(INSTALLATION_LABELS[key])
         + "（"
-        + escape(conflict_values(conflicts[key]))
+        + escape(matching_value(conflict_values(conflicts[key])))
         + "）"
         for key in INSTALLATION_LABELS
         if not money(values.get(key)) and key in conflicts

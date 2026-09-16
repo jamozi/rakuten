@@ -15,6 +15,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 import json
 import re
+import subprocess
 
 import pytest
 
@@ -700,9 +701,48 @@ def test_door_open_depths_keep_the_official_approximation(compiled) -> None:
     # ＜上386,下362＞mm」, comparison 「本体外形寸法（約）」; re-fetched 2026-09-16).
     for phrase in ("個別仕様上約386mm・下約362mm", "比較表約433mm"):
         assert phrase in bodies[MEASURE], phrase
-    assert "上386mm" not in bodies[MEASURE]
-    assert "下362mm" not in bodies[MEASURE]
-    assert "比較表433mm" not in bodies[MEASURE]
+    # The 照合基準 lists are the fit check's input and print plain numbers, so the
+    # guard covers the prose around them (test_matching_list_prints_one_notation).
+    root = fragment(outputs[MEASURE])
+    for note in nodes(root, lambda n: n.attrs.get("class") == "ps-installation-reference"):
+        note.remove()
+    prose = squash(root.text())
+    assert "上386mm" not in prose
+    assert "下362mm" not in prose
+    assert "比較表433mm" not in prose
+
+
+def test_matching_list_prints_one_notation(compiled) -> None:
+    """照合基準 is the list handed to the fit check, so it prints plain numbers.
+
+    Round 4 put 約 on the conflict clause alone, so a single sentence gave two
+    notations for 幅550／高さ600／開扉時の高さ712 and 上386・下362・433, which all
+    come from the one official row 「約 幅550×高さ600＜712＞×奥行341＜上386,下362＞mm」.
+    The official notation stays in the prose and the fact table above the note.
+    """
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[MEASURE])
+    notes = nodes(root, lambda n: n.attrs.get("class") == "ps-installation-reference")
+    assert len(notes) == 4
+    for note in notes:
+        assert "約" not in note.text(), note.text()
+        assert "照合基準（公表値・条件を満たす計算値）" in note.text()
+    prose = squash(root.text())
+    assert "公式資料で値が異なります（個別仕様上約386mm・下約362mm、比較表約433mm）" in prose
+    assert "開扉時の高さは約712mm" in prose
+
+
+def test_depth_card_does_not_split_one_official_line(compiled) -> None:
+    """「約 幅310×高さ435×奥行225＜485＞mm」 marks both numbers in this sentence.
+
+    The 置く奥行 card wrote the body depth bare beside 約48.5cm, so one sentence
+    gave two notations for values the official row covers with a single 約.
+    /small-space/ already draws the same measurement as 「［本体］奥行約22.5cm」.
+    """
+    _, _, outputs, _ = compiled
+    body = squash(fragment(outputs[COMPACT]).text())
+    assert "本体の奥行約22.5cm（扉を開くと約48.5cm）" in body
+    assert "本体の奥行22.5cm" not in body
 
 
 def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
@@ -783,3 +823,62 @@ def test_same_day_change_log_names_the_approximation_correction() -> None:
         )
         assert "「約」" in entry["summary"], slug
         assert "開扉" in entry["summary"] or "扉を開" in entry["summary"], slug
+
+
+# Bodies this batch changed against the batch base, read from the batch's own
+# commits plus the working tree. Hub and entry pages have no listing of their
+# own, so only the article rows below carry a change_log.
+BATCH_SUBJECT = "KS W4a"
+ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
+
+
+def _git(*arguments: str) -> str:
+    return subprocess.run(
+        ("git", *arguments),
+        cwd=builder.ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+
+
+def _batch_body_days() -> dict[str, str]:
+    """Each body this batch changed, with the day it last changed."""
+    log = _git("log", "--format=%H%x1f%ad%x1f%s", "--date=short", "HEAD")
+    rows = [line.split("\x1f") for line in log.splitlines() if line]
+    batch = [
+        (sha, day) for sha, day, subject in rows if subject.startswith(BATCH_SUBJECT)
+    ]
+    assert batch, BATCH_SUBJECT
+    days: dict[str, str] = {}
+    for sha, day in batch:
+        for path in _git("show", "--name-only", "--format=", sha).splitlines():
+            if path.startswith(ARTICLE_PREFIX) and path.endswith(".html"):
+                days[path] = max(days.get(path, ""), day)
+    # Work still in the tree belongs to the batch's latest day.
+    latest = max(day for _, day in batch)
+    for path in _git("diff", "--name-only", "HEAD", "--", ARTICLE_PREFIX).splitlines():
+        if path.endswith(".html"):
+            days[path] = max(days.get(path, ""), latest)
+    return days
+
+
+def test_every_body_this_batch_changed_reports_the_change_on_updates() -> None:
+    """/updates/ promises every 実質的な本文変更, so the batch must report all of its own.
+
+    Three bodies changed sourced sentences and displayed dimensions in this
+    batch while their listing stopped at 2026-09-13, so /updates/ under-reported
+    the batch next to the cards it did write for 41 and 549.
+    """
+    bodies = _batch_body_days()
+    assert bodies, "the batch changed no article body"
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    rows = {a["body_source"]: a for a in ledger["articles"] if a.get("body_source")}
+    missing = []
+    for path, day in sorted(bodies.items()):
+        listing = rows.get(path, {}).get("listing") or {}
+        if "change_log" not in listing:
+            continue
+        if day not in {entry["date"] for entry in listing["change_log"]}:
+            missing.append((rows[path]["slug"], day))
+    assert missing == []
