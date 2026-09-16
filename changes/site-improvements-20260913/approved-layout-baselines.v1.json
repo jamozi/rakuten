@@ -100,7 +100,7 @@
           "KS-026",
           "KS-121"
         ],
-        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約62cm・約75cm）。",
+        "summary": "テーマで非表示だった横スクロール案内2件の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約75cm）。NP-TSK2の扉を開いた奥行は公式仕様の＜上433,下362＞に合わせて上約43.3cm・下約36.2cmの2値にし、設置の目安62cm以上は設置案内のスリムタイプ（分岐水栓式）の図「62cm以上あればOK」の表記どおり「約」を外して出典を注記に加えた。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
           "python/raos/application/editorial/purchase_support.py",
@@ -125,15 +125,17 @@
         "review": "PENDING_OWNER_BEFORE_AFTER",
         "recorded_on": "2026-09-16",
         "branches": [
-        "claude/ks-w3-20260916"
+        "claude/ks-w3-20260916",
+        "claude/ks-w4a-20260916"
       ],
         "tasks": [
           "KS-122",
           "KS-015",
           "KS-017",
-          "KS-026"
+          "KS-026",
+          "KS-201a"
         ],
-        "summary": "主表6行に本体寸法（幅×奥行×高さ）と開扉時の奥行（catalog facts と照合）と注記1文、「選ぶ前に」列に列名ラベル、非表示の横スクロール案内と aria-label の文言の削除、theme.css の640px以下の ::before 案内の削除、末尾に訂正依頼の連絡先1行。",
+        "summary": "主表6行に本体寸法（幅×奥行×高さ）と開扉時の奥行（catalog facts と照合）と注記1文、「選ぶ前に」列に列名ラベル、非表示の横スクロール案内と aria-label の文言の削除、theme.css の640px以下の ::before 案内の削除、末尾に訂正依頼の連絡先1行。 W4a（claude/ks-w4a-20260916）：開扉時の奥行を「本体背面から開いた扉の先端まで」と断定していた注記と図の説明を、262と同じ「起点は型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしない」書き方に直した。起点を図で確認できたのはAQUA ADW-L40Bだけ（カタログ p.1〈側面〉の728mmとp.2の設置図が、本体奥行36cmと同じ背面の線から測る）で、パナソニック3機種とシロカ2機種は未確認と明記。長さの比較図は本体と扉の内訳（緑・薄緑）をやめ、公表値の比だけを示す1本のバーにした（theme.css の .lg-depth-track b と3機種分の b の幅を削除し、i の幅を公表値の比に直した）。公表値の57.9cm・72.0cm・72.8cmは変えていない。",
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
           "changes/reader-purchase-support-v1/purchase-support.v1.json",

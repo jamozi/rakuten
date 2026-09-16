@@ -213,7 +213,7 @@ STANDARD_DOOR_DRY = {
     "dws-33b-w": ("未確認", "温風"),
     "np-tcr5-w": ("59.8cm", "ヒーター"),
     "tkdwslhwh": ("83cm", "温風"),
-    "np-tsk2": ("約43.3cm", "ヒーター"),
+    "np-tsk2": ("上約43.3cm・下約36.2cm", "ヒーター"),
     "np-tsp1-w": ("公式表記に差", "ヒーター"),
     "tkdwwdhwh": ("73cm", "温風"),
     "adw-m28b": ("83cm", "温風／送風"),
@@ -771,7 +771,7 @@ def test_tmlk1_source_note_dates_the_manual_page_separately(compiled) -> None:
 # ＜上386,下362＞mm」, ainx.info 「扉を開いた際の最大奥行幅 約75cm」, siroca 据え付けFAQ
 # 「（約）… d: ドアを開いたときの奥行き 76.0 cm」.
 DOOR_DEPTH_APPROXIMATE = {
-    "std-np-tsk2": ("約43.3cm", "約61.2cm"),
+    "std-np-tsk2": ("約43.3cm", "約36.2cm", "約61.2cm"),
     "std-np-tsp1-w": ("約43.3cm", "約38.6cm", "約36.2cm"),
     "std-ax-s7": ("約75cm",),
     "std-ss-m171": ("約76cm",),
@@ -804,19 +804,20 @@ def test_standard_door_depth_column_follows_each_official_notation(compiled) -> 
         assert "約" not in cells[row_id], (row_id, cells[row_id])
         assert value in cells[row_id], row_id
     body = squash(root.text())
-    assert "設置の目安約62cm以上" in body
+    # 62cm comes from the installation page's figure, which writes no 約 (round 6).
+    assert "設置の目安62cm以上" in body
     assert squash("「約」は、公式が「約」を付けている値に付けています。") in body
-    assert "本体幅55cm、開扉時の奥行約43.3cm" in body
+    assert "本体幅55cm、扉を開いた奥行は上約43.3cm・下約36.2cm" in body
 
 
 def test_same_day_change_log_names_the_approximation_correction() -> None:
-    """/updates/ shows the 2026-09-16 card for 41 and 549.
+    """/updates/ shows the 2026-09-16 card for 41, 549, 550 and 86.
 
     The bodies gained 約 on every door-open dimension that day, so a card dated
     2026-09-16 that does not mention it describes less than what changed.
     """
     ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
-    for slug in (COMPACT, COUNTERTOP):
+    for slug in (COMPACT, COUNTERTOP, STANDARD, PAIR):
         article = next(a for a in ledger["articles"] if a["slug"] == slug)
         entry = next(
             c for c in article["listing"]["change_log"] if c["date"] == "2026-09-16"
@@ -882,3 +883,187 @@ def test_every_body_this_batch_changed_reports_the_change_on_updates() -> None:
         if day not in {entry["date"] for entry in listing["change_log"]}:
             missing.append((rows[path]["slug"], day))
     assert missing == []
+
+
+# W4a review round 6 -----------------------------------------------------------
+
+LARGE = "large-dishwasher-comparison"
+BASELINES = (
+    builder.ROOT / "changes/site-improvements-20260913/approved-layout-baselines.v1.json"
+)
+BRANCH = "claude/ks-w4a-20260916"
+# Re-fetched 2026-09-16. AQUA adw_l40b_m28b_webc.pdf p.1〈側面〉draws 728 from the
+# same rear extension line as the 360 body depth, and p.2 repeats it as
+# 「取り出しに必要な奥行 72.8cm」beside 「本体奥行 36cm」. panasonic.jp NP-TA5 /
+# NP-TZ500 spec.html give 「約 幅550×奥行344＜579＞×高さ598mm」 with 「＜＞はドア開閉時
+# の最大寸法」 and no drawing of that span; the installation page's regular-type
+# figure dimensions 58.4cm from the 背面の壁 instead. siroca 据え付けFAQ lists
+# 「d: ドアを開いたときの奥行き 72.0 cm」 but its 寸法図 image answered 503 that day.
+DOOR_ORIGIN_CLAIMS = (
+    "本体背面から開いた扉の先端までの長さです",
+    "本体背面から、開いた扉の先端まで",
+    "本体背面から開いた扉の先端まで",
+    "本体背面を基準にした開扉時奥行",
+)
+MEASURE_ORIGIN_RULE = (
+    "どこから測った値かは型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしません"
+)
+
+
+def test_no_published_body_states_the_open_door_origin_as_a_fact(compiled) -> None:
+    """262 publishes a correction withdrawing that claim in this same candidate.
+
+    550 dropped the sentence and 549 says the origin is unconfirmed, so a body
+    that keeps stating it puts two opposite explanations on the site at once.
+    """
+    _, _, outputs, _ = compiled
+    claims = [squash(claim) for claim in DOOR_ORIGIN_CLAIMS]
+    offenders = sorted(
+        slug
+        for slug, body in outputs.items()
+        if any(claim in squash(fragment(body).text()) for claim in claims)
+    )
+    assert offenders == []
+    # The tracked reader sources must not keep the claim either: a guide body is
+    # assembled from the catalog today, so a sentence left in its template is one
+    # pipeline change away from being republished.
+    sources = sorted(
+        path.name
+        for path in builder.TEMPLATE_INPUT_PATHS
+        if any(claim in squash(path.read_text(encoding="utf-8")) for claim in claims)
+    )
+    assert sources == []
+
+
+def test_large_open_door_note_reads_like_the_measurement_guide(compiled) -> None:
+    _, _, outputs, _ = compiled
+    body = squash(fragment(outputs[LARGE]).text())
+    assert squash(MEASURE_ORIGIN_RULE) in body
+    # What each maker's own drawing does and does not show, re-fetched 2026-09-16.
+    assert "本体奥行36cmと同じ背面の線から72.8cm" in body
+    assert "パナソニック3機種" in body and "シロカ2機種" in body
+    assert "起点を示す図は確認できていません" in body
+    # The published lengths stay as they are.
+    for value in ("57.9cm", "72.0cm", "72.8cm"):
+        assert value in body, value
+
+
+def test_large_depth_figure_does_not_split_an_unconfirmed_origin(compiled) -> None:
+    """The bar used to draw 本体の奥行 + 扉が張り出す分, which is the same claim."""
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[LARGE])
+    tracks = nodes(root, lambda n: n.has("lg-depth-track"))
+    assert len(tracks) == 3
+    for track in tracks:
+        assert [child.tag for child in elements(track)] == ["i"]
+    legend = nodes(root, lambda n: n.has("lg-legend"))
+    assert len(legend) == 1
+    text = squash(legend[0].text())
+    assert "扉が張り出す分" not in text
+    assert "最長の72.8cmが全幅" in text
+
+
+def test_large_reports_the_open_door_correction_on_updates() -> None:
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    article = next(a for a in ledger["articles"] if a["slug"] == LARGE)
+    entry = next(
+        c for c in article["listing"]["change_log"] if c["date"] == "2026-09-16"
+    )
+    assert entry["kind"] == "correction"
+    assert "起点" in entry["summary"]
+    for value in ("57.9cm", "72.0cm", "72.8cm"):
+        assert value in entry["summary"], value
+
+
+def test_large_pending_revision_records_this_branch() -> None:
+    baselines = json.loads(BASELINES.read_text(encoding="utf-8"))
+    pending = baselines["articles"][LARGE]["pending_revision"]
+    assert BRANCH in pending["branches"]
+    assert "起点" in pending["summary"]
+    assert (
+        "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
+        in pending["source_paths"]
+    )
+
+
+def test_pair_change_log_names_every_change_of_the_day() -> None:
+    """86 gained 約 on two dimensions and four new capacity entries that day.
+
+    41, 549 and 550 all name the 約 change in their own 2026-09-16 summary, so
+    leaving it out of 86 alone describes less than the card's own article did.
+    """
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    article = next(a for a in ledger["articles"] if a["slug"] == PAIR)
+    entry = next(
+        c for c in article["listing"]["change_log"] if c["date"] == "2026-09-16"
+    )
+    assert "「約」" in entry["summary"]
+    for phrase in ("小型", "標準容量", "大容量"):
+        assert phrase in entry["summary"], phrase
+
+
+# Re-fetched 2026-09-16: panasonic.jp/dish/installation.html
+# 「2．スリムタイプ（分岐水栓式）」 (高さ約50cm・幅約55cm・奥行約29cm, NP-TSK2) carries
+# the figure 「62cm以上あればOK」 — no 約 — and NP-TSK2 spec.html has no 62/620.
+SLIM_HEIGHT_FIGURE = "スリムタイプ（分岐水栓式）の図「62cm以上あればOK」"
+
+
+def test_slim_height_target_follows_the_official_figure(compiled) -> None:
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[STANDARD])
+    body = squash(root.text())
+    assert "設置の目安約62cm以上" not in body
+    assert "設置の目安62cm以上" in body
+    note = squash(by_id(root, "std-install-note").text())
+    assert squash(SLIM_HEIGHT_FIGURE) in note
+    assert INSTALLATION_URL in outputs[STANDARD]
+
+
+def test_two_value_official_depths_are_shown_in_full(compiled) -> None:
+    """NP-TSK2's own spec prints ＜上433,下362＞ just as NP-TSP1's does.
+
+    The NP-TSP1 row writes both values and the note explains only that model, so
+    a single value on NP-TSK2 reads as if the official gave only one.
+    """
+    _, _, outputs, _ = compiled
+    root = fragment(outputs[STANDARD])
+    cells = {}
+    for cell in nodes(root, lambda n: "std-door-depth" in (n.attrs.get("class") or "")):
+        row = next(a for a in ancestors(cell) if a.tag == "tr")
+        cells[row.attrs.get("id")] = squash(cell.text())
+    assert "上約43.3cm・下約36.2cm" in cells["std-np-tsk2"]
+    note = squash(by_id(root, "std-install-note").text())
+    assert "NP-TSK2とNP-TSP1" in note
+
+
+THEME_CSS = (
+    builder.ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+    / "assets/theme.css"
+)
+# Measured 2026-09-16 in headless Chromium on the real stack (theme.css +
+# editorial-v2.css + purchase-support.css, main.raos-article-shell > article
+# .raos-article > .wp-block-post-content). At a 320px viewport the content frame
+# is 288.00px and the track is 256.00px wide; the three bars render 203.59 /
+# 253.17 / 256.00px, and document.scrollWidth == window.innerWidth at
+# 320/360/375/390/1440px with nothing outside a scroll region.
+DEPTH_BAR_FRAME_320 = 256.00
+DEPTH_BARS_320 = {"panasonic": 203.59, "siroca": 253.17, "aqua": 256.00}
+PUBLISHED_DEPTH_CM = {"panasonic": 57.9, "siroca": 72.0, "aqua": 72.8}
+
+
+def test_depth_bar_widths_follow_the_published_lengths() -> None:
+    """One bar per row, scaled to the published length — no drawn split."""
+    css = THEME_CSS.read_text(encoding="utf-8")
+    assert ".lg-depth-track b" not in css
+    longest = max(PUBLISHED_DEPTH_CM.values())
+    for maker, length in PUBLISHED_DEPTH_CM.items():
+        found = re.search(
+            r"\.ks-large-guide \.lg-depth-" + maker + r" i\{width:([0-9.]+)%\}", css
+        )
+        assert found, maker
+        assert f"lg-depth-{maker} b" not in css, maker
+        percent = float(found.group(1))
+        assert abs(percent - length / longest * 100) < 0.001, (maker, percent)
+        # The same ratio in the measured 320px frame, to 0.5px.
+        assert abs(DEPTH_BAR_FRAME_320 * percent / 100 - DEPTH_BARS_320[maker]) < 0.5

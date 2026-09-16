@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 940fa3edd5b9cff362610f86b8d5aa7f84706d9f57030d18d01fee6468fc053c;
+  --raos-theme-runtime-revision-base: 54d61c3d41098ba0b5f0587f34d2895a477d03777306805426a0b60a60a27e34;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4713,10 +4713,9 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 .ks-large-guide .lg-depth-row strong{font-size:1.05rem}
 .ks-large-guide .lg-depth-track{display:flex;grid-column:1/-1;height:15px;max-width:100%}
 .ks-large-guide .lg-depth-track i{background:#42735c}
-.ks-large-guide .lg-depth-track b{background:#b5cdb9;border-right:2px solid #42735c}
-.ks-large-guide .lg-depth-panasonic i{width:47.2527%}.ks-large-guide .lg-depth-panasonic b{width:32.2802%}
-.ks-large-guide .lg-depth-siroca i{width:48.0769%}.ks-large-guide .lg-depth-siroca b{width:50.8242%}
-.ks-large-guide .lg-depth-aqua i{width:49.4505%}.ks-large-guide .lg-depth-aqua b{width:50.5495%}
+.ks-large-guide .lg-depth-panasonic i{width:79.533%}
+.ks-large-guide .lg-depth-siroca i{width:98.9011%}
+.ks-large-guide .lg-depth-aqua i{width:100%}
 .ks-large-guide .lg-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.75rem;color:#5b685e}
 .ks-large-guide .lg-depth .lg-note{margin-bottom:0}
 .ks-large-guide .lg-scope{border-top:1px solid var(--lg-line);padding-top:30px;font-size:.9rem}

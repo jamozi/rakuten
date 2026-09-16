@@ -420,10 +420,28 @@ class LedgerListings(unittest.TestCase):
             "主比較2製品・別構成1件", card_for(html, "roomba-mini-vs-switchbot-k11-pro")
         )
         self.assertNotIn("主比較6製品", html)
-        self.assertIn(
-            "公開日：2026-09-13", card_for(html, "large-dishwasher-comparison")
-        )
-        for slug in ("compact-dishwasher-comparison", "standard-dishwasher-comparison"):
+        # A card shows 内容更新日 once its listing carries a change_log entry and the
+        # plain 公開日 until then, so the date follows the ledger rather than a slug.
+        seen = Counter()
+        for row in self.registry["articles"]:
+            listing = row.get("listing") or {}
+            if listing.get("role") != "comparison" or listing.get("state") != "published":
+                continue
+            card = card_for(html, row["slug"])
+            log = listing.get("change_log") or []
+            if log:
+                latest = max(entry["date"] for entry in log)
+                self.assertIn(f"内容更新日：{latest}", card, row["slug"])
+                self.assertNotIn("公開日：", card, row["slug"])
+            else:
+                self.assertIn(f"公開日：{listing['published_on']}", card, row["slug"])
+            seen[bool(log)] += 1
+        self.assertEqual(sorted(seen), [False, True])
+        for slug in (
+            "compact-dishwasher-comparison",
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+        ):
             self.assertIn("内容更新日：2026-09-16", card_for(html, slug))
         record = self.meta["large-dishwasher-comparison"]
         self.assertEqual(
