@@ -142,10 +142,16 @@ EC-AR50A の付属品／AMC-U2 の適合機種）は、どれも片側に決め�
 `categories` の `excerpt`（「スーツケース・食洗機・ロボット掃除機・ポータブル電源から…」→
 「スーツケース・台所・掃除・ポータブル電源から…」）と、`kitchen`（136）・`cleaning`（131）の `title` と `excerpt`。
 全文は `decisions.v1.json` の `wave_zero_applied.ledger_publish_field_changes` にある。
-あわせて `compact-robot-vacuum-shortlist` の `listing.short_title` を
-「省スペースの掃除機を比べる」→「省スペースのロボット掃除機を比べる」に直した
-（home のカテゴリカードの CTA は代表記事の short_title を刷るので、「掃除」の見出しの下では
-まだ扱っていないスティック掃除機まで含むように読める）。この 1 件で増える公開候補はない。
+あわせて `compact-robot-vacuum-shortlist` の `listing.short_title` と、規約で同じ値を保つ
+`cleaning` の `reader_role.main_cta.label` を「省スペースの掃除機を比べる」→
+「省スペースのロボット掃除機を比べる」に直した（home のカテゴリカードの CTA は代表記事の
+short_title を刷るので、「掃除」の見出しの下ではまだ扱っていないスティック掃除機まで含むように
+読める。この文字列は生成した home の本文に実際に出る）。`home` の
+`reader_role.main_cta.label` は「商品カテゴリーから選ぶ」→「商品カテゴリから選ぶ」で、
+こちらの文字列は生成本文に出ない。
+
+台帳で動いた値は合計 8 件（公開フィールド 5・listing 1・reader_role 2）、行数は 5 行。
+いずれも既存の公開文書の中の変更で、この 3 件で増える公開候補はない。
 記事本文で動いたのは、改称した 2 つのハブへ戻るリンクの文言だけである
 （「食洗機の選び方・記事一覧」「食洗機選びの全体像に戻る」「ロボット掃除機の選び方・記事一覧」ほかを、
 着地するページの名前「台所の道具の選び方・比較」「掃除の道具の選び方・比較」にそろえた）。

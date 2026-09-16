@@ -1061,7 +1061,7 @@
         "field": "listing.short_title",
         "before": "省スペースの掃除機を比べる",
         "after": "省スペースのロボット掃除機を比べる",
-        "why": "home のカテゴリカードの CTA は代表記事の short_title を刷る。「掃除」の見出しの下に置くと、まだ扱っていないスティック掃除機まで含むように読める。台帳は hub の main_cta.label を short_title と同じ値に保つ規約なので、両方を動かした。"
+        "why": "home のカテゴリカードの CTA は代表記事の short_title を刷る（生成本文 home.html に「省スペースのロボット掃除機を比べる」として実際に出る）。「掃除」の見出しの下に置くと、まだ扱っていないスティック掃除機まで含むように読める。台帳は hub の main_cta.label を short_title と同じ値に保つ規約なので、cleaning 行の reader_role.main_cta.label も同じ値に直した。"
       }
     ],
     "publish_candidate": {
@@ -1144,10 +1144,24 @@
         "field": "reader_role.main_cta.label",
         "before": "商品カテゴリーから選ぶ",
         "after": "商品カテゴリから選ぶ",
-        "why": "パンくずと両メニューは「商品カテゴリ」。同じ台帳行の excerpt も長音なしで、home の見出し（site_editorial_pages.py）だけが長音つきだった。この label は本文に刷られないので公開文書は増えない。"
+        "why": "パンくずと両メニューは「商品カテゴリ」。同じ台帳行の excerpt も長音なしで、home の見出し（site_editorial_pages.py）だけが長音つきだった。この label の文字列は生成本文に出ない（grep で 0 件）ので、公開文書はこの変更では増えない。"
+      },
+      {
+        "article_key": "cleaning",
+        "field": "reader_role.main_cta.label",
+        "before": "省スペースの掃除機を比べる",
+        "after": "省スペースのロボット掃除機を比べる",
+        "why": "台帳の規約で hub の main_cta.label は代表記事の listing.short_title と同じ値。short_title を直したので同時に直した。この値は home のカードの CTA として読者に出る（home.html で実測）。"
       }
     ],
-    "base_on_origin_main": "base 9fa8ee45 の記事本文は 2026-09-16 に origin/main（b5618eed / PR #293「KS W4」）として公開済みで、changes/wordpress-direct-publish-v1/articles/ の全ファイルが origin/main と一致する。したがって W0-A の 19 本は、いま読者が見ている本文に対する差分そのものである。"
+    "base_on_origin_main": "base 9fa8ee45 の記事本文は 2026-09-16 に origin/main（b5618eed / PR #293「KS W4」）として公開済みで、changes/wordpress-direct-publish-v1/articles/ の全ファイルが origin/main と一致する。したがって W0-A の 19 本は、いま読者が見ている本文に対する差分そのものである。",
+    "ledger_field_change_count": {
+      "publish_fields": 5,
+      "listing_fields": 1,
+      "reader_role_fields": 2,
+      "total": 8,
+      "note": "base 9fa8ee45 との実測（articles.v1.json の全フィールドを再帰比較）。行数は 5（categories・cleaning・compact-robot-vacuum-shortlist・home・kitchen）。"
+    }
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
