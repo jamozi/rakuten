@@ -2,16 +2,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from decimal import Decimal
 from hashlib import sha256
 from html import escape
 import json
 import re
-from typing import Any, cast
+from typing import Any, Final, cast
 from urllib.parse import urlsplit
 
 from raos.domain.editorial.purchase_support import (
@@ -241,6 +242,18 @@ def validate_fact_state(p: Mapping[str, Any], record: Mapping[str, Any]) -> None
         raise ValueError("PURCHASE_CONFLICT_VALUE_ASSERTED")
 
 
+def matching_value(text: str) -> str:
+    """A 照合基準 value: the number as the fit check receives it.
+
+    The 照合基準 list is the input handed to the measuring tool, so every value
+    in it is a plain number. The official 約 notation belongs to the prose and
+    the fact tables, where the reader compares a value with its source; mixing
+    the two registers inside one sentence states neighbouring values from the
+    same official row with two different precisions.
+    """
+    return text.replace("約", "")
+
+
 def conflict_values(record: Mapping[str, Any]) -> str:
     """Every official value of a CONFLICT record, each named by its source.
 
@@ -413,6 +426,60 @@ def validate_installation_consistency(p: Mapping[str, Any]) -> None:
             raise ValueError(code)
 
 
+CAPACITY_ROUTE_HREF = re.compile(r"/([a-z0-9-]+)/")
+
+
+def validate_capacity_routes(routes: object, slugs: set[str]) -> None:
+    """Capacity routes link only to comparisons that exist in this catalog."""
+    if (
+        not isinstance(routes, dict)
+        or set(routes) != {"title", "intro", "links"}
+        or any(
+            not isinstance(routes[key], str) or not routes[key].strip()
+            for key in ("title", "intro")
+        )
+        or not isinstance(routes["links"], list)
+        or not 1 <= len(routes["links"]) <= 6
+        or any(
+            not isinstance(link, dict)
+            or set(link) != {"href", "label", "note"}
+            or any(
+                not isinstance(link[key], str) or not link[key].strip()
+                for key in ("href", "label", "note")
+            )
+            for link in routes["links"]
+        )
+        or len({link["href"] for link in routes["links"]}) != len(routes["links"])
+    ):
+        raise ValueError("PURCHASE_CAPACITY_ROUTES_INVALID")
+    for link in routes["links"]:
+        match = CAPACITY_ROUTE_HREF.fullmatch(link["href"])
+        if match is None or match.group(1) not in slugs:
+            raise ValueError("PURCHASE_CAPACITY_ROUTE_UNKNOWN")
+
+
+def capacity_routes_markup(routes: Mapping[str, Any]) -> str:
+    """Readers who choose by the amount of dishes go to the capacity comparisons."""
+    return (
+        '<section id="ps-capacity-routes"><h2>'
+        + escape(routes["title"])
+        + "</h2><p>"
+        + escape(tidy(routes["intro"]))
+        + "</p><ul>"
+        + "".join(
+            '<li><a href="'
+            + escape(link["href"], quote=True)
+            + '">'
+            + escape(link["label"])
+            + "</a>："
+            + escape(tidy(link["note"]))
+            + "</li>"
+            for link in routes["links"]
+        )
+        + "</ul></section>"
+    )
+
+
 def validate_catalog(catalog: Mapping[str, Any]) -> None:
     if (
         catalog.get("schema") != "RAOS_READER_PURCHASE_SUPPORT_V1"
@@ -474,6 +541,10 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
         note = article.get("choose_note")
         if note is not None and (not isinstance(note, str) or not note.strip()):
             raise ValueError("PURCHASE_CHOOSE_NOTE_INVALID")
+    slugs = {a["slug"] for a in articles}
+    for article in articles:
+        if "capacity_routes" in article:
+            validate_capacity_routes(article["capacity_routes"], slugs)
     for article in articles:
         if article["kind"] != "curated_comparison":
             continue
@@ -1301,7 +1372,7 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     differing = [
         escape(INSTALLATION_LABELS[key])
         + "（"
-        + escape(conflict_values(conflicts[key]))
+        + escape(matching_value(conflict_values(conflicts[key])))
         + "）"
         for key in INSTALLATION_LABELS
         if not money(values.get(key)) and key in conflicts
@@ -1685,6 +1756,8 @@ def render_comparison(
         + ('<a href="#ps-installation-context">設置の詳細</a>' if main else "")
         + '<a href="#ps-offers">購入費用と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
+    if article.get("capacity_routes"):
+        out.append(capacity_routes_markup(article["capacity_routes"]))
     decision_steps_html = ""
     decision_steps_placement = None
     if article.get("decision_steps"):
@@ -2148,10 +2221,19 @@ def guide_decision_table(stage: str, products: list[dict[str, Any]]) -> str:
         for p in products:
             v = p.get("installation", {})
             conflicts = installation_conflicts(p)
+            door_text = " ".join(
+                f.get("text", "")
+                for f in p.get("facts", [])
+                if f.get("label", "").startswith("開扉時の寸法")
+            )
 
             def mm(key: str) -> str:
                 if money(v.get(key)):
-                    return f"{v[key]:g}mm"
+                    value = f"{v[key]:g}mm"
+                    # Keep 約 on a door value the model's door fact prints as approximate.
+                    if key.startswith("door_") and "約" + value in door_text:
+                        return "約" + value
+                    return value
                 if key in conflicts:
                     return "公式資料で値が異なる（" + conflict_values(conflicts[key]) + "）"
                 return "未確認"
@@ -2905,6 +2987,341 @@ def render_hub(
     return root.html()
 
 
+
+CARRY_ON_FIT_SLOT: Final = '<div data-raos-analysis="carry-on-fit"></div>'
+CARRY_ON_AXES: Final = ("高さ", "幅", "奥行")
+
+
+def carry_on_cm(value: object) -> Decimal:
+    if isinstance(value, bool) or not isinstance(value, (int, float, str)):
+        raise ValueError("PURCHASE_CARRY_ON_FIT_VALUE_INVALID")
+    number = Decimal(str(value))
+    if not number.is_finite() or number <= 0:
+        raise ValueError("PURCHASE_CARRY_ON_FIT_VALUE_INVALID")
+    return number
+
+
+def carry_on_cm_text(value: Decimal) -> str:
+    return format(value.normalize(), "f")
+
+
+def carry_on_excess(
+    dims: Sequence[Decimal],
+    edges: Sequence[Decimal] | None,
+    total: Decimal | None,
+) -> list[tuple[str, Decimal]]:
+    """How far published outer dimensions exceed one carry-on limit.
+
+    Edges are compared position by position in the printed order (height, width,
+    depth) and the three-edge sum against the sum limit. Only an excess is
+    reported: wheels can only add length, so an excess holds even when a maker's
+    figure leaves them out, while a figure under the limit proves no fit.
+    """
+    excess: list[tuple[str, Decimal]] = []
+    if edges is not None:
+        for axis, size, limit in zip(CARRY_ON_AXES, dims, edges, strict=True):
+            if size > limit:
+                excess.append((axis, size - limit))
+    size_sum = sum(dims, Decimal(0))
+    if total is not None and size_sum > total:
+        excess.append(("3辺合計", size_sum - total))
+    return excess
+
+
+def _carry_on_text(value: object) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _carry_on_day(value: object) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", value) is not None
+
+
+def carry_on_fit_records(
+    article: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> tuple[list[Mapping[str, Any]], list[Mapping[str, Any]]]:
+    """Validated airline limits and luggage figures for the 553 expansion matrix."""
+    data = article.get("carry_on_fit")
+    if not isinstance(data, Mapping):
+        raise ValueError("PURCHASE_CARRY_ON_FIT_RECORDS_REQUIRED")
+    rules, luggage = data.get("rules"), data.get("luggage")
+    if not isinstance(rules, list) or not rules or not isinstance(luggage, list):
+        raise ValueError("PURCHASE_CARRY_ON_FIT_RECORDS_REQUIRED")
+    if [entry.get("product_id") for entry in luggage] != list(article["product_ids"]):
+        raise ValueError("PURCHASE_CARRY_ON_FIT_SCOPE_INVALID")
+    unknown = sum(1 for entry in luggage if entry.get("dims_include_wheels") is None)
+    # Pre-decided switch (KS-201b): while most figures may leave out the wheels,
+    # the matrix answers only which models exceed a limit, never which ones fit.
+    if unknown * 2 <= len(luggage) or data.get("question") != "expansion_excess":
+        raise ValueError("PURCHASE_CARRY_ON_FIT_QUESTION_INVALID")
+    known_ids = {p["product_id"] for p in catalog["products"]}
+    for entry in luggage:
+        dims = [carry_on_cm(entry.get(k)) for k in ("height_cm", "width_cm", "depth_cm")]
+        expanded = entry.get("expanded")
+        if (
+            entry["product_id"] not in known_ids
+            or entry.get("dims_include_wheels") not in (True, False, None)
+            or not https(entry.get("source_url"))
+            or not _carry_on_text(entry.get("locator"))
+            or not _carry_on_day(entry.get("checked_on"))
+            or entry.get("dims_approximate") not in (None, True, False)
+        ):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_SOURCE_REQUIRED")
+        # A maker may state wheels for one side only (Samsonite: height). The record
+        # keeps that narrower statement apart from a whole outer-size statement.
+        if entry.get("wheels_scope") is not None and (
+            entry["wheels_scope"] != "height"
+            or entry.get("dims_include_wheels") is not True
+            or not _carry_on_text(entry.get("maker"))
+        ):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_SOURCE_REQUIRED")
+        # Printed height >= width >= depth, so comparing in printed order against an
+        # unlabelled limit gives the same answer as any orientation of the case.
+        if not dims[0] >= dims[1] >= dims[2]:
+            raise ValueError("PURCHASE_CARRY_ON_FIT_ORDER_UNSUPPORTED")
+        if carry_on_cm(entry.get("sum_cm")) != sum(dims, Decimal(0)):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_SUM_MISMATCH")
+        if expanded is None:
+            continue
+        if not isinstance(expanded, Mapping) or expanded.get("state") not in {"none", "known"}:
+            raise ValueError("PURCHASE_CARRY_ON_FIT_EXPANSION_INVALID")
+        if expanded["state"] == "none":
+            if not _carry_on_day(expanded.get("checked_on")):
+                raise ValueError("PURCHASE_CARRY_ON_FIT_EXPANSION_INVALID")
+            continue
+        depth = carry_on_cm(expanded.get("depth_cm"))
+        if (
+            not _carry_on_text(expanded.get("basis"))
+            or expanded.get("approximate") not in (None, True, False)
+            or not dims[1] >= depth > dims[2]
+            or carry_on_cm(expanded.get("sum_cm")) != dims[0] + dims[1] + depth
+        ):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_EXPANSION_INVALID")
+    for rule in rules:
+        edges, axes, total = rule.get("edges_cm"), rule.get("edge_axes"), rule.get("sum_cm")
+        links = rule.get("carrier_links")
+        if (
+            not _carry_on_text(rule.get("carrier"))
+            or not _carry_on_text(rule.get("scope"))
+            or not isinstance(links, list)
+            or not links
+            or any(
+                not _carry_on_text(link.get("label")) or not https(link.get("url"))
+                for link in links
+            )
+            or not https(rule.get("source_url"))
+            or not _carry_on_text(rule.get("locator"))
+            or not _carry_on_day(rule.get("checked_on"))
+            or not isinstance(rule.get("in_fit_matrix"), bool)
+            or rule.get("dims_include_wheels") not in (True, None)
+            or not isinstance(rule.get("pieces"), int)
+        ):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_RULE_INVALID")
+        carry_on_cm(rule.get("total_weight_kg"))
+        if edges is None and total is None:
+            raise ValueError("PURCHASE_CARRY_ON_FIT_RULE_INVALID")
+        if edges is not None:
+            values = [carry_on_cm(v) for v in edges] if isinstance(edges, list) else []
+            if len(values) != 3 or (
+                axes is None and not values[0] >= values[1] >= values[2]
+            ):
+                raise ValueError("PURCHASE_CARRY_ON_FIT_RULE_INVALID")
+        if axes is not None and (edges is None or list(axes) != list(CARRY_ON_AXES)):
+            raise ValueError("PURCHASE_CARRY_ON_FIT_RULE_INVALID")
+        if total is not None:
+            carry_on_cm(total)
+    return rules, luggage
+
+
+def _carry_on_limit_label(rule: Mapping[str, Any]) -> str:
+    parts = []
+    if rule["edges_cm"] is not None:
+        sizes = [carry_on_cm_text(carry_on_cm(v)) for v in rule["edges_cm"]]
+        axes = rule.get("edge_axes") or [""] * 3
+        parts.append("×".join(a + v for a, v in zip(axes, sizes, strict=True)) + "cm")
+    if rule["sum_cm"] is not None:
+        parts.append("3辺合計" + carry_on_cm_text(carry_on_cm(rule["sum_cm"])) + "cm")
+    return "・".join(parts)
+
+
+def _carry_on_group_label(members: list[Mapping[str, Any]]) -> str:
+    names = "・".join(rule["carrier"] for rule in members)
+    seated = [rule["carrier"] for rule in members if "100席以上" in rule["scope"]]
+    if seated and len(seated) < len(members):
+        names += "（" + "・".join(seated) + "は100席以上）"
+    elif seated:
+        names += "（100席以上）"
+    return names
+
+
+def _carry_on_amount(value: Decimal, approximate: bool) -> str:
+    return ("約" if approximate else "") + carry_on_cm_text(value)
+
+
+def _carry_on_short_day(value: str) -> str:
+    _, month, day = value.split("-")
+    return str(int(month)) + "/" + str(int(day))
+
+
+def render_carry_on_fit(article: Mapping[str, Any], catalog: Mapping[str, Any]) -> str:
+    rules, luggage = carry_on_fit_records(article, catalog)
+    Limit = tuple[tuple[Decimal, ...], tuple[str, ...], Decimal | None]
+    groups: list[tuple[Limit, list[Mapping[str, Any]]]] = []
+    for rule in rules:
+        if not rule["in_fit_matrix"]:
+            continue
+        key: Limit = (
+            tuple(carry_on_cm(v) for v in rule["edges_cm"] or ()),
+            tuple(rule.get("edge_axes") or ()),
+            None if rule["sum_cm"] is None else carry_on_cm(rule["sum_cm"]),
+        )
+        for existing, members in groups:
+            if existing == key:
+                members.append(rule)
+                break
+        else:
+            groups.append((key, [rule]))
+    heads = "".join(
+        '<th scope="col">'
+        + escape(_carry_on_group_label(members))
+        + "<small>"
+        + escape(_carry_on_limit_label(members[0]))
+        + "</small></th>"
+        for _, members in groups
+    )
+    body = []
+    for entry in luggage:
+        product = next(p for p in catalog["products"] if p["product_id"] == entry["product_id"])
+        dims = tuple(carry_on_cm(entry[k]) for k in ("height_cm", "width_cm", "depth_cm"))
+        expanded = entry["expanded"]
+        wide: tuple[Decimal, ...] | None = None
+        # Amounts computed from a published 約 value carry 約 as well.
+        near = entry.get("dims_approximate") is True
+        normal_near = frozenset((*CARRY_ON_AXES, "3辺合計")) if near else frozenset()
+        grown_near = normal_near
+        if expanded is None:
+            expanded_cell = "拡張仕様は未確認"
+        elif expanded["state"] == "none":
+            expanded_cell = "拡張なし（" + jp_date(expanded["checked_on"]) + "の確認値）"
+        else:
+            wide = (dims[0], dims[1], carry_on_cm(expanded["depth_cm"]))
+            deep = near or expanded.get("approximate") is True
+            if deep:
+                grown_near = normal_near | {"奥行", "3辺合計"}
+            expanded_cell = (
+                _carry_on_amount(wide[0], near)
+                + "×"
+                + _carry_on_amount(wide[1], near)
+                + "×"
+                + _carry_on_amount(wide[2], deep)
+                + "cm・合計"
+                + _carry_on_amount(sum(wide, Decimal(0)), deep)
+                + "cm"
+            )
+        cells = []
+        for limit, _ in groups:
+            edges = limit[0] or None
+            total = limit[2]
+            normal = carry_on_excess(dims, edges, total)
+            grown = carry_on_excess(wide, edges, total) if wide else []
+            if normal:
+                cell = (
+                    "通常時から超過<small>（"
+                    + _carry_on_excess_text(normal, normal_near)
+                    + "）</small>"
+                )
+            elif wide is not None and grown:
+                cell = (
+                    "拡張すると超過<small>（"
+                    + _carry_on_excess_text(grown, grown_near)
+                    + "）</small>"
+                )
+            elif wide is not None:
+                cell = "拡張時の数値は上限内（持ち込めるかは未判定）"
+            elif expanded is None:
+                cell = "拡張仕様は未確認"
+            else:
+                # The current pages do not mention expansion; 8/29 is when "none" was recorded.
+                cell = (
+                    "拡張の記載なし<small>（"
+                    + _carry_on_short_day(expanded["checked_on"])
+                    + "確認）</small>"
+                )
+            cells.append("<td>" + cell + "</td>")
+        body.append(
+            '<tr data-fit-product-id="'
+            + escape(entry["product_id"], quote=True)
+            + '"><th scope="row">'
+            + escape(product["name"])
+            + "</th><td>"
+            + escape(expanded_cell)
+            + "</td>"
+            + "".join(cells)
+            + "</tr>"
+        )
+    included = [
+        escape(
+            next(
+                p for p in catalog["products"] if p["product_id"] == entry["product_id"]
+            )["name"]
+        )
+        for entry in luggage
+        if entry["dims_include_wheels"] is True and entry.get("wheels_scope") is None
+    ]
+    height_only = [
+        escape(entry["maker"]) for entry in luggage if entry.get("wheels_scope") == "height"
+    ]
+    unstated = sum(1 for entry in luggage if entry["dims_include_wheels"] is None)
+    return (
+        '<div class="sc-fit-matrix" id="carry-on-fit" data-raos-analysis="carry-on-fit">'
+        '<h3 id="carry-on-fit-title">各社の上限を超える型番（通常時・拡張時）</h3>'
+        "<p>外寸に車輪を含むと公式に書いているのは、"
+        + str(len(luggage))
+        + "モデル中"
+        + str(len(included))
+        + "モデル（"
+        + "・".join(included)
+        + "）です。"
+        + (
+            "・".join(height_only)
+            + "は、商品ページの仕様欄の記載（ページ上には表示されない注記）で、高さに車輪を含むとだけ書いています。"
+            if height_only
+            else ""
+        )
+        + ("・".join(height_only) + "を除く残り" if height_only else "残り")
+        + str(unstated)
+        + "モデルは車輪を含むか確認できないため、この表ではどのモデルについても、通常時に持ち込めるかを判定しません。"
+        "この表は、記録した外寸が上限を超える型番を示します。車輪を含まない表記でも、公表値が上限を超えていれば超過の目安になります。"
+        "「約」付きの公表値から計算した超過量には「約」を付けています。</p>"
+        # "table-scroll" marks this region as the table's own scroll container, so
+        # contain_editorial_tables adds no second, nested focusable region inside it.
+        '<div class="sc-table-scroll table-scroll" role="region" aria-label="各社の上限を超える型番（通常時・拡張時）の表" tabindex="0">'
+        '<table class="sc-fit-table" data-ks-table-layout="scroll"><caption>メーカー公表の外寸と各社の上限を照合した机上の判定です。</caption>'
+        '<thead><tr><th scope="col">商品</th><th scope="col">拡張時の外寸</th>'
+        + heads
+        + "</tr></thead><tbody>"
+        + "".join(body)
+        + "</tbody></table></div></div>"
+    )
+
+
+def _carry_on_excess_text(
+    excess: list[tuple[str, Decimal]], approximate: frozenset[str] = frozenset()
+) -> str:
+    return "・".join(
+        axis + "が" + _carry_on_amount(amount, axis in approximate) + "cm"
+        for axis, amount in excess
+    )
+
+
+def bind_carry_on_fit(
+    template: str, article: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> str:
+    """Replace the single analysis slot with the rendered expansion matrix."""
+    if template.count(CARRY_ON_FIT_SLOT) != 1:
+        raise ValueError("PURCHASE_CARRY_ON_FIT_SLOT_REQUIRED")
+    return template.replace(CARRY_ON_FIT_SLOT, render_carry_on_fit(article, catalog))
+
+
 def render_curated_commerce(
     template: str,
     article: Mapping[str, Any],
@@ -2914,6 +3331,8 @@ def render_curated_commerce(
     now: datetime,
 ) -> tuple[str, list[dict[str, str]], dict[str, str]]:
     """Bind one authored commerce section to the common product and offer records."""
+    if article.get("carry_on_fit") is not None or CARRY_ON_FIT_SLOT in template:
+        template = bind_carry_on_fit(template, article, catalog)
     root = fragment(template)
     if article.get("row_products") is not None:
         containers = [node for node in root.children if isinstance(node, Element)]

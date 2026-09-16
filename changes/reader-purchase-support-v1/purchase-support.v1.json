@@ -39,33 +39,33 @@
         "PRD-SIROCA-SS-MA251",
         "PRD-PANASONIC-NP-TSP1"
       ],
-      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
-      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機4モデルを、本体寸法・食器点数・給水方式・乾燥方式で比較。開扉時の寸法や余白などの設置条件と、確認日つきの販売条件も整理します。",
+      "title": "タンク式食洗機4モデルの給水と設置を比較",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式4モデルを、毎回の給水の手順（タンクを外して蛇口で満たす／カップで給水口へ注ぐ）と、扉やタンクの出し入れに必要な空間で比較。SS-MA251とNP-TSP1は分岐水栓にも対応します。容量別の比較記事への入口と、確認日つきの販売条件も整理します。",
       "conditions": [
         {
           "id": "one-person",
-          "label": "一食分が少なく、本体奥行を抑えたい",
+          "label": "タンクを外して蛇口で満たす。本体の奥行を抑えたい",
           "product_ids": [
             "PRD-PANASONIC-NP-TMLK1"
           ]
         },
         {
           "id": "small-warm",
-          "label": "小型で温風乾燥も使いたい",
+          "label": "本体上部の給水口へカップで注ぐ。温風乾燥も使いたい",
           "product_ids": [
             "PRD-THANKO-RAKUA-MINI-COLOR"
           ]
         },
         {
           "id": "two-way",
-          "label": "16点程度と給水2WAYを優先",
+          "label": "給水トレイからカップで注ぐか、分岐水栓で給水。扉が自動で開く乾燥を選びたい",
           "product_ids": [
             "PRD-SIROCA-SS-MA251"
           ]
         },
         {
           "id": "more-dishes",
-          "label": "大きめの食器量をまとめたい",
+          "label": "扉を閉めて給水口へカップで注ぐか、分岐水栓で給水。食器24点をまとめたい",
           "product_ids": [
             "PRD-PANASONIC-NP-TSP1"
           ]
@@ -82,7 +82,7 @@
         "開扉時の寸法",
         "必要な余白"
       ],
-      "intro": "食後の洗い物を減らしたい方へ。タンク式4機種を、食器の量・置き場所・毎回の作業で比べます。選ぶ理由と、給水・片付けなど残る手間を整理しました。",
+      "intro": "タンク式の4機種を、毎回の給水の手間と、置き場所で必要な動き（扉の開閉・タンクの出し入れ・注ぐ位置）で比べます。食器の量から広く探す場合は、下の容量別の比較から始めてください。",
       "post_type": "post",
       "legacy_anchor_targets": {
         "blk-dish-003-title": "ps-choose",
@@ -106,13 +106,13 @@
       },
       "comparison_scope": {
         "heading_id": "blk-dish-005-title",
-        "intro": "タンクから給水できる4モデルを、置き場所と一食分の食器に合うかで比較します。",
+        "intro": "タンク給水に対応する4モデルを、毎回の給水作業と、扉・タンク・注水に必要な動きで比較します。",
         "included": [
-          "メーカー公式情報で食器点数・本体寸法・公表水量を確認できる候補を扱います。",
+          "給水の手順を、同じ型番の取扱説明書・公式FAQで確認した範囲で比べます。",
           "設置面に加えて扉の開閉、給排水、電源・アースの条件を確認します。タンク式でも設置確認は必要です。"
         ],
         "excluded": [
-          "実機で測っていない洗浄力・乾き具合・運転音の順位は付けません。",
+          "実機で測っていない洗浄力・乾き具合・運転音・給水にかかる時間の順位は付けません。",
           "水量は機種ごとに公表条件が異なります。同じ食器量・コースでの実測比較ではありません。"
         ]
       },
@@ -153,6 +153,12 @@
       "commerce_presentation": "comparison_rows",
       "comparison_row_columns": [
         {
+          "heading": "給水方式",
+          "fact_labels": [
+            "給水方式"
+          ]
+        },
+        {
           "heading": "食器量・乾燥",
           "fact_labels": [
             "標準食器点数",
@@ -164,14 +170,29 @@
           "fact_labels": [
             "本体寸法（幅×奥行×高さ）"
           ]
-        },
-        {
-          "heading": "給水方式",
-          "fact_labels": [
-            "給水方式"
-          ]
         }
-      ]
+      ],
+      "capacity_routes": {
+        "title": "食器の量から探すなら、容量別の比較へ",
+        "intro": "この記事は、給水の手間と設置の動きで4機種を比べます。給水方法を問わず、食器の量から候補を広く見たい場合は次の比較が向いています。",
+        "links": [
+          {
+            "href": "/compact-dishwasher-comparison/",
+            "label": "少量（公称6〜12点）の比較",
+            "note": "SOLOTAとラクアmini系を、容量と扉を開いた奥行で比べます"
+          },
+          {
+            "href": "/standard-dishwasher-comparison/",
+            "label": "標準容量（16〜28点）の比較",
+            "note": "13機種を、食器量・本体寸法・給水・乾燥で比べます"
+          },
+          {
+            "href": "/large-dishwasher-comparison/",
+            "label": "大容量（30点以上）の比較",
+            "note": "食器点数と、鍋を入れたときの収納例を分けて比べます"
+          }
+        ]
+      }
     },
     {
       "article_id": "lightweight-carry-on-suitcase-under-3kg",
@@ -260,6 +281,10 @@
         {
           "date": "2026-09-13",
           "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "AIRDOの持ち込み条件を公式ページの表記（各辺55×40×25cm以内のみ・3辺合計の記載なし、身の回り品は2026年10月1日から40×30×20cm以内）に合わせ、スカイマーク・AIRDO・ソラシドエアの対象便を「公式ページに記載なし」に訂正。車輪・ハンドルを寸法に含む記載は、明記しているJAL・ANA・Peach・ジェットスターだけに限定。APPLITE 4.0とLIEVEの容量・本体重量に公式どおり「約」を付け、注意点の一文を「軽い3候補より約600g重い」に修正。通常時外寸の軸名が公式の表記か編集部の割り当てかを、機種ごとに注記へ明記。末尾に小型・機内持ち込みスーツケース比較（12モデル）への入口を追加。"
         }
       ],
       "preserved_editorial_sections": [
@@ -349,7 +374,7 @@
       ],
       "spec_labels": [
         "本体寸法（幅×奥行×高さ）",
-        "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+        "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
         "水拭き",
         "自動手入れ"
       ],
@@ -360,7 +385,7 @@
         "title": "MiniとK11+ Proが残ったら、接続条件と台の周囲を比べる",
         "steps": [
           "アプリに接続するWi-Fiを確認します。Roomba Mini + AutoEmpty F155260は2.4GHz・5GHz、K11+ Proは2.4GHzに対応します。5GHzでの接続を条件にするならMiniを確認候補に。K11+ Proを選ぶ場合は、設置場所で2.4GHzを使えるか先に確かめてください。周波数が合っても、ルーター設定などによって接続できない場合があります。",
-          "設置余白と紙パック・ブラシの確認は2機種比較にまとめています。購入する機種が決まっている場合は、このページの販売条件へ直接進めます。"
+          "台の周囲に空ける空間と、ふた・タンク・紙パックの出し入れについて公式資料で分かることは、上の表にまとめています。MiniとK11+ Proの紙パック・フィルター・ブラシの手入れは2機種比較で確認できます。購入する機種が決まっている場合は、このページの販売条件へ直接進めます。"
         ],
         "source_url": "/roomba-mini-vs-switchbot-k11-pro/#robot-connectivity-title",
         "source_label": "2機種の通信・設置条件と、公式仕様・日本語説明書の出典を確認する",
@@ -375,12 +400,12 @@
         ],
         "excluded": [
           "実機で測っていない清掃性能・段差への対応・障害物回避の順位は付けません。",
-          "4モデルすべての本体や台が同じ大きさの範囲に収まるわけではありません。K11+ Proの台の寸法は、公式掲載順の軸名が未確認です。"
+          "4モデルすべての本体や台が同じ大きさの範囲に収まるわけではありません。K11+ Proの台は高さ約25cm・底面240×180mmと案内されていますが、底面の幅・奥行の軸名は未確認です。"
         ]
       },
       "condition_fact_labels": [
         "本体寸法（幅×奥行×高さ）",
-        "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+        "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
         "自動手入れ"
       ],
       "history": [
@@ -395,6 +420,10 @@
         {
           "date": "2026-09-13",
           "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記に合わせて訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記。4機種の本体の高さ、台の周囲に空ける空間、ふた・タンク・紙パックの出し入れを公式資料で比べる表を追加。"
         }
       ],
       "commerce_presentation": "comparison_rows",
@@ -408,7 +437,7 @@
         {
           "heading": "ステーション寸法",
           "fact_labels": [
-            "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）"
+            "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）"
           ]
         },
         {
@@ -1069,6 +1098,10 @@
         {
           "date": "2026-09-13",
           "text": "エース3機種内の軽さを明示し、クレスタの隠しポケットとマックスパス4のPC収納寸法を公式で再確認。"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "末尾に、エース系3モデル以外のブランドも含めて比べる小型・機内持ち込みスーツケース比較（12モデル）への入口を追加（記事の中ほどにある同じ比較記事への案内はそのまま）。"
         }
       ],
       "legacy_anchor_targets": {
@@ -1134,7 +1167,7 @@
         "PRD-BERMAS-INTER-CITY-60524"
       ],
       "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
-      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、スタリアCXR、フレスターEX、パリセイド3-Z、INTER CITY 60524の外寸、重量、容量、開き方を公式情報から比較します。",
+      "excerpt": "100席未満の国内線で確認したい45×35×20cm・3辺100cm以内を基準に、スタリアCXR、フレスターEX、パリセイド3-Z、INTER CITY 60524の外寸、重量、容量、開き方を公式情報から比較します。",
       "post_type": "post",
       "intro": "4モデルとも通常時の公称外寸は幅34×奥行20×高さ45cm。使う便の各辺・個数・重量の条件を先に確認し、軽さ・前開き・PC収納で選びます。フレスターEXの拡張状態はこの比較条件の対象外です。",
       "conditions": [
@@ -1190,6 +1223,10 @@
         {
           "date": "2026-09-15",
           "text": "掲載画像の説明を、60524の販売ページの画像で確認した範囲（USBポートがないこと・背面のトラベルセントリーID）に合わせて訂正"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "航空会社の上限45×35×20cm・3辺合計100cm以内から、公式が書いていない軸名（幅・奥行・高さ）を外した表記に訂正し、100席以上の便向けの比較記事への入口を追加"
         }
       ],
       "legacy_anchor_targets": {
@@ -1316,6 +1353,10 @@
         {
           "date": "2026-09-13",
           "text": "4構造のアクセス経路図と、ストッパー操作・PC収納実寸の確認状態を追加。"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "末尾に、開き方以外の条件も含めて比べる小型・機内持ち込みスーツケース比較（12モデル）への入口を追加。"
         }
       ],
       "legacy_anchor_targets": {
@@ -1431,7 +1472,7 @@
       "spec_labels": [
         "本体寸法（幅×奥行×高さ）",
         "本体重量",
-        "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+        "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
         "自動ゴミ収集",
         "紙パック容量",
         "アプリ / Wi-Fi"
@@ -1451,6 +1492,10 @@
         {
           "date": "2026-09-15",
           "text": "SwitchBot K11+ ProのWi-Fi周波数帯（2.4GHz）の出典を日本語取扱説明書p.27・p.23に付け替え、Roomba Mini + AutoEmpty（F155260）の2.4GHz・5GHzを公式製品ページで再確認。条件別の結論の見出しを、アプリの系統を条件にして周波数帯を補足する形に変更。条件別の結論に、Wi-Fiの周波数帯は選ぶ条件の1つと明記し、5GHzに関する質問の答えで、F155260とF115060 / F115260の2.4GHz・5GHz対応を2026年9月15日に公式製品ページで再確認した日付に更新"
+        },
+        {
+          "date": "2026-09-16",
+          "text": "SwitchBot K11+ Proのステーションについて、公式製品ページの高さ約25cm・底面240×180mmの記載を追記し、未確認なのは底面の幅と奥行の対応であることを明記。"
         }
       ],
       "legacy_anchor_targets": {
@@ -1494,7 +1539,7 @@
           "fact_labels": [
             "本体寸法（幅×奥行×高さ）",
             "本体重量",
-            "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）"
+            "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）"
           ]
         },
         {
@@ -1765,18 +1810,6 @@
         {
           "key": "choice-2",
           "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-TK-MDW22W"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS"
-        },
-        {
-          "key": "choice-3",
-          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
         }
       ]
     },
@@ -1955,12 +1988,12 @@
         "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
         "PRD-FREQUENTER-LIEVE-1-250",
         "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+        "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312",
         "PRD-ACE-CRESTA-06316",
         "PRD-INNOVATOR-INV50",
         "PRD-BERMAS-INTER-CITY-II-60561",
         "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
-        "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
-        "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
+        "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX"
       ],
       "commerce_anchor": "specs",
       "commerce_presentation": "comparison_rows",
@@ -1990,6 +2023,10 @@
           "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106"
         },
         {
+          "key": "muji-76431312",
+          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
+        },
+        {
           "key": "cresta-06316",
           "product_id": "PRD-ACE-CRESTA-06316"
         },
@@ -2008,10 +2045,6 @@
         {
           "key": "tumi-0228793dtx",
           "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX"
-        },
-        {
-          "key": "muji-76431312",
-          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
         }
       ],
       "editorial_updated_on": "2026-09-13",
@@ -2032,7 +2065,427 @@
           "key": "front-main",
           "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX"
         }
-      ]
+      ],
+      "carry_on_fit": {
+        "question": "expansion_excess",
+        "question_basis": "外寸に車輪を含むかを確認できない型番が12中9と半数を超えるため、通常時の適合は判定せず、事前に決めた代わりの問い（記録済みの拡張時寸法で上限を超える型番）に切り替える。",
+        "rules": [
+          {
+            "rule_id": "jal-domestic-100-plus",
+            "carrier": "JAL",
+            "carrier_links": [
+              {
+                "label": "JAL",
+                "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+              }
+            ],
+            "scope": "国内線・100席以上",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": true,
+            "source_url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+            "locator": "サイズ > お手荷物 > 飛行機の座席数100席以上「合計：115cm以内」「55cm×40cm×25cm以内」、個数と重さ「合計重量 10kg以内まで」。サイズの軸名は記載なし。「ハンドルやキャスター、車輪などもサイズに含みます。」",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "ana-domestic-100-plus",
+            "carrier": "ANA",
+            "carrier_links": [
+              {
+                "label": "ANA",
+                "url": "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/"
+              }
+            ],
+            "scope": "国内線・100席以上",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": true,
+            "source_url": "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/",
+            "locator": "お知らせ「100席以上の場合 / 3辺合計115cm以内 / （55cm×40cm×25cm以内）」。国内線の持ち込みルールのページ「サイズは、キャスターやハンドルの長さも含みます。」「合計10kg以内」。数値と縦・横・高さの対応は記載なし。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "skymark",
+            "carrier": "スカイマーク",
+            "carrier_links": [
+              {
+                "label": "スカイマーク",
+                "url": "https://help.skymark.co.jp/fa/answers/web/knowledge1666.html"
+              }
+            ],
+            "scope": "対象便は公式ページに記載なし",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": null,
+            "source_url": "https://help.skymark.co.jp/fa/answers/web/knowledge1666.html",
+            "locator": "FAQ 管理番号1666「3辺の合計が115cm以内（かつ、各辺55cm × 40cm × 25cm 以内）」「合計2個、総重量10kgまで」。車輪・ハンドルを含むかと、国内線の範囲の記載は確認できていない。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "airdo",
+            "carrier": "AIRDO",
+            "carrier_links": [
+              {
+                "label": "AIRDO",
+                "url": "https://www.airdo.jp/departure/baggage/carry-on-baggage/"
+              }
+            ],
+            "scope": "対象便は公式ページに記載なし",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": null,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": null,
+            "source_url": "https://www.airdo.jp/departure/baggage/carry-on-baggage/",
+            "locator": "重量・サイズ・個数 > サイズの画像 carry-on-baggage02-2609.png「手荷物」55cm以内・40cm以内・25cm以内、「身の回り品」40cm以内・30cm以内・20cm以内（数値に高さ・幅・奥行の語は無いが、図では「手荷物」の 55 が縦、40 が横、25 が奥行の矢印に付き、「身の回り品」も 40 が縦、30 が横、20 が奥行）。画像下の注記「身の回りの品のサイズは2026年10月1日より運用開始」。重量「身の回りの品を含め、お一人様10Kgまで」、個数「お一人様、手荷物1個と身の回りの品1個まで」。3辺合計の上限と、対象便（国内線か）の記載と、車輪・ハンドルを含むかの記載はなし（2026-09-16 06:29 JST 取得。ページ本文の「国内線」は「新千歳空港国内線旅客ターミナル」というサイト内案内の1件だけで、手荷物の条件とは無関係）。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "solaseed-air",
+            "carrier": "ソラシドエア",
+            "carrier_links": [
+              {
+                "label": "ソラシドエア",
+                "url": "https://www.solaseedair.jp/baggage/inflight/"
+              }
+            ],
+            "scope": "対象便は公式ページに記載なし",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": null,
+            "source_url": "https://www.solaseedair.jp/baggage/inflight/",
+            "locator": "機内持込手荷物についての表（個数・重量・サイズ（手荷物・身の回り品共通））「手荷物1個と身の回り品1個（合計2個まで）」「合計10kgまで（手荷物+身の回り品の総重量）」「3辺の和が115cm以内（55cm×40cm×25cm以内）」。身の回り品は「40㎝×30cm×20cm以内」、注記「2026年7月1日より、身の回り品のサイズは、前の座席の下に収納できる大きさ、かつ「40cm×30cm×20cm以内」とさせていただきます。」。対象便（国内線か）の記載と、車輪・ハンドルを含むかの記載はなし（2026-09-16 08:12 JST 取得）。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "starflyer",
+            "carrier": "スターフライヤー",
+            "carrier_links": [
+              {
+                "label": "スターフライヤー",
+                "url": "https://www.starflyer.jp/checkin/carry-on-luggage.html"
+              }
+            ],
+            "scope": "国内線",
+            "edges_cm": [
+              55,
+              40,
+              25
+            ],
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": null,
+            "source_url": "https://www.starflyer.jp/checkin/carry-on-luggage.html",
+            "locator": "「機内持ち込み手荷物（国内線）」の「重量・大きさ・個数について」の表「重量 お一人様につき、身の回り品を含め10kgまで」「大きさ 3辺の合計が115cm以内（55cm×40cm×25cm以内）」「個数 お一人様につき、手荷物1個と身の回り品1個まで」。車輪・ハンドルを含むかの記載はなし（2026-09-16 08:12 JST 取得）。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "peach",
+            "carrier": "Peach",
+            "carrier_links": [
+              {
+                "label": "Peach",
+                "url": "https://www.flypeach.com/lm/ai/airports/baggage/carry_on_bag"
+              }
+            ],
+            "scope": "国内線・国際線",
+            "edges_cm": null,
+            "edge_axes": null,
+            "sum_cm": 115,
+            "total_weight_kg": 7,
+            "pieces": 2,
+            "dims_include_wheels": true,
+            "source_url": "https://www.flypeach.com/lm/ai/airports/baggage/carry_on_bag",
+            "locator": "機内に持ち込めるサイズ/個数/重量「3辺合計が115cm以内」「身の回りの品を含め1人2個まで」「1人あたり合計7kgまで」「*キャスター・ハンドル・ポケット等の長さも含む」。各辺の上限は記載なし。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true
+          },
+          {
+            "rule_id": "jetstar-japan",
+            "carrier": "ジェットスター・ジャパン（GK）",
+            "carrier_links": [
+              {
+                "label": "ジェットスター・ジャパン（GK）",
+                "url": "https://www.jetstar.com/jp/ja/flights/baggage/carry-on-baggage"
+              }
+            ],
+            "scope": "国内線・国際線",
+            "edges_cm": [
+              56,
+              36,
+              23
+            ],
+            "edge_axes": [
+              "高さ",
+              "幅",
+              "奥行"
+            ],
+            "sum_cm": null,
+            "total_weight_kg": 7,
+            "pieces": 2,
+            "dims_include_wheels": true,
+            "source_url": "https://www.jetstar.com/jp/ja/flights/baggage/carry-on-baggage",
+            "locator": "機内持込手荷物（7kgまで無料）「高さ56cm×幅36cm×奥行23cmまで（ハンドル、ポケット、キャスターなども含む）」「計2個／合計7kg」。個数／重量の注記「*一部のエコノミークラス運賃、ビジネスクラス運賃または機内持込手荷物プラス7kgのオプションをご購入の場合は、合計14kg（機内持込手荷物1個あたりの重量が10kgを超えないこと）まで。」",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": true,
+            "increased_total_weight_kg": 14,
+            "increased_weight_scope": "一部のエコノミークラス運賃・ビジネスクラス運賃・機内持込手荷物プラス7kgのオプション",
+            "max_item_weight_kg": 10
+          },
+          {
+            "rule_id": "jal-ana-domestic-under-100",
+            "carrier": "JAL・ANA",
+            "carrier_links": [
+              {
+                "label": "JAL",
+                "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+              },
+              {
+                "label": "ANA",
+                "url": "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/"
+              }
+            ],
+            "scope": "国内線・100席未満",
+            "edges_cm": [
+              45,
+              35,
+              20
+            ],
+            "edge_axes": null,
+            "sum_cm": 100,
+            "total_weight_kg": 10,
+            "pieces": 2,
+            "dims_include_wheels": true,
+            "source_url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+            "locator": "JAL「飛行機の座席数100席未満」「合計：100cm以内」「45cm×35cm×20cm以内」「合計重量 10kg以内」。ANA「100席未満の場合 3辺（縦・横・高さ）の和が100cm以内かつ3辺それぞれの長さが（45cm × 35cm × 20cm以内）」。この記事の12モデルはどれも高さ54cm以上。",
+            "checked_on": "2026-09-16",
+            "in_fit_matrix": false
+          }
+        ],
+        "luggage": [
+          {
+            "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+            "height_cm": 55,
+            "width_cm": 36,
+            "depth_cm": 23,
+            "sum_cm": 114,
+            "expanded": null,
+            "dims_include_wheels": true,
+            "source_url": "https://store.ace.jp/shop/g/g01521-09/",
+            "locator": "エース公式ストア「スペックとサイズ」表 サイズ「H55×W36×D23 cm ※キャスター・ハンドルを含む外寸表記です。」総外寸「114 cm」。拡張の機能・寸法の記載なし（拡張なしとも書かれていない）。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+            "height_cm": 55,
+            "width_cm": 40,
+            "depth_cm": 20,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "known",
+              "depth_cm": 23,
+              "sum_cm": 118,
+              "basis": "公式は「エキスパンダブル（拡張） 23.0cm」と拡張時の奥行だけを記載。高さ・幅は通常時と同じとして3辺合計を計算。"
+            },
+            "dims_include_wheels": true,
+            "wheels_scope": "height",
+            "maker": "Samsonite",
+            "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+            "locator": "「仕様」タブ サイズ「55.0 x 40.0 x 20.0 cm」。サイズ行直後の注記「高さにはホイールも含まれています。」（画面上に表示されない要素の文言。ハンドルの記載なし）。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 25,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "known",
+              "depth_cm": 28,
+              "sum_cm": 118,
+              "basis": "公式「サイズ（外寸）: 55 x 35 x 25/28cm」。高さ・幅は通常時と同じ表記。"
+            },
+            "dims_include_wheels": null,
+            "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+            "locator": "「サイズと素材の仕様」サイズ（外寸）「55 x 35 x 25/28cm」。車輪・ハンドルを含むかの記載なし。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+            "height_cm": 55,
+            "width_cm": 37,
+            "depth_cm": 23,
+            "sum_cm": 115,
+            "expanded": null,
+            "dims_include_wheels": null,
+            "source_url": "https://www.rimowa.com/jp/ja/luggage/colour/beige/キャビン/82353704.html",
+            "locator": "2026年9月13日の記事表の確認値。9月16日は公式ページを表示できず再確認していない。",
+            "checked_on": "2026-09-13"
+          },
+          {
+            "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 23,
+            "sum_cm": 113,
+            "expanded": null,
+            "dims_include_wheels": null,
+            "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+            "locator": "商品スペック表 総外周「横35cm×縦55cm×奥行23m=113cm」（奥行の単位は公式表記のまま）。車輪・ハンドルを含むかの記載なし。拡張の記載なし。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 25,
+            "sum_cm": 115,
+            "dims_approximate": true,
+            "expanded": null,
+            "dims_include_wheels": null,
+            "source_url": "https://delsey.jp/products/d001676801-chatelet-air-2-0-s-55cm",
+            "locator": "「スペック」寸法「外寸：高さ 約55cm × 横幅 約35cm × 奥行き 約25cm」。車輪・ハンドルを含むかの記載なし。拡張時の寸法の記載なし。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312",
+            "height_cm": 54,
+            "width_cm": 37,
+            "depth_cm": 24,
+            "sum_cm": 115,
+            "dims_approximate": true,
+            "expanded": null,
+            "dims_include_wheels": null,
+            "source_url": "https://www.muji.com/jp/ja/store/cmdty/detail/4548076431312",
+            "locator": "「仕様・サイズ」タブ サイズ表 商品サイズ「約54×37×24cm」（マチ幅24.0・タテ54.0・ヨコ37.0）。車輪・ハンドルを含むかの記載なし。拡張の項目なし。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-ACE-CRESTA-06316",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 25,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "known",
+              "depth_cm": 29,
+              "sum_cm": 119,
+              "basis": "公式「H55×W35×D25/29 cm」「総外寸 115/119 cm」。"
+            },
+            "dims_include_wheels": true,
+            "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+            "locator": "エース公式ストア「スペックとサイズ」表 サイズ「H55×W35×D25/29 cm ※キャスター・ハンドルを含む外寸表記です。」総外寸「115/119 cm」。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-INNOVATOR-INV50",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 25,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "none",
+              "checked_on": "2026-08-29"
+            },
+            "dims_include_wheels": null,
+            "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+            "locator": "商品本文「サイズ : H55 x W35 x D25 cm（Total : 115 cm）」。車輪・ハンドルを含むかの記載なし。拡張の記載なし（「拡張なし」は2026年8月29日の確認値）。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+            "height_cm": 55,
+            "width_cm": 35,
+            "depth_cm": 25,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "none",
+              "checked_on": "2026-08-29"
+            },
+            "dims_include_wheels": null,
+            "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+            "locator": "DETAILS表 サイズ「W35×H55×D25cm(全体サイズ)」。全体サイズが車輪・ハンドルを含むかの記載なし。拡張の記載なし（「拡張なし」は2026年8月29日の確認値）。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+            "height_cm": 55,
+            "width_cm": 37,
+            "depth_cm": 23,
+            "sum_cm": 115,
+            "expanded": {
+              "state": "known",
+              "depth_cm": 30,
+              "sum_cm": 122,
+              "basis": "公式「全体サイズ 55×37×23(+7)cm」「3辺の和 115(+7)cm」「機内持込対応 (拡張時非対応)」。特長文は「マチ幅が約7cmアップ」のため、拡張時の奥行と3辺合計は約付きで扱う。",
+              "approximate": true
+            },
+            "dims_include_wheels": null,
+            "source_url": "https://tands-luggage.jp/products/5208_hard-case?color=color74",
+            "locator": "SPECS 仕様表 5208-49列 全体サイズ「55×37×23(+7)cm」、3辺の和「115(+7)cm」。全体サイズが車輪・ハンドルを含むかの記載なし。",
+            "checked_on": "2026-09-16"
+          },
+          {
+            "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
+            "height_cm": 55,
+            "width_cm": 35.5,
+            "depth_cm": 24,
+            "sum_cm": 114.5,
+            "expanded": {
+              "state": "known",
+              "depth_cm": 29,
+              "sum_cm": 119.5,
+              "basis": "公式は「拡張時 29 cm」と拡張時の奥行だけを記載。高さ・幅は通常時と同じとして3辺合計を計算。"
+            },
+            "dims_include_wheels": null,
+            "source_url": "https://www.tumi.co.jp/luggage/tu-158990.html",
+            "locator": "「サイズ・素材」サイズ「55 cm X 35.5 cm X 24 cm」、拡張時「29 cm」。車輪・ハンドルを含むかの記載なし。",
+            "checked_on": "2026-09-16"
+          }
+        ]
+      }
     }
   ],
   "products": [
@@ -2081,20 +2534,20 @@
         },
         {
           "label": "開扉時の寸法",
-          "text": "開扉時の奥行485mm（設置案内：蛇口までの奥行502mm・高さ490mm）",
+          "text": "開扉時の奥行約485mm（ドア開閉時の最大寸法）",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA NP-TMLK1 の設置例",
-          "checked_at": "2026-09-10",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "仕様・スペック表「本体外形寸法」行の＜485＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
           "label": "必要な余白",
-          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。設置案内のタテ置き図では、50.2cm以上あればドアが水栓・蛇口に当たりにくいとしています。この50.2cmを図の代替テキストは背面からの長さとしていますが、図の線からは壁から測った長さに読めます（編集部の読み取り）。",
           "exact_model": "NP-TMLK1-K",
           "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
-          "checked_at": "2026-09-15",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図（確認 2026年9月15日）。50.2cmは同じタテ置き例の図（installation-30.png）の表記と、その代替テキスト「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
@@ -2116,7 +2569,7 @@
         "一度に洗う食器が標準6点を超える場合",
         "家族分の食器をまとめて洗う場合"
       ],
-      "caution": "本体奥行225mmと、扉を開けたときの奥行485mmは別の値です。着脱タンクを出し入れする動線、周囲の余白、電源は別に確認してください。",
+      "caution": "本体奥行約225mmと、扉を開けたときの奥行約485mmは別の値です。着脱タンクを出し入れする動線、周囲の余白、電源は別に確認してください。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -2135,20 +2588,20 @@
         },
         {
           "field": "door",
-          "text": "開扉時の奥行は485mm。設置案内では蛇口までの奥行502mm、高さ490mmの確保を案内しています。",
+          "text": "開扉時の奥行は約485mmです（仕様表の＜485＞。＜＞はドア開閉時の最大寸法）。",
           "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "SOLOTA NP-TMLK1 の設置例",
-          "checked_at": "2026-09-10",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "仕様・スペック表「本体外形寸法」行の＜485＞と表末の注記「＜＞はドア開閉時の最大寸法」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
           "field": "clearance",
-          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。",
+          "text": "設置案内の図では、本体と壁面の間に排水ホース外径分を含めて1.7cm（17mm）以上のあきが必要です。取扱説明書p.8では、可燃物から上方50mm、左右・後方各5mm以上です。設置面から高さ490mm以上も必要です。本体高435mmとの差490−435＝55mmを入力照合に使います。上部はできるだけ空け、熱源から150mm以上離します。設置案内のタテ置き図では、50.2cm以上あればドアが水栓・蛇口に当たりにくいとしています。この50.2cmを図の代替テキストは背面からの長さとしていますが、図の線からは壁から測った長さに読めます（編集部の読み取り）。",
           "exact_model": "NP-TMLK1-K",
           "source_url": "https://panasonic.jp/dish/installation.html",
-          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図",
-          "checked_at": "2026-09-15",
+          "locator": "「5．パーソナルタイプ」タテ置き例の図の代替テキスト「図：本体と壁面の間に1.7cm以上のあきが必要。排水ホース外径分を含む。」。上方・左右・後方の離隔距離、設置面からの高さ、熱源からの距離は取扱説明書P9901-20V10 p.8 設置場所の図（確認 2026年9月15日）。50.2cmは同じタテ置き例の図（installation-30.png）の表記と、その代替テキスト「図：高さが49cm以上あればOK、背面から50.2cm以上あれば、ドアが水栓・蛇口に当たりにくい。」",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
@@ -2418,11 +2871,11 @@
         },
         {
           "label": "必要な余白",
-          "text": "上500mm／背面50mm／左右各50mm以上、熱源から150mm以上",
+          "text": "上面500mm・後面50mm・側面50mm以上、熱源から150mm以上",
           "exact_model": "TDWS25SBL / TDWS25SRD",
           "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
-          "locator": "説明書 p.10–12 設置",
-          "checked_at": "2026-09-10",
+          "locator": "取扱説明書 p.10 設置場所について",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
@@ -2471,11 +2924,11 @@
         },
         {
           "field": "clearance",
-          "text": "上方500mm、背面50mm、左右それぞれ50mm以上を空け、熱源から150mm以上離します。",
+          "text": "上面500mm、後面50mm、側面50mm以上を空け、熱源から150mm以上離します。",
           "exact_model": "TDWS25SBL / TDWS25SRD",
           "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
-          "locator": "説明書 p.10–12 設置",
-          "checked_at": "2026-09-10",
+          "locator": "取扱説明書 p.10 設置場所について",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         },
         {
@@ -2997,7 +3450,7 @@
         },
         {
           "label": "開扉時の寸法",
-          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは712mm。",
+          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは約712mm。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
           "locator": "個別仕様の本体外形寸法と表末の注記「＜＞はドア開閉時の最大寸法」",
@@ -3006,14 +3459,14 @@
           "conflict_sources": [
             {
               "label": "個別仕様",
-              "value": "上386mm・下362mm",
+              "value": "上約386mm・下約362mm",
               "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
               "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
               "checked_at": "2026-09-15"
             },
             {
               "label": "比較表",
-              "value": "433mm",
+              "value": "約433mm",
               "source_url": "https://panasonic.jp/dish/comparison.html",
               "locator": "比較表「本体外形寸法」行のNP-TSP1列",
               "checked_at": "2026-09-15"
@@ -3051,7 +3504,7 @@
         "約19kgの本体を頻繁に移動する場合",
         "コンパクトなカウンターへ置きたい人"
       ],
-      "caution": "上方へ動く扉の最大高さ712mmと、周囲の余白は分けて確認してください。1店舗の過去の売り切れを、市場全体の販売終了とは扱いません。",
+      "caution": "上方へ動く扉の最大高さ約712mmと、周囲の余白は分けて確認してください。1店舗の過去の売り切れを、市場全体の販売終了とは扱いません。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -3069,7 +3522,7 @@
         },
         {
           "field": "door",
-          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは712mm。",
+          "text": "どちらもドア開閉時の最大寸法と表記しています。どちらが正しいかは判断せず、数値による設置判定はしません。開扉時の高さは約712mm。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
           "locator": "個別仕様の本体外形寸法と表末の注記「＜＞はドア開閉時の最大寸法」",
@@ -3078,14 +3531,14 @@
           "conflict_sources": [
             {
               "label": "個別仕様",
-              "value": "上386mm・下362mm",
+              "value": "上約386mm・下約362mm",
               "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
               "locator": "仕様・スペック表「本体外形寸法」行と表末の注記",
               "checked_at": "2026-09-15"
             },
             {
               "label": "比較表",
-              "value": "433mm",
+              "value": "約433mm",
               "source_url": "https://panasonic.jp/dish/comparison.html",
               "locator": "比較表「本体外形寸法」行のNP-TSP1列",
               "checked_at": "2026-09-15"
@@ -3534,7 +3987,7 @@
         },
         {
           "label": "容量",
-          "text": "38L拡張時40L",
+          "text": "約38L拡張時約40L",
           "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
           "locator": "既存公開記事の比較表に紐づく公式仕様",
           "checked_at": "2026-08-23",
@@ -3543,7 +3996,7 @@
         },
         {
           "label": "本体重量",
-          "text": "2.1kg",
+          "text": "約2.1kg",
           "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
           "locator": "既存公開記事の比較表に紐づく公式仕様",
           "checked_at": "2026-08-23",
@@ -3560,9 +4013,9 @@
           "exact_model": "QJ6-68002"
         }
       ],
-      "lead": "通常時は幅35×奥行25×高さ55cm、3辺合計115cm、38L、2.1kg。ソフトタイプで、4候補のうち通常時容量が最も大きい設計です。拡張すると幅35×奥行28×高さ55cm、40L、3辺合計118cmとなるため、預け入れへ切り替える場合などに分けて考えます。外装がふくらむほど実寸も変わります。",
+      "lead": "通常時は幅35×奥行25×高さ55cm、3辺合計115cm、約38L、約2.1kg。ソフトタイプで、4候補のうち通常時容量が最も大きい設計です。拡張すると幅35×奥行28×高さ55cm、約40L、3辺合計118cmとなるため、預け入れへ切り替える場合などに分けて考えます。外装がふくらむほど実寸も変わります。",
       "fit": [
-        "ソフトケースを選び、2.1kgの本体で通常時38Lを確保したい人。"
+        "ソフトケースを選び、約2.1kgの本体で通常時約38Lを確保したい人。"
       ],
       "avoid": [
         "ハードケースを求める人はC-Liteを比較してください。拡張時は奥行28cm・3辺合計118cmになり、通常時とは別に持ち込み条件を確認する必要があります。"
@@ -3620,7 +4073,7 @@
         },
         {
           "label": "容量",
-          "text": "33L",
+          "text": "約33L",
           "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
           "locator": "既存公開記事の比較表に紐づく公式仕様",
           "checked_at": "2026-08-23",
@@ -3629,7 +4082,7 @@
         },
         {
           "label": "本体重量",
-          "text": "2.7kg",
+          "text": "約2.7kg",
           "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
           "locator": "既存公開記事の比較表に紐づく公式仕様",
           "checked_at": "2026-08-23",
@@ -3646,12 +4099,12 @@
           "exact_model": "1-250"
         }
       ],
-      "lead": "外寸は幅35×奥行23×高さ55cm、3辺合計113cm。33L、2.7kgで、2.1kgの3候補より600g重い一方、消耗したタイヤには別売りの「1-623 交換用静音タイヤキット」が用意されています。交換できるのは対応するタイヤ部分のため、キットの適合と在庫、保証範囲を購入時に確認します。",
+      "lead": "外寸は幅35×奥行23×高さ55cm、3辺合計113cm。約33L、約2.7kgで、軽い3候補より約600g重い一方、消耗したタイヤには別売りの「1-623 交換用静音タイヤキット」が用意されています。交換できるのは対応するタイヤ部分のため、キットの適合と在庫、保証範囲を購入時に確認します。",
       "fit": [
-        "33Lで荷物が収まり、対応する別売りキットで消耗したタイヤを交換したい人。"
+        "約33Lで荷物が収まり、対応する別売りキットで消耗したタイヤを交換したい人。"
       ],
       "avoid": [
-        "本体重量を優先する人は2.1kgの3候補へ。LIEVEは2.7kgで600g重く、交換キットの適合・在庫・費用も確認が必要です。"
+        "本体重量を優先する人は軽い3候補へ。LIEVEは約2.7kgで約600g重く、交換キットの適合・在庫・費用も確認が必要です。"
       ],
       "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
       "image_markup": "",
@@ -3696,7 +4149,7 @@
           "exact_model": "F155260"
         },
         {
-          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
           "text": "幅21.2×奥行17.8×高さ28.5cm",
           "source_url": "https://store.irobot-jp.com/item/F155260.html",
           "locator": "公式製品仕様：奥行17.8×幅21.2×高さ28.5cmを幅・奥行・高さ順に並べ替え",
@@ -3807,16 +4260,16 @@
           "exact_model": "K11+ Pro"
         },
         {
-          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
-          "text": "240×180×250mm（公式掲載順。幅・奥行・高さとの対応は未確認）",
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
+          "text": "240×180×250mm（製品ページでは底面240×180mm・高さ約25cm。底面の幅・奥行の対応は未確認）",
           "exact_model": "K11+ Pro",
           "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
-          "locator": "公式製品仕様および日本語説明書K11_Pro-SMS-JP-2604-Q印刷p27（PDF16枚目）を目視確認。240×180×250mmと記載、軸名なし。",
-          "checked_at": "2026-09-13",
+          "locator": "公式製品ページの特長「置き場所まで、小さく」の「高さも約25cmに抑え」と、説明「A4用紙以下の設置面積＋90日ごみ捨て不要」の「ステーション底面わずか240×180mm」、製品仕様のゴミ収集ステーション本体サイズ240×180×250mm。日本語説明書K11_Pro-SMS-JP-2604-Q印刷p27（PDF16枚目）も240×180×250mmで軸名なし。底面の幅・奥行の対応はどちらにも記載なし。",
+          "checked_at": "2026-09-16",
           "state": "UNKNOWN",
           "unknown_reason": {
             "kind": "manufacturer_not_published",
-            "impact": "240×180×250mm（公式掲載順。幅・奥行・高さとの対応は未確認）",
+            "impact": "240×180×250mm（製品ページでは底面240×180mm・高さ約25cm。底面の幅・奥行の対応は未確認）",
             "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
             "owner": "暮らしのしるべ編集部"
           }
@@ -3885,7 +4338,7 @@
         "モップの自動洗浄・乾燥を求める人",
         "使用後のシート交換を避けたい人"
       ],
-      "caution": "公表3辺はいずれも250mm以下ですが、軸順が未確認のため底面積や実際の設置可否は計算しません。左右各0.5m・前と上各1.5mの必要空間、部品交換の動線も別に確認します。",
+      "caution": "製品ページでは高さ約25cm・底面240×180mmと案内されていますが、底面の幅・奥行の対応は未確認のため、幅と奥行を分けた設置可否は判断しません。左右各0.5m・前と上各1.5mの必要空間、部品交換の動線も別に確認します。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -3929,7 +4382,7 @@
           "exact_model": "K10+ Pro Combo"
         },
         {
-          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
           "text": "幅19.5×奥行29.7×高さ41.0cm",
           "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
           "locator": "既存公開記事の比較表に紐づく公式仕様",
@@ -4000,20 +4453,20 @@
       "facts": [
         {
           "label": "本体寸法（幅×奥行×高さ）",
-          "text": "幅30.3×奥行29.8×高さ8.4cm",
+          "text": "幅29.8×奥行30.3×高さ8.4cm",
           "source_url": "https://store.irobot-jp.com/item/N285060.html",
-          "locator": "既存公開記事の比較表に紐づく公式仕様",
-          "checked_at": "2026-08-23",
-          "state": "PRESERVED",
+          "locator": "公式製品仕様表の「ルンバ本体サイズ(cm) 30.3 (奥行き) ×29.8 (幅) ×8.4 (高さ)」と「充電ステーションサイズ(cm) 34.0 (奥行き) ×33.0 (幅) ×48.5 (高さ)」を、幅・奥行・高さの順に並べ替え",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN",
           "exact_model": "N285060"
         },
         {
-          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
-          "text": "幅34.0×奥行33.0×高さ48.5cm",
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
+          "text": "幅33.0×奥行34.0×高さ48.5cm",
           "source_url": "https://store.irobot-jp.com/item/N285060.html",
-          "locator": "既存公開記事の比較表に紐づく公式仕様",
-          "checked_at": "2026-08-23",
-          "state": "PRESERVED",
+          "locator": "公式製品仕様表の「ルンバ本体サイズ(cm) 30.3 (奥行き) ×29.8 (幅) ×8.4 (高さ)」と「充電ステーションサイズ(cm) 34.0 (奥行き) ×33.0 (幅) ×48.5 (高さ)」を、幅・奥行・高さの順に並べ替え",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN",
           "exact_model": "N285060"
         },
         {
@@ -4038,7 +4491,7 @@
       "lead": "設置面積よりも、モップの給水・洗浄・乾燥まで自動化することを優先したい場合に。",
       "fit": [
         "水拭き後のモップ手入れを減らしたい人",
-        "ステーション（幅34.0×奥行33.0×高さ48.5cm）を置ける人"
+        "ステーション（幅33.0×奥行34.0×高さ48.5cm）を置ける人"
       ],
       "avoid": [
         "本体とステーションの最大底面辺を25cm以下に収めたい人",
@@ -5663,7 +6116,7 @@
           "state": "PRESERVED"
         },
         {
-          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは底面の幅・奥行が未確認）",
           "text": "約22.2×8.6×12.3cm",
           "exact_model": "F115060",
           "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
@@ -6174,6 +6627,15 @@
             "next_action": "対象コースの1回当たりWhの公表資料を確認する",
             "owner": "暮らしのしるべ編集部"
           }
+        },
+        {
+          "label": "必要な余白",
+          "text": "上面700mm以上、後面100mm以上、側面100mm以上を空けて設置し、ガスコンロなどの熱源から150mm以上離します。取扱説明書はTK-MDW22BとTK-STTDPSWHの共通版です。",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://data.thanko.jp/download/manual/tk-mdw22b_man_web_01.pdf",
+          "locator": "取扱説明書（型番:TK-MDW22B/TK-STTDPSWH、version1.00）p.7「設置場所について」の本文と図",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
         }
       ],
       "lead": "SOLOTAより一度に洗う食器を増やし、熱風乾燥を使いたい場合の候補。奥行と給水の手間を確認します。",
@@ -6184,7 +6646,7 @@
         "開扉時奥行594mmを確保できない人",
         "着脱タンクで蛇口から直接給水したい人"
       ],
-      "caution": "TK-MDW22Bの比較です。mini color TDWS25SBL / TDWS25SRDや白いTK-STTDPSWHへ仕様を読み替えません。",
+      "caution": "製品ページの仕様値は黒のTK-MDW22Bのもので、白のTK-STTDPSWHへは読み替えません。取扱説明書の設置・給水などの記載は、TK-MDW22BとTK-STTDPSWHの共通版によります。mini color TDWS25SBL / TDWS25SRDは別製品です。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -6252,6 +6714,15 @@
           "source_url": "https://www.thanko.jp/view/item/000000003922",
           "locator": "メーカー商品ページ 仕様・機能、compact作者確認記録",
           "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "上面700mm以上、後面100mm以上、側面100mm以上を空けて設置し、ガスコンロなどの熱源から150mm以上離します。",
+          "exact_model": "TK-MDW22W",
+          "source_url": "https://data.thanko.jp/download/manual/tk-mdw22w_man_web_01.pdf",
+          "locator": "取扱説明書（version2.0）p.7「設置場所について」の本文と図",
+          "checked_at": "2026-09-16",
           "state": "KNOWN"
         }
       ],

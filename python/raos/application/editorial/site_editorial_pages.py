@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from html import escape
 import re
 from typing import Any
+from urllib.parse import urlsplit
 
 from raos.application.editorial.reader_html import Element, fragment, readable_tables
 
@@ -28,8 +29,8 @@ PURPOSES = {
     ),
     "without-installation": (
         "工事なしの食洗機",
-        "タンクとポンプ給水、続けやすいのは？",
-        "タンク式と外部容器からのポンプ給水を、水運び・容器の置き場所・設置条件で比べます。",
+        "注ぐ・補助ポンプ・吸い上げ、続けやすいのは？",
+        "手注ぎ・別売の給水補助ポンプ・本体が外部容器から吸い上げる方式を、水運び・容器の置き場所・設置条件で比べます。",
     ),
     "easy-maintenance": (
         "手入れを続けやすいものを選びたい",
@@ -125,12 +126,17 @@ def link(url: str, text: str) -> str:
 
 
 def table(
-    headers: list[str], rows: list[list[str]], label: str = "確認項目の表"
+    headers: list[str],
+    rows: list[list[str]],
+    label: str = "確認項目の表",
+    table_id: str = "",
 ) -> str:
     return (
         '<div class="ks-editorial-table" role="region" aria-label="'
         + escape(label, quote=True)
-        + '" tabindex="0"><table><thead><tr>'
+        + '" tabindex="0"><table'
+        + (f' id="{escape(table_id, quote=True)}"' if table_id else "")
+        + "><thead><tr>"
         + "".join(f'<th scope="col">{escape(h)}</th>' for h in headers)
         + "</tr></thead><tbody>"
         + "".join(
@@ -254,6 +260,97 @@ def _check_listing(
             raise ValueError("Invalid editorial date")
 
 
+PURPOSE_SOURCE_HOSTS = frozenset(
+    {
+        "panasonic.jp",
+        "jpn.faq.panasonic.com",
+        "www.siroca.co.jp",
+        "www.thanko.jp",
+        "www.data.thanko.jp",
+        "data.thanko.jp",
+        "cdn.shopify.com",
+        "www.switchbot.jp",
+        "support.switch-bot.com",
+        "store.irobot-jp.com",
+        "prod-help-content.care.irobotapi.com",
+        "www.bagworld.co.jp",
+    }
+)
+PURPOSE_FACT_STATES = frozenset({"KNOWN", "UNKNOWN", "CALCULATED"})
+PURPOSE_SOURCE_FIELDS = frozenset({"source_url", "locator", "checked_at"})
+PURPOSE_ZERO = re.compile(r"(?<![0-9０-９.,．，])[0０]\s*円|交換不要|無料")
+PURPOSE_UNKNOWN_VALUE = re.compile(
+    r"[0-9０-９]+(?:[.．][0-9０-９]+)?\s*"
+    r"(?:mm|cm|m|L|kg|g|Wh|W|円|分|時間|日|週|か月|カ月|ヶ月|年|回|点|個|枚|%)"
+)
+
+
+def _purpose_fact(cell: Any) -> None:
+    """Reject a purpose-page value that is unsourced, free-sounding or a hidden number."""
+    if not isinstance(cell, dict) or not _text(cell.get("label")):
+        raise ValueError("PURPOSE_FACT_SOURCE: unlabeled cell")
+    label = cell["label"]
+    value = cell.get("text")
+    state = cell.get("state")
+    if not isinstance(value, str) or state not in PURPOSE_FACT_STATES:
+        raise ValueError("PURPOSE_FACT_SOURCE: " + label)
+    if PURPOSE_ZERO.search(label) or PURPOSE_ZERO.search(value):
+        raise ValueError("PURPOSE_FACT_ZERO: " + label)
+    if state == "UNKNOWN":
+        if (
+            PURPOSE_UNKNOWN_VALUE.search(label)
+            or PURPOSE_UNKNOWN_VALUE.search(value)
+            or PURPOSE_SOURCE_FIELDS & set(cell)
+        ):
+            raise ValueError("PURPOSE_FACT_UNKNOWN_VALUE: " + label)
+        return
+    if not _text(value):
+        raise ValueError("PURPOSE_FACT_SOURCE: " + label)
+    if state == "CALCULATED":
+        if PURPOSE_SOURCE_FIELDS & set(cell):
+            raise ValueError("PURPOSE_FACT_SOURCE: " + label)
+        return
+    url = cell.get("source_url")
+    parts = urlsplit(url) if isinstance(url, str) else None
+    checked = cell.get("checked_at")
+    if (
+        parts is None
+        or parts.scheme != "https"
+        or parts.hostname not in PURPOSE_SOURCE_HOSTS
+        or not _text(cell.get("locator"))
+        or not isinstance(checked, str)
+        or not DATE.fullmatch(checked)
+    ):
+        raise ValueError("PURPOSE_FACT_SOURCE: " + label)
+
+
+def validate_purpose_evidence(evidence: Any, catalog: dict[str, Any]) -> dict[str, Any]:
+    """Model rows must name the catalog's exact model; every value cell is checked."""
+    if not isinstance(evidence, dict):
+        raise ValueError("PURPOSE_EVIDENCE_MISSING")
+    models = {p["product_id"]: p["exact_model"] for p in catalog.get("products", [])}
+
+    def walk(node: Any) -> None:
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+        elif isinstance(node, dict):
+            if "state" in node:
+                _purpose_fact(node)
+                return
+            if "product_id" in node or "exact_model" in node:
+                model = models.get(node.get("product_id"))
+                if model is None or model != node.get("exact_model"):
+                    raise ValueError(
+                        "PURPOSE_FACT_MODEL_MISMATCH: " + str(node.get("product_id"))
+                    )
+            for item in node.values():
+                walk(item)
+
+    walk(evidence)
+    return evidence
+
+
 def metadata(
     registry: dict[str, Any],
     catalog: dict[str, Any],
@@ -349,6 +446,8 @@ def render_pages(
     by_key: dict[str, dict[str, Any]] = {a["article_key"]: a for a in published}
     pages = {}
     updates = []
+    evidence = validate_purpose_evidence(data.get("purpose_evidence", {}), catalog)
+    catalog_products = {p["product_id"]: p for p in catalog.get("products", [])}
 
     def ref(key: str) -> dict[str, Any]:
         article: dict[str, Any] | None = by_key.get(key)
@@ -495,6 +594,69 @@ def render_pages(
 
     def al(key: str, text: str, anchor: str = "") -> str:
         return link(article_url(key, anchor), text)
+
+    def listed(key: str, text: str, anchor: str = "") -> str:
+        # Purpose routes follow the ledger: a withdrawn article loses its link.
+        return al(key, text, anchor) if key in by_key else ""
+
+    def joined(*routes: str) -> str:
+        return " ／ ".join(route for route in routes if route)
+
+    def purpose_evidence(page: str) -> dict[str, Any]:
+        value = evidence.get(page)
+        if not isinstance(value, dict):
+            raise ValueError("PURPOSE_EVIDENCE_MISSING: " + page)
+        return value
+
+    def purpose_cell(cell: dict[str, Any], labelled: bool = True) -> str:
+        head = escape(cell["label"]) + "：" if labelled else ""
+        if cell["state"] == "UNKNOWN":
+            return (
+                head
+                + "未確認"
+                + (f"（{escape(cell['text'])}）" if cell["text"] else "")
+            )
+        if cell["state"] == "CALCULATED":
+            return f"{head}{escape(cell['text'])}（編集部の計算）"
+        year, month, day = (int(part) for part in cell["checked_at"].split("-"))
+        return (
+            f"{head}{escape(cell['text'])}（"
+            + link(cell["source_url"], cell["locator"])
+            + f"／確認 {year}年{month}月{day}日）"
+        )
+
+    def purpose_cells(cells: list[dict[str, Any]]) -> str:
+        return "<br>".join(purpose_cell(cell) for cell in cells)
+
+    def purpose_model(entry: dict[str, Any]) -> str:
+        name = str(catalog_products[entry["product_id"]]["name"])
+        model = str(entry["exact_model"])
+        return escape(name) + ("" if model in name else "<br>" + escape(model))
+
+    def purpose_figure(figure: dict[str, Any]) -> str:
+        values = list(figure["facts"])
+        if "calculation" in figure:
+            values.append(figure["calculation"])
+        return (
+            '<figure class="ks-purpose-diagram"><figcaption>'
+            + escape(figure["caption"])
+            + "。縮尺なしの編集部作成の模式図です。</figcaption><pre>"
+            + escape("\n".join(figure["diagram"]))
+            + "</pre><dl><dt>起点</dt><dd>"
+            + purpose_cell(figure["origin"], labelled=False)
+            + "</dd><dt>記録値</dt>"
+            + "".join(f"<dd>{purpose_cell(cell)}</dd>" for cell in values)
+            + "<dt>未確認・図に含めないもの</dt>"
+            + "".join(f"<dd>{purpose_cell(cell)}</dd>" for cell in figure["unknowns"])
+            + "<dt>出典</dt><dd>記録値ごとに、かっこ内へメーカー公式資料の該当箇所と確認日を示しています。</dd></dl><p>"
+            + joined(
+                *(
+                    listed(item["article_key"], item["text"], item["anchor"])
+                    for item in figure["links"]
+                )
+            )
+            + "</p></figure>"
+        )
 
     def specs(key: str) -> str:
         return str(ref(key)["comparison_anchor"])
@@ -875,10 +1037,53 @@ def render_pages(
                 + "</p>"
             )
         elif slug == "small-space":
+            figures = purpose_evidence("small-space")["figures"]
+            zones = [
+                [
+                    "①本体が入る空間",
+                    "扉を閉じた本体、台やステーションの幅・奥行・高さ",
+                    "設置面と本体の外側",
+                    "扉を閉じた本体寸法",
+                    "ロボット本体と台は別々の外寸",
+                ],
+                [
+                    "②動かす範囲",
+                    "扉の開閉、ロボットの出入り",
+                    "型番の公式図が示す位置（例：壁の線）",
+                    "扉を開いたときの奥行・高さ",
+                    "台の前方の空き",
+                ],
+                [
+                    "③作業と周囲の空間",
+                    "メーカー指定の余白、給水・排水、手入れ・交換",
+                    "本体の各面から",
+                    "上・左右・後方の余白、ホースの経路、タンクを運ぶ動線",
+                    "左右・上方の空き、紙パック交換でふたを開ける空間",
+                ],
+            ]
             body = (
                 section(
-                    "本体・可動部・周囲空間の3枠",
-                    "<p>同じ測定軸・同じ状態で比べます。本体奥行と開扉時奥行を直接比べず、余白・給排水・電源を別に確かめます。</p>",
+                    "測る場所を3つに分ける",
+                    "<p>置けるかどうかは本体の外寸だけでは決まりません。次の3つを別々にメモし、同じ長さを二重に足さないようにします。</p>"
+                    + table(
+                        [
+                            "枠",
+                            "測るもの",
+                            "数字の起点",
+                            "食洗機では",
+                            "ロボット掃除機では",
+                        ],
+                        [[escape(cell) for cell in zone] for zone in zones],
+                        "採寸の3つの枠",
+                        "space-zones-table",
+                    )
+                    + "<p>扉を開いたときの奥行が、どこから測った値かは型番の公式図で確かめます。起点が分からない数字は、本体の奥行に足しも引きもしません。</p>",
+                )
+                + section(
+                    "例で見る：起点と、まだ分からない範囲",
+                    '<div class="ks-purpose-diagrams">'
+                    + "".join(purpose_figure(figure) for figure in figures)
+                    + "</div><p>公式の図から寸法の起点を読み取れない型番は、この例に入れていません。</p>",
                 )
                 + section(
                     "キッチンに置く",
@@ -901,25 +1106,150 @@ def render_pages(
                 )
             )
         elif slug == "save-housework":
+            housework = purpose_evidence("save-housework")
+            examples = {entry["group"]: entry for entry in housework["examples"]}
+            if set(examples) != {"食洗機", "ロボット掃除機"} or len(examples) != len(
+                housework["examples"]
+            ):
+                raise ValueError("PURPOSE_EVIDENCE_INVALID: save-housework")
+
+            def example(group: str) -> str:
+                entry = examples[group]
+                return (
+                    "<strong>"
+                    + escape(entry["exact_model"])
+                    + "</strong><br>"
+                    + purpose_cells(entry["facts"])
+                )
+
+            station = housework["wet_mop_station"]
             body = (
                 section(
                     "任せる作業／残る作業",
                     table(
-                        ["商品", "任せる作業", "残る作業"],
+                        ["商品", "任せる作業", "残る作業", "記録値の例（型番・出典）"],
                         [
                             [
                                 "食洗機",
                                 "洗浄・すすぎ。乾燥方式は機種別。",
                                 "食器の下準備・出し入れ・給水・清掃。",
+                                example("食洗機"),
                             ],
                             [
                                 "ロボット掃除機",
                                 "吸引。水拭き・自動収集・洗浄乾燥は構成別。",
-                                "床の片づけ・タンク補給・部品の手入れ。",
+                                "床の片づけ・紙パックやシートの交換・タンクの補給とすすぎ（構成による）・部品の手入れ。",
+                                example("ロボット掃除機"),
                             ],
                         ],
+                        table_id="housework-record-table",
                     )
                     + "<p>運転時間と人の作業時間は異なります。実測の削減時間や購入価値は断定していません。清掃頻度は機種で異なります。</p>",
+                )
+                + section(
+                    "自分の作業時間を書き出す",
+                    "<p>「今の時間」はご自身で1回ずつ測って書き込んでください。当サイトは作業時間を実測していないため、減る時間は示しません。「記録値」は上の表のメーカー資料の数字、「仮定」はあなたが決める条件です。機械が動いている時間は、人の時間に入れません。</p>"
+                    + table(
+                        [
+                            "作業",
+                            "今の頻度と1回の時間（記入）",
+                            "家電を使っても残る作業（記録値は上の表）",
+                            "仮定（記入）",
+                        ],
+                        [
+                            [
+                                "食器洗い",
+                                "1日＿回・1回＿分",
+                                "下準備・出し入れ・給水・フィルターの手入れ",
+                                "1回にまとめる食器の量：＿＿",
+                            ],
+                            [
+                                "床掃除",
+                                "週＿回・1回＿分",
+                                "床の片づけ・ゴミ捨てまたは紙パック交換・ブラシの手入れ",
+                                "片づけに使える時間：＿＿",
+                            ],
+                        ],
+                        "作業時間の記入表",
+                        "housework-time-table",
+                    ),
+                )
+                + section(
+                    "困っていることから比較を選ぶ",
+                    table(
+                        ["困っていること", "確かめること", "次に読む"],
+                        [
+                            [
+                                "毎回の給水が面倒",
+                                "分岐水栓を付けられるか（蛇口の適合と費用）。工事なしなら、手注ぎ・別売の給水補助ポンプ・本体が外部容器から吸い上げる方式の違い。",
+                                joined(
+                                    listed(
+                                        "dishwasher-branch-faucet-guide",
+                                        "分岐水栓式の確認",
+                                    ),
+                                    link(
+                                        "/without-installation/#first-read",
+                                        "工事なしの3つの給水方法",
+                                    ),
+                                ),
+                            ],
+                            [
+                                "フィルター掃除が続くか不安",
+                                "型番ごとの毎回と定期の手入れ。",
+                                joined(
+                                    listed(
+                                        "dishwasher-cleaning-guide",
+                                        "型番別の手入れ手順",
+                                    ),
+                                    link("/easy-maintenance/", "手入れと部品を比べる"),
+                                ),
+                            ],
+                            [
+                                "1回でまとめて洗いたい",
+                                "洗える食器の量と置き場所。",
+                                joined(
+                                    listed(
+                                        "standard-dishwasher-comparison",
+                                        "標準サイズを比べる",
+                                    ),
+                                    listed(
+                                        "large-dishwasher-comparison", "大容量を比べる"
+                                    ),
+                                ),
+                            ],
+                            [
+                                "ゴミ捨ての回数を減らしたい",
+                                "自動ゴミ収集の有無、紙パックの交換目安、台の大きさ。",
+                                listed(
+                                    "roomba-mini-vs-switchbot-k11-pro",
+                                    "ゴミ収集の台つき2機種を比べる",
+                                ),
+                            ],
+                            [
+                                "水拭きシートの交換を減らしたい",
+                                "シート式か、モップを洗って乾かす台か。モップを洗う台でも、"
+                                "手入れと部品の交換は残ります（下の記録値）。",
+                                listed(
+                                    "compact-robot-vacuum-shortlist",
+                                    "モップを洗う構成も含めて比べる",
+                                ),
+                            ],
+                            [
+                                "床の片づけそのものを減らしたい",
+                                "ロボット掃除機を使っても、床の物を片づける作業は残ります。"
+                                "買い足さない選択もあります。",
+                                "—",
+                            ],
+                        ],
+                        "困りごとから比較を選ぶ表",
+                        "housework-route-table",
+                    )
+                    + "<p>モップを洗って乾かす台の記録値の例です。<strong>"
+                    + purpose_model(station)
+                    + "</strong><br>"
+                    + purpose_cells(station["facts"])
+                    + "</p>"
+                    + "<p>減らしたい作業に○、残っても許せる作業に△を付けてから比べると、候補を絞りやすくなります。</p>",
                 )
                 + section(
                     "洗い物を減らす",
@@ -970,8 +1300,15 @@ def render_pages(
                 ]
             )
         elif slug == "easy-maintenance":
-            body = "<p>頻度は型番別の公式指定を優先します。毎回・週次・汚れに応じて・交換通知時などを共通の月次作業へ置き換えません。</p>"
-            for label, keys, work in [
+            groups = {
+                group["label"]: group
+                for group in purpose_evidence("easy-maintenance")["groups"]
+            }
+            body = (
+                "<p>頻度は型番別の公式指定を優先します。毎回・週次・汚れに応じて・交換通知時などを共通の月次作業へ置き換えません。</p>"
+                "<p>下の表は、型番の公式資料で頻度や交換部品を確認できた例です。掃除のしやすさの順位ではありません。部品代を確認していない場合は「未確認」と書き、費用がかからないとは扱いません。将来の部品供給は保証しません。</p>"
+            )
+            maintenance_groups = [
                 (
                     "食洗機",
                     [
@@ -979,7 +1316,20 @@ def render_pages(
                         "dishwasher-detergent-guide",
                         "dishwasher-running-cost",
                     ],
-                    "フィルター・ノズル・洗剤",
+                    "残さいフィルターの手入れは、SS-MA251とラクアmini colorが毎回、NP-TSP1-Wは週1回が目安（1日2回使用の場合。残さいがあればその都度）と、型番で指定が違います。",
+                    joined(
+                        *(
+                            listed("dishwasher-cleaning-guide", label, anchor)
+                            for label, anchor in (
+                                ("SS-MA251の手順", "product-dish-ss-ma251"),
+                                (
+                                    "ラクアmini colorの手順",
+                                    "product-dish-rakua-mini-color",
+                                ),
+                                ("NP-TSP1-Wの手順", "product-dish-np-tsp1"),
+                            )
+                        )
+                    ),
                 ),
                 (
                     "掃除機",
@@ -987,7 +1337,11 @@ def render_pages(
                         "compact-robot-vacuum-shortlist",
                         "roomba-mini-vs-switchbot-k11-pro",
                     ],
-                    "紙パック・ブラシ・フィルター・モップ",
+                    "消耗品の品番は製品ページごとに異なります。F155260とN285060の両方に載っている消耗品は紙パック 4849916 だけです。フィルターやブラシの品番を別の機種に流用しないでください。",
+                    listed(
+                        "compact-robot-vacuum-shortlist",
+                        "モップを洗う構成も含めて比べる",
+                    ),
                 ),
                 (
                     "スーツケース",
@@ -995,21 +1349,45 @@ def render_pages(
                         "front-open-carry-on-suitcase-with-stopper",
                         "carry-on-suitcase-comparison",
                     ],
-                    "車輪・鍵・外装",
+                    "ほかの掲載スーツケースの交換部品と修理の条件は、公式資料でまだ確認できていません。",
+                    listed(
+                        "small-carry-on-suitcase-comparison",
+                        "機内持ち込みの小型スーツケースを比べる",
+                    ),
                 ),
-            ]:
+            ]
+            if set(groups) != {label for label, *_ in maintenance_groups}:
+                raise ValueError("PURPOSE_EVIDENCE_INVALID: easy-maintenance")
+            for label, keys, note, routes in maintenance_groups:
                 body += section(
                     label,
                     table(
-                        ["残る作業", "頻度・部品品番・確認時価格・購入先", "不明点"],
+                        [
+                            "型番",
+                            "毎回・必要に応じて",
+                            "定期（目安）",
+                            "交換部品",
+                            "部品代",
+                        ],
                         [
                             [
-                                work,
-                                "対象型番の記事の公式資料・確認日・販売条件を参照。",
-                                "未確認の費用は0円ではありません。将来の部品供給は保証しません。",
+                                purpose_model(row),
+                                purpose_cells(row["each"]),
+                                purpose_cells(row["periodic"]),
+                                purpose_cells(row["parts"]),
+                                purpose_cells(row["price"]),
                             ]
+                            for row in groups[label]["rows"]
                         ],
+                        label + "の手入れと部品",
+                        {
+                            "食洗機": "maintenance-dishwasher-table",
+                            "掃除機": "maintenance-vacuum-table",
+                            "スーツケース": "maintenance-suitcase-table",
+                        }[label],
                     )
+                    + f"<p>{escape(note)}</p>"
+                    + (f"<p>{routes}</p>" if routes else "")
                     + cards(keys),
                 )
         elif slug == "comfortable-travel":
