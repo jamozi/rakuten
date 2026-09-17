@@ -244,7 +244,11 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
         capture_output=True,
         text=True,
         check=True,
-        timeout=60,
+        # 96 renders (6 widths x 2 text sizes x JS on/off x 2 pages) in one
+        # Chromium boot. It takes about 17 seconds here and timed out twice at
+        # 60 seconds on CI, where the shard runs beside seven others; the work
+        # itself never changed. The limit is a hang guard, not a budget.
+        timeout=300,
     )
     observations = json.loads(result.stdout)
     baseline = [row for row in observations if not row["representativeFailure"]]
