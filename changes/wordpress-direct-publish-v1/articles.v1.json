@@ -20,7 +20,7 @@
           "kind": "internal",
           "target": null,
           "anchor": "",
-          "label": "商品カテゴリーから選ぶ"
+          "label": "商品カテゴリから選ぶ"
         },
         "next_question": {
           "question": "商品より先に困りごとがある？",
@@ -64,8 +64,8 @@
       "post_id": 136,
       "post_type": "page",
       "slug": "kitchen",
-      "title": "食洗機の選び方・比較",
-      "excerpt": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。",
+      "title": "台所の道具の選び方・比較",
+      "excerpt": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/kitchen.html",
       "taxonomies": [],
       "media_ids": [
@@ -102,8 +102,8 @@
       "post_id": 131,
       "post_type": "page",
       "slug": "cleaning",
-      "title": "ロボット掃除機の選び方・比較",
-      "excerpt": "掃除の種類と手入れの手間から、暮らしに合うロボット掃除機を考える。吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
+      "title": "掃除の道具の選び方・比較",
+      "excerpt": "掃除の道具を、置き場所と任せたい作業、残る手入れから選ぶ入口。いま掲載しているのはロボット掃除機で、吸引・水拭き、自動ゴミ収集・モップ洗浄の違いを整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html",
       "reader_role": {
         "page_kind": "category_hub",
@@ -114,7 +114,7 @@
           "kind": "internal",
           "target": "compact-robot-vacuum-shortlist",
           "anchor": "",
-          "label": "省スペースの掃除機を比べる"
+          "label": "省スペースのロボット掃除機を比べる"
         },
         "next_question": {
           "question": "2候補まで絞れたら？",
@@ -159,7 +159,7 @@
       "post_type": "page",
       "slug": "categories",
       "title": "商品カテゴリから探す",
-      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
+      "excerpt": "スーツケース・台所・掃除・ポータブル電源から選べます。代表比較と、条件で候補を絞る節へ直接進めます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html",
       "reader_role": {
         "page_kind": "directory",
@@ -1472,7 +1472,7 @@
         "state": "published",
         "role": "comparison",
         "category": "cleaning",
-        "short_title": "省スペースの掃除機を比べる",
+        "short_title": "省スペースのロボット掃除機を比べる",
         "task_label": null,
         "main_label": "主比較",
         "main_count": 4,

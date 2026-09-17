@@ -2373,7 +2373,7 @@ def render_guide(
     first_id = "guide-cost-scope" if stage == "cost" else steps_id
     out = [
         '<div class="raos-editorial-v2 ps-article" data-raos-purchase-support="v1">'
-        '<nav class="ps-toc" id="ks-article-nav" aria-label="ガイドの近道"><a href="/kitchen/">食洗機の選び方</a><a href="#'
+        '<nav class="ps-toc" id="ks-article-nav" aria-label="ガイドの近道"><a href="/kitchen/">台所の道具の選び方・比較</a><a href="#'
         + first_id
         + '">4機種の比較表へ</a></nav><p class="ps-lead">'
         + escape(

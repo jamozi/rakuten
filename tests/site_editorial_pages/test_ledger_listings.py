@@ -82,7 +82,7 @@ HOME_DECISION_WORDS = {
     "preparedness": ("機器", "時間", "容量", "出力"),
 }
 CATEGORIES_LEAD = (
-    "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。"
+    "スーツケース・台所・掃除・ポータブル電源から選べます。"
     "代表比較と、条件で候補を絞る節へ直接進めます。"
 )
 NAVIGATION_ASSET = (
@@ -341,7 +341,7 @@ class LedgerListings(unittest.TestCase):
 
     def test_ledger_rows_alone_add_and_withdraw_articles(self):
         self.assertIn(
-            "食洗機の記事 11本（比較5本・ガイド6本）", self.pages["categories"]
+            "台所の記事 11本（比較5本・ガイド6本）", self.pages["categories"]
         )
         changed = copy.deepcopy(self.registry)
         source = next(
@@ -368,13 +368,13 @@ class LedgerListings(unittest.TestCase):
             'href="/dishwasher-sample-guide/"',
             section(pages["updates"], "new-articles"),
         )
-        self.assertIn("食洗機の記事 12本（比較5本・ガイド7本）", pages["categories"])
+        self.assertIn("台所の記事 12本（比較5本・ガイド7本）", pages["categories"])
         source["listing"]["state"] = "withdrawn"
         pages, meta, _ = editorial.render_pages(changed, self.catalog, self.data, {})
         self.assertNotIn("dishwasher-branch-faucet-guide", meta)
         for slug, html in pages.items():
             self.assertNotIn("/dishwasher-branch-faucet-guide/", html, slug)
-        self.assertIn("食洗機の記事 11本（比較5本・ガイド6本）", pages["categories"])
+        self.assertIn("台所の記事 11本（比較5本・ガイド6本）", pages["categories"])
 
     def test_home_recent_uses_publication_day_then_editorial_order(self):
         recent = section(self.pages["home"], "km-updates-title")

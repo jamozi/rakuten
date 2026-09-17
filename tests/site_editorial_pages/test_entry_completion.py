@@ -79,7 +79,7 @@ class EntryCompletion(unittest.TestCase):
         doc = Document(render_hub({}, self.catalog, template, now=self.now))
         compare = doc.ids["compare"]
         html = doc.text[compare.start : compare.end]
-        self.assertIn("<h2>置き場所・機能・費用を確かめる</h2>", html)
+        self.assertIn("<h2>卓上食洗機の置き場所・機能・費用を確かめる</h2>", html)
         self.assertIn(
             "採寸する箇所の考え方と費用の式の立て方は参考にできますが、数値と手順は選んだ型番の取扱説明書で確かめてください。型番別の数値を載せたガイドは、対象機種をガイド側に明記しています。",
             html,

@@ -126,30 +126,53 @@
       "recorded_at": "2026-09-13T09:19:55.345122+00:00",
       "publication_authorized": false,
       "latest_accepted": {
-        "body_sha256": "7c1e18a789dd7b4a54d3188934c8304b288e46be2c556facf16241de22aa8d00",
-        "snapshot_id": "ps-ba5c93ed5cbc727898d51083cb9ccf48",
-        "source_commit": "9fa8ee45",
-        "shared_candidate": "7cea2e0a2db6cdb19087768af3800bd2a75ab4db730a77d31b39123d088160b4",
+        "body_sha256": "68c675f6cc1046a1aa1503f47b82db4eb6303c91b7b903c67261fd813a5d1e9a",
+        "snapshot_id": "ps-f7deb19966b1b87b64bde2bab2e001c8",
+        "source_commit": "cd8c6eec",
+        "shared_candidate": "6a7bc2c6b5f5c8f9e4514067093188326f5688b8b4f4b5702367b70dedd70d8c",
         "branches": [
-          "claude/ks-w4b5-20260916",
-          "claude/ks-w4b6-20260916"
+          "claude/ks-n30-w0-20260916"
         ],
         "user_statement": "公開して",
         "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
-        "accepted_scope": "W4b の Before/After (output/ks-20260915/w4b-review/review.html) を確認して了承。Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記どおりに訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。#robot-space の節と、4機種の本体の高さ・台の周囲に空ける空間・ふたやタンクの出し入れを公式資料で比べる4列の表を新設し、スマートフォンでは、先頭列を7rem（112px）に保ったまま表のmin-widthを39remにして、320pxの実測の枠286px（記事シェルの左右1remと枠の1px境界で viewport−34）にデータ列1つ（170.7px）が収まるようにした。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記し、未確認なのは底面の幅と奥行の対応であることを明記。確認・更新履歴に2026年9月16日の1行を足した。",
+        "accepted_scope": "W0 の Before/After (output/ks-20260915/w0-review/review.html、19 行・Before/After 各 38 枚と W0-確認項目.md) をオーナーに提示し、「公開して」の回答で了承。W0（claude/ks-n30-w0-20260916）の改定を、公開の指示「公開して」で了承。了承の範囲は公開した本文そのもの（候補 6a7bc2c6…・commit cd8c6eec・2026-09-17T00:35:35Z〜00:37:38Z に公開）。改称したハブへ戻るリンク 2 本の文言を「ロボット掃除機の選び方・記事一覧」ほかから「掃除の道具の選び方・比較に戻る」に変え、台帳の listing.short_title を「省スペースのロボット掃除機を比べる」にした（home のカードの CTA に出る）。比較表・数値・順序・推薦・見出しは変えていない。",
         "tasks": [
-          "KS-136"
+          "KS-N30-W0"
         ],
         "source_paths": [
           "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
-          "changes/reader-purchase-support-v1/purchase-support.v1.json",
-          "python/raos/application/editorial/purchase_support.py",
-          "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
           "changes/wordpress-direct-publish-v1/articles.v1.json"
         ],
-        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+        "recorded_at": "2026-09-17T00:51:59.822404+00:00",
         "publication_authorized": false
-      }
+      },
+      "previous_accepted": [
+        {
+          "body_sha256": "7c1e18a789dd7b4a54d3188934c8304b288e46be2c556facf16241de22aa8d00",
+          "snapshot_id": "ps-ba5c93ed5cbc727898d51083cb9ccf48",
+          "source_commit": "9fa8ee45",
+          "shared_candidate": "7cea2e0a2db6cdb19087768af3800bd2a75ab4db730a77d31b39123d088160b4",
+          "branches": [
+            "claude/ks-w4b5-20260916",
+            "claude/ks-w4b6-20260916"
+          ],
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W4b の Before/After (output/ks-20260915/w4b-review/review.html) を確認して了承。Roomba Plus 515 Combo（N285060）の本体とステーションの寸法で幅と奥行を取り違えていたため、公式仕様の表記どおりに訂正（本体 幅29.8×奥行30.3cm、ステーション 幅33.0×奥行34.0cm）。#robot-space の節と、4機種の本体の高さ・台の周囲に空ける空間・ふたやタンクの出し入れを公式資料で比べる4列の表を新設し、スマートフォンでは、先頭列を7rem（112px）に保ったまま表のmin-widthを39remにして、320pxの実測の枠286px（記事シェルの左右1remと枠の1px境界で viewport−34）にデータ列1つ（170.7px）が収まるようにした。SwitchBot K11+ Proのステーションに製品ページの高さ約25cm・底面240×180mmを追記し、未確認なのは底面の幅と奥行の対応であることを明記。確認・更新履歴に2026年9月16日の1行を足した。",
+          "tasks": [
+            "KS-136"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
+            "changes/reader-purchase-support-v1/purchase-support.v1.json",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+            "changes/wordpress-direct-publish-v1/articles.v1.json"
+          ],
+          "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+          "publication_authorized": false
+        }
+      ]
     },
     "standard-dishwasher-comparison": {
       "body_sha256": "2b3888d532a9ceb3174442476a20644061861e9ec8e24f2829fe995d7883aed0",
@@ -164,28 +187,48 @@
       "recorded_at": "2026-09-13T09:19:55.345147+00:00",
       "publication_authorized": false,
       "latest_accepted": {
-        "body_sha256": "ba7dab3311a2a3432099215d018ad891d2f352bc08bc1a4404618a2ab66f5fa5",
-        "snapshot_id": "ps-f22b7a96095110e7e978f29d3a678109",
-        "source_commit": "ad936713",
-        "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
+        "body_sha256": "ff8fb056b97b7496cc84f7f14bfc69d202e4fd49f9ff532c19ad6103b3a74407",
+        "snapshot_id": "ps-9b119a4c23a61d43397dea1b06db1e75",
+        "source_commit": "cd8c6eec",
+        "shared_candidate": "6a7bc2c6b5f5c8f9e4514067093188326f5688b8b4f4b5702367b70dedd70d8c",
         "branches": [
-          "claude/ks-w4a-20260916"
+          "claude/ks-n30-w0-20260916"
         ],
         "user_statement": "公開して",
         "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
-        "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約75cm）。NP-TSK2の扉を開いた奥行は公式仕様の＜上433,下362＞に合わせて上約43.3cm・下約36.2cmの2値にし、設置の目安62cm以上は設置案内のスリムタイプ（分岐水栓式）の図「62cm以上あればOK」の表記どおり「約」を外して出典を注記に加えた。",
+        "accepted_scope": "W0 の Before/After (output/ks-20260915/w0-review/review.html、19 行・Before/After 各 38 枚と W0-確認項目.md) をオーナーに提示し、「公開して」の回答で了承。W0（claude/ks-n30-w0-20260916）の改定を、公開の指示「公開して」で了承。了承の範囲は公開した本文そのもの（候補 6a7bc2c6…・commit cd8c6eec・2026-09-17T00:35:35Z〜00:37:38Z に公開）。改称したハブへ戻るリンクの文言を「食洗機の選び方・記事一覧」から「台所の道具の選び方・比較に戻る」に変えた。比較表・数値・順序・推薦・見出しは変えていない。",
         "tasks": [
-          "KS-121"
+          "KS-N30-W0"
         ],
         "source_paths": [
-          "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
-          "python/raos/application/editorial/purchase_support.py",
-          "changes/site-improvements-20260913/article-sources/standard-dishwasher-comparison.md"
+          "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html"
         ],
-        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+        "recorded_at": "2026-09-17T00:51:59.822404+00:00",
         "publication_authorized": false
       },
       "previous_accepted": [
+        {
+          "body_sha256": "ba7dab3311a2a3432099215d018ad891d2f352bc08bc1a4404618a2ab66f5fa5",
+          "snapshot_id": "ps-f22b7a96095110e7e978f29d3a678109",
+          "source_commit": "ad936713",
+          "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
+          "branches": [
+            "claude/ks-w4a-20260916"
+          ],
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。主表の見出しを6項目（商品・写真｜食器量｜本体寸法・開扉時の奥行｜給水｜乾燥｜参考価格・販売先）にし、13行の開扉時の奥行と乾燥をdetails内の表から主表へ移動、設置条件の注記を閉じないstd-noteに、262と266への範囲注記、std-nextの41紹介文。公式仕様の表記に合わせ、主表と注記の扉を開いたときの寸法に「約」を付けた（約76cm・約43.3cm・約61.2cm・約75cm）。NP-TSK2の扉を開いた奥行は公式仕様の＜上433,下362＞に合わせて上約43.3cm・下約36.2cmの2値にし、設置の目安62cm以上は設置案内のスリムタイプ（分岐水栓式）の図「62cm以上あればOK」の表記どおり「約」を外して出典を注記に加えた。",
+          "tasks": [
+            "KS-121"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/site-improvements-20260913/article-sources/standard-dishwasher-comparison.md"
+          ],
+          "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+          "publication_authorized": false
+        },
         {
           "body_sha256": "88eb26d713d4c5404ea4e284f3a1fa307cdf55f892a6c639455699badde20278",
           "snapshot_id": "ps-e82ed726319e4628a2389d58766dba20",
@@ -222,30 +265,50 @@
       "recorded_at": "2026-09-13T09:19:55.345151+00:00",
       "publication_authorized": false,
       "latest_accepted": {
-        "body_sha256": "228198b9be4a3e36b358a0d67eebdeee84e8bb4e197708674829259fb9fa35c3",
-        "snapshot_id": "ps-f861ed5de09ded5a45fdf37a2ebdc960",
-        "source_commit": "ad936713",
-        "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
+        "body_sha256": "7384d3f7be2d0904a86292e76877c10b90a805178291fad6ac2d5ca43e2c1c9d",
+        "snapshot_id": "ps-35cb54fdd1ab26d8132d92344b0e5494",
+        "source_commit": "cd8c6eec",
+        "shared_candidate": "6a7bc2c6b5f5c8f9e4514067093188326f5688b8b4f4b5702367b70dedd70d8c",
         "branches": [
-          "claude/ks-w4a-20260916"
+          "claude/ks-n30-w0-20260916"
         ],
         "user_statement": "公開して",
         "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
-        "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。開扉時の奥行を「本体背面から開いた扉の先端まで」と断定していた注記と図の説明を、262と同じ「起点は型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしない」書き方に直した。起点を図で確認できたのはAQUA ADW-L40Bだけ（カタログ p.1〈側面〉の728mmとp.2の設置図が、本体奥行36cmと同じ背面の線から測る）で、パナソニック3機種とシロカ2機種は未確認と明記。長さの比較図は本体と扉の内訳（緑・薄緑）をやめ、公表値の比だけを示す1本のバーにした（theme.css の .lg-depth-track b と3機種分の b の幅を削除し、i の幅を公表値の比に直した）。公表値の57.9cm・72.0cm・72.8cmは変えていない。",
+        "accepted_scope": "W0 の Before/After (output/ks-20260915/w0-review/review.html、19 行・Before/After 各 38 枚と W0-確認項目.md) をオーナーに提示し、「公開して」の回答で了承。W0（claude/ks-n30-w0-20260916）の改定を、公開の指示「公開して」で了承。了承の範囲は公開した本文そのもの（候補 6a7bc2c6…・commit cd8c6eec・2026-09-17T00:35:35Z〜00:37:38Z に公開）。改称したハブへ戻るリンクの文言を「食洗機の選び方・記事一覧」から「台所の道具の選び方・比較に戻る」に変えた。比較表・数値・順序・推薦・見出しは変えていない。",
         "tasks": [
-          "KS-201a"
+          "KS-N30-W0"
         ],
         "source_paths": [
-          "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
-          "changes/reader-purchase-support-v1/purchase-support.v1.json",
-          "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-          "python/raos/application/editorial/purchase_support.py",
-          "changes/site-improvements-20260913/article-sources/large-dishwasher-comparison.md"
+          "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
         ],
-        "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+        "recorded_at": "2026-09-17T00:51:59.822404+00:00",
         "publication_authorized": false
       },
       "previous_accepted": [
+        {
+          "body_sha256": "228198b9be4a3e36b358a0d67eebdeee84e8bb4e197708674829259fb9fa35c3",
+          "snapshot_id": "ps-f861ed5de09ded5a45fdf37a2ebdc960",
+          "source_commit": "ad936713",
+          "shared_candidate": "598fdef00c1f465cef87f4e45c35c190596c4104b2c88aefb298924b21734a2c",
+          "branches": [
+            "claude/ks-w4a-20260916"
+          ],
+          "user_statement": "公開して",
+          "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+          "accepted_scope": "W4a の Before/After (output/ks-20260915/w4-review/review.html) を確認して了承。開扉時の奥行を「本体背面から開いた扉の先端まで」と断定していた注記と図の説明を、262と同じ「起点は型番の公式図で確かめ、確認できない場合は本体奥行に足しも引きもしない」書き方に直した。起点を図で確認できたのはAQUA ADW-L40Bだけ（カタログ p.1〈側面〉の728mmとp.2の設置図が、本体奥行36cmと同じ背面の線から測る）で、パナソニック3機種とシロカ2機種は未確認と明記。長さの比較図は本体と扉の内訳（緑・薄緑）をやめ、公表値の比だけを示す1本のバーにした（theme.css の .lg-depth-track b と3機種分の b の幅を削除し、i の幅を公表値の比に直した）。公表値の57.9cm・72.0cm・72.8cmは変えていない。",
+          "tasks": [
+            "KS-201a"
+          ],
+          "source_paths": [
+            "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html",
+            "changes/reader-purchase-support-v1/purchase-support.v1.json",
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+            "python/raos/application/editorial/purchase_support.py",
+            "changes/site-improvements-20260913/article-sources/large-dishwasher-comparison.md"
+          ],
+          "recorded_at": "2026-09-16T10:46:23.070913+00:00",
+          "publication_authorized": false
+        },
         {
           "body_sha256": "dc7c3f25b57b6836d88f98800fd2ebdc9181d5f039ae9d793ad1ad04fefaf35f",
           "snapshot_id": "ps-644f1396a865df3f1dde11915282ccf2",
