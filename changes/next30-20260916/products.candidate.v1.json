@@ -1,0 +1,3477 @@
+[
+ {
+  "product_id": "PRD-YAMAZAKI-4314",
+  "exact_model": "4314",
+  "name": "山崎実業 スリム水切りバスケット タワー ロング 4314",
+  "category": "dish-rack",
+  "anchor": "product-dish-rack-4314",
+  "official_url": "https://www.yamajitsu.co.jp/products/241440",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅555×奥行165×高さ160mm（公式の印字はcmで「W55.5×D16.5×H16cm」。公式サイズ図も「55.5cm」「16.5cm」「16cm」で「約」は付いていません）",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "内寸（開口部・深さ）",
+    "text": "開口部：W54.5×D16cm　高さ：11.5cm（公式サイズ図には「54.5cm（開口部内寸）」「16cm（開口部内寸）」「11.5cm（内寸）」と表示）",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「内寸」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "容量",
+    "text": "7.5L",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「容量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（公式表記は「商品重量」）",
+    "text": "1200g",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "材質（公式表記は「品質表示」）",
+    "text": "本体・カトラリーポケット：ABS樹脂　水はけ：ポリプロピレン　水止栓：シリコーン",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐荷重",
+    "text": "8kg",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐熱・耐冷",
+    "text": "耐熱：80℃／耐冷：-40℃（公式は「耐熱」行に80℃、「耐冷」行に-40℃と分けて印字）",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+    "text": "奥行50cm以内のシンク　厚み1.8cmのまな板（原文ママ。条件はシンクの「奥行」で、「内寸」とは印字されていません）",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "置き方（公式の設置前提）",
+    "text": "紹介見出しは「キッチンの狭いシンク横に置けるスリムで長い水切りバスケット」。紹介本文は「シンクの奥行が50cmまでなら、またいで置ける水切りバスケット。シンクの上にセットするので、シンクの中が広く使えます。水はけの方向を変えてレイアウトも自由自在です。スリムで長いデザインで、作業スペースを広く使えます。フライパンやお鍋も収納できます。」。商品説明の画像キャプションは「シンクの奥行が50cmまでなら、またいで置ける水切りバスケット」「狭いシンク横に置けるから、作業スペースを広く使えます」「シンクの上にセットするので、シンクの中が広く使えます」。シンク上に渡す用法とシンク横に置く用法が同じページに併記されており、どちらか一方に決め打ちできません。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション各画像のキャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水の向き（水受け・水はけ）",
+    "text": "「シンクにそのまま排水できます。設置の向きに合わせて、水はけは方向を変えることができます」。紹介本文にも「水はけの方向を変えてレイアウトも自由自在です。」とあります。品質表示は「水はけ：ポリプロピレン　水止栓：シリコーン」で、独立した水受けトレーの記載はありません。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「商品説明」セクション3枚目の画像キャプション、紹介本文、および「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+    "text": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には本体の四隅に脚が描かれていますが、寸法線も数値も付いていません。シンクへ「またいで置ける」条件として印字されているのは「奥行50cm以内のシンク」だけで、縁の厚み・形状の条件も未掲載です。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション、およびサイズ図画像 4314_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には本体の四隅に脚が描かれていますが、寸法線も数値も付いていません。シンクへ「またいで置ける」条件として印字されているのは「奥行50cm以内のシンク」だけで、縁の厚み・形状の条件も未掲載です。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "カトラリーポケットサイズ",
+    "text": "カトラリーポケットサイズ：約W15×D5.5×H11ｃｍ（備考欄は「約」付き・単位は全角「ｃｍ」。同じ値が公式サイズ図には「W15×D5.5×H11cm（カトラリーポケット）」と「約」なしで表示。値は同一です）",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「備考」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "生産国",
+    "text": "中国",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "組み立ての要否",
+    "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「仕様・サイズ」表に付属品欄がなく、商品ページのFAQアコーディオンは本品について項目0件で表示されます）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番4314の項目はありません。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "商品ページ全体（「仕様・サイズ」表と「よくある質問」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「仕様・サイズ」表に付属品欄がなく、商品ページのFAQアコーディオンは本品について項目0件で表示されます）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番4314の項目はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "食洗機対応（本品の可否）",
+    "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーには材質別の公式Q&Aがありますが、品番を名指しせず材質でしか答えておらず、本品に当たる「樹脂製品」の項は「食洗機を使用できない製品もあります」という条件付きの案内にとどまります。そのQ&Aの原文は別項「【材質別の共通注意】…」に分けて記載しています。記事で本品の可否を断定しないでください。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーには材質別の公式Q&Aがありますが、品番を名指しせず材質でしか答えておらず、本品に当たる「樹脂製品」の項は「食洗機を使用できない製品もあります」という条件付きの案内にとどまります。そのQ&Aの原文は別項「【材質別の共通注意】…」に分けて記載しています。記事で本品の可否を断定しないでください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番4314についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示はABS樹脂・ポリプロピレン・シリコーンです。この案内は条件付きで、本品の可否を確定しません。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "採用色と品番の対応",
+    "text": "公式ページの商品バリエーションは「スリム水切りバスケット タワー ロング - ホワイト」sku 4314 の1色のみです。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「仕様・サイズ」表の「カラー」行（ホワイト SKU:4314）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅555×奥行165×高さ160mm。公式の印字はcmで「W55.5×D16.5×H16cm」です。開口部の内寸はW54.5×D16cm、深さ11.5cmです。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "installation",
+    "text": "シンクの上にまたいで渡す前提のバスケットです。公式の条件は「奥行50cm以内のシンク　厚み1.8cmのまな板」で、シンクの「奥行」だけが条件として印字されています。同じページで「狭いシンク横に置ける」とも書かれており、作業台へ置く用法も併記されています。脚の位置・脚間距離・シンク縁の厚みの条件は公式に印字されていないため、置き場所は実測で確認してください。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介見出し・紹介本文・「商品説明」セクションのキャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "drainage",
+    "text": "排水はシンクへ直接落とします。「シンクにそのまま排水できます。設置の向きに合わせて、水はけは方向を変えることができます」と記載され、水止栓（シリコーン）が付きます。水はけの張り出し寸法と可動角度は公式に印字されていません。",
+    "exact_model": "4314",
+    "source_url": "https://www.yamajitsu.co.jp/products/241440",
+    "locator": "「商品説明」セクション3枚目の画像キャプションと「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 555,
+   "depth_mm": 165,
+   "height_mm": 160,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": null,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-YAMAZAKI-5070",
+  "exact_model": "5070",
+  "name": "山崎実業 スリムスリーウェイ水切りワイヤーバスケット 2段 タワー 5070",
+  "category": "dish-rack",
+  "anchor": "product-dish-rack-5070",
+  "official_url": "https://www.yamajitsu.co.jp/products/241827",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅575×奥行160×高さ335mm（公式の印字はcmで、仕様表は「W57.5×D16×H33.5cm」、公式サイズ図は「約57.5cm」「約16cm」「約33.5cm」と「約」付き。値は同じで表記だけが異なります）",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 5070_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "水切りトレーの寸法",
+    "text": "公式サイズ図に「約55cm（水切りトレー）」「約14.8cm（水切りトレー）」「約3.5cm（水切りトレー）」と表示。仕様表にトレー寸法の行はありません。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「仕様・サイズ」セクションのサイズ図画像 5070_size_image1.jpg 内の寸法線",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "内寸",
+    "text": "ワイヤーバスケット：W54.5×D15.4×H11.5cm　 ワイヤーバスケットのスリット幅：2cm　ハンドル部：W15.5×D2cm",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「内寸」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（公式表記は「商品重量」）",
+    "text": "2600g",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "材質（公式表記は「品質表示」）",
+    "text": "ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)　水切りトレー・カトラリーポケット・カトラリートレー・フック：ABS樹脂　水はけ：ポリプロピレン　水止栓：シリコーン",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品",
+    "text": "カトラリーポケット×1 カトラリートレー×1 フック×2",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「付属品」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐荷重",
+    "text": "ワイヤーバスケット：8kg  水切りトレー：5kg  フック：1つにつき250g",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐熱・耐冷",
+    "text": "耐熱：70℃ ※水切りトレー・カトラリーポケット／耐冷：−40℃　※水切りトレー・カトラリーポケット",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+    "text": "厚み2cmまでのまな板・奥行50cm以内のシンク（シンク渡し使用時）（原文ママ。シンクの条件は「奥行」で、しかも「シンク渡し使用時」という使用条件が付いています。「内寸」とは印字されていません）",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "置き方（公式の設置前提）",
+    "text": "紹介見出しは「シーンに合わせて使い方様々！スリムなワイヤーバスケット2段」。紹介本文は「スリムで省スペースに置ける3wayワイヤーバスケット。上部にバスケット、下部に水切りトレーを付ければ大容量の2段水切りとして。2段の収納力でたくさんの食器やボトル類の水切りができます。水切りトレーをバスケットの真下に取り付けることも可能で、その場合は下のスペースに鍋などの調理器具を置くことが可能。バスケットとトレーを分けて使うこともでき、シーンに合わせて様々な使い方ができます。」。シンクへ渡す用法は「対応サイズ」行の「（シンク渡し使用時）」という条件付き記載でのみ示されています。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「Product Details 仕様・サイズ」表の「対応サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水の向き（水受け・水はけ）",
+    "text": "「トレーの水はけは可動式なので排水方向を変えることができ、止水栓付きなので水が流せない場所にも設置できます。」。商品説明の画像キャプションにも「可動式の水はけで排水方向を変えることが可能。止水栓付きなので排水できない場所にも設置できます」とあります。水切りトレーについては「水切りトレーは上段、下段どちらにで取り付け可能」（原文ママ）と記載されています。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "紹介本文の末尾、および「商品説明」セクション2枚目・6枚目の画像キャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+    "text": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には左右2本の脚フレームが描かれていますが、寸法線も数値も付いていません。シンク渡し使用時に必要な渡し幅（縁から縁までの寸法）と縁の厚み・形状の条件も未掲載です。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション、およびサイズ図画像 5070_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には左右2本の脚フレームが描かれていますが、寸法線も数値も付いていません。シンク渡し使用時に必要な渡し幅（縁から縁までの寸法）と縁の厚み・形状の条件も未掲載です。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "部品の取り付けに関する公式記述",
+    "text": "「水切りトレーをバスケットの真下に取り付けることも可能」「バスケットの好みの位置に付けられるカトラリーポケットとカトラリートレー、着脱可能なフック」「バスケットとトレーを分けて使うこともでき、シーンやレイアウトに合わせて最適な設置が可能です」との記載があります。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "商品ページ冒頭の紹介本文、および「商品説明」セクション各画像のキャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "生産国",
+    "text": "中国",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "組み立ての要否",
+    "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。トレー位置の変更やポケット・フックの取り付けが可能である旨は書かれていますが、開梱時に組み立てが必要かどうかは印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番5070の項目はありません。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。トレー位置の変更やポケット・フックの取り付けが可能である旨は書かれていますが、開梱時に組み立てが必要かどうかは印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番5070の項目はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "食洗機対応（本品の可否）",
+    "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂・ポリプロピレン・シリコーン（水切りトレー・カトラリーポケット・カトラリートレー・フック・水はけ・水止栓）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂・ポリプロピレン・シリコーン（水切りトレー・カトラリーポケット・カトラリートレー・フック・水はけ・水止栓）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番5070についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番・複合構成に対する可否判定ではありません。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番5070についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち水切りトレー・カトラリーポケット・カトラリートレー・フック（ABS樹脂）、水はけ（ポリプロピレン）、水止栓（シリコーン）が樹脂・ゴム系のパーツです。この案内は条件付きで、本品の可否を確定しません。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "採用色と品番の対応",
+    "text": "公式ページのバリエーションは「スリムスリーウェイ水切りワイヤーバスケット 2段 タワー - ホワイト」sku 5070 と「同 - ブラック」sku 5071 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には5070と5071の2品番が並記され、「カラー」行は「ホワイト SKU:5070」です。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅575×奥行160×高さ335mm。公式の印字はcmで、仕様表が「W57.5×D16×H33.5cm」、公式サイズ図が「約57.5cm」「約16cm」「約33.5cm」です。バスケット内寸はW54.5×D15.4×H11.5cm、水切りトレーは約55×約14.8×約3.5cmです。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行、およびサイズ図画像 5070_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "installation",
+    "text": "作業台に置く2段（3way）バスケットです。シンクへ渡す使い方は「対応サイズ」行の「厚み2cmまでのまな板・奥行50cm以内のシンク（シンク渡し使用時）」という条件付き記載でのみ示されています。渡し幅・縁の厚み・脚の位置は公式に印字されていないため、置き場所は実測で確認してください。高さ335mmのため、上段から食器を出し入れする上方の余白も別に確認します。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介本文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "drainage",
+    "text": "排水は水切りトレーの可動式「水はけ」から行います。「トレーの水はけは可動式なので排水方向を変えることができ、止水栓付きなので水が流せない場所にも設置できます。」と記載されています。水はけの張り出し寸法と可動角度、トレーが受けられる水量は公式に印字されていません。",
+    "exact_model": "5070",
+    "source_url": "https://www.yamajitsu.co.jp/products/241827",
+    "locator": "紹介本文の末尾、および「商品説明」セクション2枚目・6枚目の画像キャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 575,
+   "depth_mm": 160,
+   "height_mm": 335,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": null,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-SHIMOMURA-42666",
+  "exact_model": "42666",
+  "name": "下村企販 水切りかご スマート 42666",
+  "category": "dish-rack",
+  "anchor": "product-dish-rack-42666",
+  "official_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅403×奥行180×高さ160mm（公式の印字はcmで「幅40.3×奥行18×高さ16cm」。同じ「サイズ」行に「バスケット内寸:幅37×奥行17×深さ7(10.5)cm、トレー:幅38×奥行18×高さ1.3cm」も1行にまとめて印字されています）",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "品番",
+    "text": "42666",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「品番」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "バスケット内寸",
+    "text": "バスケット内寸:幅37×奥行17×深さ7(10.5)cm（原文ママ。括弧内の10.5が何を指すかの注記は公式にありません）",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "水受けトレーの寸法",
+    "text": "トレー:幅38×奥行18×高さ1.3cm",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（公式表記は「重量」）",
+    "text": "810g",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "材質",
+    "text": "本体:18-8ステンレス、トレー:18-0ステンレス、脚ゴム:シリコーンゴム",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「材質」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "生産国",
+    "text": "日本",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「生産国」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "JANコード",
+    "text": "4957423087667",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「JANコード」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "置き方（公式の設置前提）",
+    "text": "紹介文は「コップやマグカップなど水切りに便利なサイズ。スイスイとお皿を立てかけられる線材間隔にしました。引き出し式トレーでしっかり水を受け取ります。持ち運びもしやすい形状、使うときにシンク脇に置いて、水切りが終わったらシンク奥にらくらく移動。できるだけ汚れの付着がないように線材の交差する部分を減らしたデザインです。」。シンクへ渡す・またぐ使い方の記述はありません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "商品名直下の紹介文（class=\"catch\"）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "対応するシンクの条件（対応サイズ行の有無）",
+    "text": "公式商品ページに対応シンク寸法・渡し幅の条件は印字されていません。「商品の仕様」表の項目は品番・材質・サイズ・重量・生産国・JANコードの6行のみで、「対応サイズ」に当たる行自体が存在しません。紹介文もシンク脇に置く前提しか書いていません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の全行（品番・材質・サイズ・重量・生産国・JANコード）、および商品名直下の紹介文",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに対応シンク寸法・渡し幅の条件は印字されていません。「商品の仕様」表の項目は品番・材質・サイズ・重量・生産国・JANコードの6行のみで、「対応サイズ」に当たる行自体が存在しません。紹介文もシンク脇に置く前提しか書いていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+    "text": "公式に印字されている脚の情報は「材質」行の「脚ゴム:シリコーンゴム」だけです。脚の本数・位置・脚間距離・接地幅・脚の高さはいずれも印字されていません。据え置き前提のため、シンク縁に掛ける条件も示されていません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「材質」行および全行、商品名直下の紹介文",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式に印字されている脚の情報は「材質」行の「脚ゴム:シリコーンゴム」だけです。脚の本数・位置・脚間距離・接地幅・脚の高さはいずれも印字されていません。据え置き前提のため、シンク縁に掛ける条件も示されていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "排水の向き（水受け・トレーの引き出し方向）",
+    "text": "「引き出し式トレーでしっかり水を受け取ります。」と記載され、トレー寸法は「トレー:幅38×奥行18×高さ1.3cm」です。トレーをどの辺から引き出すか（引き出し方向）と、引き出すために必要な前後の余白は印字されていません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "商品名直下の紹介文（class=\"catch\"）、および「商品の仕様」表の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "「引き出し式トレーでしっかり水を受け取ります。」と記載され、トレー寸法は「トレー:幅38×奥行18×高さ1.3cm」です。トレーをどの辺から引き出すか（引き出し方向）と、引き出すために必要な前後の余白は印字されていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "耐荷重",
+    "text": "公式商品ページに耐荷重の記載はありません（「商品の仕様」表に耐荷重の行がありません）。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の全行",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに耐荷重の記載はありません（「商品の仕様」表に耐荷重の行がありません）。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "耐熱・耐冷",
+    "text": "公式商品ページに耐熱・耐冷の記載はありません（「商品の仕様」表に該当行がありません）。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の全行",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに耐熱・耐冷の記載はありません（「商品の仕様」表に該当行がありません）。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "組み立ての要否",
+    "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。公式サイトの「よくある質問」ページは「鉄製フライパンのお手入れQ&A」と「ステンレス製鍋のお手入れQ&A」の2本のみで、水切りかごに関する項目はありません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の全行・紹介文、および公式「よくある質問」ページ（https://www.simomura-kihan.co.jp/q_and_a.html）の目次",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。公式サイトの「よくある質問」ページは「鉄製フライパンのお手入れQ&A」と「ステンレス製鍋のお手入れQ&A」の2本のみで、水切りかごに関する項目はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "食洗機対応（本品の可否）",
+    "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は印字されておらず、公式サイトの「よくある質問」ページにも「食洗」の語を含む記載はありません（掲載は鉄製フライパンとステンレス製鍋の手入れQ&Aのみ）。材質別の共通注意に当たる公式資料も本メーカーにはないため、本品には材質別の注意も付けられません。記事で本品の可否を断定しないでください。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "商品ページ全体、および公式「よくある質問」ページ（https://www.simomura-kihan.co.jp/q_and_a.html）の全文",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は印字されておらず、公式サイトの「よくある質問」ページにも「食洗」の語を含む記載はありません（掲載は鉄製フライパンとステンレス製鍋の手入れQ&Aのみ）。材質別の共通注意に当たる公式資料も本メーカーにはないため、本品には材質別の注意も付けられません。記事で本品の可否を断定しないでください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅403×奥行180×高さ160mm。公式の印字はcmで「幅40.3×奥行18×高さ16cm」です。バスケット内寸は幅37×奥行17×深さ7(10.5)cm、トレーは幅38×奥行18×高さ1.3cmです。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "「商品の仕様」表の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "installation",
+    "text": "シンク脇（作業台）に置き、水切りが終わったらシンク奥へ移す前提の据え置き型です。公式はシンクへ渡す・またぐ使い方を書いておらず、対応するシンク寸法の条件も印字していません。脚は「脚ゴム:シリコーンゴム」とだけ記載され、位置・脚間距離は未掲載です。置き場所は本体の外形で実測してください。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "商品名直下の紹介文、および「商品の仕様」表の「材質」行・全行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "drainage",
+    "text": "排水は本体下の引き出し式トレーで受け、手で引き出して捨てます。「引き出し式トレーでしっかり水を受け取ります。」とだけ記載され、引き出す向きと必要な前後の余白は公式に印字されていません。トレーを引き出す分の余白は本体奥行180mmに含まれていません。",
+    "exact_model": "42666",
+    "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+    "locator": "商品名直下の紹介文（class=\"catch\"）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "排水は本体下の引き出し式トレーで受け、手で引き出して捨てます。「引き出し式トレーでしっかり水を受け取ります。」とだけ記載され、引き出す向きと必要な前後の余白は公式に印字されていません。トレーを引き出す分の余白は本体奥行180mmに含まれていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   }
+  ],
+  "installation": {
+   "width_mm": 403,
+   "depth_mm": 180,
+   "height_mm": 160,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": null,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-YAMAZAKI-7835",
+  "exact_model": "7835",
+  "name": "山崎実業 折り畳み水切りラック タワー L 7835",
+  "category": "dish-rack",
+  "anchor": "product-dish-rack-7835",
+  "official_url": "https://www.yamajitsu.co.jp/products/242645",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅260×奥行580×高さ8mm（広げた状態。公式の印字はcmで、仕様表は「W26×D58×H0.8cm」、公式サイズ図は「約58cm」「約26cm」「約0.8cm」と「約」付き。値は同じで表記だけが異なります。丸めた／折り畳んだ状態の寸法は公式に印字されていません）",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 7835_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（公式表記は「商品重量」）",
+    "text": "810g",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "材質（公式表記は「品質表示」）",
+    "text": "本体：スチール（ユニクロメッキ+粉体塗装）キャップ：シリコーン",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐荷重",
+    "text": "4kg",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+    "text": "奥行き：54cm以下のシンク（原文ママ。条件はシンクの「奥行き」だけで、「内寸」や渡し幅は印字されていません）",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "置き方（公式の設置前提）",
+    "text": "紹介見出しは「くるくる丸めて収納できる、省スペースな水切りラック Lサイズ」。紹介本文は「サッと広げて使用でき、丸めることで省スペースに収納できる折り畳み式の水切り。折ることで、洗い物の量やシンクのスペースに合わせて幅を調整可能です。くるくると丸めることができるので、使わないときは邪魔になりません。調理中のちょっとした作業スペースとしても使用可能。」。商品説明1枚目のキャプションは「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション1枚目の画像キャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "脚・支持のしかた（シンク縁への渡し方）",
+    "text": "本品に脚はなく、支持はシンクの縁に渡す方式です。公式の記述は「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」と「対応サイズ：奥行き：54cm以下のシンク」の2点だけです。左右の縁に掛かる長さ（掛かり代）、必要な渡し幅、縁の厚み・形状の条件はいずれも印字されていません。耐荷重4kgは本体の値で、縁に掛かる部分の条件は別に示されていません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「商品説明」セクション1枚目の画像キャプション、「Product Details 仕様・サイズ」表の「対応サイズ」行・「耐荷重」行、およびサイズ図画像 7835_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品に脚はなく、支持はシンクの縁に渡す方式です。公式の記述は「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」と「対応サイズ：奥行き：54cm以下のシンク」の2点だけです。左右の縁に掛かる長さ（掛かり代）、必要な渡し幅、縁の厚み・形状の条件はいずれも印字されていません。耐荷重4kgは本体の値で、縁に掛かる部分の条件は別に示されていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "折り畳み・収納に関する公式記述",
+    "text": "「洗い物の量や、スペースによって折り畳むことで幅を調整」「くるくる丸めるとコンパクト」。丸めた状態・折り畳んだ状態の寸法、および何cm刻みで何段階折れるかは印字されていません。公式サイズ図も広げた状態だけを図示しています。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「商品説明」セクション2枚目・3枚目の画像キャプション、およびサイズ図画像 7835_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "蛇口の干渉に関する公式記述",
+    "text": "「ワイヤーを取り外して、水道の蛇口を避けて設置することもできます」。取り外せるワイヤーの本数と、確保できる逃がし幅は印字されていません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「商品説明」セクション5枚目の画像キャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "生産国",
+    "text": "中国",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水の向き（水受け・水はけ）",
+    "text": "公式商品ページに水受けトレー・排水方向の記載はありません。「仕様・サイズ」表に付属品の行がなく、品質表示も「本体：スチール」「キャップ：シリコーン」のみで、水受け部品は挙げられていません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はありません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに水受けトレー・排水方向の記載はありません。「仕様・サイズ」表に付属品の行がなく、品質表示も「本体：スチール」「キャップ：シリコーン」のみで、水受け部品は挙げられていません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "耐熱・耐冷",
+    "text": "本品の「仕様・サイズ」表には耐熱・耐冷の行がありません（掲載は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行）。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の全行",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の「仕様・サイズ」表には耐熱・耐冷の行がありません（掲載は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行）。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "組み立ての要否",
+    "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「ワイヤーを取り外して…設置することもできます」という使用時の記述のみ）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番7835の項目はありません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「ワイヤーを取り外して…設置することもできます」という使用時の記述のみ）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番7835の項目はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "食洗機対応（本品の可否）",
+    "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール本体とシリコーンキャップの複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール本体とシリコーンキャップの複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番7835についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「本体：スチール（ユニクロメッキ+粉体塗装）」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番に対する可否判定ではありません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番7835についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち「キャップ：シリコーン」が樹脂・ゴム系のパーツですが、この公式Q&Aの見出しは「樹脂製品」と「スチール製品」の2つだけで、シリコーンがどちらに当たるかは印字されていません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "採用色と品番の対応",
+    "text": "公式ページのバリエーションは「折り畳み水切りラック タワー L - ホワイト」sku 7835 と「同 - ブラック」sku 7836 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には7835と7836の2品番が並記され、「カラー」行は「ホワイト SKU:7835」です。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "広げた状態で幅260×奥行580×高さ8mm。公式の印字はcmで、仕様表が「W26×D58×H0.8cm」、公式サイズ図が「約58cm」「約26cm」「約0.8cm」です。丸めた状態の寸法は公式に印字されていません。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、およびサイズ図画像 7835_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "installation",
+    "text": "使うときだけ広げてシンクの上に渡す平面型です。公式の条件は「対応サイズ：奥行き：54cm以下のシンク」だけで、必要な渡し幅・掛かり代・縁の厚みは印字されていません。折って幅を調整でき、「ワイヤーを取り外して、水道の蛇口を避けて設置することもできます」と記載されています。耐荷重は4kgです。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行・「耐荷重」行、紹介本文、「商品説明」セクション1枚目・5枚目のキャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "drainage",
+    "text": "水受けトレーはなく、排水方向についての記載も公式にありません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はないため、受け皿の要否は実物で確認してください。",
+    "exact_model": "7835",
+    "source_url": "https://www.yamajitsu.co.jp/products/242645",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "水受けトレーはなく、排水方向についての記載も公式にありません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はないため、受け皿の要否は実物で確認してください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   }
+  ],
+  "installation": {
+   "width_mm": 260,
+   "depth_mm": 580,
+   "height_mm": 8,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": null,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-YAMAZAKI-3492",
+  "exact_model": "3492",
+  "name": "山崎実業 伸縮水切りワイヤーバスケット タワー 3492",
+  "category": "dish-rack",
+  "anchor": "product-dish-rack-3492",
+  "official_url": "https://www.yamajitsu.co.jp/products/241233",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅540×奥行195×高さ140mm（幅は最も伸ばした状態の値。公式の印字はcmで「W44〜54×D19.5×H14cm」、幅は44〜54cm＝440〜540mmの伸縮式です。公式サイズ図も「44〜54cm」「19.5cm」「14cm」で「約」は付いていません。同じ「商品サイズ」欄に「カトラリーポケットサイズ：W15×D5.5×H11cm」も併記）",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 3492_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "内寸",
+    "text": "W33×D18×H11.5cm（公式サイズ図にも「バスケット内寸 W33×D18×H11.5cm」と表示）",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「内寸」行、および同セクションのサイズ図画像 3492_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（公式表記は「商品重量」）",
+    "text": "1500g",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "材質（公式表記は「品質表示」）",
+    "text": "ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)　カトラリーポケット：ABS樹脂",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品",
+    "text": "クッション×4",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「付属品」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐荷重",
+    "text": "5kg",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "耐熱・耐冷",
+    "text": "耐熱：90℃／耐冷：カトラリーポケット：-40℃（公式は「耐熱」行に90℃、「耐冷」行に「カトラリーポケット：-40℃」と分けて印字）",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+    "text": "仕様表の「対応サイズ」行は「シンク内寸37cm〜47cm」（「約」なし）。紹介本文は「伸縮可能でシンクの内寸約37cm〜47cmまでに対応。」（「約」付き）。値は同じで表記だけが異なります。本クラスタで唯一「内寸」を条件にしている商品です。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、および商品ページ冒頭の紹介本文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "置き方（公式の設置前提）",
+    "text": "紹介見出しは「伸縮式で様々なサイズのシンクに対応する水切り」。紹介本文は「伸縮可能でシンクの内寸約37cm〜47cmまでに対応。水切れが良く、よく使う食器類から調理道具までたっぷり収納できます。」。商品説明の画像キャプションは「伸縮式でシンクの奥行きに合わせてぴったりフィット」「シンクのフチに引っ掛けるので、浮かせて設置できます」。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション1枚目・2枚目の画像キャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "脚・支持のしかた（シンク縁への引っ掛け）",
+    "text": "本品に脚はなく、支持は「シンクのフチに引っ掛けるので、浮かせて設置できます」という掛け方です。公式サイズ図では上部の伸縮レールが左右に張り出して描かれていますが、掛かり代の寸法線・数値はありません。掛けられるシンク縁の厚み・形状の条件、掛かる部分の耐荷重条件も印字されていません（耐荷重5kgは本体の値）。付属品は「クッション×4」とだけ書かれ、取り付け位置や用途は印字されていません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「商品説明」セクション2枚目の画像キャプション、「Product Details 仕様・サイズ」表の「付属品」行・「耐荷重」行、およびサイズ図画像 3492_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品に脚はなく、支持は「シンクのフチに引っ掛けるので、浮かせて設置できます」という掛け方です。公式サイズ図では上部の伸縮レールが左右に張り出して描かれていますが、掛かり代の寸法線・数値はありません。掛けられるシンク縁の厚み・形状の条件、掛かる部分の耐荷重条件も印字されていません（耐荷重5kgは本体の値）。付属品は「クッション×4」とだけ書かれ、取り付け位置や用途は印字されていません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "カトラリーポケットの取り付け位置",
+    "text": "「カトラリーポケットはバスケットの内側、外側のどちらでも取り付け可能」。カトラリーポケットサイズは「W15×D5.5×H11cm」。外側に取り付けたときの本体＋ポケットの合計奥行は印字されていません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「商品説明」セクション3枚目の画像キャプション、および「Product Details 仕様・サイズ」表の「商品サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "生産国",
+    "text": "中国",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水の向き（水受け・水はけ）",
+    "text": "公式商品ページに水受けトレー・排水方向の記載はありません。品質表示はワイヤーバスケット（スチール）とカトラリーポケット（ABS樹脂）のみ、付属品はクッション×4のみで、「水はけ」も「水止栓」も挙げられていません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるのみで、排水先を明言した文はありません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに水受けトレー・排水方向の記載はありません。品質表示はワイヤーバスケット（スチール）とカトラリーポケット（ABS樹脂）のみ、付属品はクッション×4のみで、「水はけ」も「水止栓」も挙げられていません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるのみで、排水先を明言した文はありません。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "組み立ての要否",
+    "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。付属品「クッション×4」の取り付けが必要かどうかも印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番3492の項目はありません。伸縮の段階（何cm刻みか）と固定方法・ロックの有無も未掲載です。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。付属品「クッション×4」の取り付けが必要かどうかも印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番3492の項目はありません。伸縮の段階（何cm刻みか）と固定方法・ロックの有無も未掲載です。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "食洗機対応（本品の可否）",
+    "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂（カトラリーポケット）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂（カトラリーポケット）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番3492についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番・複合構成に対する可否判定ではありません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+    "text": "以下はメーカーの材質別Q&Aの原文で、品番3492についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち「カトラリーポケット：ABS樹脂」が樹脂パーツです。この案内は条件付きで、本品の可否を確定しません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+    "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "採用色と品番の対応",
+    "text": "公式ページのバリエーションは「伸縮水切りワイヤーバスケット タワー - ホワイト」sku 3492 と「同 - ブラック」sku 3493 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には3492と3493の2品番が並記され、「カラー」行は「ホワイト SKU:3492」です。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "最も伸ばした状態で幅540×奥行195×高さ140mm。公式の印字はcmで「W44〜54×D19.5×H14cm」、幅は44〜54cm（440〜540mm）の伸縮式です。バスケット内寸はW33×D18×H11.5cmです。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行、およびサイズ図画像 3492_size_image1.jpg",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "installation",
+    "text": "シンクのフチに引っ掛けて浮かせて設置します。公式の条件は「対応サイズ：シンク内寸37cm〜47cm」（紹介本文は「シンクの内寸約37cm〜47cmまでに対応」）で、本クラスタで唯一シンクの「内寸」を条件にしています。幅を44〜54cmに伸縮させて合わせます。掛けられる縁の厚み・形状、掛かり代、伸縮の段階と固定方法は公式に印字されていません。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介本文、「商品説明」セクション1枚目・2枚目のキャプション",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "drainage",
+    "text": "水受けトレーはなく、排水方向についての記載も公式にありません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるだけで、排水先を明言した文はないため、シンク上へ掛ける以外の置き方では受け皿を別に用意するか確認してください。",
+    "exact_model": "3492",
+    "source_url": "https://www.yamajitsu.co.jp/products/241233",
+    "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "水受けトレーはなく、排水方向についての記載も公式にありません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるだけで、排水先を明言した文はないため、シンク上へ掛ける以外の置き方では受け皿を別に用意するか確認してください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   }
+  ],
+  "installation": {
+   "width_mm": 540,
+   "depth_mm": 195,
+   "height_mm": 140,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": null,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-SHARP-CV-U71",
+  "exact_model": "CV-U71-W",
+  "name": "シャープ 衣類乾燥除湿機 CV-U71-W",
+  "category": "dehumidifier-clothes-dryer",
+  "anchor": "product-dehumidifier-cv-u71",
+  "official_url": "https://jp.sharp/joshitsu/products/cv-u71/",
+  "facts": [
+   {
+    "label": "型番（色柄コード）",
+    "text": "公式サイトの商品名表示は「衣類乾燥除湿機 CV-U71 オープン価格」で、その直下に色柄コード「-W（ホワイト系）」が印字されている。取扱説明書の表紙は「形名 CV-U71」で色柄コードなし。シャープ公式通販 COCORO STORE の販売ページ名は「CV-U71-W」。記事が名乗ってよい型番は CV-U71-W（ホワイト系）。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/",
+    "locator": "商品トップページの商品名ブロック「衣類乾燥除湿機 CV-U71 オープン価格」直下のカラー表記「-W（ホワイト系）」。あわせて取扱説明書（形名CV-U71）表紙の「形名 CV-U71」、シャープ公式通販 https://cocorostore.jp.sharp/cv-u71-w.html の商品名「CV-U71-W」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "除湿方式",
+    "text": "コンプレッサー方式",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/",
+    "locator": "商品トップページ「主な仕様」欄の直下、プラズマクラスターのロゴ横の表記「＊ コンプレッサー方式」。特長ページ https://jp.sharp/joshitsu/products/cv-u71/feature/space-saving/ の「01 省エネ除湿」見出しは「梅雨夏に強いコンプレッサー方式」、本文は「ヒーターを使用しないので暑い季節に高い能力を発揮。スピーディーに衣類を乾燥させます。」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "定格除湿能力（条件つき）",
+    "text": "6.3／7.1 L/日（50Hz／60Hz）。条件は「除湿「強」運転時。室温27℃、相対湿度60％を維持し続けたときの1日あたりの除湿量。」（仕様ページ注記※1）。取扱説明書p.18の※1は「室温27℃、相対湿度60% を維持し続けたときの1 日あたりの除湿量です。( 除湿( 強) 運転のとき)」で一致。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「製品仕様＞基本仕様」表の1行目「定格除湿能力(L/日)(50/60Hz)(27℃60%)※1」＝「6.3/7.1」と表下の注記※1。取扱説明書（形名CV-U71）p.18「仕 様」表の「定格除湿能力※1」行（50Hz の場合 6.3L/ 日、60Hz の場合 7.1L/ 日）および注記※1も同一",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水タンク容量",
+    "text": "約2.5L（ハンドル付）。取扱説明書の仕様表は「約2.5L で自動停止」",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「排水タンク容量」行＝「約2.5L（ハンドル付）」。取扱説明書p.18「仕 様」表の「排水タンク容量」行＝「約2.5L で自動停止」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "連続排水の可否",
+    "text": "対応。仕様表の「連続排水」行は「●（市販のホースが必要）」。特長ページの見出しは「24時間連続排水に対応※1」、本文は「本体にホースをつなげば、連続排水が可能に。排水タンクに溜まった水を捨てに行く手間が省けたり、外出中などの長時間運転にも応えます。」",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「連続排水」行＝「●（市販のホースが必要）」。特長ページ https://jp.sharp/joshitsu/products/cv-u71/feature/usability/ の「02 連続排水」見出し「24時間連続排水に対応※1」と本文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "連続排水のホース条件（内径・引きかた）",
+    "text": "取扱説明書の印字は「市販のホース内径１５mm( 外径２１ｍｍまで)」（数字とmmが全角）。特長ページの注記※1は半角で「市販のホース＜内径15mm＞が必要です。」。ホースの引きかたは「必ず先下りの勾配をつける」「途中を折り曲げない」「水が凍結するような場所でホースの先を水につけない」で、良い例の図には落差の寸法線「10cm 以上」が入る。接続は背面のゴムキャップをはずし、連続排水穴から本体内部の排水口にホースを差し込む。ご注意には「排水タンクがセットされていないと除湿運転できません。」「連続排水で運転するときは、定期的(2 週間に1 回) に吸込口の汚れ、排水ホースの詰まりなどを点検し異常のないことを確認してください。」「排水ホースは、ホースの周囲が氷点下にならない場所に設置してください。」「連続排水で運転するときにも、オートオフ機能は動作します。」とある。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.13「連続排水」。図中の引出線「市販のホース内径１５mm( 外径２１ｍｍまで)」、囲み「ホースの引きかた」の3図と寸法線「10cm 以上」、手順1〜4と「ご注意」。半角表記は特長ページ https://jp.sharp/joshitsu/products/cv-u71/feature/usability/ の注記※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅303×奥行203×高さ524mm",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「外形寸法（mm）」行＝「幅303×奥行203×高さ524」。取扱説明書p.18「仕 様」表の「外形寸法」行＝「幅303mm × 奥行203mm × 高さ524mm」も同一",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "約9.6kg",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「質量（kg）」行＝「約9.6」。取扱説明書p.18「仕 様」表の「質量」行＝「約9.6kg」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "（dB、50Hz／60Hz）衣類乾燥 強：40／40、弱：36／36。除湿 強：38／38、弱：36／36。衣類消臭 強：39／39、弱：27／27。測定条件は「本体前方1mで測定。」（パナソニックの前後左右1mの平均とは測定位置が異なる）",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「運転音（dB）（50Hz/60Hz）※9」行（衣類乾燥／除湿／衣類消臭の3小行）と表下の注記※9「本体前方1mで測定。」。取扱説明書p.18の仕様表には運転音の行がない",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（設置に必要な周囲のあき）",
+    "text": "取扱説明書p.7「設置について」の設置図に「本体の周囲はすき間をあける」とあり、上方50cm（500mm）以上、後方20cm（200mm）以上、左右20cm（200mm）以上、前方20cm（200mm）以上と方向名つきで図示。あわせて「安定した平らな所で使用する」「約４℃～約38℃のお部屋で使用する」「直射日光の当たる所から少し離す」",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.7「設置について」の部屋設置図。図中の吹き出し「本体の周囲はすき間をあける」と4方向のラベル「上方 50cm以上」「後方 20cm以上」「左右 20cm以上」「前方 20cm以上」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "吹出口と衣類の距離",
+    "text": "吹出口と衣類の間は10cm 以上離す",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.8「衣類を乾燥/ 消臭したいとき(衣類運転)」右下の図の注記「吹出口と衣類の間は10cm 以上離す」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥モードの表示（公式内で不一致）",
+    "text": "本体の衣類乾燥モードは、取扱説明書p.8の運転モード表と仕様ページの運転音欄では「乾燥（自動）／乾燥（弱）／乾燥（強）」（衣類消臭は「消臭（弱）／消臭（強）」）。一方で仕様ページの試験条件注記※4・※5は「衣類乾燥「速乾」運転時」と別の名称を使っている。ただし仕様ページは※4・※5で「速乾」、※6で「強」と同一ページ内でも名称が割れており（※6＝「室温27℃、相対湿度60％、衣類乾燥「強」運転時。室温30℃。」）、「仕様ページ＝速乾」と単純化はできない。商品トップページの注記※2と除湿機トップページの注記※3は、同じJEMA試験の運転モードをCV-U71について「衣類乾燥「強」運転時」と書いている。本体表示としてどちらを使うかはメーカー（お客様ご相談窓口）へ確認してください。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.8「運転モードを選ぶ」の表：「衣 類 乾 燥」欄に「乾燥( 自動)」「乾燥( 弱)」「乾燥( 強)」、「衣 類 消 臭」欄に「消臭( 弱)」「消臭( 強)」",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "取扱説明書p.8の運転モード表",
+      "value": "乾燥（自動）／乾燥（弱）／乾燥（強）",
+      "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+      "locator": "取扱説明書（形名CV-U71）p.8「運転モードを選ぶ」の表の「衣 類 乾 燥」欄",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "仕様ページの試験条件注記（同一ページ内で両方の名称を使用）",
+      "value": "※4・※5＝衣類乾燥「速乾」運転時／※6＝衣類乾燥「強」運転時",
+      "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+      "locator": "「基本仕様」表下の注記※4・※5および注記※6",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "商品トップページの試験条件注記",
+      "value": "衣類乾燥「強」運転時",
+      "source_url": "https://jp.sharp/joshitsu/products/cv-u71/",
+      "locator": "商品トップページ「主な仕様」下の注記※2「…●製品位置：洗濯物の下方、外周近傍に設置●運転モード：衣類乾燥「強」運転時。」",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "衣類乾燥時の消費電力",
+    "text": "取扱説明書p.18の仕様表は2条件を併記：「衣類乾燥( 強) 室温30℃/ 湿度60%」215W／２２0W（50Hz／60Hz）、「衣類乾燥( 強) 室温27℃/ 湿度60%」２０５W／２１０W（50Hz／60Hz）。数字とWは原文では一部全角。公式サイト仕様表の「消費電力(W)（50Hz/60Hz）衣類乾燥※6」は205/210で、注記※6は「室温27℃、相対湿度60％、衣類乾燥「強」運転時。室温30℃。」と室温が2つ続けて印字されているが、30℃条件の数値は仕様ページには載っていない。除湿(強)の消費電力は説明書・仕様ページとも205/210（※7「室温27℃、相対湿度60％、除湿「強」運転時。」）。衣類消臭(強)は18W/21W、待機時消費電力は約0.3W。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.18「仕 様」表の「消費電力」行（衣類乾燥( 強) 室温30℃/ 湿度60%、衣類乾燥( 強) 室温27℃/ 湿度60%、除　　湿( 強) 室温27℃/ 湿度60%、衣類消臭( 強)、待機時消費電力）。公式サイトは https://jp.sharp/joshitsu/products/cv-u71/spec/ の「消費電力(W)（50Hz/60Hz）」行と注記※6・※7",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥時間（2kg）",
+    "text": "約167分（60Hz）（20℃・70％）。試験条件は「除湿機の衣類乾燥性能は一般社団法人日本電機工業会 自主基準（JEMA-HD090：2017）に基づき、以下の条件のもとで試験を行った値です。試験条件●部屋の広さ6畳相当●室温20℃（梅雨時）、10℃（冬季）、湿度70％、60Hz●洗濯物：2kg相当（Tシャツ3枚、Yシャツ2枚、パジャマ1組、下着7枚、靴下2足、タオル3枚）●運転モード：衣類乾燥「速乾」運転時。」（仕様ページ注記※4）。商品トップページの注記※2は同じ試験について「●室温20℃、湿度70％、60Hz…●製品位置：洗濯物の下方、外周近傍に設置●運転モード：衣類乾燥「強」運転時。」と、製品位置を明記し運転モードを別名で書いている（運転モードの不一致は別レコード「衣類乾燥モードの表示（公式内で不一致）」を参照）。10℃（冬季）に対応する乾燥時間の数値はどちらにも掲載されていない。",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「衣類乾燥時間（2kg）※4（60Hz）（20℃・70％）」行＝「約167分」と表下の注記※4。商品トップページ https://jp.sharp/joshitsu/products/cv-u71/ の「主な仕様」下の注記※2",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "使用可能温度",
+    "text": "4～38℃",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「使用可能温度」行＝「4～38℃」。取扱説明書p.7「設置について」も「約４℃～約38℃のお部屋で使用する」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源コード長さ",
+    "text": "約 2.2m",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.18「仕 様」表の「電源コード長さ」行＝「約 2.2m」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "幅303×奥行203×高さ524mm",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u71/spec/",
+    "locator": "「基本仕様」表の「外形寸法（mm）」行＝「幅303×奥行203×高さ524」。取扱説明書p.18「仕 様」表の「外形寸法」行＝「幅303mm × 奥行203mm × 高さ524mm」も同一",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "取扱説明書p.7「設置について」の設置図に「本体の周囲はすき間をあける」とあり、上方50cm（500mm）以上、後方20cm（200mm）以上、左右20cm（200mm）以上、前方20cm（200mm）以上と方向名つきで図示。あわせて「安定した平らな所で使用する」「約４℃～約38℃のお部屋で使用する」「直射日光の当たる所から少し離す」",
+    "exact_model": "CV-U71-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu71_mn.pdf",
+    "locator": "取扱説明書（形名CV-U71）p.7「設置について」の部屋設置図。図中の吹き出し「本体の周囲はすき間をあける」と4方向のラベル「上方 50cm以上」「後方 20cm以上」「左右 20cm以上」「前方 20cm以上」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 303,
+   "depth_mm": 203,
+   "height_mm": 524,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 500,
+   "left_mm": 200,
+   "right_mm": 200,
+   "rear_mm": 200
+  }
+ },
+ {
+  "product_id": "PRD-SHARP-CV-U60",
+  "exact_model": "CV-U60-W",
+  "name": "シャープ 衣類乾燥除湿機 CV-U60-W",
+  "category": "dehumidifier-clothes-dryer",
+  "anchor": "product-dehumidifier-cv-u60",
+  "official_url": "https://jp.sharp/joshitsu/products/cv-u60/",
+  "facts": [
+   {
+    "label": "型番（色柄コード）",
+    "text": "公式サイトの商品名表示は「衣類乾燥除湿機 CV-U60 オープン価格」で、その直下に色柄コード「-W（ホワイト系）」が印字されている。取扱説明書の表紙は「形名 CV-U60」で色柄コードなし。シャープ公式通販 COCORO STORE の販売ページ名は「CV-U60-W」。記事が名乗ってよい型番は CV-U60-W（ホワイト系）。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/",
+    "locator": "商品トップページの商品名ブロック「衣類乾燥除湿機 CV-U60 オープン価格」直下のカラー表記「-W（ホワイト系）」。あわせて取扱説明書（形名CV-U60）表紙の「形名 CV-U60」、シャープ公式通販 https://cocorostore.jp.sharp/cv-u60-w.html の商品名「CV-U60-W」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "除湿方式",
+    "text": "デシカント方式",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/",
+    "locator": "商品トップページ「主な仕様」欄の直下、プラズマクラスターのロゴ横の表記「＊ デシカント方式」。同ページ特長「年中乾燥&ラック下設置」の本文は「ヒーターを使用するので、寒い季節でも能力が落ちにくいデシカント方式を採用。ラック下に置いても気にならない、高さ約32cmのロー&コンパクトタイプ」。取扱説明書p.9「除湿のしくみ」も「デシカント方式の除湿機は、空気中の水分を除湿ローターで吸着し、ヒーターで乾燥して除湿します。」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "定格除湿能力（条件つき・試験条件が公式内で不一致）",
+    "text": "5.4／5.6 L/日（50Hz／60Hz）。L/日の数値は仕様ページ・取扱説明書p.14・除湿機トップページのすべてで一致しますが、試験条件の表示が公式内で食い違います（仕様表の行見出しは「(27℃60%)」、同ページの注記※1と取扱説明書p.14の※1と除湿機トップページの注記※2はいずれも室温20℃）。どちらの条件かはメーカー（お客様ご相談窓口）へ確認してください。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「製品仕様＞基本仕様」表の1行目「定格除湿能力(L/日)(50/60Hz)(27℃60%)※1」＝「5.4/5.6」",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "仕様表の行見出し",
+      "value": "27℃60%",
+      "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+      "locator": "「製品仕様＞基本仕様」表の1行目の行見出し「定格除湿能力(L/日)(50/60Hz)(27℃60%)※1」",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.14の注記",
+      "value": "室温20℃、相対湿度60%（衣類乾燥（速乾）の列の値）",
+      "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+      "locator": "取扱説明書（形名CV-U60）p.14「仕 様」表の注記※1「室温20℃、相対湿度60% を維持し続けたときの数値です。」（同表の「定格除湿能力（L / 日）※1」行）",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "除湿機トップページの注記",
+      "value": "衣類乾燥「速乾」運転時、室温20℃、相対湿度60％",
+      "source_url": "https://jp.sharp/joshitsu/",
+      "locator": "除湿機トップページ「製品ラインアップ」下の注記※2「除湿「強」運転時（CV-UH160/U190/U71、CM-U100）、衣類乾燥「速乾」運転時（CV-U60）。室温27℃、相対湿度60％（CV-U60は室温20℃、相対湿度60％）を維持し続けたときの1日あたりの除湿量。」",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "定格除湿能力（運転モード別）",
+    "text": "取扱説明書p.14の仕様表に運転モード別の値がある：衣類乾燥（速乾）5.4 / 5.6、衣類乾燥（音控えめ）5.1 / 5.2、除湿（自動）5.1 / 5.2、衣類消臭 ー（50Hz / 60Hz、単位 L / 日）。注記※1は「室温20℃、相対湿度60% を維持し続けたときの数値です。」。「衣類乾燥（自動）」の列はこの表になく、自動運転の定格除湿能力は公式に未掲載。公式サイトの仕様ページにはモード別の定格除湿能力の欄がない。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.14「仕 様」表の「定格除湿能力（L / 日）※1」行。列見出しは左から「衣類乾燥（速乾）」「衣類乾燥（音控えめ）」「除湿（自動）※6」「衣類消臭」（PDFの該当領域を画像化して列の対応も目視確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水タンク容量",
+    "text": "約1.5L。取扱説明書p.14の仕様表は「約1.5 Ｌで自動停止」",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「排水タンク容量」行＝「約1.5L」。取扱説明書p.5「排水のしかた」＝「排水タンクが満水( 約1.5L) になると、自動的に運転を停止します。【満水停止装置】」、p.14「仕 様」表の「排水タンク容量」行＝「約1.5 Ｌで自動停止」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "連続排水の可否",
+    "text": "仕様表の「連続排水」行は「ー」（該当なしの記号）。取扱説明書には連続排水・排水ホースの項目も語句も一切なく、p.4「各部のなまえ」に連続排水穴はなく、p.5「排水のしかた」は排水タンクを取り出して水を捨てる手順のみ。「非対応」という語そのものは公式のどこにも印字されていないため、記事では「対応の記載がない」と書く。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「連続排水」行＝「ー」。取扱説明書（形名CV-U60）全16ページを本文検索して「連続排水」「ホース」の記載なし（p.4 各部のなまえ、p.5 排水のしかた、p.14 仕 様）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅300×奥行300×高さ323mm",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「外形寸法（mm）」行＝「幅300×奥行300×高さ323」。取扱説明書p.14「仕 様」表の「外形寸法(mm)」行＝「幅300 ×奥行300 ×高さ323」も同一",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "約6.7kg",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「質量（kg）」行＝「約6.7」。取扱説明書p.14「仕 様」表の「質　量(kg)」行＝「約6.7」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "（dB、50Hz／60Hz）衣類乾燥 速乾：51／51、音控えめ：38／38。除湿：38／38（※10「「自動」運転時。」）。衣類消臭：51／51。測定条件は「本体前方1mで測定。」（パナソニックの前後左右1mの平均とは測定位置が異なる）。取扱説明書p.14の「運転音(dB)※3」行も速乾51／音控えめ38／除湿（自動）38／衣類消臭51で一致（※3「本体前方1m で測定」）。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「運転音（dB）（50Hz/60Hz）※9」行（衣類乾燥＝「速乾：51/51／音控えめ：38/38」、除湿※10、衣類消臭）と表下の注記※9・※10。取扱説明書p.14「仕 様」表の「運転音(dB)※3」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（設置に必要な周囲のあき）",
+    "text": "取扱説明書p.5「設置について」に「壁や家具などのそばに設置するときは、次の距離を離す（通気性が悪いと温度が上昇し、シミ、変色、故障の原因）」とあり、上方50cm（500mm）以上、後方20cm（200mm）以上、左右20cm（200mm）以上、前方50cm（500mm）以上と方向名つきで図示（前方だけ50cmで、CV-U71の前方20cmとは異なる）。あわせて「物干しラックを使用して衣類乾燥をするときは、吸込口と吹出口をふさがないようにしてご使用ください。」「約1 ～38℃の部屋で使用する」「安定した平らな所に置く」",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.5「設置について」の設置図。図中のラベル「上方50cm 以上」「後方20cm 以上」「左右20cm 以上」「前方50cm 以上」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥モードの表示",
+    "text": "衣類乾燥（自動）／衣類乾燥（速乾）／衣類乾燥（音控えめ）の3モード。ほかに除湿運転、衣類消臭運転。取扱説明書p.6は「電源プラグを差し込んだ直後は、「衣類乾燥( 自動)」運転で運転します。」、p.7は「消費電力をおさえて乾かしたいとき」（自動）「静かに乾かしたいとき」（音控えめ）「洗濯物を速く乾かしたいとき」（速乾）の3種を説明し、操作パネル図のランプ表示は「速 乾」「音控えめ」「自 動」。p.14の仕様表は「運転モード 衣類乾燥（速乾）衣類乾燥（音控えめ）除湿（自動）※6 衣類消臭」の4列で、衣類乾燥（自動）の列はない。表記は公式サイト・取扱説明書とも「音控えめ」で一貫しており、揺れはない（「音ひかえめ」はパナソニック F-YEX90D の表記）。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.6「運転する」手順1〜2のお知らせ、p.7「衣類乾燥運転」の3項目と操作パネル図のランプ表示（PDFの該当領域を画像化して目視確認）、p.14「仕 様」表の「運転モード」行。公式サイトは https://jp.sharp/joshitsu/products/cv-u60/spec/ の「運転音（dB）（50Hz/60Hz）※9」行の「音控えめ：38/38」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥時の消費電力",
+    "text": "衣類乾燥（速乾）510／570W（50Hz／60Hz）。条件は「室温20℃、相対湿度60％、衣類乾燥「速乾」運転時。」（仕様ページ注記※6）。取扱説明書p.14の仕様表は同じ510 / 570に加え、衣類乾燥（音控えめ）480 / 540W、除湿（自動）480 / 540W、衣類消臭25W、待機時消費電力 約0.5Wを掲載し、注記※2で「室温30℃、相対湿度60% 時の消費電力は485/545W です。」と別条件も併記している（※2は速乾の欄に付く）。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.14「仕 様」表の「消費電力(W) ※1」行（衣類乾燥（速乾）510 / 570※２、衣類乾燥（音控えめ）480 / 540、除湿（自動）480 / 540、衣類消臭25）と注記※1・※2、および「待機時消費電力(W) 約0.5」行。公式サイトは https://jp.sharp/joshitsu/products/cv-u60/spec/ の「消費電力(W)（50Hz/60Hz）衣類乾燥※6」行と注記※6",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "除湿（自動）運転時の消費電力（公式内で不一致）",
+    "text": "同じ「除湿「自動」運転時・室温20℃・相対湿度60％」の消費電力について、公式サイトの仕様表は510/570W、取扱説明書p.14の仕様表は480 / 540Wと異なる値を印字しています。参考までに仕様ページの「1時間あたりの電気代目安（円）（50Hz/60Hz）※8」行は衣類乾燥が約16/約18、除湿が約15/約17と別の値で印字されています。どちらの消費電力が正しいかはメーカー（お客様ご相談窓口）へ確認してください。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「消費電力(W)（50Hz/60Hz）」行の「除湿※7」＝「510/570」と注記※7「室温20℃、相対湿度60％、除湿「自動」運転時。」",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "公式サイト仕様ページ",
+      "value": "510/570W",
+      "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+      "locator": "「製品仕様＞基本仕様」表の「消費電力(W)（50Hz/60Hz）」行の小行「除湿※7」＝「510/570」（注記※7「室温20℃、相対湿度60％、除湿「自動」運転時。」）",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.14の仕様表",
+      "value": "480 / 540W",
+      "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+      "locator": "取扱説明書（形名CV-U60）p.14「仕 様」表の「消費電力(W) ※1」行の「除湿（自動）※6」列＝「480 / 540」（注記※1「室温20℃、相対湿度60% を維持し続けたときの数値です。」）",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "衣類乾燥時間（2kg）",
+    "text": "約99分／約109分（60Hz）（20℃・70％／10℃・70％）。仕様ページ注記※4の試験条件は「JEMA-HD090：2017に基づき…●部屋の広さ6畳相当●室温20℃（梅雨時）、10℃（冬季）、湿度70％、60Hz●洗濯物：2kg相当（Tシャツ3枚、Yシャツ2枚、パジャマ1組、下着7枚、靴下2足、タオル3枚）●製品位置：洗濯物の下方に設置。●運転モード：衣類乾燥「速乾」運転時。」。商品トップページの注記※2は同じ試験の製品位置を「洗濯物の下方、外周近傍に設置」と、より詳しい別の文言で書いている（数値はどちらも同じ）。",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「衣類乾燥時間（2kg）※4（60Hz）（20℃・70％/10℃・70％）」行＝「約99分/約109分」と表下の注記※4。商品トップページ https://jp.sharp/joshitsu/products/cv-u60/ の「主な仕様」下の注記※2",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "使用可能温度",
+    "text": "1～38℃",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「使用可能温度」行＝「1～38℃」。取扱説明書p.5「設置について」も「約1 ～38℃の部屋で使用する」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源コード長さ",
+    "text": "約2.0m",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.14「仕 様」表の「電源コード長さ(m)」行＝「約2.0」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "幅300×奥行300×高さ323mm",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/joshitsu/products/cv-u60/spec/",
+    "locator": "「基本仕様」表の「外形寸法（mm）」行＝「幅300×奥行300×高さ323」。取扱説明書p.14「仕 様」表の「外形寸法(mm)」行＝「幅300 ×奥行300 ×高さ323」も同一",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "取扱説明書p.5「設置について」に「壁や家具などのそばに設置するときは、次の距離を離す（通気性が悪いと温度が上昇し、シミ、変色、故障の原因）」とあり、上方50cm（500mm）以上、後方20cm（200mm）以上、左右20cm（200mm）以上、前方50cm（500mm）以上と方向名つきで図示（前方だけ50cmで、CV-U71の前方20cmとは異なる）。あわせて「物干しラックを使用して衣類乾燥をするときは、吸込口と吹出口をふさがないようにしてご使用ください。」「約1 ～38℃の部屋で使用する」「安定した平らな所に置く」",
+    "exact_model": "CV-U60-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/dehumid_con/cvu60_mn.pdf",
+    "locator": "取扱説明書（形名CV-U60）p.5「設置について」の設置図。図中のラベル「上方50cm 以上」「後方20cm 以上」「左右20cm 以上」「前方50cm 以上」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 300,
+   "depth_mm": 300,
+   "height_mm": 323,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 500,
+   "left_mm": 200,
+   "right_mm": 200,
+   "rear_mm": 200
+  }
+ },
+ {
+  "product_id": "PRD-PANASONIC-F-YEX90D",
+  "exact_model": "F-YEX90D",
+  "name": "パナソニック 衣類乾燥除湿機 F-YEX90D",
+  "category": "dehumidifier-clothes-dryer",
+  "anchor": "product-dehumidifier-f-yex90d",
+  "official_url": "https://panasonic.jp/joshitsu/products/F-YEX90D.html",
+  "facts": [
+   {
+    "label": "型番（品番と色柄コード）",
+    "text": "記事が名乗ってよい型番は「F-YEX90D」。取扱説明書の表紙は「品番F-YEX90D」、p.22「修理を依頼されるとき」の記入欄も「●品　番 F-YEX90D」、p.3の自社従来品比較も「本製品 F-YEX90D」。商品ページの構造化データは sku・mpn とも「F-YEX90D」で、画像ギャラリーの variationNumber も「F-YEX90D」（variationName は空）。色柄コード付きの表記で本文として印字されているのは取扱説明書p.8の「●本書では主にF-YEX90D-Wで説明しています。」だけ。「F-YEX90D-H」はギャラリー画像のファイルパスと altText（F-YEX90D-HserialNumber）にしか存在せず、本文としては公式のどこにも印字されていない。したがって package の「F-YEX90D-H」は記事で名乗れない。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.1（表紙）「取扱説明書 衣類乾燥除湿機 （家庭用） 品番F-YEX90D」、p.8「●本書では主にF-YEX90D-Wで説明しています。」、p.22「保証とアフターサービス」の「●品　番 F-YEX90D」。あわせて商品ページ https://panasonic.jp/joshitsu/products/F-YEX90D.html の JSON-LD（\"sku\":\"F-YEX90D\",\"mpn\":\"F-YEX90D\",\"color\":\"クリスタルホワイト\"）と、同ページの画像ギャラリー data-gallery-items の \"variationNumber\":\"F-YEX90D\"",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "除湿方式",
+    "text": "エコ・ハイブリッド方式",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の1行目「除湿方式」＝「エコ・ハイブリッド方式」。商品ページ本文は「エコ・ハイブリッド方式は、パナソニックが特許を取得した★3省エネ性★1に優れた除湿方式。」、取扱説明書p.18「エコ・ハイブリッド方式について」は「エコ・ハイブリッド方式とは、コンプレッサー方式と空冷除湿方式を組み合わせた、当社独自の方式です。」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "定格除湿能力（条件つき）",
+    "text": "50Hz：7.8L/日［消費電力175W］、60Hz：8.5L/日［消費電力185W］。条件は「定格除湿能力は、室温27 ℃・相対湿度60 %を維持し続けたときの、1日当たりの除湿量です。」（取扱説明書p.23）、商品ページの注記は「＊除湿・強モード時。室温27℃、相対湿度60％を維持したときの1日あたりの除湿量。」",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「定格除湿能力」行＝「50Hz：7.8L/日[消費電力175W]／60Hz：8.5L/日[消費電力185W]」。試験条件は仕様ページには印字がなく、取扱説明書p.23「仕様」表の下の箇条書き「●定格除湿能力は、室温27 ℃・相対湿度60 %を維持し続けたときの、1日当たりの除湿量です。」および商品ページ https://panasonic.jp/joshitsu/products/F-YEX90D.html の「定格除湿能力8.5L/日＊」直下の注記＊",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "定格除湿能力（運転モード別）",
+    "text": "取扱説明書p.23の仕様表に運転モード別の値がある（L/日、50Hz/60Hz）：衣類乾燥 標準 7.8/8.5、音ひかえめ 6.8/7.5、速乾 7.8/8.5、内部乾燥 －。除湿 自動 6.8/7.5、強 7.8/8.5、弱 5.8/6.5。ケア 寝具 7.8/8.5、衣類 7.8/8.5、部屋 －。同じ表の消費電力（W）は衣類乾燥 標準 175/185、音ひかえめ 160/170、速乾 175/185で、能力の並びと整合する。公式サイトの仕様ページにはモード別の定格除湿能力の欄がない。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.23（誌面ノンブル23、PDF23ページ目）「仕様」表の「定格除湿能力（L/日）」行。上段の列見出しは左から「衣類乾燥：標準／音ひかえめ／速乾」「内部乾燥」、下段は「除湿：自動／強／弱」「ケア：寝具／衣類／部屋」。列と値の対応は語句の座標（標準の列 x≈143→7.8/8.5、音ひかえめの列 x≈223→6.8/7.5、速乾の列 x≈330→7.8/8.5）と、該当領域を画像化した目視の両方で確認",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "排水タンク容量",
+    "text": "約2.4L（自動停止）。取扱説明書は「約2.4 L（満水ラインまで）」",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「仕様」区分「タンク容量（自動停止）」行＝「約2.4L」。取扱説明書p.23「仕様」表の「排水タンク容量」行＝「約2.4 L（満水ラインまで）」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "連続排水の可否",
+    "text": "公式に可否の記載を確認できませんでした。仕様ページの表に「連続排水」の行はなく、取扱説明書にも連続排水・排水ホースの記載が一切ありません（p.8「各部の名前」に連続排水穴や排水ホース用窓はなく、p.14「排水のしかた」はタンクを取り出して捨てる手順のみ）。パナソニック公式「除湿・便利な機能」ページの「連続排水」の対応機種表はF-YEX200D・F-YEX120Bの2機種だけで、F-YEX90Dを挙げていません。対応と書かず、必要ならメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/feature/useful.html",
+    "locator": "「除湿・便利な機能」ページ内の見出し「連続排水」直下の「対応機種」表＝「F-YEX200D ・ F-YEX120B」（同ページの他機能、たとえば「自動停止までの運転時間の目安」の注記には F-YEX200D・F-YEX120B・F-YEX90D の3機種が並ぶ）。あわせて仕様ページ https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html の表全体と、取扱説明書 F-YEX90D_web.pdf 全24ページの本文検索",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "公式に可否の記載を確認できませんでした。仕様ページの表に「連続排水」の行はなく、取扱説明書にも連続排水・排水ホースの記載が一切ありません（p.8「各部の名前」に連続排水穴や排水ホース用窓はなく、p.14「排水のしかた」はタンクを取り出して捨てる手順のみ）。パナソニック公式「除湿・便利な機能」ページの「連続排水」の対応機種表はF-YEX200D・F-YEX120Bの2機種だけで、F-YEX90Dを挙げていません。対応と書かず、必要ならメーカー（ご相談窓口）へ確認してください。",
+     "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅470×奥行250×高さ335mm。公式の表記順は「外形寸法（高さ×幅×奥行）335×470×250mm」（取扱説明書は「高さ 335 mm × 幅 470 mm × 奥行き 250 mm」）",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「仕様」区分「外形寸法（高さ×幅×奥行）」行＝「335×470×250mm」。取扱説明書p.23「仕様」表の「製品寸法」行＝「高さ 335 mm × 幅 470 mm × 奥行き 250 mm」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "9.7kg（「約」は付かない表記）",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「仕様」区分「質量」行＝「9.7kg」。取扱説明書p.23「仕様」表の「製品質量」行＝「9.7 kg」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "（dB、50Hz／60Hz）衣類乾燥 速乾：48／48、標準：48／48、音ひかえめ：42／42。除湿 強：48／48、自動：42／42、弱：39／40。ケア 寝具：48／48、衣類：48／48、部屋：40／40。内部乾燥：43／43。測定条件は「●運転音は、本体の前後左右1 m離れた位置での騒音値の平均値です。」（取扱説明書p.23）。シャープ2機種の「本体前方1mで測定」とは測定位置が異なるため、dBを横並びにするときは測定条件の差を必ず注記すること。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「運転モード」区分＞「衣類乾燥」「除湿」「ケア」「内部乾燥」各ブロックの「運転音」行。測定条件は取扱説明書p.23「仕様」表下の箇条書き「●運転音は、本体の前後左右1 m離れた位置での騒音値の平均値です。」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（設置に必要な周囲のあき）",
+    "text": "取扱説明書p.7「■壁や家具などのそばで使うとき 以下の距離を離してお使いください。（風通しが悪いと温度が上がり、故障や湿度サイン誤表示の原因　P.20 Q7）」の設置図に、吹出口の上方へ100cm（1000mm）以上。水平方向は4か所に「20 cm以上」が図示され、そのうち1か所だけ「20 cm以上」と「※50 cm以上」が併記されています（※は図の下の注記「※ルーバーを閉じて使うとき」）。図に前／後／左右の方向名がないため、どの方向が※50 cm以上に当たるかは特定できず、左右・後方の個別値は確定できません。一律20cmとも一律50cmとも書かず、ルーバーを閉じて使う場合はメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.7（誌面ノンブル7、PDF7ページ目）左上の設置図。図中ラベル「100 cm以上」（吹出口からの上向き矢印）1個と「20 cm以上」4個、うち1個に「※50 cm以上」が併記、図の下の注記「※ルーバーを閉じて使うとき」（2026-09-16に該当領域を描画して目視確認。方向名の文字は図中に無い）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "吹出口と洗濯物の距離",
+    "text": "衣類乾燥除湿機の吹出口と洗濯物の間は、30 cm以上離す",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.13「早く乾かすコツ」の箇条書き③「衣類乾燥除湿機の吹出口と洗濯物の間は、30 cm以上離す」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥モードの表示",
+    "text": "衣類乾燥は「標準」「音ひかえめ」「速乾」の3モード（衣類乾燥ボタンを「押すたびに切り換わります。（ランプ点灯）」）。説明は「標準＝省エネで乾かしたいとき」「音ひかえめ＝音ひかえめで乾かしたいとき」「速乾＝速く乾かしたいとき」「●全モードで自動停止します。」。ほかに除湿（自動／強／弱）、ケア（部屋／衣類／寝具、ケアキープ）、内部乾燥。パナソニックの表記は「音ひかえめ」（ひらがな）で、シャープCV-U60の「音控えめ」（漢字）とは別表記なので取り違えないこと。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.10「使い方（衣類乾燥／除湿／ケア）」の「衣類乾燥」ブロック。仕様ページ https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html の「運転モード＞衣類乾燥」区分も「速乾／標準／音ひかえめ」の3列、取扱説明書p.23「仕様」表の「運転モード 衣類乾燥」も「標準／音ひかえめ／速乾」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥時の消費電力",
+    "text": "衣類乾燥 速乾 50Hz：175W／60Hz：185W、標準 50Hz：175W／60Hz：185W、音ひかえめ 50Hz：160W／60Hz：170W。除湿は強175/185W、自動160/170W、弱155/165W。ケアは寝具175/185W、部屋12/12W。内部乾燥16/16W。ケア「衣類」の消費電力（22W と 175/185W）は、22W に付く条件の表示が仕様ページと取扱説明書で食い違うため、別項「ケア「衣類」運転時の消費電力22Wの条件（公式内で不一致）」に分けてあります。運転が「切」のときの消費電力は約0.5W（この1文だけは取扱説明書p.23の注記※1が出典）。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「運転モード＞衣類乾燥＞消費電力」行、「除湿＞消費電力」行、「ケア＞消費電力」行の「寝具」「部屋」小行、「内部乾燥＞消費電力」行。末尾の約0.5Wのみ取扱説明書 F-YEX90D_web.pdf p.23「仕様」表の注記※1「運転が「切」のときの消費電力は、約0.5 Wです。（電源プラグを差し込んでいる状態）」が出典で、消費電力の数値そのものは仕様ページの印字を引いています",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "ケア「衣類」運転時の消費電力22Wの条件（公式内で不一致）",
+    "text": "ケア「衣類」運転時の消費電力は、仕様ページも取扱説明書も 22W と 175/185W の2つを印字していますが、22W が成り立つ条件の書き方が一致しません。仕様ページは「除湿モードOFF時 50Hz：22W／60Hz：22W」（175/185Wは「除湿モードON時」）。取扱説明書p.23「仕様」表の「消費電力※1（W）」行の「衣類」列は「175/185 （22/22※2）」で、※2は「室内の湿度が約60 %未満のときの数値です。」です。取扱説明書には「除湿モード」という語が1か所も出てきません（全24ページを検索して確認）。どちらの条件で22Wになるのかはメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "仕様ページ「仕様・スペック」表「運転モード＞ケア＞消費電力」行の「衣類」小行と、取扱説明書 F-YEX90D_web.pdf p.23「仕様」表 下段「運転モード ケア」ブロックの「消費電力※1（W）」行「衣類」列（2026-09-16に両方を再取得し、「（22/22」の語句位置 x=357.1–398.0 が「衣類」列見出し x=377.0–395.0 の直下に来ることを座標で確認）",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "仕様ページ ケア＞衣類＞消費電力",
+      "value": "除湿モードOFF時 50Hz：22W／60Hz：22W（除湿モードON時 50Hz：175W／60Hz：185W）",
+      "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+      "locator": "「仕様・スペック」表「運転モード＞ケア＞消費電力」行の「衣類」小行",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.23 仕様表",
+      "value": "175/185 （22/22※2）／※2「室内の湿度が約60 %未満のときの数値です。」",
+      "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+      "locator": "取扱説明書 p.23「仕様」表 下段「運転モード ケア」ブロックの「消費電力※1（W）」行「衣類」列と表下の注記※2",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "衣類乾燥時間（モード別）",
+    "text": "仕様ページの「乾燥時間」は 速乾125分／標準125分／音ひかえめ168分（試験条件の併記なし）。取扱説明書p.19の「■各モードの違い」のグラフは「音ひかえめ 約168分」「標準・速乾 約125分」で、音ひかえめは標準・速乾を100 %とした場合「約22 %増」と図示され、こちらには試験条件が併記されている。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「運転モード＞衣類乾燥＞乾燥時間」行＝「速乾 125分／標準 125分／音ひかえめ 168分」。取扱説明書 F-YEX90D_web.pdf p.19「衣類乾燥について＞■各モードの違い」の「●乾燥にかかる時間」グラフ（約168分／約125分）と「●乾燥にかかる電気代（消費電力量）」グラフ（約22 %増）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥1回あたりの消費電力量（モード別・Wh）",
+    "text": "「衣類乾燥（標準）」370 Wh /「衣類乾燥(音ひかえめ)」451 Wh /「衣類乾燥(速乾)」370 Wh。試験条件は「日本電機工業会自主基準(JEMA-HD090：2017)に基づき行った試験結果」「各モードの乾燥までの消費電力量ならびに時間を比較 温度20 ℃、湿度70 %、60 Hz、部屋の広さ6畳相当 衣類の量約2.0 kg相当(Tシャツ3枚、Yシャツ2枚、パジャマ1組、下着7枚、靴下2足、タオル3枚)」「（試験方法は試験布Ⅰ（14枚）+試験布Ⅳ（4枚） 干し方パターンA（傘干しタイプ18本） 吹出口から試験布までの距離30 cm、中央よりX：-9 cm、Y：-13 cmに本製品を配置。試験布ⅣをY軸より時計回り方向1,9,12,18本目に配置。各モード「風向上下」は「上向」）」。あわせて「●実使用時の消費電力量や運転時間は、環境や衣類の種類や量、干し方により異なります。」の但し書きがある。商品ページ注記の「冬季453Wh」は10℃条件の値で、このp.19の音ひかえめ451Whとは条件が違うため同一視しないこと。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.19「衣類乾燥について＞■各モードの違い 日本電機工業会自主基準(JEMA-HD090：2017)に基づき行った試験結果」の「試験条件」欄末尾の行「「衣類乾燥（標準）」370 Wh / 「衣類乾燥(音ひかえめ)」451 Wh / 「衣類乾燥(速乾)」370 Wh」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "衣類乾燥1回あたりの消費電力量・乾燥時間（冬季／冬季以外）",
+    "text": "商品ページの注記※2は「【試験条件】〈衣類乾燥性能〉JEMA自主基準[JEMA-HD090：2017]（60Hz・衣類量約2kg 、20℃,70%（冬季以外）、10℃,70%（冬季））【試験結果】F-YEX90D（冬季以外：370Wh・125分、冬季：453Wh・177分）」。運転モードは注記に書かれていない。あわせて「●年間の想定洗濯回数（冬季以外：275回、冬季：90回（当社基準））における年間の消費電力量と電気代、F-YEX90D（143kWh・4,423円/年）…●電気料金めやす単価31円/kWh（税込）[2022年7月改定]」。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D.html",
+    "locator": "商品ページ下部の注記欄の「※2：【試験条件】〈衣類乾燥性能〉…【試験結果】F-YEX90D（冬季以外：370Wh・125分、冬季：453Wh・177分）」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "自動停止までの運転時間の目安",
+    "text": "取扱説明書p.19「■エコナビについて（「カラッとセンサー」）」の表（単位：時間）。洗濯物の量「約1 kg 〜約2 kg」＝標準 3.5 〜6、音ひかえめ 4 〜7、速乾 3 〜5.5。「約2 kg 〜約4 kg」＝標準 4.5 〜8.5、音ひかえめ 5 〜9、速乾 4 〜8。試験条件は「温度約20 ℃、湿度約70 ％、部屋の広さ6畳相当・当社試験結果」。あわせて「●最長約15時間で停止します。」",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.19「衣類乾燥について＞■エコナビについて（「カラッとセンサー」）」の「●自動停止までの運転時間の目安（単位：時間）」表と、その直下の試験条件行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "1回あたりの電気代のめやす",
+    "text": "速乾11.5円／標準11.5円／音ひかえめ14.0円。算出条件は「衣類乾燥時間の総消費電力量より算出。一般社団法人日本電機工業会 自主基準（JEMA-HD090：2017）により測定。電力料金目安単価31円/kWh（税込）[2022年7月改定]（家電公取協調べ）で算出。」",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「運転モード＞衣類乾燥＞1回あたりの電気代のめやす★3」行と、表末尾「その他の付記事項★4」に列挙された注記",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転可能な温度・湿度",
+    "text": "温度：約1 ℃〜約40 ℃、湿度：約20 ％以上",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.19 冒頭「運転可能な温度・湿度とは」＝「この製品の運転可能条件は、温度：約1 ℃〜約40 ℃、湿度：約20 ％以上　です。」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源コード長さ",
+    "text": "2.1 m",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.23「仕様」表の「コードの長さ」行＝「2.1 m」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "幅470×奥行250×高さ335mm。公式の表記順は「外形寸法（高さ×幅×奥行）335×470×250mm」（取扱説明書は「高さ 335 mm × 幅 470 mm × 奥行き 250 mm」）",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/joshitsu/products/F-YEX90D/spec.html",
+    "locator": "「仕様・スペック」表の「仕様」区分「外形寸法（高さ×幅×奥行）」行＝「335×470×250mm」。取扱説明書p.23「仕様」表の「製品寸法」行＝「高さ 335 mm × 幅 470 mm × 奥行き 250 mm」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "取扱説明書p.7「■壁や家具などのそばで使うとき 以下の距離を離してお使いください。（風通しが悪いと温度が上がり、故障や湿度サイン誤表示の原因　P.20 Q7）」の設置図に、吹出口の上方へ100cm（1000mm）以上。水平方向は4か所に「20 cm以上」が図示され、そのうち1か所だけ「20 cm以上」と「※50 cm以上」が併記されています（※は図の下の注記「※ルーバーを閉じて使うとき」）。図に前／後／左右の方向名がないため、どの方向が※50 cm以上に当たるかは特定できず、左右・後方の個別値は確定できません。一律20cmとも一律50cmとも書かず、ルーバーを閉じて使う場合はメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "F-YEX90D",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/004/397/657/000000004397657/F-YEX90D_web.pdf",
+    "locator": "取扱説明書 F-YEX90D_web.pdf p.7（誌面ノンブル7、PDF7ページ目）左上の設置図。図中ラベル「100 cm以上」（吹出口からの上向き矢印）1個と「20 cm以上」4個、うち1個に「※50 cm以上」が併記、図の下の注記「※ルーバーを閉じて使うとき」（2026-09-16に該当領域を描画して目視確認。方向名の文字は図中に無い）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 470,
+   "depth_mm": 250,
+   "height_mm": 335,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 1000,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": null
+  }
+ },
+ {
+  "product_id": "PRD-COSORI-CAF-LI211",
+  "exact_model": "CAF-LI211",
+  "name": "COSORI ミニノンフライヤー Lite 2.0L CAF-LI211",
+  "category": "air-fryer",
+  "anchor": "product-air-fryer-caf-li211",
+  "official_url": "https://vesync.jp/products/cosori-lite-2l-mini-air-fryer",
+  "facts": [
+   {
+    "label": "型番",
+    "text": "CAF-LI211。製品ページ（vesync.jp）には型番の印字がなく、確認できるのは日本語100V版取扱説明書の「仕様」表のみです。販売店のセット番号COLI211Cを製造型番として使わないこと。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書（日本語・AC100V版／全20ページ）p.4「仕様」表の「型番」行。2026-09-16に当該ページを画像化して目視確認",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅211×奥行256×高さ267mm（ハンドル含む）。mmは編集部によるcmからの等値換算で、公式はmmを印字していません。公式表記は取扱説明書p.4「仕様」表の「寸法（ハンドル含む）奥行25.6 x 幅21.1 x 高さ26.7 cm」と「寸法（ハンドルを含まない）奥行20.3 x 幅21.1 x 高さ26.7 cm」の2行で、いずれも「約」は付きません。製品ページ「Specification 製品仕様」の「サイズ」行は「25.6奥行き x 21.1幅 x 26.7高さ」で単位表記がありません。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「寸法（ハンドル含む）」行・「寸法（ハンドルを含まない）」行（画像化して目視確認）／製品ページ「Specification 製品仕様」の「サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（放熱スペース）",
+    "text": "上方130mm・背面130mm（mmは編集部によるcmからの等値換算で、公式はcmのみ印字）。公式文言は「注：本体の上部と背面から13 cm以内には何も置かないようにしてください。[図1.1] バスケットを取り外すために十分なスペースを確保してください。」で、図1.1には上方向と背面方向にそれぞれ「13 cm」が図示されています。公式は「13cm以上あける」という書き方ではなく「13 cm以内には何も置かない」という書き方です。左右（側面）の数値は取扱説明書・製品ページとも印字されていません。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.11「はじめに」＞「セットアップ」手順2の下にある斜体の注記と図1.1（2026-09-16に当該ページを画像化して目視確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "側面（左右）の放熱余白",
+    "text": "左右（側面）に必要な余白の数値は公式に印字されていません。取扱説明書p.11の注記と図1.1が示すのは上部と背面の「13 cm」だけで、製品ページにも放熱余白の記載がありません。左右方向の適合判定はしないこと。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.11「セットアップ」手順2の注記と図1.1（側面の寸法線・数値なし）／製品ページ全文（放熱余白の記載なし）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "A18・A19の左右方向の設置判定ができない",
+     "next_action": "対象型番の公式説明書・製品ページの改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "庫内容量（バスケット容量）",
+    "text": "「2.0 L」。製品ページの表記は「2.0L(1~ 2)人」。庫内（バスケット）の内寸は公表されていません。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「容量」行／製品ページ「Specification 製品仕様」の「容量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "「2.37kg/5.22lb」。製品ページの「製品仕様」欄は「2.37kg」。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「重量」行／製品ページ「Specification 製品仕様」の「重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "消費電力・電源",
+    "text": "定格電力「900W」、電源「AC 100V、50/60Hz」。製品ページの「製品仕様」欄は「定格電力 900W」。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「定格電力」行・「電源」行／製品ページ「Specification 製品仕様」の「定格電力」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "食洗機対応（バスケット・クリスパープレート）",
+    "text": "「バスケットとクリスパープレートは食洗機に対応しています。」本体は水に浸けない指定で、本体部分は湿らせた布で拭き取りです。製品ページのFAQでも「バスケットとクリスパープレートは、食洗機で洗うことができます。バスケットはハンドル部分も含めて丸ごと洗浄可能です。」と記載。取扱説明書p.11「セットアップ」手順4にも「食洗機、または表面を傷つけない柔らかいスポンジを使って、バスケットとクリスパープレートを丁寧に洗います。」とあります。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.15「お手入れ＆メンテナンス」手順3／同 p.11「セットアップ」手順4／製品ページ FAQ「ノンフライヤーのお手入れ方法について」の1項",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "温度と時間の範囲",
+    "text": "温度設定範囲「75〜205℃」、時間設定範囲「1〜60分」。調理機能の初期設定はノンフライ205℃/15分、ベイク155℃/15分、ロースト180℃/20分、温め直し175℃/5分。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「温度設定範囲」行・「時間設定範囲」行（画像化して目視確認）／p.12「使用方法」＞「調理機能」の初期設定表",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品（同梱物）",
+    "text": "取扱説明書の同梱物は「1 x Lite 2.0リットル ミニノンフライヤー／1 x クリスパープレート／1 x クイックスタートガイド／1 x 取扱説明書／1 x レシピ本」。製品ページの「同梱物」欄は「本体／クリスパープレート／取扱説明書／クイックガイド／レシピブック」。バスケットは同梱物一覧ではなく本体の構成部品として記載されています。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「同梱物」欄（画像化して目視確認）／p.9「本機について」＞「ノンフライヤーの図」の部品名A〜G／製品ページ「Specification 製品仕様」の「同梱物」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源の指定",
+    "text": "「ノンフライヤーは100V、50/60Hzの電気でのみ使用できます。決して別のタイプのコンセントにプラグを入れないでください。」「ノンフライやのプラグは、決してカウンター下のコンセントに差し込まないでください。」延長コードは「コードセットあるいは延長コードの定格電流は、少なくとも本機の定格電流と同等でなければなりません。」（原文の誤記「ノンフライや」もそのまま引用）",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.6「電源コード」／p.7「延長コード」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅211×奥行256×高さ267mm（ハンドル含む）。公式表記は取扱説明書p.4の「寸法（ハンドル含む）奥行25.6 x 幅21.1 x 高さ26.7 cm」で、mmは編集部によるcmからの等値換算です。ハンドルを含まない奥行は20.3 cmと別行に印字されています。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.4「仕様」表の「寸法（ハンドル含む）」行・「寸法（ハンドルを含まない）」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "上方130mm・背面130mm。公式文言は「本体の上部と背面から13 cm以内には何も置かないようにしてください。」で、図1.1に上方向と背面方向の「13 cm」が図示されています。左右（側面）の数値は公式に印字されていないため、左右の適合判定はしません。",
+    "exact_model": "CAF-LI211",
+    "source_url": "https://cdn.shopify.com/s/files/1/0628/6435/9667/files/COSOR_Lite_2.0L_air_fryer_user_manual.pdf?v=1747906347",
+    "locator": "取扱説明書 p.11「セットアップ」手順2の注記と図1.1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 211,
+   "depth_mm": 256,
+   "height_mm": 267,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 130,
+   "left_mm": null,
+   "right_mm": null,
+   "rear_mm": 130
+  }
+ },
+ {
+  "product_id": "PRD-RECOLTE-RAO-4",
+  "exact_model": "RAO-4（BK）",
+  "name": "レコルト エアーオーブン RAO-4（BK）",
+  "category": "air-fryer",
+  "anchor": "product-air-fryer-rao-4",
+  "official_url": "https://recolte-jp.com/products/rao-4/",
+  "facts": [
+   {
+    "label": "品番・カラー",
+    "text": "「カラー／品番 ナチュラルブラック RAO-4（BK）／クリームホワイト RAO-4（CW）」。取扱説明書の仕様は「品番 RAO-4」、説明書の管理番号は「BA-RAO4-01-2605」。品番のかっこは公式表記どおり全角です。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「カラー／品番」行／取扱説明書 p.14「仕様」表の「品番」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅250×奥行371×高さ280mm。mmは編集部によるcmからの等値換算で、公式はmmを印字していません。公式表記は製品ページ「仕様」表の「サイズ 約 幅25.0×奥行37.1×高さ28.0cm」、取扱説明書p.14「仕様」表の「商品サイズ 約25.0（W）×37.1（D）×28.0（H）cm」。いずれも「約」付きです。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「サイズ」行／取扱説明書 p.14「仕様」表の「商品サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（放熱スペース）",
+    "text": "上面200mm以上・側面200mm以上・背面200mm以上、前面は開放。mmは編集部によるcmからの等値換算です。公式表記は取扱説明書p.4の設置図に印字された「上面 20cm以上」「側面 20cm以上」「背面 20cm以上」と、同図の本文「壁、家具、カーテンなどから20cm以上離れた水平な場所に設置してください。前面は開放してください。」、および「安全上のご注意」＞「■設置・保管」の必ず行う項「下図の距離を離して使用する。」。公式は左右を分けず「側面」1つの値で示しているため、記事で「左右それぞれ」と書き換えないこと（left_mm／right_mmは同じ「側面 20cm以上」を両側に当てた値です）。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2026/07/RAO-4_Manual.pdf",
+    "locator": "取扱説明書（2026年7月版 RAO-4_Manual.pdf／見開きPDF3枚目の右ページ）p.4「安全上のご注意」＞「■設置・保管」の注意（必ず行う）「下図の距離を離して使用する。」と、その右の設置図（上面／側面／背面の各20cm以上と前面開放の文）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "庫内容量（バスケット容量）",
+    "text": "製品ページは「容量 約4.0L（MAXライン 3.95L）」、取扱説明書p.14の仕様表は「容量 約4.0L（MAXライン3.95L）」（MAXラインの前の空白の有無だけが違います）。MAXラインはバスケット内側の表示線で、「食材は重ならないように並べ、［バスケット］のMAXラインを超えて入れないでください」と指定されています。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「容量」行／取扱説明書 p.14「仕様」表の「容量」行／p.5〜8 各部の名称・使用方法1のMAXライン注意",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "「重量 約3.4kg」。取扱説明書p.14の仕様表も「重量 約3.4kg」。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「重量」行／取扱説明書 p.14「仕様」表の「重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "消費電力・電源",
+    "text": "「消費電力 1200W」「電源 AC 100V 50/60Hz」。コード長は取扱説明書p.14の仕様表に「コード長 約1.0m」。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「消費電力」行・「電源」行／取扱説明書 p.14「仕様」表の「消費電力」「電源」「コード長」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "食洗機対応（バスケット・内アミ）",
+    "text": "取扱説明書p.13は「■食器洗い乾燥機使用について 対応しているもの：バスケット、内アミ／お持ちの食器洗い乾燥機の取扱説明書に従い、対応しているコースをご使用ください。※本体は食器洗い乾燥機に対応していません。」。同じp.13の【注意】枠は「こびりつきや汚れ…」「金属製・ナイロン製のたわし…」の2項目だけで、RAO-3にある「食器洗浄機や食器乾燥機などは使用しない。」の項はありません（RAO-3のような同一ページ内の矛盾は本機にはない）。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2026/07/RAO-4_Manual.pdf",
+    "locator": "取扱説明書（2026年7月版）p.13「お手入れのしかた」＞「■食器洗い乾燥機使用について」枠、および同ページ「■水洗いできるもの」に付く【注意】枠（2項目）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "温度と時間の範囲",
+    "text": "「設定可能温度 80℃～200℃／上下ボタンで5℃刻みで設定します。」「設定可能時間 1分～90分／上下ボタンで1分刻みで設定します。長くタッチすると5分刻みで設定できます。」調理メニューの初期設定はAir Oven 180℃/20分、からあげ185℃/17分、ポテト190℃/17分、温め直し160℃/8分、焼き魚200℃/13分、冷凍食品185℃/12分。製品ページの仕様表には温度・時間の範囲は印字されていません。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2026/07/RAO-4_Manual.pdf",
+    "locator": "取扱説明書 p.10「調理温度・調理時間の設定方法」の「設定可能温度」「設定可能時間」欄／p.9「調理メニューの初期設定とおすすめ料理」表",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品・セット内容",
+    "text": "製品ページの「セット内容」は「本体／バスケット／内アミ／専用レシピブック」。取扱説明書p.14の仕様表の「付属品」は「専用レシピブック、カバーゴム2個（予備）」で、バスケット・内アミは各部（パーツ）として扱われています。2つの欄は範囲の定義が違うため、片方だけを「付属品」として書かないこと。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「セット内容」行／取扱説明書 p.14「仕様」表の「付属品」行／p.5「各部（パーツ）の名称」と「付属品」図",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "メーカー希望小売価格",
+    "text": "「メーカー希望小売価格 ￥16,500（税込）」。2026-09-16に製品ページ「仕様」タブを描画して確認した値で、記事では確認日を併記すること。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表の最終行「メーカー希望小売価格」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源の指定",
+    "text": "「電源プラグは、交流100Vで「15A125V」と記されている壁面のコンセントに直接差し込む。」「定格15A以上のコンセントを単独で使用する。」",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2026/07/RAO-4_Manual.pdf",
+    "locator": "取扱説明書 p.1「安全上のご注意」＞電源プラグ・電源コードの項",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅250×奥行371×高さ280mm。公式表記は「約 幅25.0×奥行37.1×高さ28.0cm」（製品ページ）と「約25.0（W）×37.1（D）×28.0（H）cm」（取扱説明書p.14）で、いずれも「約」付きのcm。mmは編集部によるcmからの等値換算です。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-4/",
+    "locator": "製品ページ「仕様」タブの表「サイズ」行／取扱説明書 p.14「仕様」表の「商品サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "上面200mm以上・側面200mm以上・背面200mm以上、前面は開放。公式表記は取扱説明書p.4設置図の「上面 20cm以上」「側面 20cm以上」「背面 20cm以上」と「壁、家具、カーテンなどから20cm以上離れた水平な場所に設置してください。前面は開放してください。」。公式は左右を分けず「側面」1値で示しています。",
+    "exact_model": "RAO-4（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2026/07/RAO-4_Manual.pdf",
+    "locator": "取扱説明書（2026年7月版）p.4「安全上のご注意」＞「■設置・保管」の設置図と本文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 250,
+   "depth_mm": 371,
+   "height_mm": 280,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 200,
+   "left_mm": 200,
+   "right_mm": 200,
+   "rear_mm": 200
+  }
+ },
+ {
+  "product_id": "PRD-RECOLTE-RAO-3",
+  "exact_model": "RAO-3（BK）",
+  "name": "レコルト ハイスチームエアーオーブン RAO-3（BK）",
+  "category": "air-fryer",
+  "anchor": "product-air-fryer-rao-3",
+  "official_url": "https://recolte-jp.com/products/rao-3/",
+  "facts": [
+   {
+    "label": "品番・カラー",
+    "text": "「カラー／品番 ナチュラルブラック RAO-3（BK）／クリームホワイト RAO-3（W）」。取扱説明書の仕様は「品番 RAO-3」。品番のかっこは公式表記どおり全角です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「カラー／品番」行／取扱説明書 p.26「仕様」表の「品番」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅230×奥行370×高さ285mm。mmは編集部によるcmからの等値換算で、公式はmmを印字していません。公式表記は製品ページ「仕様」表の「サイズ 約 幅23.0×奥行37.0×高さ28.5cm」、取扱説明書p.26「仕様」表の「商品サイズ 約23.0（W）×37.0（D）×28.5（H）cm」。いずれも「約」付きです。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「サイズ」行／取扱説明書（2024年11月版 RAO-3_Manual.pdf）p.26「仕様」表の「商品サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（放熱スペース）",
+    "text": "上面200mm以上・側面200mm以上・背面200mm以上、前面は開放。mmは編集部によるcmからの等値換算です。公式表記は取扱説明書p.4の設置図に印字された「上面 20cm以上」「側面 20cm以上」「背面 20cm以上」と、同図の本文「壁、家具、カーテンなどから20cm以上離れた水平な場所に設置してください。前面は開放してください。」、および「安全上のご注意」＞「■設置・保管」の必ず行う項「下図の距離を離して使用する。」。公式は左右を分けず「側面」1つの値で示しているため、記事で「左右それぞれ」と書き換えないこと（left_mm／right_mmは同じ「側面 20cm以上」を両側に当てた値です）。2024年11月版・2025年2月版のどちらの取扱説明書でも同じ文言です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書（2024年11月版 RAO-3_Manual.pdf／見開きPDF3枚目の右ページ）p.4「安全上のご注意」＞「■設置・保管」の注意（必ず行う）「下図の距離を離して使用する。」と、その右の設置図（上面／側面／背面の各20cm以上と前面開放の文）。2025年2月版 RAO-3_Manual_3.pdf も同文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "食洗機対応（部品別）",
+    "text": "同じ取扱説明書p.21の中で記載が食い違っています。（1）枠囲み「食器洗い乾燥機使用について」＝「対応しているもの：【インナーポット】、【内アミ】／お持ちの食器洗い乾燥機の取り扱い説明書に従い、耐熱にあったコースをご使用ください。※本体・バスケットは食器洗い乾燥機に対応していません。」。（2）その枠囲みの直下にある2つ目の【注意】枠の3項目め＝「● 食器洗浄機や食器乾燥機などは使用しない。変形・変色・故障の原因。」。この【注意】枠は「■水洗いできるもの ●バスケット・インナーポット・内アミ・水タンク・蒸気受け・水受けトレイ」の節に属します。2025年2月版（RAO-3_Manual_3.pdf／管理番号 BA-RAO3-03-2505）にも同じ2文が同じ位置で並びます。製品ページ側には食洗機の記載がありません。同型のRAO-4のp.13では【注意】枠が2項目でこの食洗機の項が無く、RAO-4はバスケットが食洗機対応と明記されています。どちらの指示が優先されるかはメーカー（カスタマーセンター）へ確認が必要です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書（2024年11月版 RAO-3_Manual.pdf／見開きPDF12枚目の左ページ）p.21「お手入れのしかた」の枠囲み「食器洗い乾燥機使用について」と、その直下にある2つ目の【注意】枠の3項目め",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "取扱説明書p.21 枠囲み「食器洗い乾燥機使用について」",
+      "value": "対応しているもの：【インナーポット】、【内アミ】／お持ちの食器洗い乾燥機の取り扱い説明書に従い、耐熱にあったコースをご使用ください。※本体・バスケットは食器洗い乾燥機に対応していません。",
+      "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+      "locator": "取扱説明書（2024年11月版 RAO-3_Manual.pdf）p.21「お手入れのしかた」＞「■水洗いできるもの」の下にある黒地見出しの枠囲み「食器洗い乾燥機使用について」",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.21 2つ目の【注意】枠 3項目め",
+      "value": "● 食器洗浄機や食器乾燥機などは使用しない。変形・変色・故障の原因。",
+      "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+      "locator": "取扱説明書（2024年11月版 RAO-3_Manual.pdf）p.21「食器洗い乾燥機使用について」枠囲みの直下にある2つ目の【注意】枠の3項目め（右隣に×印と「※バスケットはつけ置きできません。」の図）",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "庫内容量（バスケット容量・インナーポット容量）",
+    "text": "「容量 バスケット：約3.0L（MAXライン 約2.6L）／インナーポット：約1.2L」。取扱説明書p.26の仕様表には容量の行がなく、容量は製品ページのみの掲載です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「容量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "水タンク容量",
+    "text": "「水タンク容量 約500ml」。製品ページの仕様表には水タンク容量の行がなく、取扱説明書のみの掲載です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書 p.26「仕様」表の「水タンク容量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "「重量 約4.8kg」。取扱説明書p.26の仕様表も「重量 約4.8kg」。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「重量」行／取扱説明書 p.26「仕様」表の「重量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "消費電力・電源",
+    "text": "「消費電力 1200W」「電源 AC 100V 50/60Hz」。コード長は取扱説明書p.26の仕様表に「コード長 約1.0m」。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「消費電力」行・「電源」行／取扱説明書 p.26「仕様」表の「消費電力」「電源」「コード長」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "温度と時間の範囲",
+    "text": "Hi Steamモードは「設定可能温度 55～200℃／上下ボタンの短押しで5℃単位、長押しで10℃単位」「設定可能時間 1～90分／上下ボタンの短押しで5分単位、長押しで10分単位」。Air Ovenモードは「設定可能温度 80℃～200℃」「設定可能時間 1～90分」。Comboモードは両モードを順に設定する方式で、Combo固有の範囲表記はありません。製品ページの仕様表には温度・時間の範囲は印字されていません。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書 p.10「調理のしかた「Hi Steam」」の「設定可能温度」「設定可能時間」欄／p.13「調理のしかた「Air Oven」」の同欄／p.17「調理のしかた「Combo」」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品・セット内容",
+    "text": "製品ページの「セット内容」は「本体／バスケット／内アミ／水タンク／インナーポット／専用レシピブック／ガイドシート」。取扱説明書p.26の仕様表の「付属品」は「専用レシピブック、ガイドシート、カバーゴム2個（予備）」で、バスケット・内アミ・水タンク・インナーポットは各部（パーツ）として扱われています。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「セット内容」行／取扱説明書 p.26「仕様」表の「付属品」行／p.5「各部（パーツ）の名称」と「付属品」図",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "メーカー希望小売価格",
+    "text": "「メーカー希望小売価格 ￥29,700（税込）」。2026-09-16に製品ページ「仕様」タブを描画して確認した値で、記事では確認日を併記すること。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表の最終行「メーカー希望小売価格」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "取扱説明書の版",
+    "text": "製品ページには取扱説明書PDFが2つ掲載されています。「取扱説明書（PDF）」ボタンは2024年11月版（RAO-3_Manual.pdf）、FAQ「取扱説明書・ガイドシートについて」内のリンクは2025年2月版（RAO-3_Manual_3.pdf／管理番号 BA-RAO3-03-2505）。今回引用した仕様（p.26）・設置余白（p.4）・食洗機（p.21）の記載は両版で同一であることを2026-09-16に再取得して確認しました。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ下部の「取扱説明書（PDF）」リンクとFAQ内リンク（両PDFを取得して本文を照合）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源の指定",
+    "text": "「電源プラグは、交流100Vで「15A125V」と記されている壁面のコンセントに直接差し込む。」「定格15A以上のコンセントを単独で使用する。」",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書 p.1「安全上のご注意」＞電源プラグ・電源コードの項",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅230×奥行370×高さ285mm。公式表記は「約 幅23.0×奥行37.0×高さ28.5cm」（製品ページ）と「約23.0（W）×37.0（D）×28.5（H）cm」（取扱説明書p.26）で、いずれも「約」付きのcm。mmは編集部によるcmからの等値換算です。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/products/rao-3/",
+    "locator": "製品ページ「仕様」タブの表「サイズ」行／取扱説明書 p.26「仕様」表の「商品サイズ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "上面200mm以上・側面200mm以上・背面200mm以上、前面は開放。公式表記は取扱説明書p.4設置図の「上面 20cm以上」「側面 20cm以上」「背面 20cm以上」と「壁、家具、カーテンなどから20cm以上離れた水平な場所に設置してください。前面は開放してください。」。公式は左右を分けず「側面」1値で示しています。",
+    "exact_model": "RAO-3（BK）",
+    "source_url": "https://recolte-jp.com/admin/wp-content/uploads/2024/11/RAO-3_Manual.pdf",
+    "locator": "取扱説明書（2024年11月版 RAO-3_Manual.pdf）p.4「安全上のご注意」＞「■設置・保管」の設置図と本文",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 230,
+   "depth_mm": 370,
+   "height_mm": 285,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 200,
+   "left_mm": 200,
+   "right_mm": 200,
+   "rear_mm": 200
+  }
+ },
+ {
+  "product_id": "PRD-YAMAZEN-YCW-C120",
+  "exact_model": "YCW-C120(SG)",
+  "name": "山善 コンベクショントースター（熱風オーブントースター）YCW-C120(SG)",
+  "category": "air-fryer",
+  "anchor": "product-air-fryer-ycw-c120",
+  "official_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+  "facts": [
+   {
+    "label": "本体寸法（幅×奥行×高さ）",
+    "text": "幅330×奥行295×高さ310mm。公式もmmを印字しています（本機のみcm換算が不要）。公式表記は商品情報サイト「仕様・スペック」の「本体サイズ 幅330×奥行295×高さ310mm」、取扱説明書p.19「仕　様」表の「製品寸法（約）幅：330mm×奥行：295mm×高さ：310mm」（説明書側は「（約）」付き）、山善ビズコム「本体サイズ 幅33×奥行29.5×高さ31cm」。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+    "locator": "商品情報サイト「仕様・スペック」の「本体サイズ」行／取扱説明書 p.19「仕　様」表の「製品寸法（約）」行（PDF20枚目）／山善ビズコム「本体サイズ」欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "必要な余白（放熱スペース）",
+    "text": "上面100mm以上・背面100mm以上・側面100mm以上（mmは編集部によるcmからの等値換算）。公式表記は「消防法による設置基準」として図中に「上面 10cm以上（落下物のおそれがない場所）」「背面 10cm以上（排気口/通気口面）」「側面 10cm以上（通気口面）」、見出しは【警告】「壁や家具から離して設置する ●熱により壁や家具を傷めたり、変色・発煙・火災の原因になります。」で、導入文は p.7 では「下記の距離を離して設置します。」です。図は「右側面を開放空間にした例」で、公式は左右を分けた個別の数値を示していません（left_mm／right_mmは同じ「側面 10cm以上」を両側に当てた値です）。同じ枠には数値以外の条件「◎前面と側面側のどちらか一方は、壁や家具で囲まれていない開放空間にする。」「◎排気口や通気口がある面は、10cm以上離す。」「◎肩より高い位置に設置しない。調理物を取り出すとき扉に手が触れて、やけどの原因になります。」も併記されており、数値だけを満たしても設置可とは判定できません。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 S1D65.pdf p.7「使いかた」＞「設置する」の【警告】枠と設置図（PDF8枚目）。同じ図・同じ数値・同じ◎条件が p.2「安全上のご注意」＞「■設置について」（PDF3枚目）にもあるが、導入文だけは p.7 が「下記の距離を離して設置します。」、p.2 が「◎下記の距離を離して設置する。」と異なる（2026-09-16に全文検索し、前者は p.7 に1件、後者は p.2 に1件のみと確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "設置の追加条件（開放空間・設置高さ）",
+    "text": "数値の余白とは別に、公式は「消防法による設置基準」の枠内で「◎前面と側面側のどちらか一方は、壁や家具で囲まれていない開放空間にする。」「◎排気口や通気口がある面は、10cm以上離す。」「◎特に天然木、白木、コーティング加工された木製品は、熱に弱いため変色しやすいので注意する。」「◎肩より高い位置に設置しない。調理物を取り出すとき扉に手が触れて、やけどの原因になります。」を指定しています。設置可否の判定では、上面／背面／側面の10cmに加えてこの開放空間の条件を独立した必須項目として扱うこと。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 p.7「使いかた」＞「設置する」の【警告】枠の◎項目（同文が p.2「安全上のご注意」＞「■設置について」にも掲載）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "庫内容量",
+    "text": "「●庫内容量：10L」。商品情報サイト（book.yamazen.co.jp）の「仕様・スペック」欄と取扱説明書p.19「仕　様」表には庫内容量の記載がなく、公式オンラインショップ「山善ビズコム」の商品説明のみに印字されています。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/item/S1D65.html",
+    "locator": "山善ビズコム（公式オンラインショップ）商品ページ「商品説明」欄の箇条書き「●庫内容量：10L」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "庫内有効寸法",
+    "text": "「●庫内有効寸法：幅25.5×奥行21.5×高さ9cm」。商品情報サイトの「仕様・スペック」欄と取扱説明書には記載がありません。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/item/S1D65.html",
+    "locator": "山善ビズコム（公式オンラインショップ）商品ページ「商品説明」欄の箇条書き「●庫内有効寸法：幅25.5×奥行21.5×高さ9cm」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量",
+    "text": "商品情報サイトは「5.4kg(本体のみ)／5.8kg(本体+付属品：ワイヤーラック、メッシュトレイ、トレイ)」。取扱説明書p.19は「製品質量（約）本体のみ：5.4kg／本体＋付属品（ワイヤーラック、メッシュトレイ、トレイ）：5.8kg」。取扱説明書 p.19 の表下注記は「●製品質量にハンドルは含まれていません。」のみで、パンくずトレイの扱いは印字されていません。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+    "locator": "商品情報サイト「仕様・スペック」の「重量」行／取扱説明書 S1D65.pdf p.19「仕　様」表の「製品質量（約）」行と、同じ表の下の注記2行「●製品質量にハンドルは含まれていません。」「●製品の仕様や外観は、改善のため予告なく変更することがあります。」（PDF20枚目。2026-09-16に再取得し、同ページに「パンくずトレイ」の語が無いことを確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "消費電力・電源",
+    "text": "「●電源：AC100V(50-60Hz共用)」「●消費電力：1200W」。取扱説明書p.19の仕様表は「電源 AC 100V　50ー60Hz共用」「消費電力 1200W」。コード長は商品情報サイト「●電源コード長さ：1.0m」／取扱説明書「コード長（約）1.0m」。ヒーターは「上：3本（直ヒーター×2、S字ヒーター×1） 下：2本（直ヒーター×2）」。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+    "locator": "商品情報サイト「仕様・スペック」の「仕様」欄の箇条書き／取扱説明書 p.19「仕　様」表の「電源」「消費電力」「コード長（約）」「ヒーター」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "食洗機対応（トレー・ラック類）",
+    "text": "食器洗い乾燥機の可否は公式に記載がありません。公式が示すのは手洗いのみで、取扱説明書p.18は「トレイ、ワイヤーラック、メッシュトレイ、ハンドル、パンくずトレイのお手入れ／丸洗いできます」「●食器用中性洗剤をやわらかいスポンジに含ませて、水洗いします。」、p.17は「本体、庫内、扉のお手入れ／丸洗いできません」。商品情報サイトも「トレイ、ワイヤーラック、メッシュトレイ、ハンドル、パンくずトレイは水で丸洗いできます」。「丸洗い＝食洗機可」とは書かれていないため、食洗機対応は未確認のままにします。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 p.17〜18「お手入れと保管」（全文に食器洗い乾燥機の記載なし）／商品情報サイト「仕様・スペック」の「仕様」欄「●トレイ、ワイヤーラック、メッシュトレイ、ハンドル、パンくずトレイは丸洗い対応」／山善ビズコム「商品説明」欄（同欄にも食洗機の記載なし）",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "A21・A23の食洗機比較で本機は「未確認」分岐に置く",
+     "next_action": "対象型番の公式説明書・商品情報サイト・山善ビズコムの改訂を再確認する",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "温度の範囲と温度調節ダイヤル",
+    "text": "温度は「●温度設定範囲：80度～230度」（山善ビズコム）。取扱説明書p.11の温度調節ダイヤル図には目盛り「80／130／180／230」と「トースト」が印字され、「●1目盛りは、約10℃です。」。同ページの【お願い】に「「エアフライモード」、「オーブンモード」、「あたためモード」のとき、温度調節ダイヤルが「OFF」の状態でタイマーダイヤルを回すと、温度調節器の仕様により、ヒーターはOFFのままファンのみONします。調理をするときは温度調節ダイヤルを「80」以上に合わせてください。」。温度調節器は取扱説明書が「サーモスタット（可変式）」、山善ビズコムが「バイメタル式サーモスタット(可変式)」。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/item/S1D65.html",
+    "locator": "山善ビズコム「商品説明」欄「●温度設定範囲：80度～230度」／取扱説明書 p.11「使いかた」＞「調理温度を合わせる」の温度調節ダイヤル図と同ページ【お願い】／p.19「仕　様」表の「温度調節器」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "時間の範囲とタイマーダイヤルの注意",
+    "text": "時間は「●タイマー：60分タイマー(1目盛りは約２分)」（商品情報サイト）／取扱説明書p.19「タイマー 電源スイッチ兼用　60分タイマー（ベル音付）」、p.11「●1目盛りは、約2分です。」。p.11の【注意】枠はタイマーダイヤルについてのもので、「※目盛りを「20」以下に合わせるときは、一度「40」以上に回してから戻して合わせてください。　直接「20」以下に合わせると、タイマーが誤動作して、過熱・発煙・火災の原因になります。」。この「20」「40」は分（タイマー目盛り）であって温度ではありません。同枠には「※調理中は、タイマーが確実に動作していることを確認してください。」「※調理中にタイマーダイヤルを回して、時間を延長しないでください。」も並びます。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 p.11「使いかた」＞「タイマーを合わせて調理する」の直上にある【注意】枠（同ページ右下にタイマーダイヤル図と「「20」以下に合わせるときは「40」以上に回してから戻す。」の図注）／p.19「仕　様」表の「タイマー」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品",
+    "text": "「●付属品：トレイ、ワイヤーラック、メッシュトレイ、ハンドル」「●レシピブック付き」。取扱説明書p.6「各部の名称」＞「付属品」にもトレイ／ワイヤーラック／メッシュトレイ／ハンドルの4点が図示されています。パンくずトレイは本体側の部品で、付属品欄には含まれません。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+    "locator": "商品情報サイト「仕様・スペック」の「仕様」欄「●付属品：…」「●レシピブック付き」／取扱説明書 p.6「各部の名称」＞「付属品」図",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "カラー展開と型番の表記",
+    "text": "商品情報サイトのカラー欄は「ショコラベージュ」「ストーングレー」の2色で、型番は「YCW-C120」とだけ印字されています。色柄コード付きの「YCW-C120(SG)」＝ストーングレーは、公式オンラインショップ「山善ビズコム」の商品名（コンベクショントースター 2枚焼き 1200W 熱風オーブントースター YCW-C120(SG) 山善 YAMAZEN）に印字されています。かっこは半角です。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/item/S1D65.html",
+    "locator": "山善ビズコム 商品ページの商品名（h1）／商品情報サイト「仕様・スペック」の「カラー」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "電源の指定",
+    "text": "「家庭用コンセント（AC100V、定格15A以上）を単独で使用する」「●タコ足配線でコンセントの定格を超えると、発熱・発火の原因になります。」「◎延長コードを使用するときも定格15A以上のものを単独で使用し、複数の機器を接続して定格を超える使いかたをしない。」",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 p.1「安全上のご注意」＞電源の項／p.8「使いかた」＞「設置する」つづきの電源に関する【警告】",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "guide_facts": [
+   {
+    "field": "dimensions",
+    "text": "本体は幅330×奥行295×高さ310mm。公式もmm表記で、取扱説明書p.19は「製品寸法（約）幅：330mm×奥行：295mm×高さ：310mm」、商品情報サイトは「本体サイズ 幅330×奥行295×高さ310mm」、山善ビズコムは「幅33×奥行29.5×高さ31cm」。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://book.yamazen.co.jp/product/detail/I00008837",
+    "locator": "商品情報サイト「仕様・スペック」の「本体サイズ」行／取扱説明書 p.19「仕　様」表の「製品寸法（約）」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "field": "clearance",
+    "text": "上面100mm以上・背面100mm以上・側面100mm以上（公式表記は「上面 10cm以上」「背面 10cm以上」「側面 10cm以上」）。「消防法による設置基準」として示され、同じ枠に「前面と側面側のどちらか一方は、壁や家具で囲まれていない開放空間にする。」「排気口や通気口がある面は、10cm以上離す。」「肩より高い位置に設置しない。」が併記されます。公式は左右を分けた個別の数値を示していません。",
+    "exact_model": "YCW-C120(SG)",
+    "source_url": "https://yamazenbizcom.jp/client_info/YAMAZEN/itemimage/manual/S1D65.pdf",
+    "locator": "取扱説明書 S1D65.pdf p.7「使いかた」＞「設置する」の【警告】枠と設置図（PDF8枚目）。同じ図・同じ数値・同じ◎条件が p.2「安全上のご注意」＞「■設置について」（PDF3枚目）にもあるが、導入文だけは p.7 が「下記の距離を離して設置します。」、p.2 が「◎下記の距離を離して設置する。」と異なる（2026-09-16に全文検索し、前者は p.7 に1件、後者は p.2 に1件のみと確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ],
+  "installation": {
+   "width_mm": 330,
+   "depth_mm": 295,
+   "height_mm": 310,
+   "door_depth_mm": null,
+   "door_height_mm": null,
+   "above_mm": 100,
+   "left_mm": 100,
+   "right_mm": 100,
+   "rear_mm": 100
+  }
+ },
+ {
+  "product_id": "PRD-PANASONIC-MC-PB61J",
+  "exact_model": "MC-PB61J",
+  "name": "パナソニック 紙パック式コードレススティック掃除機 MC-PB61J",
+  "category": "cordless-stick-vacuum",
+  "anchor": "product-cordless-vacuum-mc-pb61j",
+  "official_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+  "facts": [
+   {
+    "label": "型番・色（公式が印字している範囲）",
+    "text": "商品ページの見出しは「紙パック式コードレススティック掃除機 MC-PB61J」で、色柄コード付きの型番は本文に印字されていません。同ページ埋め込みの構造化データは sku「MC-PB61J」／mpn「MC-PB61J」／color「ストーンブルー」。取扱説明書の品番も「MC-PB61J」です。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J.html",
+    "locator": "商品ページ 見出し「紙パック式コードレススティック掃除機 MC-PB61J」と価格欄／取扱説明書 表紙・p.22「仕様」の品番表記",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "色柄コード -A と色名の対応",
+    "text": "「MC-PB61J-A」という表記は、商品ページ本文には印字されていません。2026-09-16に描画して確認できたのは画像の代替テキスト「MC-PB61J-AserialNumber」と画像アセットのパス（MC-PB61J_A_set）だけで、「-A＝ストーンブルー」という対応は本文として印字されていません。したがって exact_model には色柄コードなしの「MC-PB61J」を使い、記事で「MC-PB61J-A」と名乗らないこと。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J.html",
+    "locator": "商品ページを描画し、本文テキスト（MC-PB61J-A を含まない）と img の alt 属性（MC-PB61J-AserialNumber）を照合",
+    "checked_at": "2026-09-16",
+    "state": "UNKNOWN",
+    "unknown_reason": {
+     "kind": "manufacturer_not_published",
+     "impact": "販売店表記のMC-PB61J-Aを記事の型番として使えない",
+     "next_action": "メーカー窓口かカタログで色柄コードと色名の対応を裏取りする",
+     "owner": "暮らしのしるべ編集部"
+    }
+   },
+   {
+    "label": "メーカー希望小売価格",
+    "text": "「メーカー希望小売価格 オープン価格※」「※オープン価格商品の価格は販売店にお問い合わせください。」。仕様ページの★5も「〇この商品はお取扱い先を限定しております。〇一部店舗ではメーカー指定価格での販売となります。価格は販売店にお問い合わせください。」。なお同ページ埋め込みの構造化データには price 39600.0 がありますが本文として印字されていないため、記事では使わないこと。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J.html",
+    "locator": "商品ページ 商品名直下の「メーカー希望小売価格」欄（2026-09-16に描画して確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（スティック時・幅×奥行×高さ）",
+    "text": "「220 x 154 x 1104mm」。取扱説明書p.22の外形寸法欄は「（スティッククリーナー）幅220 mm×奥行154 mm×高さ1104 mm」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「寸法(幅×奥行×高さ)」→「スティック時」行（同値は取扱説明書 p.22「仕様」外形寸法欄）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "寸法（本体のみ・幅×奥行×高さ）",
+    "text": "「93 x 145 x 491mm」。取扱説明書p.22の外形寸法欄は「（本体）幅93 mm×奥行145 mm×高さ491 mm」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「寸法(幅×奥行×高さ)」→「本体」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "収納時の外形寸法（スタンドにセットした状態・幅×奥行×高さ）",
+    "text": "「（収納時）幅270 mm×奥行290 mm×高さ1075 mm」。これは掃除機をスタンドにセットした状態の外形で、スタンド単体の寸法ではありません。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書（品番 MC-PB61J）p.22「仕様」外形寸法欄の3行目（収納時）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（スティック時／本体）",
+    "text": "「スティック時：1.3㎏／本体：0.9㎏」（★1 JEMA自主基準(HD-10)により測定。）。取扱説明書p.22の質量欄は「1.3 kg（スティッククリーナー）」「0.9 kg（本体＜電池含む＞）」「0.58 kg（スタンド）」。パナソニックは「標準質量」という語を使っていません（「標準質量」はシャープの表記）。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「質量★1」行と欄外注記★1／取扱説明書 p.22「仕様」質量欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "スティック時1.3 kgに含まれる部品の内訳",
+    "text": "公式資料で内訳が異なります。仕様ページ★4は「スティック時は本体・延長管・床用ノズルを含む合計質量。」、商品特長ページ※2は「本体・ハンドル・床用ノズル・バッテリーを含む合計質量です。」。数値はどちらも1.3 kgですが、延長管を含むのか／ハンドルとバッテリーを含むのかが一致しません。どちらの内訳かはメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表 欄外注記★4（2026-09-16に両ページを描画して両文とも実在を確認）",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "仕様ページ★4",
+      "value": "スティック時は本体・延長管・床用ノズルを含む合計質量。",
+      "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+      "locator": "仕様・スペック表 欄外注記★4",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "商品特長ページ※2",
+      "value": "本体・ハンドル・床用ノズル・バッテリーを含む合計質量です。",
+      "source_url": "https://panasonic.jp/soji/products/MC-PB61J/feature.html",
+      "locator": "「軽くてスムーズなかけ心地／軽量ボディ」節の「本体質量※2 1.3 kg（スティック時）」に付く欄外注記※2",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "集じん方式",
+    "text": "「紙パック式」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表 1行目「集じん方式」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "集じん容積",
+    "text": "「0.5L」。仕様表のこの行には測定条件の注記が付いておらず、何を満杯とするかが印字されていません（シャープ機の「当社純正紙パックの容量」「当社推奨ごみ捨てラインまでの容積」のような定義がない）。取扱説明書p.22も「0.5 L」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「集じん容積」行（注記なし）／取扱説明書 p.22「仕様」集じん容積欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転時間（モード別）",
+    "text": "「HIGH ： 約8分」「ON ： 約25分/約30分（付属ノズル使用時）★2」（★1 JEMA自主基準(HD-10)により測定。★2 満充電・電池初期20℃時。）",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「使用時間の目安★1」行と欄外注記★1・★2",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転時間（ノズル別の内訳）",
+    "text": "「ON：約25分（床用ノズル使用時）／約30分（ブラシ付きすき間ノズル使用時）、HIGH：約 8分。※ 満充電・電池初期／20 ℃時」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.22「仕様」連続使用時間※欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転モードの切り替え（ON／HIGH）",
+    "text": "「■強さを変えるとき」「ON：通常のお掃除」「HIGH： 強い吸込力でお掃除したいとき」「押すたびに切り替わる」。切り替えはこの2択で、自動運転などのモードは印字されていません。シャープ2機種の「標準／自動／強」とは語が違うので、比較表では各社の原語を併記すること。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.10「掃除する」の「■強さを変えるとき」（見開きPDF6枚目の左ページ）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電時間",
+    "text": "「約3時間」（★1 JEMA自主基準(HD-10)により測定。）。取扱説明書p.22は「約3時間 （電池が空状態から充電を開始した場合、周囲温度20 ℃時）」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「充電時間★1」行（同値は取扱説明書 p.22「仕様」充電時間欄）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電時間が延びる条件",
+    "text": "「周囲温度・使用時間などのご使用の条件により、電池の温度は変化します。電池の温度が高い場合、充電に適した温度になるまで自動的に待機するため充電時間が長くなることがあります。（最長約5時間です）」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.9「準備する／充電する」電池残量表示ランプ（青色）の見方の横の説明",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電台の有無と充電方式",
+    "text": "接点式の充電台ではありません。付属するのは「クリーナースタンド」（取扱説明書の表記は「スタンド（スタンドホルダー・スタンドベース）」）で、手順は「1 スタンド（スタンドホルダー・スタンドベース）を組み立てる」「2 スタンドにスティッククリーナーをセットする」「3 充電アダプターをセットする」。充電は「充電アダプターのプラグを本体のコネクターにしっかりと奥まで差し込む」。お願い「延長管、床用ノズルを取り付けた状態（スティッククリーナー）で左図のようにセットしてください。」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.8〜9「準備する」＞「充電する」の手順1〜3",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電アダプターの仕様",
+    "text": "「（充電アダプター）充電電源品番 AVA61V-1A、入力 AC 100-240 V 50-60 Hz（消費電力‥充電中 約13 W、本体を外したとき 約0.3 W）、出力 DC 16.5 V 0.7 A、コードの長さ 1.5 m」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.22「仕様」（充電アダプター）欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "スタンドの質量",
+    "text": "「0.58 kg（スタンド）」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.22「仕様」質量欄の3行目",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電・設置の条件",
+    "text": "「室温が5 ℃～35 ℃の場所で充電してください。室温が低い場合や、直射日光が当たるなど高温の場所では、正しく充電されません。運転時間が短くなったり、充電時間が長くなったりすることがあります。」スタンドを使わず立てかける場合は図に「約10～15 cm」「滑り止めゴムを壁に当てる」「90度 横に傾けない」。お願い「立てかけるときは、部屋の隅や家具の間など、倒れにくい場所を選ぶ」「床や壁の材質・状態によっては滑りやすく、立てかけられない場合があります。滑りやすい場合は無理に立てかけず、床面に寝かせて置いてください。」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.9「準備する／充電する」の立てかけ図（寸法線の注記「約10～15 cm」）と同ページの「お願い」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品（付属ノズルを含む）",
+    "text": "公式資料で値が異なります。仕様ページの付属品欄は「ブラシ付きすき間ノズル,紙パックAMC-U2（1枚）,クリーナースタンド」、取扱説明書p.22の付属品欄は「•延長管（1本）•床用ノズル（1個）•充電アダプター（1個）•スタンドホルダー（1個）•スタンドベース（1個）•ブラシ付きすき間ノズル（1個）」。取扱説明書の一覧には紙パックAMC-U2が入っておらず、仕様ページには延長管・床用ノズル・充電アダプターが入っていません。開梱時に紙パックが1枚同梱されるかはメーカー（ご相談窓口）へ確認してください。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様ページ「付属品」欄（2026-09-16に描画して確認）",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "仕様ページ 付属品欄",
+      "value": "ブラシ付きすき間ノズル,紙パックAMC-U2（1枚）,クリーナースタンド",
+      "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+      "locator": "仕様・スペック表の下「付属品」見出しの本文",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.22 付属品欄",
+      "value": "•延長管（1本）•床用ノズル（1個）•充電アダプター（1個）•スタンドホルダー（1個）•スタンドベース（1個）•ブラシ付きすき間ノズル（1個）",
+      "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+      "locator": "取扱説明書 p.22「仕様」付属品欄",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "ノズルのタイプ",
+    "text": "「パワーノズル」（仕様表「ノズル／タイプ」）。操作性は「ラクスルアシスト」、壁ぎわ集じんは「○」。商品特長ページは「軽い力でスイスイかけられる、モーター内蔵の自走式パワーノズルを採用。」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「ノズル」行グループ（タイプ／操作性／壁ぎわ集じん）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属ノズルの収納",
+    "text": "「付属のノズルは、スタンド背面に収納できます。」「付属のブラシ付きすき間ノズルを使えば手が届きにくい所や細かな場所の掃除も。」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/feature.html",
+    "locator": "「こだわりの詰まったスタンド付きで、収納時もスッキリ」節の「お手入れしやすく、アタッチメントも収納しやすいスタンド」／「ハンディ掃除機としても使える」節",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "専用紙パック（本体側の記載）",
+    "text": "各部のなまえの図に「紙パックケース／紙パック（P.12）● S型（AMC-U2）」。p.13は「交換用の紙パックは、純正 S型紙パックをお使いください。」、同ページの注意は「純正 以外の紙パックを使用しない ・本体内にゴミがもれ、発煙や発火のおそれ」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.7「各部のなまえ」の「紙パックケース／紙パック（P.12）● S型（AMC-U2）」／p.13「新しい紙パックを取り付ける」の下の枠と【注意】枠",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "紙パックの品番・枚数・価格（本体取扱説明書の記載）",
+    "text": "表は「品番 AMC-U2／枚数 10／メーカー希望小売価格※ 1,210円」、注記は「※ 2024年10月現在（税込）」。記事では必ず「2024年10月現在」を併記すること。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.13「交換用の紙パックは、純正 S型紙パックをお使いください。」の右の表（品番／枚数／メーカー希望小売価格※）。節の見出し「紙パックを交換する」はp.12にあるが、表はp.13にある",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "交換用電池の品番・価格",
+    "text": "「■充電式リチウムイオン電池 品番：AVA97V-0A メーカー希望小売価格：9,900円」「製品を正しく動作させるために、純正の充電式リチウムイオン電池をご使用ください。」。欄の右上に「（メーカー希望小売価格は、2024年10月現在・税込）」。同じ欄に「別売品や紙パック(P.12)は、販売店でお買い求めいただけます。」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "取扱説明書 p.21「別売品」の■充電式リチウムイオン電池欄と欄右上の但し書き（見開きPDF11枚目の右ページ）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "紙パック交換の目安",
+    "text": "「大容量紙パックだから、ゴミ捨ては約3か月に1回 ※1 。」※1 お部屋の広さやゴミの量によって異なります。試験方法：一般社団法人 日本電機工業会自主基準に定められた基準ゴミ1 g（家庭ゴミ1日分の平均量＝1 g。一般社団法人 日本電機工業会の調査において）を、「HIGH」運転で紙パックにゴミがない状態から満杯になるまでの吸引量を測定。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J.html",
+    "locator": "「大容量でたっぷり吸引、ゴミ捨て簡単な紙パック式」節の本文と欄外注記※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "「69dB ～ 約63dB」（★3 運転音の表示は、JIS C 9108に準拠。）。取扱説明書p.22は「69 dB～約63 dB（床用ノズル、延長管を接続した状態）」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「運転音★3」行と欄外注記★3",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "使用電池",
+    "text": "「リチウムイオン電池」（仕様表）。取扱説明書p.22は「充電式リチウムイオン電池（セル数4本）」「定格電圧 DC 14.4 V」「定格容量 1700 mAh」。",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「使用電池」行（詳細は取扱説明書 p.22「仕様」使用電池／定格電圧／定格容量欄）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "販売上の付記",
+    "text": "★5「〇この商品はお取扱い先を限定しております。〇一部店舗ではメーカー指定価格での販売となります。価格は販売店にお問い合わせください。」",
+    "exact_model": "MC-PB61J",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "仕様・スペック表「その他の付記事項★5」行と欄外注記★5",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ]
+ },
+ {
+  "product_id": "PRD-SHARP-EC-KR50A",
+  "exact_model": "EC-KR50A-W",
+  "name": "シャープ RACTIVE Air 紙パック式コードレススティック掃除機 EC-KR50A-W",
+  "category": "cordless-stick-vacuum",
+  "anchor": "product-cordless-vacuum-ec-kr50a",
+  "official_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+  "facts": [
+   {
+    "label": "形名・色調コード",
+    "text": "ニュースリリースの発売機種表（列は 品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）の行は「コードレススティック掃除機／RACTIVE Air／紙パック式／EC-KR50A／オープン／2026年6月25日／12,000台」で、この表に色調の列はありません。色調「-W（ホワイト系）」が印字されているのは同リリースの「■ 主な仕様」表の「色調」行（-B（ブラック系）＝EC-SR70A・EC-KR70A、-W（ホワイト系）＝EC-AR50A・EC-KR50A）と、冒頭の写真キャプション「…「RACTIVE Air」＜EC-AR50A-W（ホワイト系）＞、＜EC-KR50A-W（ホワイト系）＞」です。色調コード付きの「EC-KR50A-W」はシャープ公式通販の「対応する製品一覧」（EC-530PN／EC-DA2の各ページ）に本文として印字されています。仕様ページ本体の表記は色調コードなしの「EC-KR50A」です。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://corporate.jp.sharp/news/260611-a.html",
+    "locator": "2026年6月11日付ニュースリリースの発売機種表（品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）＝形名・希望小売価格・発売日／同リリース「■ 主な仕様」表の「色調」行＝-W（ホワイト系）／冒頭の写真キャプション「＜EC-KR50A-W（ホワイト系）＞」／シャープ公式通販の「対応する製品一覧」（EC-530PN／EC-DA2の各ページ）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（スティック時・幅×奥行×高さ）",
+    "text": "「221×258×987mm」。寸法図の代替テキストも「外形寸法、幅221mm×奥行258mm×高さ987mm」。取扱説明書p.22も「スティック時：幅221mm×奥行258mm×高さ987mm」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「本体寸法（幅×奥行×高さ）」→「スティック時」行、および同ページ「寸法」節の図の代替テキスト",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "寸法（ハンディ時・幅×奥行×高さ）",
+    "text": "「96×191×412mm」。取扱説明書p.22も「ハンディ時 ：幅96mm×奥行191mm×高さ412mm」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「本体寸法（幅×奥行×高さ）」→「ハンディ時」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "標準質量（本体質量）",
+    "text": "「1.5(1.1)kg ＊※1」。＊ JEMA自主基準（HD-10）により測定。※1 標準質量は本体、バッテリー、パイプ、吸込口の合計質量です。本体質量はバッテリーを含む本体のみの質量です。記事では必ずこの定義注記を併記すること。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「標準質量（本体質量）」行と欄外注記＊・※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（取扱説明書の記載）",
+    "text": "「1.5kg：本体(バッテリー含む)・パイプ・吸込口の合計」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の「質　量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転時間（モード別）",
+    "text": "「最長連続運転時間 ＊：標準モード：約35分 ※2 /約50分 ※3、自動モード：約9分～約24分 ※2、強モード：約9分 ※2」。＊ JEMA自主基準（HD-10）により測定。※2 室温20℃、満充電、電池初期、標準の吸込口を使用時に測定した最長運転時間。床面の種類、使用環境、使用状態により異なります。※3 室温20℃、満充電、電池初期、付属のすき間ノズル等使用時に測定した最長運転時間。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「最長連続運転時間 ＊」行と欄外注記＊・※2・※3",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "集じん方式",
+    "text": "「紙パック式」。排気クリーンは「抗菌 ※9 3層紙パック」、ごみ捨ては「パックinカップ構造」、水洗いは「回転ブラシ・ダストカップ」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「集じん方式」「排気クリーン」「ごみ捨て」「水洗い」各行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "集じん容積",
+    "text": "「0.59L ※6」。※6 当社純正紙パックの容量。紙パックがごみでいっぱいの状態で運転を続けると自動停止します。必ず交換してください。EC-AR50Aの0.13L（当社推奨ごみ捨てラインまでの容積）とは定義が違うため、倍率比較はしないこと。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「集じん容積」行と欄外注記※6",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電時間",
+    "text": "「約4時間 ※5」。※5 測定は室温20℃。充電時聞は周辺温度、使用条件などによって異なります。（原文の誤記「充電時聞」もそのまま引用）取扱説明書p.22は「約4時間 (周囲温度・使用時間などのご使用条件により最長約5時間かかる場合があります)」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「充電時間 ＊」行と欄外注記※5（最長値は取扱説明書 p.22「仕 様」充電器欄）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電台の有無と充電方式",
+    "text": "掃除機本体を載せる充電台ではありません。仕様の充電方式は「充電器／コード長 0.8m」で、着脱式バッテリーを本体から外して充電器にセットします。取扱説明書の手順は「1 本体からバッテリーをはずす」「2 充電器の電源プラグをコンセントに差し込む」「3 バッテリーを充電器にセットして充電する」「4 バッテリーを本体にセットする」。「満充電になると、自動で充電が完了します。ふだんご使用の場合は、充電完了後、バッテリーを充電器に差したままにしても問題ありません。」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.8「準備する／バッテリーを充電する」手順1〜4（仕様の「充電方式」は基本仕様表）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電器の寸法・コード長",
+    "text": "「（充電器）寸 法：幅200mm×奥行 90mm×高さ133mm、コードの長さ：80cm」。これが電源まわりに必要な設置面積の公式値です。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の右ブロック「充電器」→「寸 法」「コードの長さ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電器の形名・電源・消費電力",
+    "text": "「形名 R5ACE（定格18V専用）」。（充電器）電 源：入力：AC 100V 50-60Hz共用／出力：DC 20.5V 0.5A。消費電力：充電中：約12W／充電完了後：約0.3W。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.6「付属品」欄の「● 充電器 R5ACE」および p.22「仕 様」表の充電器ブロック",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "スタンド台（収納）の設置条件",
+    "text": "「付属のスタンド台を使って収納してください。」組み立ては「● ベースの穴(2ヵ所)にアームをしっかり差し込む。」、設置は「平らな床の上に置く。」「スタンド台を壁に付けて置く。」、収納は「② 吸込口をスタンド台にのせて ③ アームに立てかける。」「吸込口がベースのストッパーに乗りあげないようにのせる。」お願い「掃除機やスタンド台を、不安定な場所(毛足の長いじゅうたんの上など)に置かないでください。」「掃除機を壁に直接立てかけると転倒のおそれがありますのでご注意ください。」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.13「収納する／収納のしかた」の手順図と同ページ「お願い」「注意」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "使用環境（温度）",
+    "text": "「使 用 環 境：5℃～35℃」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の「使 用 環 境」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品（仕様ページの記載）",
+    "text": "「スグトルブラシ／すき間ノズル／ハンディノズル／スタンド台／充電器／バッテリー／ツールホルダー／抗菌3層紙パック（1枚）」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "「付属品」節の図キャプション8点",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品（取扱説明書の記載・形名つき）",
+    "text": "「● 充電器 R5ACE（定格18V専用）／● 抗菌3層紙パック EC-530PN(1枚)（お買いあげ時はダストカップに装着）／● バッテリー(リチウムイオン電池) BY-5SC17／● スタンド台（組み立ててください。）／● スグトルブラシ／● ハンディノズル／● すき間ノズル／● ツールホルダー／● 取扱説明書(保証書付)」。「上記の パイプ 吸込口(ヘッド) も付属品です」。仕様ページの一覧と品目が一致しており（形名の有無だけが違う）、EC-AR50Aのようなクリーニングブラシの食い違いはありません。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.6〜7「各部のなまえ」→「付属品」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "吸込口（ヘッド）と付属ノズル",
+    "text": "吸込口は「パワーヘッド（自走パワーアシスト ※7）、極吸ヘッド、端までブラシPlus、からみにく～いブラシPlus ※8、メガマウス構造、ペタッとヘッド、から拭きパワーブラシ」。付属ノズルはスグトルブラシ・ハンディノズル・すき間ノズルの3点で、「すき間ノズルはツールホルダーを使って収納できます。スタンド台のくぼみに立てて置くこともできます。」「スグトルブラシ／ハンディノズルはパイプや本体に取り付けて収納できます。」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「吸込口」行（収納方法は取扱説明書 p.13「付属吸込口の収納」）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "専用紙パック（本体側の記載）",
+    "text": "取扱説明書p.15は「交換用紙パックは、純正の EC-530PN をお使いください。」、p.22の別売品欄は「● 抗菌3層紙パック 形名 EC-530PN (5枚入り) オープン価格」「上記純正の紙パックをお使いください。それ以外の紙パックをご使用になった場合は、取り付けできません。また、掃除機の性能・品質などを保証できませんので、ご留意ください。」。同ページ冒頭に「下記の部品および希望小売価格は、2026年6月現在のもので、変更する場合があります。」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.15「ゴミを捨てる」内の指示、および p.22「別売品」の抗菌3層紙パック欄と同ページ冒頭の但し書き",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "紙パック交換の目安",
+    "text": "「紙パックの交換は、約3か月に1回 ※1」「紙パックに約3か月分 ※1 のごみをためられるので、面倒なごみ捨ての回数を減らせます。」※1 当社調べ。一般社団法人 日本電気工業会自主基準に定められた基準ごみを、1日あたりの吸引量を1gとして、強モードで紙パックにごみがない状態から満杯になるまでの吸引量を測定。ごみの種類や運転モードによっては満杯になる日数は異なります。（原文の「日本電気工業会」表記もそのまま引用）",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/feature/paperpack/",
+    "locator": "「パックinカップ構造」ページ「紙パックの交換は、約3か月に1回」節の本文と欄外注記※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "バッテリー",
+    "text": "「18V 1,730mAh /着脱式バッテリー ※4」。※4 交換目安：約1,500回。満充放電をくり返す当社基準による試験の場合。使用条件や環境によってバッテリー寿命は異なります。取扱説明書p.22は「充電式(リチウムイオン電池、DC18V、1730mAh)」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「バッテリー（リチウムイオン電池）」行と欄外注記※4",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "交換用バッテリーの形名と価格",
+    "text": "「形名 BY-5SC17 希望小売価格 10,890円 (税込)（定格：DC18V、1730mAh／・製品に同梱されているバッテリーと同じ性能です。）」「形名 BY-5SC25 希望小売価格 11,880円 (税込)（定格：DC18V、2500mAh／・最長連続運転時間・充電時間はBY-5SC17よりも長くなります。）」。「下記の部品および希望小売価格は、2026年6月現在のもので、変更する場合があります。」「当社製の純正バッテリー(定格18V)をお使いください。純正以外のバッテリーをご使用になった場合は、保証期間内でも有料修理となります。」",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "取扱説明書 p.22「別売品」の● バッテリー(リチウムイオン電池)欄と同ページ冒頭の但し書き",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "別売のスタンド台",
+    "text": "「シャープ　掃除機用　スタンド台」EC-DA2、￥5,500 （税込10%）。「対応する製品一覧」に EC-KR50A-W を掲載。2026-09-16に描画して確認（価格はJavaScript描画）。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://cocorostore.jp.sharp/ec-da2.html",
+    "locator": "COCORO STORE（シャープ公式通販）EC-DA2 商品ページの価格欄と「対応する製品一覧」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "「64～約57dB ＊」（＊ JEMA自主基準（HD-10）により測定。）",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "基本仕様表「運転音」行と欄外注記＊",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "発売日",
+    "text": "発売機種表：EC-KR50A（紙パック式・RACTIVE Air）／希望小売価格 オープン／発売日 2026年6月25日。色調 -W（ホワイト系）は発売機種表ではなく、同じリリースの「■ 主な仕様」表の「色調」行に印字されています。取扱説明書ダウンロードページの表記も「ECKR50A（2026年06月発売）」。",
+    "exact_model": "EC-KR50A-W",
+    "source_url": "https://corporate.jp.sharp/news/260611-a.html",
+    "locator": "2026年6月11日付ニュースリリースの発売機種表（品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）の「EC-KR50A」行＝オープン／2026年6月25日（希望小売価格「オープン」と月産台数は4機種でセル結合）。色調は同じ表ではなく同リリース「■ 主な仕様」表の「色調」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ]
+ },
+ {
+  "product_id": "PRD-SHARP-EC-AR50A",
+  "exact_model": "EC-AR50A-W",
+  "name": "シャープ RACTIVE Air コードレススティック掃除機 EC-AR50A-W",
+  "category": "cordless-stick-vacuum",
+  "anchor": "product-cordless-vacuum-ec-ar50a",
+  "official_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+  "facts": [
+   {
+    "label": "形名・色調コード",
+    "text": "ニュースリリースの発売機種表（列は 品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）の行は「コードレススティック掃除機／RACTIVE Air／サイクロン式／EC-AR50A／オープン／2026年8月6日／12,000台」で、この表に色調の列はありません。色調「-W（ホワイト系）」が印字されているのは同リリースの「■ 主な仕様」表の「色調」行（-B（ブラック系）＝EC-SR70A・EC-KR70A、-W（ホワイト系）＝EC-AR50A・EC-KR50A）と、冒頭の写真キャプション「…「RACTIVE Air」＜EC-AR50A-W（ホワイト系）＞、＜EC-KR50A-W（ホワイト系）＞」です。色調コード付きの「EC-AR50A-W」はシャープ公式通販 EC-DA2 の「対応する製品一覧」に本文として印字されています。仕様ページ本体の表記は色調コードなしの「EC-AR50A」です。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://corporate.jp.sharp/news/260611-a.html",
+    "locator": "2026年6月11日付ニュースリリースの発売機種表（品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）＝形名・希望小売価格・発売日／同リリース「■ 主な仕様」表の「色調」行＝-W（ホワイト系）／冒頭の写真キャプション「＜EC-AR50A-W（ホワイト系）＞」／シャープ公式通販 EC-DA2 の「対応する製品一覧」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体寸法（スティック時・幅×奥行×高さ）",
+    "text": "「221×233×962mm」。寸法図の代替テキストも「外形寸法、幅221mm×奥行233mm×高さ962mm」。取扱説明書p.22も「スティック時：幅221mm×奥行233mm×高さ962mm」。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「本体寸法（幅×奥行×高さ）」→「スティック時」行、および同ページ「寸法」節の図の代替テキスト",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "寸法（ハンディ時・幅×奥行×高さ）",
+    "text": "「99×161×386mm」。取扱説明書p.22も「ハンディ時 ：幅99mm×奥行161mm×高さ386mm」。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「本体寸法（幅×奥行×高さ）」→「ハンディ時」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "標準質量（本体質量）",
+    "text": "「1.3(0.85)kg ＊※1」。＊ JEMA自主基準（HD-10）により測定。※1 標準質量は本体、バッテリー、パイプ、吸込口の合計質量です。本体質量はバッテリーを含む本体のみの質量です。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「標準質量（本体質量）」行と欄外注記＊・※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "質量（取扱説明書の記載）",
+    "text": "「1.3kg：本体(バッテリー含む)・パイプ・吸込口の合計」",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の「質　量」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転時間（モード別）",
+    "text": "「最長連続運転時間 ＊：標準モード：約40分 ※2 /約60分 ※3、自動モード：約11分～約28分 ※2、強モード：約11分 ※2」。＊ JEMA自主基準（HD-10）により測定。※2 室温20℃、満充電、電池初期、標準の吸込口を使用時に測定した最長運転時間。※3 室温20℃、満充電、電池初期、付属のすき間ノズル等使用時に測定した最長運転時間。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「最長連続運転時間 ＊」行と欄外注記＊・※2・※3",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "集じん方式",
+    "text": "仕様表は「遠心分離サイクロン」。ごみ捨ては「スルッとポイ」、排気クリーンは「抗菌 ※9 ・消臭 ※10 高性能プリーツフィルター（水洗い可能）」、水洗いは「回転ブラシ・ダストカップ・フィルター」。2026年6月11日付ニュースリリースの表記は「サイクロン式」。記事ではどちらかの公式表記をそのまま使うこと。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「集じん方式」「ごみ捨て」「排気クリーン」「水洗い」各行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "集じん容積",
+    "text": "「0.13L ※6」。※6 当社推奨ごみ捨てラインまでの容積。このラインを超えてごみを吸わせ続けると吸引力が落ちる場合があります。EC-KR50Aの0.59L（当社純正紙パックの容量）とは定義が違うため、倍率比較はしないこと。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「集じん容積」行と欄外注記※6",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電時間",
+    "text": "「約100分 ※5」。※5 測定は室温20℃。充電時聞は周辺温度、使用条件などによって異なります。（原文の誤記「充電時聞」もそのまま引用）取扱説明書p.22は「約100分 (周囲温度・使用時間などのご使用条件により最長約3時間かかる場合があります)」。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「充電時間 ＊」行と欄外注記※5（最長値は取扱説明書 p.22「仕 様」充電器欄）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電台の有無と充電方式",
+    "text": "掃除機本体を載せる充電台ではありません。仕様の充電方式は「充電器／コード長 0.8m」で、着脱式バッテリーを本体から外して充電器にセットします。取扱説明書の目次も「準備する ● バッテリーを充電する」（p.8）。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.8「準備する／バッテリーを充電する」（仕様の「充電方式」は基本仕様表）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電器の寸法・コード長",
+    "text": "「（充電器）寸 法：幅200mm×奥行 90mm×高さ133mm、コードの長さ：80cm」。EC-KR50Aの充電器と同じ外形です。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の右ブロック「充電器」→「寸 法」「コードの長さ」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "充電器の形名・電源・消費電力",
+    "text": "「形名 R1ACE（定格18V専用）」。（充電器）電 源：入力：AC 100V 50-60Hz共用／出力：DC 20.5V 1.6A。消費電力：充電中：約40W／充電完了後：約0.5W。仕様ページの消費電力行も「充電中：約40W/充電完了後：約0.5W」。EC-KR50A（約12W／約0.3W）と大きく違うので、維持費の比較では機種ごとの値を使うこと。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.6「付属品」欄の「● 充電器 R1ACE」および p.22「仕 様」表の充電器ブロック／仕様ページ 基本仕様表「消費電力」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "スタンド台（収納）の設置条件",
+    "text": "「付属のスタンド台を使って収納してください。」組み立ては「● ベースの穴(2ヵ所)にアームをしっかり差し込む。」、設置は「スタンド台を壁に付けて置く。」、収納は「② 吸込口をスタンド台にのせて ③ アームに立てかける。」お願い「掃除機やスタンド台を、不安定な場所(毛足の長いじゅうたんの上など)に置かないでください。」「掃除機を壁に直接立てかけると転倒のおそれがありますのでご注意ください。」「スタンド台を持ち運ぶときは、ベースを持ってください。」",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.13「収納する／収納のしかた」の手順図と同ページ「お願い」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "使用環境（温度）",
+    "text": "「使 用 環 境：5℃～35℃」",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.22「仕 様」表の「使 用 環 境」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "付属品（付属ノズルを含む）",
+    "text": "公式資料で値が異なります。仕様ページの付属品欄は「スグトルブラシ／すき間ノズル／ハンディノズル／スタンド台／充電器／バッテリー／ツールホルダー」の7点で、クリーニングブラシがありません。取扱説明書p.6〜7の付属品欄は「● 充電器 R1ACE／● クリーニングブラシ／● バッテリー(リチウムイオン電池) BY-5SC25／● スタンド台／● スグトルブラシ／● ハンディノズル／● すき間ノズル／● ツールホルダー／● 取扱説明書(保証書付)」でクリーニングブラシを挙げています。同梱の有無はメーカー（お客様ご相談窓口）へ確認してください。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "「付属品」節の図キャプション7点（2026-09-16に描画して確認）",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "仕様ページ 付属品欄",
+      "value": "スグトルブラシ／すき間ノズル／ハンディノズル／スタンド台／充電器／バッテリー／ツールホルダー（クリーニングブラシの記載なし）",
+      "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+      "locator": "「付属品」節の図キャプション7点",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "取扱説明書p.6〜7 付属品欄",
+      "value": "● 充電器 R1ACE／● クリーニングブラシ／● バッテリー(リチウムイオン電池) BY-5SC25／● スタンド台／● スグトルブラシ／● ハンディノズル／● すき間ノズル／● ツールホルダー／● 取扱説明書(保証書付)",
+      "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+      "locator": "取扱説明書 p.6〜7「各部のなまえ」→「付属品」",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "吸込口（ヘッド）と付属ノズル",
+    "text": "吸込口は「パワーヘッド（自走パワーアシスト ※7）、極吸ヘッド、端までブラシPlus、からみにく～いブラシPlus ※8、メガマウス構造、ペタッとヘッド、から拭きパワーブラシ」。付属ノズルはスグトルブラシ・ハンディノズル・すき間ノズルの3点で、「すき間ノズルはツールホルダーを使って収納できます。スタンド台のくぼみに立てて置くこともできます。」",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「吸込口」行（収納方法は取扱説明書 p.13「付属吸込口の収納」）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "紙パックの適合",
+    "text": "紙パックは使いません。集じん方式は遠心分離サイクロンで、仕様の付属品にも取扱説明書p.22の別売品にも紙パックの記載はありません。シャープ公式通販の抗菌3層紙パック EC-530PN の「対応する製品一覧」にも EC-AR50A は掲載されていません（掲載は EC-KR50A-W、EC-KR70A-B）。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「集じん方式」行および「付属品」節（対応一覧は COCORO STORE EC-530PN 商品ページの「対応する製品一覧」）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "バッテリー",
+    "text": "「18V 2,500mAh/着脱式バッテリー ※4」。※4 交換目安：約1,500回。満充放電をくり返す当社基準による試験の場合。使用条件や環境によってバッテリー寿命は異なります。取扱説明書p.22は「充電式(リチウムイオン電池、DC18V、2500mAh)」。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「バッテリー（リチウムイオン電池）」行と欄外注記※4",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "交換用部品の形名と価格",
+    "text": "「形名 BY-5SC25 希望小売価格 11,880円 (税込)（定格：DC18V、2500mAh）」「形名 BY-5SC17 希望小売価格 10,890円 (税込)（定格：DC18V、1730mAh）」「● 高性能プリーツフィルター 流通コード 217 337 0576 希望小売価格 1,650円 (税込)」。「下記の部品および希望小売価格は、2026年8月現在のもので、変更する場合があります。」",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/ecar50a_mn.pdf",
+    "locator": "取扱説明書 p.22「別売品」のバッテリー欄・高性能プリーツフィルター欄と同ページ冒頭の但し書き",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "別売のスタンド台",
+    "text": "「シャープ　掃除機用　スタンド台」EC-DA2、￥5,500 （税込10%）。「対応する製品一覧」に EC-AR50A-W を掲載。2026-09-16に描画して確認（価格はJavaScript描画）。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://cocorostore.jp.sharp/ec-da2.html",
+    "locator": "COCORO STORE（シャープ公式通販）EC-DA2 商品ページの価格欄と「対応する製品一覧」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "運転音",
+    "text": "「64～約57dB ＊」（＊ JEMA自主基準（HD-10）により測定。）",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://jp.sharp/souji/products/ecar50a/spec/",
+    "locator": "基本仕様表「運転音」行と欄外注記＊",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "発売日",
+    "text": "発売機種表：EC-AR50A（サイクロン式・RACTIVE Air）／希望小売価格 オープン／発売日 2026年8月6日。色調 -W（ホワイト系）は発売機種表ではなく、同じリリースの「■ 主な仕様」表の「色調」行に印字されています。取扱説明書ダウンロードページの表記も「ECAR50A（2026年08月発売）」。",
+    "exact_model": "EC-AR50A-W",
+    "source_url": "https://corporate.jp.sharp/news/260611-a.html",
+    "locator": "2026年6月11日付ニュースリリースの発売機種表（品名／愛称／集じん方式／形名／希望小売価格／発売日／月産台数）の「EC-AR50A」行＝オープン／2026年8月6日（希望小売価格「オープン」と月産台数は4機種でセル結合）。色調は同じ表ではなく同リリース「■ 主な仕様」表の「色調」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ]
+ },
+ {
+  "product_id": "PRD-PANASONIC-AMC-U2",
+  "exact_model": "AMC-U2",
+  "name": "パナソニック 交換用 紙パック(S型) AMC-U2",
+  "category": "vacuum-consumable",
+  "anchor": "product-paper-pack-amc-u2",
+  "official_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+  "facts": [
+   {
+    "label": "商品名・品番",
+    "text": "「交換用　紙パック(S型) AMC-U2」。商品名の「交換用」と「紙パック(S型)」の間は全角スペースで、(S型)のかっこは半角です。「(S型)」を落とすと本体取扱説明書の「純正 S型紙パックをお使いください。」という指示と対応が取れなくなります。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+    "locator": "消耗品・別売品 商品ページの見出し（h1「交換用　紙パック(S型)AMC-U2 概要」）と商品名欄／埋め込み構造化データの name「交換用　紙パック(S型) AMC-U2」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "メーカー希望小売価格（消耗品ページ）",
+    "text": "「メーカー希望小売価格 1,210円（税込）」。この価格枠はJavaScript描画で、生HTMLの取得だけでは見えません。2026-09-16に実描画して確認し、同ページ埋め込みの構造化データも offers.price 1210.0／priceCurrency JPY でした。入り数10枚と合わせると1枚あたり121円（税込）です。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+    "locator": "商品ページ 商品名「交換用　紙パック(S型) AMC-U2」直下の「メーカー希望小売価格」欄（div.c-prd101__body__product__price の「1,210」＋「円（税込）」）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "入り数",
+    "text": "「10枚」。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2/spec.html",
+    "locator": "仕様・スペック表「入り数」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "最新品番の告知",
+    "text": "商品名の直下に「※ 最新品番 ： AMC-U3」と印字されています。後継のAMC-U3側の商品ページは「発売予定：2026年10月下旬発売」「※ 旧品番 ： AMC-U2」「メーカー希望小売価格 オープン価格※」「この商品はお取扱い先を限定しております。」で、AMC-U3の「対応する本体商品」一覧にも MC-PB61J が入っています。維持費の記事では、AMC-U2の1,210円（税込）が2026年10月下旬以降に後継品へ置き換わりうる点を併記すること。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+    "locator": "商品ページ 商品名直下の「※ 最新品番 ： AMC-U3」（span.c-prd101__body__product__info__next__code）／AMC-U3 商品ページの見出し・価格欄・「対応する本体商品」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "適合機種（公式記載）",
+    "text": "公式資料で値が異なります。商品ページの「対応する本体商品」一覧は「MC-BX11/MC-BX6/MC-DF500G/MC-EVA01/MC-K10/MC-K10P/MC-NS100K/MC-NS10K/MC-NS10KE/MC-NS70F/MC-NX500K/MC-NX700K/MC-NX810KM/MC-PB60J/MC-PB60JY/MC-PB61J/MC-PBP101J/MC-PBU510J/MC-PBU520J/MC-U32C/SN-KT12A/SN-KT12B」で MC-PB61J を含みますが、仕様ページの「適応機種」は「MC-D1、D2、D20、D21、D30、D40、K10、U15、U16、U17、U18、U19、U20、U21、U22、U23、U24、U25、U26、U27、U28、U30P、U31、U32、U36P、BX5、BX6、BX10、BX11の各シリーズ」でPBシリーズの記載がありません。MC-PB61J に使えるかはメーカー（ご相談窓口）へ確認してください。なお本体側（MC-PB61J 仕様ページの付属品、取扱説明書p.7・p.13）は AMC-U2 を指定しています。商品ページには「必ず対応品番をお確かめの上、ご購入ください。」「品番末尾に「-K」や「-W」がある場合は、色柄コードです。」の注意書きがあります。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+    "locator": "商品ページ「対応する本体商品」セクション（h2）内のアコーディオン「この消耗品・別売品に対する本体商品」（h3）の一覧。2026-09-16に描画して全22機種を確認",
+    "checked_at": "2026-09-16",
+    "state": "CONFLICT",
+    "conflict_sources": [
+     {
+      "label": "商品ページ「対応する本体商品」／アコーディオン「この消耗品・別売品に対する本体商品」",
+      "value": "MC-BX11/MC-BX6/MC-DF500G/MC-EVA01/MC-K10/MC-K10P/MC-NS100K/MC-NS10K/MC-NS10KE/MC-NS70F/MC-NX500K/MC-NX700K/MC-NX810KM/MC-PB60J/MC-PB60JY/MC-PB61J/MC-PBP101J/MC-PBU510J/MC-PBU520J/MC-U32C/SN-KT12A/SN-KT12B（MC-PB61Jを含む）",
+      "source_url": "https://panasonic.jp/consumables/products/AMC-U2.html",
+      "locator": "商品ページ「対応する本体商品」セクション内のアコーディオン「この消耗品・別売品に対する本体商品」の機種一覧",
+      "checked_at": "2026-09-16"
+     },
+     {
+      "label": "仕様ページ「適応機種」",
+      "value": "MC-D1、D2、D20、D21、D30、D40、K10、U15、U16、U17、U18、U19、U20、U21、U22、U23、U24、U25、U26、U27、U28、U30P、U31、U32、U36P、BX5、BX6、BX10、BX11の各シリーズ（PBシリーズの記載なし）",
+      "source_url": "https://panasonic.jp/consumables/products/AMC-U2/spec.html",
+      "locator": "仕様・スペック表「適応機種」行",
+      "checked_at": "2026-09-16"
+     }
+    ]
+   },
+   {
+    "label": "備考（旧品番からの置き換え）",
+    "text": "「今までAMC-PU1、U1をお使いの方は、本商品をご使用ください。」",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/consumables/products/AMC-U2/spec.html",
+    "locator": "仕様・スペック表「備考」行",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体側（MC-PB61J）の指定",
+    "text": "MC-PB61J の仕様ページ付属品欄は「ブラシ付きすき間ノズル,紙パックAMC-U2（1枚）,クリーナースタンド」。取扱説明書p.7の各部のなまえは「紙パックケース／紙パック（P.12）● S型（AMC-U2）」、p.13は「交換用の紙パックは、純正 S型紙パックをお使いください。」。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/soji/products/MC-PB61J/spec.html",
+    "locator": "MC-PB61J 仕様ページ「付属品」欄（取扱説明書は p.7「各部のなまえ」および p.13「新しい紙パックを取り付ける」の下の枠）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "メーカー希望小売価格（本体取扱説明書の記載）",
+    "text": "表は「品番 AMC-U2／枚数 10／メーカー希望小売価格※ 1,210円」、注記は「※ 2024年10月現在（税込）」。消耗品ページの現在価格（1,210円（税込）、2026-09-16確認）と同額ですが、記載時点が違うので併記して区別すること。",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "MC-PB61J 取扱説明書 p.13「交換用の紙パックは、純正 S型紙パックをお使いください。」の右の表。節の見出し「紙パックを交換する」はp.12にあるが、表はp.13にある",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "純正以外を使わない旨の注意",
+    "text": "注意「純正 以外の紙パックを使用しない ・本体内にゴミがもれ、発煙や発火のおそれ」。お知らせ「紙パックは、パッケージの説明をよく読み、正しくお使いください。」「紙パックは、パッケージに入れ、直射日光を避け、お子様の手の届かない所に保管してください。」",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "MC-PB61J 取扱説明書 p.13「新しい紙パックを取り付ける」の右下にある【注意】枠と、その下のお知らせ欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "取り付け方向",
+    "text": "「● 紙パックはヨコ長方向（A方向）に挿入する」「紙パックケースの開閉部に手を掛け、取り外す」「● 紙パックが正しく入っていないと、紙パックケースが取り付けられません。」",
+    "exact_model": "AMC-U2",
+    "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/002/873/902/000000002873902/MC-PB61J.pdf",
+    "locator": "MC-PB61J 取扱説明書 p.13「紙パックを取り出す」「新しい紙パックを取り付ける」の手順図と「お知らせ」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ]
+ },
+ {
+  "product_id": "PRD-SHARP-EC-530PN",
+  "exact_model": "EC-530PN",
+  "name": "シャープ 抗菌3層紙パック（5枚入り） EC-530PN",
+  "category": "vacuum-consumable",
+  "anchor": "product-paper-pack-ec-530pn",
+  "official_url": "https://cocorostore.jp.sharp/ec-530pn.html",
+  "facts": [
+   {
+    "label": "商品名・品番・入り数",
+    "text": "公式通販の商品名は「抗菌3層紙パック（5枚入り）」、形名 EC-530PN。特長ページは「シャープ純正 抗菌 ※2 3層紙パック EC-530PN（5枚入り）」「内層に不織布を採用し、通気性と捕じん性を高めました。」。取扱説明書p.22の別売品欄は「● 抗菌3層紙パック 形名 EC-530PN (5枚入り)」。サポートの別売オプション品一覧だけは品名が「抗菌3層紙袋」で、同じ形名に対して公式内で呼び名が3通りあります（紙パック／抗菌3層紙パック／抗菌3層紙袋）。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://cocorostore.jp.sharp/ec-530pn.html",
+    "locator": "COCORO STORE 商品ページの見出し（h1「抗菌3層紙パック（5枚入り）」）と形名表示／特長ページ下部「別売品」欄／取扱説明書 p.22「別売品」欄／サポート「別売オプション品詳細」の品名欄",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "メーカー希望小売価格（サポートの別売オプション品一覧）",
+    "text": "「抗菌3層紙袋　形名: EC-530PN　希望小売価格: オープン価格」。取扱説明書p.22の別売品欄も「形名 EC-530PN (5枚入り) オープン価格」で、メーカー希望小売価格は設定されていません。したがって下の公式通販価格は「希望小売価格」ではなく公式通販の販売価格です（両者は矛盾ではなく別の値）。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/support/cleaner/option_result.html?productId=EC-KR50A",
+    "locator": "サポート＞掃除機＞別売オプション品詳細（EC-KR50A）の「抗菌3層紙袋」行の「希望小売価格」欄（2026-09-16に描画して確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "公式通販の販売価格",
+    "text": "「￥1,430（税込10%）」。あわせて「14 ポイント（1％）」「納期：4～7日 ※土日祝、季節休暇を除く」「販売元： シャープマーケティングジャパン株式会社」。価格枠はJavaScript描画（Magentoの price-box）で、生HTMLの取得だけでは見えません。2026-09-16に実描画して確認し、同ページ埋め込みの構造化データも price 1430／priceCurrency JPY／availability InStock／valueAddedTaxIncluded true でした。5枚入りなので1枚あたり286円（税込）です。記事では「公式通販の価格（2026-09-16確認）」と明記すること。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://cocorostore.jp.sharp/ec-530pn.html",
+    "locator": "COCORO STORE（シャープ公式通販）EC-530PN 商品ページの価格欄（div.product-info-price 内の span.price「￥1,430」＋ span.tax-label「（税込10%）」）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "適合機種（公式記載）",
+    "text": "「対応する製品一覧：EC-KR50A-W、EC-KR70A-B」。同欄の注意書きは「本体型番記載がある事をご確認いただいた上でご購入ください。」「取扱説明書等に記載されている形名の末尾には、色調コード（例：「-W」ホワイト系）が記載されていない場合があります。」。記事で「EC-KR50A専用」と書くと公式記載とずれます。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://cocorostore.jp.sharp/ec-530pn.html",
+    "locator": "COCORO STORE EC-530PN 商品ページ「対応する製品一覧」（2026-09-16に描画して確認）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "本体側（EC-KR50A）の指定",
+    "text": "取扱説明書p.15「交換用紙パックは、純正の EC-530PN をお使いください。」。p.22 別売品「● 抗菌3層紙パック 形名 EC-530PN (5枚入り) オープン価格」「上記純正の紙パックをお使いください。それ以外の紙パックをご使用になった場合は、取り付けできません。また、掃除機の性能・品質などを保証できませんので、ご留意ください。」。p.6 付属品「● 抗菌3層紙パック EC-530PN(1枚)」（お買いあげ時はダストカップに装着）。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/restricted/support/manual/cleaner/eckr50a_mn.pdf",
+    "locator": "EC-KR50A 取扱説明書 p.6「付属品」／p.15「ゴミを捨てる」／p.22「別売品」",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "捕集性能",
+    "text": "「当社純正の抗菌 ※2 3層紙パックは、5μm以上の細かいごみを99.9％キャッチ。ダニや花粉を逃しません。」「純正紙パックEC-530PNの効果です。」「粒子径5μm以上の粉塵は約99.9%捕塵。3μm以上の粉塵は約99.0%捕塵。1μm以上の粉塵は約95.0%捕塵。当社基準による。」",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/feature/paperpack/",
+    "locator": "「ダニ・花粉を逃さない紙パック」節の本文と図の注記",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "抗菌の試験条件",
+    "text": "「※2 ●試験機関：（一財）ボーケン品質評価機構 ●試験方法：JIS L 1902に基づく菌液吸収法 ●試験結果：抗菌活性値2.0以上 ●抗菌剤/有効成分：繊維に抗菌剤を加工 ●抗菌の処理を行っている部分の名称：紙袋外層紙」",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/feature/paperpack/",
+    "locator": "「パックinカップ構造」ページ 欄外注記※2",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "交換頻度の目安",
+    "text": "「紙パックの交換は、約3か月に1回 ※1」「紙パックに約3か月分 ※1 のごみをためられるので、面倒なごみ捨ての回数を減らせます。」※1 当社調べ。一般社団法人 日本電気工業会自主基準に定められた基準ごみを、1日あたりの吸引量を1gとして、強モードで紙パックにごみがない状態から満杯になるまでの吸引量を測定。ごみの種類や運転モードによっては満杯になる日数は異なります。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/feature/paperpack/",
+    "locator": "「紙パックの交換は、約3か月に1回」節の本文と欄外注記※1",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "満杯時の挙動",
+    "text": "「※6 当社純正紙パックの容量。紙パックがごみでいっぱいの状態で運転を続けると自動停止します。必ず交換してください。」",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/spec/",
+    "locator": "EC-KR50A 仕様ページ 基本仕様表「集じん容積」行の欄外注記※6",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "装着方法（パックinカップ構造）",
+    "text": "「着脱が可能なダストカップに紙パックを装着するパックinカップ構造なので、カップを取り外してボタンを押す操作で紙パックにさわらずごみ捨てが行えます。」EC-KR50Aの出荷時は「お買いあげ時はダストカップに装着」された状態で1枚同梱されます。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://jp.sharp/souji/products/eckr50a/feature/paperpack/",
+    "locator": "「パックinカップ構造」ページの本文（同梱状態は EC-KR50A 取扱説明書 p.6「付属品」の注記）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   },
+   {
+    "label": "EC-AR50Aには適合しない旨",
+    "text": "公式の「対応する製品一覧」は EC-KR50A-W、EC-KR70A-B の2機種のみで、EC-AR50A-W は含まれません。EC-AR50A の集じん方式は「遠心分離サイクロン」で、仕様の付属品にも取扱説明書p.22の別売品にも紙パックの記載がありません。",
+    "exact_model": "EC-530PN",
+    "source_url": "https://cocorostore.jp.sharp/ec-530pn.html",
+    "locator": "COCORO STORE EC-530PN 商品ページ「対応する製品一覧」（EC-AR50A側は EC-AR50A 仕様ページ 基本仕様表「集じん方式」行）",
+    "checked_at": "2026-09-16",
+    "state": "KNOWN"
+   }
+  ]
+ }
+]

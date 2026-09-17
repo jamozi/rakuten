@@ -396,21 +396,18 @@ def test_curated_history_block_requires_one_article_root(compiled) -> None:
 
 
 W3_CANDIDATE = "7df287520bcb31bc42935646e47048ee5b3a8c6e320b889121e7697e733da5bf"
-STATUS = (
-    builder.ROOT / "changes/ks-integrated-20260915/status.v1.json"
-)
+STATUS = builder.ROOT / "changes/ks-integrated-20260915/status.v1.json"
 PUBLICATION_20260913 = (
     builder.ROOT / "changes/site-improvements-20260913/publication-result.v1.json"
 )
+#: The 2026-09-17 publish of next30 W0, the third publication record in the repo.
+NEXT30 = builder.ROOT / "changes/next30-20260916/decisions.v1.json"
 PUBLISHED = "PUBLISHED_AND_READBACK_VERIFIED"
 LARGE_SLUG = "large-dishwasher-comparison"
 ROBOT_SLUG = "compact-robot-vacuum-shortlist"
 W4A_BRANCH = "claude/ks-w4a-20260916"
 #: Terms a summary may only use about the article whose body carries them.
 RECORD_TERMS = ("軸名", "座席下", "開閉構造")
-
-
-ARTICLE_BODIES = builder.ROOT / "changes/wordpress-direct-publish-v1/articles"
 
 
 def articles_record() -> dict[str, dict]:
@@ -463,7 +460,16 @@ def published_candidates() -> set[str]:
         for batch in earlier["batches"]
         if batch.get("publication_status") == PUBLISHED
     }
+    wave_zero = next30_publish()
+    if wave_zero["publication_status"] == PUBLISHED:
+        ids.add(wave_zero["candidate_id"])
     return ids
+
+
+def next30_publish() -> dict:
+    """The publish record of next30 W0 (2026-09-17)."""
+    document = json.loads(NEXT30.read_text(encoding="utf-8"))
+    return document["wave_zero_applied"]["published"]
 
 
 def test_every_approved_layout_records_the_revision_it_carries() -> None:
@@ -482,7 +488,9 @@ def test_every_approved_layout_records_the_revision_it_carries() -> None:
         assert record["branches"] and all(
             branch.startswith("claude/") for branch in record["branches"]
         ), slug
-        assert record["tasks"] and all(t.startswith("KS-") for t in record["tasks"]), slug
+        assert record["tasks"] and all(t.startswith("KS-") for t in record["tasks"]), (
+            slug
+        )
         assert record["source_paths"], slug
         assert record["publication_authorized"] is False, slug
         if record["accepted"]:
@@ -493,8 +501,13 @@ def test_every_approved_layout_records_the_revision_it_carries() -> None:
 
 def test_large_revision_record_names_the_branch_that_wrote_it() -> None:
     """551's W4 revision withdrew the open-door origin; the record must say so."""
-    record = revision(articles_record()[LARGE_SLUG])
-    assert W4A_BRANCH in record["branches"], record["branches"]
+    records = [
+        record
+        for record in revisions(articles_record()[LARGE_SLUG])
+        if W4A_BRANCH in record["branches"]
+    ]
+    assert records, [r["branches"] for r in revisions(articles_record()[LARGE_SLUG])]
+    record = records[0]
     assert "起点" in record["summary"], record["summary"]
     assert (
         "changes/reader-purchase-support-v1/articles/large-dishwasher-comparison.html"
@@ -525,15 +538,59 @@ def test_robot_revision_states_the_width_the_theme_uses() -> None:
     against a 302px frame. The frame is 286px, so the first column at 7rem was
     never the binding term -- the table's own min-width was.
     """
-    summary = revision(articles_record()[ROBOT_SLUG])["summary"]
+    summaries = [
+        record["summary"] for record in revisions(articles_record()[ROBOT_SLUG])
+    ]
     phone = phone_table_frames.phone_block(THEME_CSS.read_text(encoding="utf-8"))
     width = re.search(
         r"table\.robot-space-table\{min-width:(\d+(?:\.\d+)?)rem!important", phone
     )
     assert width, "phone min-width"
-    assert f"{width.group(1)}rem" in summary, (width.group(1), summary)
     frame = int(phone_table_frames.ARTICLE_SCROLL_FRAME[320])
-    assert f"{frame}px" in summary, summary
+    stated = [
+        summary
+        for summary in summaries
+        if f"{width.group(1)}rem" in summary and f"{frame}px" in summary
+    ]
+    assert stated, (width.group(1), frame, summaries)
+
+
+def revisions(entry: dict) -> list[dict]:
+    """Every revision this entry records, newest first.
+
+    A later wave can add a fresh ``pending_revision`` on top of an accepted one,
+    so a rule about one batch's revision must look through the whole record
+    rather than at whichever revision happens to be current.
+    """
+    records: list[dict] = []
+    if entry.get("pending_revision") is not None:
+        records.append(revision(entry))
+    accepted = entry.get("latest_accepted")
+    if accepted is not None:
+        records.append(
+            {
+                "accepted": True,
+                "summary": accepted["accepted_scope"],
+                "branches": accepted.get("branches", []),
+                "tasks": accepted["tasks"],
+                "source_paths": accepted["source_paths"],
+                "publication_authorized": accepted["publication_authorized"],
+                "candidate": accepted["shared_candidate"],
+            }
+        )
+    for older in entry.get("previous_accepted", []):
+        records.append(
+            {
+                "accepted": True,
+                "summary": older.get("accepted_scope", ""),
+                "branches": older.get("branches", []),
+                "tasks": older.get("tasks", []),
+                "source_paths": older.get("source_paths", []),
+                "publication_authorized": older.get("publication_authorized", False),
+                "candidate": older.get("shared_candidate", ""),
+            }
+        )
+    return records
 
 
 def test_changed_approved_layouts_record_the_owner_review() -> None:
@@ -568,10 +625,40 @@ def test_changed_approved_layouts_record_the_owner_review() -> None:
 def published_documents() -> dict[str, set[str]]:
     """Candidate id -> the documents that candidate published."""
     status = json.loads(STATUS.read_text(encoding="utf-8"))
-    return {
+    documents = {
         batch["candidate_id"]: set(batch.get("documents", []))
         for batch in status["batches"].values()
         if batch.get("publication_status") == PUBLISHED
+    }
+    wave_zero = next30_publish()
+    if wave_zero["publication_status"] == PUBLISHED:
+        # next30 writes its contents as ``kitchen (136)``.
+        documents[wave_zero["candidate_id"]] = {
+            entry.split(" (")[0] for entry in wave_zero["documents"]
+        }
+    return documents
+
+
+def body_a_reader_can_open(slug: str, candidate: str) -> bytes:
+    """The bytes the named candidate put in front of readers.
+
+    The 2026-09-16 batch is read from the commit that carried it to main
+    (``ks_w4_batch.PUBLISHED_COMMIT``). The 2026-09-17 W0 candidate published
+    from its own wave branch, which no clone of main has to carry, so its bodies
+    are read from the tracked files this tree holds: the publish read this very
+    ledger and the record names the tree it sent (``published.tree``). Once W0
+    reaches main, pin this to that commit the way the W4 line is pinned.
+    """
+    if candidate == next30_publish()["candidate_id"]:
+        return (ks_w4_batch.ARTICLES / f"{slug}.html").read_bytes()
+    return ks_w4_batch.published_body(slug)
+
+
+def batch_candidates() -> set[str]:
+    """The two candidates of the 2026-09-16 batch (W4a・W4b)."""
+    status = json.loads(STATUS.read_text(encoding="utf-8"))
+    return {
+        status["batches"][name]["candidate_id"] for name in ks_w4_batch.BATCH_NAMES
     }
 
 
@@ -584,39 +671,83 @@ def test_accepted_records_name_the_body_a_reader_can_open() -> None:
     ``ps-0…`` left tests/purchase_support and tests/wordpress_public_acceptance
     green, so the record could drift away from the article at the next
     regeneration without a word.
+
+    The body is read from ``ks_w4_batch.PUBLISHED_COMMIT``, not from the working
+    tree. On main the two are the same file; on a branch they are not, because
+    the tree carries the *next* candidate -- this wave renamed the hub link in
+    three of these five bodies -- and reading the tree would turn a record that
+    is still exactly right into a red rule, one that could only be quieted by
+    rewriting the owner's acceptance. Reading the published commit keeps the
+    rule saying what it says on main and on every branch after it. A missing
+    object fails; it does not skip, for the reason given in
+    ``test_the_before_record_is_the_bodies_at_the_pinned_main_commit``.
     """
+    commit = ks_w4_batch.PUBLISHED_COMMIT
+    assert ks_w4_batch.commit_is_present(commit), (
+        f"{commit} is not in this clone, so an acceptance cannot be checked "
+        "against the body it names. CI checks out with fetch-depth: 0 "
+        "(.github/workflows/ci.yml), so fetch the full history rather than "
+        "letting this rule pass unmeasured."
+    )
+    # The pin has to be the *after* of the 2026-09-16 publish. Re-pointing it at
+    # the commit the batch was written against would make the rule read the
+    # bodies these acceptances replaced.
+    assert commit != ks_w4_batch.PRE_PUBLISH_COMMIT
+
     documents = published_documents()
+    checked = []
     for slug, entry in sorted(articles_record().items()):
         accepted = entry.get("latest_accepted")
         if accepted is None:
             continue
-        raw = (ARTICLE_BODIES / f"{slug}.html").read_bytes()
+        raw = body_a_reader_can_open(slug, accepted["shared_candidate"])
         assert accepted["body_sha256"] == hashlib.sha256(raw).hexdigest(), slug
         assert accepted["snapshot_id"] in raw.decode("utf-8"), (
             slug,
             accepted["snapshot_id"],
         )
+        before = ks_w4_batch.before_record()["bodies"].get(slug)
+        if before is not None:
+            assert accepted["body_sha256"] != before["body_sha256"], slug
         # The candidate the record names must be the one that carried this body.
         published = documents.get(accepted["shared_candidate"])
         assert published is not None, (slug, accepted["shared_candidate"])
         assert slug in published, (slug, sorted(published))
+        checked.append(slug)
+    assert len(checked) == 5, checked
 
 
 def test_the_previous_acceptance_is_the_body_this_batch_corrected() -> None:
-    """The recorded before-state and the previous acceptance are the same body.
+    """The recorded before-state and the acceptance it replaced are one body.
 
     ``ks_w4_published_before.json`` holds what each body showed before the
     2026-09-16 publish, for the card rules that have no git history to read. For
     the three dishwasher comparisons the owner also accepted that exact body at
     W3, so the digest recorded then is an independent check that the captured
     before is the state readers actually saw.
+
+    The pairing is found by walking the history rather than by reading
+    ``previous_accepted[0]``: a later wave puts its own acceptance on top (W0 did
+    on 2026-09-17), and the rule has to keep naming the acceptance the
+    2026-09-16 batch replaced, not whichever one happens to be second.
     """
+    candidates = batch_candidates()
     checked = []
     for slug, entry in sorted(articles_record().items()):
-        history = entry.get("previous_accepted") or []
-        if not history or slug not in ks_w4_batch.before_record()["bodies"]:
+        if slug not in ks_w4_batch.before_record()["bodies"]:
+            continue
+        history = [entry["latest_accepted"], *(entry.get("previous_accepted") or [])]
+        positions = [
+            index
+            for index, accepted in enumerate(history)
+            if accepted.get("shared_candidate") in candidates
+        ]
+        assert len(positions) == 1, (slug, positions)
+        older = positions[0] + 1
+        if older == len(history):
+            # The batch's own acceptance is the oldest this article records.
             continue
         before = ks_w4_batch.published_before(slug)
-        assert history[0]["body_sha256"] == before["body_sha256"], slug
+        assert history[older]["body_sha256"] == before["body_sha256"], slug
         checked.append(slug)
     assert len(checked) == 3, checked

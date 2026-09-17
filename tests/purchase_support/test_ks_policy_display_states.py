@@ -59,9 +59,14 @@ import re  # noqa: E402
 from raos.application.editorial.reader_html import Element  # noqa: E402
 
 ANALYTICS_JS = RUNTIME_JS.with_name("purchase-analytics.js")
-# The policy pages carry the date of the revision that is published with this batch.
-POLICY_REVISED_ON = "2026-09-15"
-POLICY_SLUGS = ("about-ad-policy", "comparison-policy", "privacy-policy")
+# Each policy page carries the date of the revision it was last published with;
+# next30 Wave 0 (2026-09-16) revises the operating policy only.
+POLICY_REVISED_ON = {
+    "about-ad-policy": "2026-09-16",
+    "comparison-policy": "2026-09-15",
+    "privacy-policy": "2026-09-15",
+}
+POLICY_SLUGS = tuple(POLICY_REVISED_ON)
 SKIPPED_TAGS = frozenset({"script", "style", "template", "code", "pre"})
 DISCLOSURE = re.compile(
     r'<(?:p|aside)\b[^>]*class="[^"]*\b(?:ps-disclosure|ks-reader-ad-note|sc-ad|raos-disclosure)\b'
@@ -186,11 +191,15 @@ def test_tpl_about_policy_rws_paragraph_keeps_availability_and_dates(roots, outp
     assert "価格、販売可能情報は、変更される場合があります。" in text
     assert "購入時に楽天市場店舗（www.rakuten.co.jp）に表示されている価格が、その商品の販売に適用されます。" in text
     assert "価格・販売状況の確認日時を表示" not in text
-    # Decision 5: the site's own sentence covers only the seller and reference price cells.
-    assert sentences(text)[-1].startswith(
-        "販売先ごとの欄と参考価格の欄には確認日時を併記し、"
+    # Decision 5: the site's own sentence covers only the seller and reference price
+    # cells — and only for the products whose seller conditions were recorded. The
+    # 17 next30 products have no approved offer, so the dated promise is conditional
+    # and the products without one are named in the sentence that follows it.
+    assert sentences(text)[-2].startswith(
+        "販売条件を記録した商品では、販売先ごとの欄と参考価格の欄に確認日時を併記し、"
         "確認から24時間または販売先の期限を過ぎた価格は表示しません"
     )
+    assert sentences(text)[-1].startswith("照合できた販売先がない商品は、参考価格の欄に")
     # Every static seller-status line keeps a dated line beside it.
     for slug, body in outputs.items():
         assert body.count('class="ps-price-status"') <= body.count('class="ps-price-date"'), slug
@@ -232,7 +241,7 @@ def test_tpl_policy_pages_carry_this_revision_date(roots, slug: str) -> None:
     """KS-117 (Q9): the last-updated date moves with the published revision."""
     assert visible_text(roots[slug]).count("最終更新日") == 1
     times = [t for t in roots[slug].find(tag="time") if "最終更新日" in visible_text(t.parent)]
-    assert [t.attrs.get("datetime") for t in times] == [POLICY_REVISED_ON]
+    assert [t.attrs.get("datetime") for t in times] == [POLICY_REVISED_ON[slug]]
 
 
 def test_tpl_comparison_policy_links_the_pre_publication_check(roots) -> None:

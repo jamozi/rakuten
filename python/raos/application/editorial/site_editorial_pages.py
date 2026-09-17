@@ -729,7 +729,7 @@ def render_pages(
             body = (
                 '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>'
                 + escape(page["lead"])
-                + '</p></div><figure class="ks-home-mood"><img src="/wp-content/themes/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp" width="1672" height="941" alt="朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ"></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリー</h2><div class="ks-home-feature-grid ks-home-category-grid">'
+                + '</p></div><figure class="ks-home-mood"><img src="/wp-content/themes/kurashinoshirube-child/assets/images/home-lifestyle-20260913.webp" width="1672" height="941" alt="朝の光が差す一人暮らしのキッチンと食卓のAI編集イメージ"></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリ</h2><div class="ks-home-feature-grid ks-home-category-grid">'
                 + "".join(feature(c, caption) for c, caption in HOME_CATEGORIES)
                 + "</div></section></section>"
             )

@@ -38,14 +38,14 @@ HUB_TITLE = {
     'home': 'ホーム',
     'categories': '商品カテゴリから探す', 'purposes': '悩み・目的から探す', 'guides': '選び方ガイド',
     'comparisons': '比較・条件別の候補', 'updates': '最近更新したガイド',
-    'travel': 'スーツケースの選び方・比較', 'kitchen': '食洗機の選び方・比較',
-    'cleaning': 'ロボット掃除機の選び方・比較', 'preparedness': 'ポータブル電源の選び方・比較',
+    'travel': 'スーツケースの選び方・比較', 'kitchen': '台所の道具の選び方・比較',
+    'cleaning': '掃除の道具の選び方・比較', 'preparedness': 'ポータブル電源の選び方・比較',
     'small-space': '一人暮らし・省スペース', 'save-housework': '家事を短くしたい',
     'without-installation': '設置工事を避けたい', 'easy-maintenance': '手入れを続けやすいものを選びたい',
     'comfortable-travel': '旅行を快適にしたい', 'prepare-outage': '防災に備えたい',
     'comparison-policy': '比較・編集方針', 'about-ad-policy': '運営・広告方針', 'privacy-policy': 'プライバシーポリシー',
 }
-CAT_NAME = {'travel': 'スーツケース', 'kitchen': '食洗機', 'cleaning': 'ロボット掃除機', 'preparedness': 'ポータブル電源'}
+CAT_NAME = {'travel': 'スーツケース', 'kitchen': '台所', 'cleaning': '掃除', 'preparedness': 'ポータブル電源'}
 CAT_ORDER = ['travel', 'kitchen', 'cleaning', 'preparedness']
 
 # ---------------------------------------------------------------------------
@@ -253,7 +253,7 @@ def grid(cards: list[str]) -> str:
 CAT_INTRO = {
     'travel': ('利用便と荷物量を先に確認し、軽さ・開き方・容量から選ぶ。', '4記事：小型機向け、軽量、前開き、エースのモデル比較。すべて広告リンクを含む比較記事です。'),
     'kitchen': ('置き場所・いつもの食器・毎回の給水から、続けられる一台を。', '7記事：機種比較2本（うち1本は広告リンクあり）と、設置・給排水・洗剤・手入れ・費用のガイド5本。'),
-    'cleaning': ('本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。', '2記事：設置条件からの比較と、小型2機種の構成比較。どちらも広告リンクを含みます。'),
+    'cleaning': ('いまはロボット掃除機。本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。', '2記事：設置条件からの比較と、小型2機種の構成比較。どちらも広告リンクを含みます。'),
     'preparedness': ('大きさより先に、使う機器と時間、運べる重さを決める。', '2記事：停電対策の選び方と、Anker Solixの容量帯・世代差。どちらも広告リンクを含みます。'),
 }
 
@@ -420,7 +420,7 @@ CATEGORY_HUBS = {
         hold='利用便が未定、拡張しないと荷物が収まらない、走行音や耐久性が最優先の場合は、運航会社の規定や実物・同条件の検証情報を確認してから決めましょう。',
     ),
     'cleaning': dict(
-        lead='本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。',
+        lead='いまはロボット掃除機。本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。',
         intro_h2='掃除を任せて、部屋は広く使いたい。',
         intro_p='本体の小ささだけでなく、充電台の置き場と自分に残る手入れから。家に無理なく迎えられる構成を比べます。',
         axes_h2='ロボット掃除機選びで先に確かめる4つの条件',
@@ -500,7 +500,7 @@ PURPOSE_HUBS = {
         axis_h2='置き場所から考える',
         axis_p='置ける寸法は、本体・扉や台・余白の3つに分けて測ると判断が早くなります。食洗機は扉を開いた奥行と蒸気の逃げ道、ロボット掃除機はステーションの周囲と帰還経路が見落としやすい点です。',
         articles=[262, 41, 86, 30, 85],
-        next=[('kitchen', '食洗機'), ('cleaning', 'ロボット掃除機')],
+        next=[('kitchen', '台所'), ('cleaning', '掃除')],
     ),
     'save-housework': dict(
         lead='洗い物や床掃除を機械に任せて、家事の時間を短くしたい方へ。任せられる作業と、給水・ゴミ捨て・手入れのように自分に残る作業を分けて考えます。作業時間の削減量は実測していません。',
@@ -508,7 +508,7 @@ PURPOSE_HUBS = {
         axis_h2='減らしたい家事から選ぶ',
         axis_p='食後の洗い物なら食洗機、床のほこりならロボット掃除機が候補です。どちらも「任せた後に残る作業」を続けられるかで、買い足す価値が決まります。',
         articles=[41, 263, 265, 266, 30, 85],
-        next=[('kitchen', '食洗機'), ('cleaning', 'ロボット掃除機')],
+        next=[('kitchen', '台所'), ('cleaning', '掃除')],
     ),
     'without-installation': dict(
         lead='分岐水栓の工事をせずに食洗機を使いたい方へ。タンク給水の機種でも、置き場所・排水先・電源・アースの確認は必要です。「工事不要」の表示だけで決めず、自宅で使える条件から確かめます。',
@@ -516,7 +516,7 @@ PURPOSE_HUBS = {
         axis_h2='購入前に確認する順番',
         axis_p='置き場所を測る、給水と排水の作業を確かめる、条件に合う機種を比べる、の順で進めます。アース端子や電気工事の要否は、メーカー・販売店または適切な施工業者へ確認してください。別機種の設置条件は流用しません。',
         articles=[262, 263, 41, 86],
-        next=[('kitchen', '食洗機')],
+        next=[('kitchen', '台所')],
     ),
     'easy-maintenance': dict(
         lead='買ったあとの手入れや消耗品を、無理なく続けたい方へ。食洗機は洗剤・フィルター清掃・毎回の給水、ロボット掃除機はゴミ捨てとシート交換、スーツケースは交換部品の有無を、購入前に確かめます。',
@@ -524,7 +524,7 @@ PURPOSE_HUBS = {
         axis_h2='残る作業・消耗品を確認する',
         axis_p='将来の部品供給や手入れの容易さを保証するものではありません。説明書や公式情報で確認できた手順と頻度だけを扱い、確認できない項目は未確認と書いています。',
         articles=[265, 264, 263, 266, 41, 85, 30, 83],
-        next=[('kitchen', '食洗機'), ('cleaning', 'ロボット掃除機'), ('travel', 'スーツケース')],
+        next=[('kitchen', '台所'), ('cleaning', '掃除'), ('travel', 'スーツケース')],
     ),
     'comfortable-travel': dict(
         lead='持ち上げる重さ、移動中の出し入れ、帰りに増える荷物。旅で困る場面から機内持ち込みスーツケースを選びたい方へ。カテゴリページが商品の条件から入るのに対し、ここでは利用便と荷物量から記事を選びます。',
@@ -651,7 +651,7 @@ def home_html() -> str:
     return f'''<!-- wp:html -->
 <div id="ks-magazine" data-release="{RELEASE}">
 <section class="km-pick" aria-labelledby="km-hero-title"><div class="km-pick-grid"><div class="km-pick-main"><div class="km-spine" aria-hidden="true"><strong>01</strong><span>はじめに</span></div><div class="km-hero"><img class="km-hero-image" src="{HERO_IMG}" width="842" height="495" alt=""><div class="km-hero-copy"><span class="km-tag">暮らしの道具を、納得して選ぶ</span><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p><strong>選ぶ理由も、選ばない理由も。</strong><br>置き場所、使い方、残る手間。必要な条件を整理し、自分に合う候補を比較できます。</p><nav class="km-hero-links" aria-label="商品カテゴリ別の代表記事">{hero_links}</nav></div></div></div><div class="km-promos"><h2 class="km-promos-title">選び方の3ステップ</h2>{steps}</div></div><p class="km-disclosure">当サイトの比較記事（PR表示あり）には広告・アフィリエイトリンクが含まれます。掲載順・評価は報酬条件と切り離しています。<a href="/about-ad-policy/">運営・広告方針</a></p></section>
-<section class="km-section" aria-labelledby="km-categories-title"><header class="km-section-head"><span aria-hidden="true">02</span><h2 id="km-categories-title">比較したい商品から選ぶ</h2><a href="/categories/">商品カテゴリから探す <span aria-hidden="true">⟶</span></a></header><p class="km-section-lead">スーツケース・食洗機・ロボット掃除機・ポータブル電源の各ページは、先に確かめる条件、条件から候補を見る、記事を選ぶ、購入前の確認の順に進めます。</p><nav class="ks-image-categories" id="ks-visual-categories" aria-label="比較したい商品から選ぶ" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:16px">{''.join(cat_cards)}</nav><p class="km-note">カテゴリ画像はAI生成の編集イメージです。掲載商品の実物写真や設置例ではありません。</p></section>
+<section class="km-section" aria-labelledby="km-categories-title"><header class="km-section-head"><span aria-hidden="true">02</span><h2 id="km-categories-title">比較したい商品から選ぶ</h2><a href="/categories/">商品カテゴリから探す <span aria-hidden="true">⟶</span></a></header><p class="km-section-lead">スーツケース・台所・掃除・ポータブル電源の各ページは、先に確かめる条件、条件から候補を見る、記事を選ぶ、購入前の確認の順に進めます。</p><nav class="ks-image-categories" id="ks-visual-categories" aria-label="比較したい商品から選ぶ" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:16px">{''.join(cat_cards)}</nav><p class="km-note">カテゴリ画像はAI生成の編集イメージです。掲載商品の実物写真や設置例ではありません。</p></section>
 <section class="km-section" aria-labelledby="km-purposes-title"><header class="km-section-head"><span aria-hidden="true">03</span><h2 id="km-purposes-title">いま困っていることを選ぶ</h2><a href="/purposes/">悩み・目的から探す <span aria-hidden="true">⟶</span></a></header><div class="km-features">{features}</div></section>
 <section class="km-section" aria-labelledby="km-articles-title"><header class="km-section-head"><span aria-hidden="true">04</span><h2 id="km-articles-title">掲載記事の一覧</h2><a href="/updates/">最近更新したガイド <span aria-hidden="true">⟶</span></a></header><p class="km-section-lead">公開中の15本すべてです。PRは販売店への広告リンクを含む比較記事、食洗機のガイド5本（2026年9月9日公開）に広告リンクはありません。更新日は2026年9月12日時点の記録です。</p><div class="km-article-groups">{''.join(groups)}</div></section>
 <section class="km-section" aria-labelledby="km-editorial-title"><header class="km-section-head"><span aria-hidden="true">05</span><h2 id="km-editorial-title">編集方針</h2><a href="/comparison-policy/">比較・編集方針 <span aria-hidden="true">⟶</span></a></header><div class="km-editorial">{editorial}</div></section>

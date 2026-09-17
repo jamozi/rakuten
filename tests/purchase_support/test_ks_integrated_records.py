@@ -409,3 +409,47 @@ def test_the_before_record_is_the_bodies_at_the_pinned_main_commit() -> None:
     rebuilt = ks_w4_batch.capture(commit)["bodies"]
     edited = sorted(slug for slug in bodies if bodies[slug] != rebuilt[slug])
     assert edited == [], edited
+
+
+# The rules about a published batch may not step aside once it publishes ---------
+
+#: Every module whose rules read this batch against the state it replaced. They
+#: are named one by one rather than globbed so that deleting one is a visible
+#: edit here.
+BATCH_RULE_MODULES = (
+    "tests/purchase_support/ks_w4_batch.py",
+    "tests/purchase_support/test_ks_w3_approved_layouts.py",
+    "tests/purchase_support/test_ks_w4a_dishwasher_articles.py",
+    "tests/purchase_support/test_ks_w4b_round5_20260916.py",
+    "tests/purchase_support/test_ks_w4b_round6_20260916.py",
+    "tests/purchase_support/test_ks_w4b_round7_20260916.py",
+    "tests/purchase_support/test_ks_w4b_robot_records.py",
+    "tests/purchase_support/test_ks_w4b_suitcase_20260916.py",
+)
+DORMANT = re.compile(r"pytest\.skip\(|pytest\.mark\.skip|skipif")
+
+
+def test_no_rule_about_this_batch_steps_aside_once_it_is_published() -> None:
+    """A rule that compares a card with the body it corrects may not go dormant.
+
+    Two rules in round 7 used to skip with 「the W4b candidate is published; its
+    cards are history now」: they read the card against ``origin/main``, so the
+    day the batch merged, the "before" they named became the tree itself and the
+    rules had nothing left to compare. Skipping was the wrong half of that fix --
+    a skipped rule is one nobody can tell from a passing one. The right half is
+    ``ks_w4_published_before.json`` and ``PUBLISHED_COMMIT``: a state the tree no
+    longer carries, kept where the rule can still read it.
+
+    So these modules carry no skip at all. If a body they check needs history
+    this repository no longer has, the answer is to record that history, the way
+    the two pinned commits above do -- never to let the rule pass unmeasured.
+    """
+    dormant = sorted(
+        relative
+        for relative in BATCH_RULE_MODULES
+        if DORMANT.search((ROOT / relative).read_text(encoding="utf-8"))
+    )
+    assert dormant == [], dormant
+    # A module named here that no longer exists would take its rules with it.
+    missing = sorted(r for r in BATCH_RULE_MODULES if not (ROOT / r).is_file())
+    assert missing == [], missing

@@ -1,12 +1,12 @@
 {
   "approval_required": true,
   "artifact_id": "raos-reader-measurement-v1",
-  "contract_sha256": "0e6847e47f13b39089a3953472da7542015463f06d2d7b826cbad3c5da9b4084",
+  "contract_sha256": "c4edc22705b4dbde7901dd3a658aeb3a3addc99ee85ac3fcaf2e4c47bb905f65",
   "default_enabled": false,
   "maintenance_file": "includes/reader-measurement-maintenance.php",
   "migration_assessment": "MANUAL_REVIEW_REQUIRED",
-  "package_sha256": "6f75653dd63b3259a5e0c4295495278ebb9c2b065fc23a70d91a0eeeee03b0ec",
-  "package_size": 28774,
+  "package_sha256": "af1bafda4f79dcee74cc2fd16bebc409288e8ed8ae810e656134e5fa00d5f8d4",
+  "package_size": 28769,
   "plugin_files": [
     {
       "path": "README.md",
@@ -25,12 +25,12 @@
     },
     {
       "path": "config/reader-allowlist.v1.json",
-      "sha256": "0e6847e47f13b39089a3953472da7542015463f06d2d7b826cbad3c5da9b4084",
+      "sha256": "c4edc22705b4dbde7901dd3a658aeb3a3addc99ee85ac3fcaf2e4c47bb905f65",
       "size": 23683
     },
     {
       "path": "config/reader-runtime.v1.json",
-      "sha256": "46c423e605b85c0073f03b4a75739253f6362d3bb549097ba5759b938e1d6564",
+      "sha256": "bb703760a17315cd24c4abe52ae3ac6cb76419847bf570608fe6e2a27733ecb0",
       "size": 1232
     },
     {
@@ -59,7 +59,7 @@
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
   "privacy_source": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
-  "revision": "37b2cbe62391df8ae20de37f4745c13402e4323f23ac4ebc3c82665a6b9ba1f5",
+  "revision": "cba46984506d8528def45f48b925e6d5404c0d02e197e70d4f98b5c3b51ba5d0",
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
@@ -108,8 +108,8 @@
     },
     {
       "path": "python/raos/application/editorial/reader_experience_v1.py",
-      "sha256": "742a753f6c578b087ba4f661d3f776688444e26227bd9215b4dafe78c7316ad8",
-      "size": 16649
+      "sha256": "ca229fb98eb99c23d34d4800085a81121f9527626be7476ca66335735c3b1ead",
+      "size": 16631
     },
     {
       "path": "python/raos/application/editorial/reader_html.py",

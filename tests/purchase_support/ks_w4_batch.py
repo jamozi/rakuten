@@ -56,8 +56,48 @@ BATCH_NAMES = ("W4a", "W4b")
 #: over. ``test_the_before_record_is_the_bodies_at_the_pinned_main_commit``
 #: re-derives the whole record from it.
 PRE_PUBLISH_COMMIT = "e128783af2f0417cbfeaf712030b3cc04312f526"
+#: The commit of *main* that carries what this batch put in front of readers:
+#: 「暮らしのしるべ: KS W4」 (PR #293). The counterpart of ``PRE_PUBLISH_COMMIT``
+#: and pinned for the same reasons -- ``origin/main`` moves onto the next wave's
+#: bodies the moment that wave merges, and the two candidates that published
+#: these bodies (``ad936713`` / ``9fa8ee45``) exist only in local branches.
+#: A rule that wants the body a reader can open reads it from here: on main it
+#: is the same file as the working tree, but on a branch the tree carries the
+#: *next* candidate, so reading the tree would turn a record that is still
+#: exactly right into a red rule the moment a wave edits the body.
+PUBLISHED_COMMIT = "b5618eed411315292f0c9e7d72d96cc11fd4d10e"
 PUBLISHED = "PUBLISHED_AND_READBACK_VERIFIED"
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
+
+
+def blob(commit: str, path: str) -> bytes:
+    """One tracked file at one commit. A missing object raises; it never skips."""
+    import subprocess
+
+    return subprocess.run(
+        ("git", "show", f"{commit}:{path}"),
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    ).stdout
+
+
+def commit_is_present(commit: str) -> bool:
+    import subprocess
+
+    return (
+        subprocess.run(
+            ("git", "cat-file", "-e", commit + "^{commit}"),
+            cwd=ROOT,
+            capture_output=True,
+        ).returncode
+        == 0
+    )
+
+
+def published_body(slug: str) -> bytes:
+    """The body a reader can open today, read from ``PUBLISHED_COMMIT``."""
+    return blob(PUBLISHED_COMMIT, f"{ARTICLE_PREFIX}{slug}.html")
 
 
 def status() -> dict:

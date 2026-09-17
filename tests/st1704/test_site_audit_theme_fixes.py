@@ -133,7 +133,7 @@ $GLOBALS['raos_state']['search_query'] = '食洗機';
 $out['search_canonical'] = kurashinoshirube_archive_canonical_url();
 $hub = new WP_Post();
 foreach (array('ID' => 136, 'post_type' => 'page', 'post_status' => 'publish', 'post_password' => '', 'post_name' => 'kitchen',
-    'post_title' => '食洗機の選び方・比較', 'post_excerpt' => '', 'post_content' => '') as $key => $value) { $hub->$key = $value; }
+    'post_title' => '台所の道具の選び方・比較', 'post_excerpt' => '', 'post_content' => '') as $key => $value) { $hub->$key = $value; }
 $GLOBALS['pages']['kitchen'] = $hub;
 kurashinoshirube_flush_reader_hub_page_cache();
 $out['hint_kitchen'] = kurashinoshirube_search_hub_hint('食洗機');
@@ -276,7 +276,7 @@ def test_search_surfaces_get_self_canonical_and_hub_hints(rendered) -> None:
     assert rendered["search_canonical"] == ORIGIN + "/?s=%E9%A3%9F%E6%B4%97%E6%A9%9F"
     kitchen = str(rendered["hint_kitchen"])
     assert kitchen.startswith('<p class="raos-listing-hub-hint">')
-    assert f'href="{ORIGIN}/kitchen/">食洗機の比較はこちら' in kitchen
+    assert f'href="{ORIGIN}/kitchen/">台所の道具の比較はこちら' in kitchen
     assert rendered["hint_solota"] == kitchen
     assert rendered["hint_none"] == ""
     # A matched route whose hub page is not reachable renders nothing rather than a dead link.

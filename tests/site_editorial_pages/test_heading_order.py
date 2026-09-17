@@ -46,7 +46,7 @@ class HeadingOrder(unittest.TestCase):
         )
         names = re.findall(r'<article class="ks-editorial-card"><h2>([^<]+)</h2>', body)
         self.assertEqual(
-            names, ["スーツケース", "食洗機", "ロボット掃除機", "ポータブル電源"]
+            names, ["スーツケース", "台所", "掃除", "ポータブル電源"]
         )
         self.assertNotIn('<article class="ks-editorial-card"><h3>', body)
 
