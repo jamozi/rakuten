@@ -71,22 +71,35 @@ def test_the_record_files_exist() -> None:
     assert facts == 284, facts
     recorded = document["product_catalog"]
     assert recorded["products"] == 17 and recorded["facts"] == 284, recorded
-    assert recorded["wired_into_live_catalog"] is False, recorded
+    # The candidate is imported one wave at a time (PURCHASE_UNUSED_PRODUCT keeps a
+    # product out until the article that references it is written), so the record
+    # names the products already served and has to agree with the live catalog in
+    # both directions: nothing wired that the record omits, nothing recorded that
+    # is not there.
+    wired = recorded["wired_into_live_catalog"]
+    candidates = [product["product_id"] for product in products]
+    assert isinstance(wired, list) and len(wired) == len(set(wired)), recorded
+    assert set(wired) <= set(candidates), recorded
+    live = json.loads(
+        (ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    served = {product["product_id"] for product in live["products"]}
+    for product_id in candidates:
+        assert (product_id in served) == (product_id in wired), product_id
 
-    # The copy is a candidate: nothing has imported it into the served catalog yet.
     text = README.read_text(encoding="utf-8")
     assert "products.candidate.v1.json" in text
     assert "purchase-support.v1.json" in text, (
         "the README does not name the live catalog"
     )
-    assert "取り込んでいません" in text, (
-        "the README does not say the catalog is unwired"
+    assert "PURCHASE_UNUSED_PRODUCT" in text, (
+        "the README does not say why the import is split across the waves"
     )
-    live = (
-        ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json"
-    ).read_text(encoding="utf-8")
-    for product_id in (product["product_id"] for product in products):
-        assert product_id not in live, f"{product_id} is already in the live catalog"
+    assert str(len(wired)) + " 商品" in text, (
+        "the README does not state how many products are served"
+    )
 
 
 def test_the_decisions_file_gives_every_intake_article_a_verdict() -> None:

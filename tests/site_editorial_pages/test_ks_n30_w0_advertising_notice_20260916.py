@@ -104,9 +104,18 @@ def ledger() -> dict[str, dict]:
     return {row["article_key"]: row for row in rows}
 
 
+def is_published(row: dict) -> bool:
+    """A post a reader can open: an existing row whose listing says published."""
+    return (
+        row["post_type"] == "post"
+        and row["mode"] == "existing"
+        and (row.get("listing") or {}).get("state") == "published"
+    )
+
+
 @pytest.fixture(scope="module")
 def posts(ledger) -> dict[str, dict]:
-    return {key: row for key, row in ledger.items() if row["post_type"] == "post"}
+    return {key: row for key, row in ledger.items() if is_published(row)}
 
 
 @pytest.fixture(scope="module")
@@ -184,6 +193,28 @@ def test_the_policy_page_publishes_both_halves_of_its_advertising_promise(
     body = stored_body(ledger[POLICY_KEY])
     assert CARRIES_ADVERTISING in body, body[-900:]
     assert CARRIES_NO_ADVERTISING in body, body[-900:]
+
+
+def test_the_notice_check_covers_exactly_the_posts_wordpress_has(posts, ledger) -> None:
+    """The theme's verdict is about a post that exists, so the set is the published one.
+
+    next30 Wave 1 put three rows in the ledger that are still ``mode:"new"``:
+    their body is written and their post id is not minted yet. Handing one to
+    this harness is not a weaker check, it is a fatal error —
+    ``kurashinoshirube_article_has_affiliate_links()`` takes an int and PHP stops
+    on null. The set this file reads has to be the ledger's published posts, and
+    it has to stay non-empty so narrowing it can never turn the guard off.
+    """
+    published = {
+        key
+        for key, row in ledger.items()
+        if row["post_type"] == "post"
+        and row["mode"] == "existing"
+        and (row.get("listing") or {}).get("state") == "published"
+    }
+    assert set(posts) == published
+    assert posts
+    assert all(type(row["post_id"]) is int for row in posts.values())
 
 
 def test_every_published_article_states_its_advertising_exactly_once(

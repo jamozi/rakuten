@@ -48,7 +48,10 @@ def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
 ):
     validate_catalog(catalog)
     html, runtime = compile(catalog)
-    assert len(html) == 23 and len(catalog["products"]) == 54
+    # next30 Wave 1 (2026-09-17) added the three dish-rack articles and the five
+    # dish-rack products; every catalog article still compiles to one body.
+    assert len(html) == len(catalog["articles"]) == 26
+    assert len(catalog["products"]) == 59
     roots = {slug: fragment(body) for slug, body in html.items()}
     for slug, root in roots.items():
         ids = [n.attrs["id"] for n in root.walk() if "id" in n.attrs]
@@ -631,7 +634,7 @@ def test_ten_comparisons_share_exact_identities_and_keep_slim_supplementary(cata
     }
     assert set(catalog["target_post_ids"]) == set(comparisons)
     products = {p["product_id"]: p for p in catalog["products"]}
-    assert len(products) == len(catalog["products"]) == 54
+    assert len(products) == len(catalog["products"]) == 59
     assert set(comparisons[85]["product_ids"]) <= set(comparisons[30]["product_ids"])
     assert "PRD-ANKER-SOLIX-C300" in set(comparisons[28]["product_ids"]) & set(
         comparisons[29]["product_ids"]

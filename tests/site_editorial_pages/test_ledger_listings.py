@@ -27,6 +27,12 @@ spec.loader.exec_module(builder)
 
 from raos.application.editorial import site_editorial_pages as editorial  # noqa: E402
 
+# next30 Wave 1 (2026-09-17): bodies written, post ids not minted yet.
+AWAITING_PUBLICATION = (
+    "dish-rack-installation-measurement",
+    "slim-dish-rack-under-20cm",
+    "dish-rack-no-space",
+)
 NEW_POST_IDS = {
     "compact-dishwasher-comparison": 549,
     "standard-dishwasher-comparison": 550,
@@ -174,7 +180,21 @@ class LedgerListings(unittest.TestCase):
                 self.assertEqual(article["post_id"], rows[article["slug"]]["post_id"])
 
     def test_every_post_row_has_a_complete_listing(self):
-        posts = [r for r in self.registry["articles"] if r["post_type"] == "post"]
+        rows = [r for r in self.registry["articles"] if r["post_type"] == "post"]
+        posts = [r for r in rows if editorial.is_published(r)]
+        # A listing describes a post that exists. A row still waiting for its
+        # post id carries none: writing one would make the hubs link a 404, and
+        # metadata() refuses it as LEDGER_IDENTITY_STALE.
+        self.assertEqual(
+            [r["article_key"] for r in rows if not editorial.is_published(r)],
+            list(AWAITING_PUBLICATION),
+        )
+        for row in rows:
+            if not editorial.is_published(row):
+                with self.subTest(slug=row["slug"]):
+                    self.assertEqual(row["mode"], "new")
+                    self.assertIsNone(row["post_id"])
+                    self.assertNotIn("listing", row)
         self.assertEqual(len(posts), 20)
         for row in posts:
             with self.subTest(slug=row["slug"]):

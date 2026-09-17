@@ -124,6 +124,11 @@ EXPECTED_MEDIA = {
         "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
         "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
     },
+    # next30 Wave 1: the five dish racks have no approved seller, so their
+    # image_review stays UNVERIFIED and no photo is projected for these three.
+    "dish-rack-installation-measurement": set(),
+    "slim-dish-rack-under-20cm": set(),
+    "dish-rack-no-space": set(),
 }
 
 

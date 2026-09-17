@@ -2,7 +2,7 @@
 
 入力パッケージ `tmp/next30/kurashinoshirube_30_articles_20260916`（2026-09-16 作成）に対する、オーナー決定・編集判断・
 検証済みの商品カタログ・波計画の記録。**この directory に記事本文はない。** 状態の一次情報は `decisions.v1.json`、
-商品は `products.candidate.v1.json`（まだどこにも接続していない候補データ）。
+商品は `products.candidate.v1.json`（検証済みの候補データ。このうち水切りラック 5 商品だけが W1-A で公開カタログへ入り、残る 12 商品は未接続）。
 
 対象は水切りラック・衣類乾燥除湿機・ノンフライヤー（熱風調理器）・軽量コードレス掃除機の 4 分野。
 波 0 は**新記事を 1 本も含まない**。新記事より先に、サイトが自分について書いている記述（方針ページの「扱う領域」と
@@ -64,7 +64,7 @@ KEEP は A11（除湿の 3 方式）だけ。
 役割の内訳は comparison 16 本・guide 9 本。承認済み offer がゼロなので、25 本すべて主 CTA は `internal` で、
 メーカー公式への導線はレンダラが自動で出す参照リンク（`official_verify`）だけになる。
 
-## 検証済みの商品カタログ（まだ接続していない）
+## 検証済みの商品カタログ（波ごとに取り込む）
 
 `products.candidate.v1.json` は 17 商品の検証済みカタログの写し（sha256 `a0551667…2213d`、
 コピー元は調査作業の `next30/products.catalog.json`）。リポジトリの検証器
@@ -80,10 +80,18 @@ ALL OK
 `facts` 284 件の内訳は KNOWN 249 / UNKNOWN 26 / CONFLICT 9、上の `states` は `guide_facts` 29 件を含めた 313 件の集計。
 変異を 10 種類仕込む negative control を流し、すべて検出されること（未変異のカタログは合格すること）も確認している。
 
-**このファイルは記録であって、まだ読者に届く経路には入っていない。** 公開カタログ
-`changes/reader-purchase-support-v1/purchase-support.v1.json` には 17 商品を 1 件も**取り込んでいません**。
-取り込みは W1-A で行い、そのとき 17 商品すべてに `research_issues[]` を 1 件以上付ける
-（`PURCHASE_DESTINATION_OR_ISSUE_REQUIRED`）。承認済み offer はゼロなので、参考価格の欄は「価格は確認中」になる。
+**このファイルは記録であり、17 商品のうち読者に届く経路へ入っているのは 5 商品だけです。** 公開カタログ
+`changes/reader-purchase-support-v1/purchase-support.v1.json` には、W1-A で水切りラックの 5 商品
+（`PRD-YAMAZAKI-4314` / `PRD-YAMAZAKI-5070` / `PRD-SHIMOMURA-42666` / `PRD-YAMAZAKI-7835` /
+`PRD-YAMAZAKI-3492`）を `facts` / `guide_facts` / `installation` ごと原文のまま取り込み、
+1 商品につき `research_issues[]` を 1 件付けました（`PURCHASE_DESTINATION_OR_ISSUE_REQUIRED`）。
+残る 12 商品を同時に入れることはできません。**`PURCHASE_UNUSED_PRODUCT` は
+「どの `comparison` / `curated_comparison` からも参照されない商品」で落ちる**ため、商品はそれを参照する記事と
+同じ波でしか入れられないからです（衣類乾燥除湿機 3 商品は W3-A、ノンフライヤー 4 商品は W5-A、
+軽量コードレス掃除機 3 商品と付属品 2 商品は W7-A）。承認済み offer はゼロなので、参考価格の欄は「価格は確認中」、
+外向きの導線はレンダラが出す `official_verify` の参照リンクだけになります。商品写真は
+`image_review.state` を `UNVERIFIED`（理由つき）にして未掲載にしています
+— `image_review` が無いと `resolve_product_media` が `PURCHASE_MEDIA_REVIEW_REQUIRED` で落ちます。
 
 CONFLICT 9 件（CV-U71 のモード名／CV-U60 の定格除湿能力の試験条件／CV-U60 の除湿自動時の消費電力／
 F-YEX90D のケア「衣類」22W の条件／RAO-3 の食洗機／MC-PB61J の 1.3kg の内訳／MC-PB61J の付属品／

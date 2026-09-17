@@ -139,10 +139,16 @@
       ],
       "negative_controls": "10 件の変異をすべて ValueError で捕捉（unmutated catalog still passes: True）"
     },
-    "wired_into_live_catalog": false,
+    "wired_into_live_catalog": [
+      "PRD-YAMAZAKI-4314",
+      "PRD-YAMAZAKI-5070",
+      "PRD-SHIMOMURA-42666",
+      "PRD-YAMAZAKI-7835",
+      "PRD-YAMAZAKI-3492"
+    ],
     "live_catalog": "changes/reader-purchase-support-v1/purchase-support.v1.json",
-    "import_planned_in": "W1-A",
-    "import_note": "取り込み時は 17 商品すべてに research_issues[] を 1 件以上付ける（PURCHASE_DESTINATION_OR_ISSUE_REQUIRED）。承認済み offer はゼロなので参考価格の欄は「価格は確認中」、導線は official_verify の参照リンクだけになる。",
+    "import_planned_in": "W1-A（水切りラック 5 商品・取り込み済み）／W3-A（衣類乾燥除湿機 3 商品）／W5-A（ノンフライヤー 4 商品）／W7-A（軽量コードレス掃除機 3 商品と付属品 2 商品）",
+    "import_note": "17 商品をまとめて入れることはできない。PURCHASE_UNUSED_PRODUCT は「どの comparison / curated_comparison からも参照されない商品」で落ちるため、その波の記事が参照する商品だけを、その波の候補 A で入れる。取り込む商品には research_issues[] を 1 件以上付ける（PURCHASE_DESTINATION_OR_ISSUE_REQUIRED）。承認済み offer はゼロなので参考価格の欄は「価格は確認中」、外向きの導線は official_verify の参照リンクだけになる。商品写真は image_review.state を UNVERIFIED（理由つき）にして未掲載にする（image_review が無いと resolve_product_media が PURCHASE_MEDIA_REVIEW_REQUIRED で落ちる）。",
     "conflicts": [
       {
         "product_id": "PRD-SHARP-CV-U71",
@@ -1185,7 +1191,8 @@
     "DH01 / CV-U71 の衣類乾燥モード名（取扱説明書・仕様ページ・商品ページで不一致）",
     "AF04 / YCW-C120 の食洗機対応（UNKNOWN のまま）",
     "catalog 全 284 facts の再監査（各波の候補 A で、その波が使う fact だけを再照合する運用）",
-    "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）"
+    "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）",
+    "purchase-support.v1.json の kind:\"guide\" は新記事に使えない（W1-A で実測）。render_guide は purchase_support.py:2366 で STAGES の 5 slug（dishwasher-installation-measurement / -water-supply-methods / -running-cost / -detergent-guide / -cleaning-guide）から stage を引くため、それ以外の slug では StopIteration になる。本文も MAIN_SLUG（卓上食洗機 4 機種）の機種索引と stage 別の表で組まれるので、水切りラックの記事には合わない。W1-A の A01 はカタログ側だけを kind:\"curated_comparison\"（commerce_anchor:\"guide-evidence\"・commerce_presentation:\"comparison_rows\"）にし、台帳の listing.role と reader_role.page_kind は guide / task_guide のまま公開する（カタログの kind は role を変えない: tests/site_editorial_pages/test_ledger_listings.py:478）。残る guide 8 本（A08・A10・A11・A15・A17・A24・A25・A26）も同じ扱いにするか、render_guide を汎用化するかは未決。reader_intro / reader_steps / reader_unknowns_note は curated_comparison では読まれないため、A01 の採寸 6 ステップは本文テンプレートに書く。"
   ],
   "deferrals": [
     {

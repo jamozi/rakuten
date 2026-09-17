@@ -51,6 +51,18 @@ REWRITTEN_BY_THIS_WAVE = (
     "solota-vs-rakua-mini-plus",
 )
 
+#: next30 Wave 1 (2026-09-17): bodies generated, post ids not minted yet, so
+#: the theme cannot be asked which sheets they get.
+AWAITING_PUBLICATION = (
+    "dish-rack-installation-measurement",
+    "slim-dish-rack-under-20cm",
+    "dish-rack-no-space",
+)
+#: A published purchase-support article whose enqueued sheets these will share.
+SHEET_REFERENCE = "dishwasher-installation-measurement"
+#: Suffix marking the same body measured under theme.css alone (552's condition).
+UNSTYLED = "@theme-css-only"
+
 # The theme decides which stylesheets a post gets, so the theme is asked. A post
 # whose body is not in the purchase-support runtime verifies no context and gets
 # the base sheet alone.
@@ -92,13 +104,61 @@ echo json_encode($out, JSON_UNESCAPED_UNICODE);
 """
 
 
+def ledger_rows() -> list[dict]:
+    return json.loads(LEDGER.read_text(encoding="utf-8"))["articles"]
+
+
 def published_posts() -> dict[str, dict]:
-    rows = json.loads(LEDGER.read_text(encoding="utf-8"))["articles"]
+    """The posts WordPress serves: an existing row whose listing says published.
+
+    The theme resolves purchase-support.css through the applied snapshot, and
+    that comparison is `($snapshot['id'] ?? null) !== $post_id`
+    (inc/purchase-support.php:22). A row whose post id is not minted yet has no
+    id to compare, so measuring it here would only ever report the unstyled
+    fallback and call a healthy body broken. Those rows are measured against the
+    sheets they will get, in the test below.
+    """
     return {
         row["slug"]: row
-        for row in rows
-        if row["post_type"] == "post" and (row.get("body_source") or row.get("patch_source"))
+        for row in ledger_rows()
+        if row["post_type"] == "post"
+        and row["mode"] == "existing"
+        and (row.get("listing") or {}).get("state") == "published"
+        and (row.get("body_source") or row.get("patch_source"))
     }
+
+
+def measure(plan: dict, tmp_path_factory, name: str) -> dict[str, dict]:
+    """Drive the browser harness over ``plan`` and return its report."""
+    # Contract §8: this starts the browser that article_nav_frames.mjs drives at the
+    # site's own origin, so it refuses -- it does not skip -- while a price-overlay run
+    # is live. The harness refuses again on its own side.
+    refuse_while_price_overlay_live()
+    node = shutil.which("node")
+    if node is None or not (ROOT / "node_modules/playwright/package.json").is_file():
+        pytest.skip("Node and the locked Playwright runtime are required")
+    browser = subprocess.run(
+        [node, "-e", "process.stdout.write(require('playwright').chromium.executablePath())"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=60,
+    )
+    if browser.returncode != 0 or not Path(browser.stdout.strip()).is_file():
+        pytest.skip("The locked Chromium build is not installed")
+    path = tmp_path_factory.mktemp(name) / "plan.json"
+    path.write_text(json.dumps(plan, ensure_ascii=False), encoding="utf-8")
+    result = subprocess.run(
+        [node, str(HARNESS), str(path), ",".join(str(width) for width in WIDTHS)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+    )
+    assert result.returncode == 0, result.stderr or result.stdout
+    return json.loads(result.stdout)
 
 
 @pytest.fixture(scope="module")
@@ -122,23 +182,6 @@ def stylesheets(tmp_path_factory) -> dict[str, list[str]]:
 
 @pytest.fixture(scope="module")
 def rendered(stylesheets, tmp_path_factory) -> dict[str, dict]:
-    # Contract §8: this fixture starts the browser that article_nav_frames.mjs drives at
-    # the site's own origin, so it refuses -- it does not skip -- while a price-overlay run
-    # is live. The harness refuses again on its own side.
-    refuse_while_price_overlay_live()
-    node = shutil.which("node")
-    if node is None or not (ROOT / "node_modules/playwright/package.json").is_file():
-        pytest.skip("Node and the locked Playwright runtime are required")
-    browser = subprocess.run(
-        [node, "-e", "process.stdout.write(require('playwright').chromium.executablePath())"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=60,
-    )
-    if browser.returncode != 0 or not Path(browser.stdout.strip()).is_file():
-        pytest.skip("The locked Chromium build is not installed")
     posts = published_posts()
     plan = {
         slug: {
@@ -147,18 +190,20 @@ def rendered(stylesheets, tmp_path_factory) -> dict[str, dict]:
         }
         for slug, sheets in stylesheets.items()
     }
-    path = tmp_path_factory.mktemp("navigation") / "plan.json"
-    path.write_text(json.dumps(plan, ensure_ascii=False), encoding="utf-8")
-    result = subprocess.run(
-        [node, str(HARNESS), str(path), ",".join(str(width) for width in WIDTHS)],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-        timeout=300,
-    )
-    assert result.returncode == 0, result.stderr or result.stdout
-    return json.loads(result.stdout)
+    return measure(plan, tmp_path_factory, "navigation")
+
+
+@pytest.fixture(scope="module")
+def rendered_before_publication(stylesheets, tmp_path_factory) -> dict[str, dict]:
+    """The wave-1 bodies under the sheets they get, and under theme.css alone."""
+    rows = {row["article_key"]: row for row in ledger_rows()}
+    sheets = stylesheets[SHEET_REFERENCE]
+    plan = {}
+    for key in AWAITING_PUBLICATION:
+        body = rows[key]["body_source"]
+        plan[key] = {"sheets": sheets, "body": body}
+        plan[key + UNSTYLED] = {"sheets": ["theme.css"], "body": body}
+    return measure(plan, tmp_path_factory, "navigation-wave-one")
 
 
 def navigations(rendered: dict[str, dict]) -> list[tuple[str, int, dict]]:
@@ -212,3 +257,41 @@ def test_the_navigation_of_a_post_outside_the_runtime_is_styled_by_the_theme(
     assert all(
         not pair["same_line"] or pair["gap"] >= MINIMUM_GAP for pair in pairs
     ), pairs
+
+
+def test_the_rows_awaiting_publication_read_as_separate_links(
+    stylesheets, rendered_before_publication
+) -> None:
+    """Wave 1's three bodies, measured against the sheets publication will give them.
+
+    They are not in `published_posts()` yet, so nothing else here reads them. The
+    second half is the control: the same body under theme.css alone -- 552's
+    condition -- has to run together, or a green first half would only mean the
+    measurement stopped looking.
+    """
+    assert stylesheets[SHEET_REFERENCE] == [
+        "theme.css",
+        "editorial-v2.css",
+        "purchase-support.css",
+    ], stylesheets[SHEET_REFERENCE]
+    joined, measured, unstyled = [], set(), set()
+    for slug, width, nav in navigations(rendered_before_publication):
+        for pair in nav["pairs"]:
+            separated = (
+                bool(pair["printed_between"])
+                or not pair["same_line"]
+                or pair["gap"] >= MINIMUM_GAP
+            )
+            if slug.endswith(UNSTYLED):
+                if not separated:
+                    unstyled.add(slug.removesuffix(UNSTYLED))
+                continue
+            measured.add(slug)
+            if not separated:
+                joined.append(
+                    f"{slug} @{width}px .{nav['selector']}: "
+                    f"{''.join(pair['texts'])} (gap {pair['gap']}px)"
+                )
+    assert joined == [], joined
+    assert measured == set(AWAITING_PUBLICATION), sorted(measured)
+    assert unstyled == set(AWAITING_PUBLICATION), sorted(unstyled)

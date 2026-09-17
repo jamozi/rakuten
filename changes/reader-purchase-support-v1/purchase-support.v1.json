@@ -2486,6 +2486,178 @@
           }
         ]
       }
+    },
+    {
+      "article_id": "dish-rack-installation-measurement",
+      "slug": "dish-rack-installation-measurement",
+      "post_id": null,
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "title": "水切りラックを置けるか測る｜シンク・脚・蛇口の確認",
+      "product_ids": [
+        "PRD-YAMAZAKI-4314",
+        "PRD-YAMAZAKI-5070",
+        "PRD-SHIMOMURA-42666",
+        "PRD-YAMAZAKI-7835",
+        "PRD-YAMAZAKI-3492"
+      ],
+      "commerce_anchor": "guide-evidence",
+      "commerce_presentation": "comparison_rows",
+      "responsive_layout": "matrix",
+      "row_products": [
+        {
+          "key": "y4314",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "y5070",
+          "product_id": "PRD-YAMAZAKI-5070"
+        },
+        {
+          "key": "s42666",
+          "product_id": "PRD-SHIMOMURA-42666"
+        },
+        {
+          "key": "y7835",
+          "product_id": "PRD-YAMAZAKI-7835"
+        },
+        {
+          "key": "y3492",
+          "product_id": "PRD-YAMAZAKI-3492"
+        }
+      ],
+      "history": [
+        {
+          "date": "2026-09-16",
+          "text": "5商品の公式商品ページでサイズ図・仕様表・紹介本文・品質表示を確認し、対応するシンクの条件が「奥行」「内寸」「行なし」で揃わないことを記録"
+        }
+      ]
+    },
+    {
+      "article_id": "slim-dish-rack-under-20cm",
+      "slug": "slim-dish-rack-under-20cm",
+      "post_id": null,
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "title": "短辺20cm以下の水切りラック3商品を比べる",
+      "product_ids": [
+        "PRD-YAMAZAKI-4314",
+        "PRD-YAMAZAKI-5070",
+        "PRD-SHIMOMURA-42666"
+      ],
+      "commerce_anchor": "slim-compare",
+      "commerce_presentation": "comparison_rows",
+      "responsive_layout": "matrix",
+      "row_products": [
+        {
+          "key": "y4314",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "y5070",
+          "product_id": "PRD-YAMAZAKI-5070"
+        },
+        {
+          "key": "s42666",
+          "product_id": "PRD-SHIMOMURA-42666"
+        }
+      ],
+      "condition_slots": [
+        {
+          "key": "cond-long",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "cond-two-tier",
+          "product_id": "PRD-YAMAZAKI-5070"
+        },
+        {
+          "key": "cond-short",
+          "product_id": "PRD-SHIMOMURA-42666"
+        }
+      ],
+      "history": [
+        {
+          "date": "2026-09-16",
+          "text": "3商品の公式商品ページで外形・内寸・材質・耐荷重・水受けを確認し、42666には耐荷重と対応サイズの行がないことを記録"
+        }
+      ]
+    },
+    {
+      "article_id": "dish-rack-no-space",
+      "slug": "dish-rack-no-space",
+      "post_id": null,
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "title": "水切りかごを置く場所がない｜3つの方式から選ぶ",
+      "product_ids": [
+        "PRD-YAMAZAKI-4314",
+        "PRD-YAMAZAKI-5070",
+        "PRD-SHIMOMURA-42666",
+        "PRD-YAMAZAKI-7835",
+        "PRD-YAMAZAKI-3492"
+      ],
+      "commerce_anchor": "rack-methods",
+      "commerce_presentation": "comparison_rows",
+      "responsive_layout": "matrix",
+      "row_products": [
+        {
+          "key": "y4314",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "y5070",
+          "product_id": "PRD-YAMAZAKI-5070"
+        },
+        {
+          "key": "s42666",
+          "product_id": "PRD-SHIMOMURA-42666"
+        },
+        {
+          "key": "y7835",
+          "product_id": "PRD-YAMAZAKI-7835"
+        },
+        {
+          "key": "y3492",
+          "product_id": "PRD-YAMAZAKI-3492"
+        }
+      ],
+      "condition_slots": [
+        {
+          "key": "m-fixed",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "m-fixed",
+          "product_id": "PRD-YAMAZAKI-5070"
+        },
+        {
+          "key": "m-fixed",
+          "product_id": "PRD-SHIMOMURA-42666"
+        },
+        {
+          "key": "m-over-sink",
+          "product_id": "PRD-YAMAZAKI-4314"
+        },
+        {
+          "key": "m-over-sink",
+          "product_id": "PRD-YAMAZAKI-7835"
+        },
+        {
+          "key": "m-over-sink",
+          "product_id": "PRD-YAMAZAKI-3492"
+        },
+        {
+          "key": "m-temporary",
+          "product_id": "PRD-YAMAZAKI-7835"
+        }
+      ],
+      "history": [
+        {
+          "date": "2026-09-16",
+          "text": "5商品の公式商品ページで置き方の原文・外形・耐荷重・材質・排水の記載を確認し、4314に「シンクの上にセットする」と「狭いシンク横に置ける」が併記されていることを記録"
+        }
+      ]
     }
   ],
   "products": [
@@ -7647,6 +7819,1257 @@
         "checked_on": "2026-09-13"
       },
       "display_offer_id": "rakuten-ui-muji-76431312-mujirushi-ryohin"
+    },
+    {
+      "product_id": "PRD-YAMAZAKI-4314",
+      "exact_model": "4314",
+      "name": "山崎実業 スリム水切りバスケット タワー ロング 4314",
+      "anchor": "product-dish-rack-4314",
+      "official_url": "https://www.yamajitsu.co.jp/products/241440",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅555×奥行165×高さ160mm（公式の印字はcmで「W55.5×D16.5×H16cm」。公式サイズ図も「55.5cm」「16.5cm」「16cm」で「約」は付いていません）",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "内寸（開口部・深さ）",
+          "text": "開口部：W54.5×D16cm　高さ：11.5cm（公式サイズ図には「54.5cm（開口部内寸）」「16cm（開口部内寸）」「11.5cm（内寸）」と表示）",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「内寸」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "容量",
+          "text": "7.5L",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「容量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "質量（公式表記は「商品重量」）",
+          "text": "1200g",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "材質（公式表記は「品質表示」）",
+          "text": "本体・カトラリーポケット：ABS樹脂　水はけ：ポリプロピレン　水止栓：シリコーン",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐荷重",
+          "text": "8kg",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐熱・耐冷",
+          "text": "耐熱：80℃／耐冷：-40℃（公式は「耐熱」行に80℃、「耐冷」行に-40℃と分けて印字）",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+          "text": "奥行50cm以内のシンク　厚み1.8cmのまな板（原文ママ。条件はシンクの「奥行」で、「内寸」とは印字されていません）",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "置き方（公式の設置前提）",
+          "text": "紹介見出しは「キッチンの狭いシンク横に置けるスリムで長い水切りバスケット」。紹介本文は「シンクの奥行が50cmまでなら、またいで置ける水切りバスケット。シンクの上にセットするので、シンクの中が広く使えます。水はけの方向を変えてレイアウトも自由自在です。スリムで長いデザインで、作業スペースを広く使えます。フライパンやお鍋も収納できます。」。商品説明の画像キャプションは「シンクの奥行が50cmまでなら、またいで置ける水切りバスケット」「狭いシンク横に置けるから、作業スペースを広く使えます」「シンクの上にセットするので、シンクの中が広く使えます」。シンク上に渡す用法とシンク横に置く用法が同じページに併記されており、どちらか一方に決め打ちできません。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション各画像のキャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "排水の向き（水受け・水はけ）",
+          "text": "「シンクにそのまま排水できます。設置の向きに合わせて、水はけは方向を変えることができます」。紹介本文にも「水はけの方向を変えてレイアウトも自由自在です。」とあります。品質表示は「水はけ：ポリプロピレン　水止栓：シリコーン」で、独立した水受けトレーの記載はありません。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「商品説明」セクション3枚目の画像キャプション、紹介本文、および「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+          "text": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には本体の四隅に脚が描かれていますが、寸法線も数値も付いていません。シンクへ「またいで置ける」条件として印字されているのは「奥行50cm以内のシンク」だけで、縁の厚み・形状の条件も未掲載です。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション、およびサイズ図画像 4314_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には本体の四隅に脚が描かれていますが、寸法線も数値も付いていません。シンクへ「またいで置ける」条件として印字されているのは「奥行50cm以内のシンク」だけで、縁の厚み・形状の条件も未掲載です。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "カトラリーポケットサイズ",
+          "text": "カトラリーポケットサイズ：約W15×D5.5×H11ｃｍ（備考欄は「約」付き・単位は全角「ｃｍ」。同じ値が公式サイズ図には「W15×D5.5×H11cm（カトラリーポケット）」と「約」なしで表示。値は同一です）",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「備考」行、および同セクションのサイズ図画像 4314_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "生産国",
+          "text": "中国",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "組み立ての要否",
+          "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「仕様・サイズ」表に付属品欄がなく、商品ページのFAQアコーディオンは本品について項目0件で表示されます）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番4314の項目はありません。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "商品ページ全体（「仕様・サイズ」表と「よくある質問」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「仕様・サイズ」表に付属品欄がなく、商品ページのFAQアコーディオンは本品について項目0件で表示されます）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番4314の項目はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "食洗機対応（本品の可否）",
+          "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーには材質別の公式Q&Aがありますが、品番を名指しせず材質でしか答えておらず、本品に当たる「樹脂製品」の項は「食洗機を使用できない製品もあります」という条件付きの案内にとどまります。そのQ&Aの原文は別項「【材質別の共通注意】…」に分けて記載しています。記事で本品の可否を断定しないでください。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーには材質別の公式Q&Aがありますが、品番を名指しせず材質でしか答えておらず、本品に当たる「樹脂製品」の項は「食洗機を使用できない製品もあります」という条件付きの案内にとどまります。そのQ&Aの原文は別項「【材質別の共通注意】…」に分けて記載しています。記事で本品の可否を断定しないでください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番4314についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示はABS樹脂・ポリプロピレン・シリコーンです。この案内は条件付きで、本品の可否を確定しません。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "採用色と品番の対応",
+          "text": "公式ページの商品バリエーションは「スリム水切りバスケット タワー ロング - ホワイト」sku 4314 の1色のみです。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「仕様・サイズ」表の「カラー」行（ホワイト SKU:4314）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "幅555×奥行165×高さ160mmのスリムなバスケット。公式は「シンクの上にセットする」使い方と「狭いシンク横に置ける」使い方を同じページに併記しています。",
+      "fit": [
+        "シンクの奥行が50cm以内で、長辺555mmを置ける場所がある人",
+        "「設置の向きに合わせて、水はけは方向を変えることができます」を活かしてシンクへ直接排水したい人"
+      ],
+      "avoid": [
+        "置き場所の短辺が165mm、長辺が555mmに届かない場合",
+        "シンクの奥行が50cmを超える場合（公式の条件は「奥行」で、「内寸」ではありません）"
+      ],
+      "caution": "公式が印字している設置条件は「奥行50cm以内のシンク　厚み1.8cmのまな板」だけです。脚の位置・脚間距離・接地幅、シンク縁の厚みと掛かり代、水はけの張り出し寸法と可動角度は公式に印字がないため、置けるかどうかは実測で確かめてください。本品の食洗機可否は型番を名指しした記載がありません。",
+      "use_cases": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "承認済みの販売先がなく、掲載できる写真を照合できていません。"
+      },
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅555×奥行165×高さ160mm。公式の印字はcmで「W55.5×D16.5×H16cm」です。開口部の内寸はW54.5×D16cm、深さ11.5cmです。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "シンクの上にまたいで渡す前提のバスケットです。公式の条件は「奥行50cm以内のシンク　厚み1.8cmのまな板」で、シンクの「奥行」だけが条件として印字されています。同じページで「狭いシンク横に置ける」とも書かれており、作業台へ置く用法も併記されています。脚の位置・脚間距離・シンク縁の厚みの条件は公式に印字されていないため、置き場所は実測で確認してください。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介見出し・紹介本文・「商品説明」セクションのキャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水はシンクへ直接落とします。「シンクにそのまま排水できます。設置の向きに合わせて、水はけは方向を変えることができます」と記載され、水止栓（シリコーン）が付きます。水はけの張り出し寸法と可動角度は公式に印字されていません。",
+          "exact_model": "4314",
+          "source_url": "https://www.yamajitsu.co.jp/products/241440",
+          "locator": "「商品説明」セクション3枚目の画像キャプションと「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 555,
+        "depth_mm": 165,
+        "height_mm": 160,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      }
+    },
+    {
+      "product_id": "PRD-YAMAZAKI-5070",
+      "exact_model": "5070",
+      "name": "山崎実業 スリムスリーウェイ水切りワイヤーバスケット 2段 タワー 5070",
+      "anchor": "product-dish-rack-5070",
+      "official_url": "https://www.yamajitsu.co.jp/products/241827",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅575×奥行160×高さ335mm（公式の印字はcmで、仕様表は「W57.5×D16×H33.5cm」、公式サイズ図は「約57.5cm」「約16cm」「約33.5cm」と「約」付き。値は同じで表記だけが異なります）",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 5070_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "水切りトレーの寸法",
+          "text": "公式サイズ図に「約55cm（水切りトレー）」「約14.8cm（水切りトレー）」「約3.5cm（水切りトレー）」と表示。仕様表にトレー寸法の行はありません。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「仕様・サイズ」セクションのサイズ図画像 5070_size_image1.jpg 内の寸法線",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "内寸",
+          "text": "ワイヤーバスケット：W54.5×D15.4×H11.5cm　 ワイヤーバスケットのスリット幅：2cm　ハンドル部：W15.5×D2cm",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「内寸」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "質量（公式表記は「商品重量」）",
+          "text": "2600g",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "材質（公式表記は「品質表示」）",
+          "text": "ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)　水切りトレー・カトラリーポケット・カトラリートレー・フック：ABS樹脂　水はけ：ポリプロピレン　水止栓：シリコーン",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "付属品",
+          "text": "カトラリーポケット×1 カトラリートレー×1 フック×2",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「付属品」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐荷重",
+          "text": "ワイヤーバスケット：8kg  水切りトレー：5kg  フック：1つにつき250g",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐熱・耐冷",
+          "text": "耐熱：70℃ ※水切りトレー・カトラリーポケット／耐冷：−40℃　※水切りトレー・カトラリーポケット",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+          "text": "厚み2cmまでのまな板・奥行50cm以内のシンク（シンク渡し使用時）（原文ママ。シンクの条件は「奥行」で、しかも「シンク渡し使用時」という使用条件が付いています。「内寸」とは印字されていません）",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "置き方（公式の設置前提）",
+          "text": "紹介見出しは「シーンに合わせて使い方様々！スリムなワイヤーバスケット2段」。紹介本文は「スリムで省スペースに置ける3wayワイヤーバスケット。上部にバスケット、下部に水切りトレーを付ければ大容量の2段水切りとして。2段の収納力でたくさんの食器やボトル類の水切りができます。水切りトレーをバスケットの真下に取り付けることも可能で、その場合は下のスペースに鍋などの調理器具を置くことが可能。バスケットとトレーを分けて使うこともでき、シーンに合わせて様々な使い方ができます。」。シンクへ渡す用法は「対応サイズ」行の「（シンク渡し使用時）」という条件付き記載でのみ示されています。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「Product Details 仕様・サイズ」表の「対応サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "排水の向き（水受け・水はけ）",
+          "text": "「トレーの水はけは可動式なので排水方向を変えることができ、止水栓付きなので水が流せない場所にも設置できます。」。商品説明の画像キャプションにも「可動式の水はけで排水方向を変えることが可能。止水栓付きなので排水できない場所にも設置できます」とあります。水切りトレーについては「水切りトレーは上段、下段どちらにで取り付け可能」（原文ママ）と記載されています。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "紹介本文の末尾、および「商品説明」セクション2枚目・6枚目の画像キャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+          "text": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には左右2本の脚フレームが描かれていますが、寸法線も数値も付いていません。シンク渡し使用時に必要な渡し幅（縁から縁までの寸法）と縁の厚み・形状の条件も未掲載です。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション、およびサイズ図画像 5070_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式に脚の位置・脚間距離・接地幅の記載はありません。「仕様・サイズ」表に脚の行はなく、紹介本文・キャプションにも脚の語はありません。公式サイズ図には左右2本の脚フレームが描かれていますが、寸法線も数値も付いていません。シンク渡し使用時に必要な渡し幅（縁から縁までの寸法）と縁の厚み・形状の条件も未掲載です。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "部品の取り付けに関する公式記述",
+          "text": "「水切りトレーをバスケットの真下に取り付けることも可能」「バスケットの好みの位置に付けられるカトラリーポケットとカトラリートレー、着脱可能なフック」「バスケットとトレーを分けて使うこともでき、シーンやレイアウトに合わせて最適な設置が可能です」との記載があります。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "商品ページ冒頭の紹介本文、および「商品説明」セクション各画像のキャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "生産国",
+          "text": "中国",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "組み立ての要否",
+          "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。トレー位置の変更やポケット・フックの取り付けが可能である旨は書かれていますが、開梱時に組み立てが必要かどうかは印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番5070の項目はありません。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。トレー位置の変更やポケット・フックの取り付けが可能である旨は書かれていますが、開梱時に組み立てが必要かどうかは印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番5070の項目はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "食洗機対応（本品の可否）",
+          "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂・ポリプロピレン・シリコーン（水切りトレー・カトラリーポケット・カトラリートレー・フック・水はけ・水止栓）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂・ポリプロピレン・シリコーン（水切りトレー・カトラリーポケット・カトラリートレー・フック・水はけ・水止栓）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番5070についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番・複合構成に対する可否判定ではありません。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番5070についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち水切りトレー・カトラリーポケット・カトラリートレー・フック（ABS樹脂）、水はけ（ポリプロピレン）、水止栓（シリコーン）が樹脂・ゴム系のパーツです。この案内は条件付きで、本品の可否を確定しません。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "採用色と品番の対応",
+          "text": "公式ページのバリエーションは「スリムスリーウェイ水切りワイヤーバスケット 2段 タワー - ホワイト」sku 5070 と「同 - ブラック」sku 5071 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には5070と5071の2品番が並記され、「カラー」行は「ホワイト SKU:5070」です。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "幅575×奥行160×高さ335mmの2段（3way）。上段のワイヤーバスケットと下段の水切りトレーを組み替えて使えます。",
+      "fit": [
+        "短辺160mmのまま、上下2段で食器を分けて置きたい人",
+        "「トレーの水はけは可動式なので排水方向を変えることができ、止水栓付きなので水が流せない場所にも設置できます。」という排水の自由度が要る人"
+      ],
+      "avoid": [
+        "高さ335mmが収まらない棚下・吊戸棚の下に置く場合",
+        "シンクへ渡す使い方だけを前提にする場合（公式は「対応サイズ」行の「（シンク渡し使用時）」という条件付き記載でしか示していません）"
+      ],
+      "caution": "耐荷重はワイヤーバスケット8kg・水切りトレー5kg・フック1つにつき250gと部位ごとに分かれています。上段から食器を出し入れする上方の余白、水切りトレーが受けられる水量、脚の位置と渡し幅、シンク縁の厚みは公式に印字がありません。本品の食洗機可否は型番を名指しした記載がありません。",
+      "use_cases": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "承認済みの販売先がなく、掲載できる写真を照合できていません。"
+      },
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅575×奥行160×高さ335mm。公式の印字はcmで、仕様表が「W57.5×D16×H33.5cm」、公式サイズ図が「約57.5cm」「約16cm」「約33.5cm」です。バスケット内寸はW54.5×D15.4×H11.5cm、水切りトレーは約55×約14.8×約3.5cmです。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行、およびサイズ図画像 5070_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "作業台に置く2段（3way）バスケットです。シンクへ渡す使い方は「対応サイズ」行の「厚み2cmまでのまな板・奥行50cm以内のシンク（シンク渡し使用時）」という条件付き記載でのみ示されています。渡し幅・縁の厚み・脚の位置は公式に印字されていないため、置き場所は実測で確認してください。高さ335mmのため、上段から食器を出し入れする上方の余白も別に確認します。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介本文",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水は水切りトレーの可動式「水はけ」から行います。「トレーの水はけは可動式なので排水方向を変えることができ、止水栓付きなので水が流せない場所にも設置できます。」と記載されています。水はけの張り出し寸法と可動角度、トレーが受けられる水量は公式に印字されていません。",
+          "exact_model": "5070",
+          "source_url": "https://www.yamajitsu.co.jp/products/241827",
+          "locator": "紹介本文の末尾、および「商品説明」セクション2枚目・6枚目の画像キャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 575,
+        "depth_mm": 160,
+        "height_mm": 335,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      }
+    },
+    {
+      "product_id": "PRD-SHIMOMURA-42666",
+      "exact_model": "42666",
+      "name": "下村企販 水切りかご スマート 42666",
+      "anchor": "product-dish-rack-42666",
+      "official_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅403×奥行180×高さ160mm（公式の印字はcmで「幅40.3×奥行18×高さ16cm」。同じ「サイズ」行に「バスケット内寸:幅37×奥行17×深さ7(10.5)cm、トレー:幅38×奥行18×高さ1.3cm」も1行にまとめて印字されています）",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "品番",
+          "text": "42666",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「品番」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "バスケット内寸",
+          "text": "バスケット内寸:幅37×奥行17×深さ7(10.5)cm（原文ママ。括弧内の10.5が何を指すかの注記は公式にありません）",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "水受けトレーの寸法",
+          "text": "トレー:幅38×奥行18×高さ1.3cm",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "質量（公式表記は「重量」）",
+          "text": "810g",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「重量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "材質",
+          "text": "本体:18-8ステンレス、トレー:18-0ステンレス、脚ゴム:シリコーンゴム",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「材質」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "生産国",
+          "text": "日本",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「生産国」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "JANコード",
+          "text": "4957423087667",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「JANコード」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "置き方（公式の設置前提）",
+          "text": "紹介文は「コップやマグカップなど水切りに便利なサイズ。スイスイとお皿を立てかけられる線材間隔にしました。引き出し式トレーでしっかり水を受け取ります。持ち運びもしやすい形状、使うときにシンク脇に置いて、水切りが終わったらシンク奥にらくらく移動。できるだけ汚れの付着がないように線材の交差する部分を減らしたデザインです。」。シンクへ渡す・またぐ使い方の記述はありません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "商品名直下の紹介文（class=\"catch\"）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "対応するシンクの条件（対応サイズ行の有無）",
+          "text": "公式商品ページに対応シンク寸法・渡し幅の条件は印字されていません。「商品の仕様」表の項目は品番・材質・サイズ・重量・生産国・JANコードの6行のみで、「対応サイズ」に当たる行自体が存在しません。紹介文もシンク脇に置く前提しか書いていません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の全行（品番・材質・サイズ・重量・生産国・JANコード）、および商品名直下の紹介文",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに対応シンク寸法・渡し幅の条件は印字されていません。「商品の仕様」表の項目は品番・材質・サイズ・重量・生産国・JANコードの6行のみで、「対応サイズ」に当たる行自体が存在しません。紹介文もシンク脇に置く前提しか書いていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "脚・支持のしかた（脚の位置・脚間距離・接地幅）",
+          "text": "公式に印字されている脚の情報は「材質」行の「脚ゴム:シリコーンゴム」だけです。脚の本数・位置・脚間距離・接地幅・脚の高さはいずれも印字されていません。据え置き前提のため、シンク縁に掛ける条件も示されていません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「材質」行および全行、商品名直下の紹介文",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式に印字されている脚の情報は「材質」行の「脚ゴム:シリコーンゴム」だけです。脚の本数・位置・脚間距離・接地幅・脚の高さはいずれも印字されていません。据え置き前提のため、シンク縁に掛ける条件も示されていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "排水の向き（水受け・トレーの引き出し方向）",
+          "text": "「引き出し式トレーでしっかり水を受け取ります。」と記載され、トレー寸法は「トレー:幅38×奥行18×高さ1.3cm」です。トレーをどの辺から引き出すか（引き出し方向）と、引き出すために必要な前後の余白は印字されていません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "商品名直下の紹介文（class=\"catch\"）、および「商品の仕様」表の「サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "「引き出し式トレーでしっかり水を受け取ります。」と記載され、トレー寸法は「トレー:幅38×奥行18×高さ1.3cm」です。トレーをどの辺から引き出すか（引き出し方向）と、引き出すために必要な前後の余白は印字されていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "耐荷重",
+          "text": "公式商品ページに耐荷重の記載はありません（「商品の仕様」表に耐荷重の行がありません）。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の全行",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに耐荷重の記載はありません（「商品の仕様」表に耐荷重の行がありません）。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "耐熱・耐冷",
+          "text": "公式商品ページに耐熱・耐冷の記載はありません（「商品の仕様」表に該当行がありません）。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の全行",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに耐熱・耐冷の記載はありません（「商品の仕様」表に該当行がありません）。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "組み立ての要否",
+          "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。公式サイトの「よくある質問」ページは「鉄製フライパンのお手入れQ&A」と「ステンレス製鍋のお手入れQ&A」の2本のみで、水切りかごに関する項目はありません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の全行・紹介文、および公式「よくある質問」ページ（https://www.simomura-kihan.co.jp/q_and_a.html）の目次",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。公式サイトの「よくある質問」ページは「鉄製フライパンのお手入れQ&A」と「ステンレス製鍋のお手入れQ&A」の2本のみで、水切りかごに関する項目はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "食洗機対応（本品の可否）",
+          "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は印字されておらず、公式サイトの「よくある質問」ページにも「食洗」の語を含む記載はありません（掲載は鉄製フライパンとステンレス製鍋の手入れQ&Aのみ）。材質別の共通注意に当たる公式資料も本メーカーにはないため、本品には材質別の注意も付けられません。記事で本品の可否を断定しないでください。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "商品ページ全体、および公式「よくある質問」ページ（https://www.simomura-kihan.co.jp/q_and_a.html）の全文",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は印字されておらず、公式サイトの「よくある質問」ページにも「食洗」の語を含む記載はありません（掲載は鉄製フライパンとステンレス製鍋の手入れQ&Aのみ）。材質別の共通注意に当たる公式資料も本メーカーにはないため、本品には材質別の注意も付けられません。記事で本品の可否を断定しないでください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "幅403×奥行180×高さ160mmの据え置き型。公式は「使うときにシンク脇に置いて、水切りが終わったらシンク奥にらくらく移動」と書いています。",
+      "fit": [
+        "長辺を403mmに抑えて作業台へ置きたい人"
+      ],
+      "avoid": [
+        "シンクへ渡す・またぐ使い方を前提にする場合（公式にその記述がありません）"
+      ],
+      "caution": "「商品の仕様」表は品番・材質・サイズ・重量・生産国・JANコードの6行だけで、耐荷重の行も対応サイズに当たる行もありません。荷重と設置の適合はこの商品では判断できません。引き出し式トレーをどの辺から引き出すかと、引き出すために必要な前後の余白も印字がなく、その余白は本体奥行180mmに含まれていません。",
+      "use_cases": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "承認済みの販売先がなく、掲載できる写真を照合できていません。"
+      },
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅403×奥行180×高さ160mm。公式の印字はcmで「幅40.3×奥行18×高さ16cm」です。バスケット内寸は幅37×奥行17×深さ7(10.5)cm、トレーは幅38×奥行18×高さ1.3cmです。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "「商品の仕様」表の「サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "シンク脇（作業台）に置き、水切りが終わったらシンク奥へ移す前提の据え置き型です。公式はシンクへ渡す・またぐ使い方を書いておらず、対応するシンク寸法の条件も印字していません。脚は「脚ゴム:シリコーンゴム」とだけ記載され、位置・脚間距離は未掲載です。置き場所は本体の外形で実測してください。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "商品名直下の紹介文、および「商品の仕様」表の「材質」行・全行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水は本体下の引き出し式トレーで受け、手で引き出して捨てます。「引き出し式トレーでしっかり水を受け取ります。」とだけ記載され、引き出す向きと必要な前後の余白は公式に印字されていません。トレーを引き出す分の余白は本体奥行180mmに含まれていません。",
+          "exact_model": "42666",
+          "source_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+          "locator": "商品名直下の紹介文（class=\"catch\"）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "排水は本体下の引き出し式トレーで受け、手で引き出して捨てます。「引き出し式トレーでしっかり水を受け取ります。」とだけ記載され、引き出す向きと必要な前後の余白は公式に印字されていません。トレーを引き出す分の余白は本体奥行180mmに含まれていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "installation": {
+        "width_mm": 403,
+        "depth_mm": 180,
+        "height_mm": 160,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      }
+    },
+    {
+      "product_id": "PRD-YAMAZAKI-7835",
+      "exact_model": "7835",
+      "name": "山崎実業 折り畳み水切りラック タワー L 7835",
+      "anchor": "product-dish-rack-7835",
+      "official_url": "https://www.yamajitsu.co.jp/products/242645",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅260×奥行580×高さ8mm（広げた状態。公式の印字はcmで、仕様表は「W26×D58×H0.8cm」、公式サイズ図は「約58cm」「約26cm」「約0.8cm」と「約」付き。値は同じで表記だけが異なります。丸めた／折り畳んだ状態の寸法は公式に印字されていません）",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 7835_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "質量（公式表記は「商品重量」）",
+          "text": "810g",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "材質（公式表記は「品質表示」）",
+          "text": "本体：スチール（ユニクロメッキ+粉体塗装）キャップ：シリコーン",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐荷重",
+          "text": "4kg",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+          "text": "奥行き：54cm以下のシンク（原文ママ。条件はシンクの「奥行き」だけで、「内寸」や渡し幅は印字されていません）",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "置き方（公式の設置前提）",
+          "text": "紹介見出しは「くるくる丸めて収納できる、省スペースな水切りラック Lサイズ」。紹介本文は「サッと広げて使用でき、丸めることで省スペースに収納できる折り畳み式の水切り。折ることで、洗い物の量やシンクのスペースに合わせて幅を調整可能です。くるくると丸めることができるので、使わないときは邪魔になりません。調理中のちょっとした作業スペースとしても使用可能。」。商品説明1枚目のキャプションは「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション1枚目の画像キャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "脚・支持のしかた（シンク縁への渡し方）",
+          "text": "本品に脚はなく、支持はシンクの縁に渡す方式です。公式の記述は「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」と「対応サイズ：奥行き：54cm以下のシンク」の2点だけです。左右の縁に掛かる長さ（掛かり代）、必要な渡し幅、縁の厚み・形状の条件はいずれも印字されていません。耐荷重4kgは本体の値で、縁に掛かる部分の条件は別に示されていません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「商品説明」セクション1枚目の画像キャプション、「Product Details 仕様・サイズ」表の「対応サイズ」行・「耐荷重」行、およびサイズ図画像 7835_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品に脚はなく、支持はシンクの縁に渡す方式です。公式の記述は「サッと広げて、シンクの上を渡らすだけで使える簡易水切り」と「対応サイズ：奥行き：54cm以下のシンク」の2点だけです。左右の縁に掛かる長さ（掛かり代）、必要な渡し幅、縁の厚み・形状の条件はいずれも印字されていません。耐荷重4kgは本体の値で、縁に掛かる部分の条件は別に示されていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "折り畳み・収納に関する公式記述",
+          "text": "「洗い物の量や、スペースによって折り畳むことで幅を調整」「くるくる丸めるとコンパクト」。丸めた状態・折り畳んだ状態の寸法、および何cm刻みで何段階折れるかは印字されていません。公式サイズ図も広げた状態だけを図示しています。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「商品説明」セクション2枚目・3枚目の画像キャプション、およびサイズ図画像 7835_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "蛇口の干渉に関する公式記述",
+          "text": "「ワイヤーを取り外して、水道の蛇口を避けて設置することもできます」。取り外せるワイヤーの本数と、確保できる逃がし幅は印字されていません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「商品説明」セクション5枚目の画像キャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "生産国",
+          "text": "中国",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "排水の向き（水受け・水はけ）",
+          "text": "公式商品ページに水受けトレー・排水方向の記載はありません。「仕様・サイズ」表に付属品の行がなく、品質表示も「本体：スチール」「キャップ：シリコーン」のみで、水受け部品は挙げられていません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はありません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに水受けトレー・排水方向の記載はありません。「仕様・サイズ」表に付属品の行がなく、品質表示も「本体：スチール」「キャップ：シリコーン」のみで、水受け部品は挙げられていません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "耐熱・耐冷",
+          "text": "本品の「仕様・サイズ」表には耐熱・耐冷の行がありません（掲載は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行）。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の全行",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の「仕様・サイズ」表には耐熱・耐冷の行がありません（掲載は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行）。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "組み立ての要否",
+          "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「ワイヤーを取り外して…設置することもできます」という使用時の記述のみ）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番7835の項目はありません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません（「ワイヤーを取り外して…設置することもできます」という使用時の記述のみ）。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番7835の項目はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "食洗機対応（本品の可否）",
+          "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール本体とシリコーンキャップの複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール本体とシリコーンキャップの複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番7835についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「本体：スチール（ユニクロメッキ+粉体塗装）」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番に対する可否判定ではありません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番7835についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち「キャップ：シリコーン」が樹脂・ゴム系のパーツですが、この公式Q&Aの見出しは「樹脂製品」と「スチール製品」の2つだけで、シリコーンがどちらに当たるかは印字されていません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "採用色と品番の対応",
+          "text": "公式ページのバリエーションは「折り畳み水切りラック タワー L - ホワイト」sku 7835 と「同 - ブラック」sku 7836 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には7835と7836の2品番が並記され、「カラー」行は「ホワイト SKU:7835」です。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "使うときだけ広げてシンクの上に渡す平面型。広げた状態で幅260×奥行580×高さ8mm、耐荷重4kg、対応サイズは「奥行き：54cm以下のシンク」です。",
+      "fit": [
+        "シンクの奥行きが54cm以下で、使うときだけ広げたい人",
+        "「洗い物の量や、スペースによって折り畳むことで幅を調整」したい人"
+      ],
+      "avoid": [
+        "水受けが要る置き方をする場合（公式に水受けトレー・排水方向の記載がありません）",
+        "しまう場所の寸法から選びたい場合（丸めた／折り畳んだ状態の寸法は未掲載です）"
+      ],
+      "caution": "耐荷重4kgは本体の値で、シンク縁に掛かる部分の条件は別に示されていません。必要な渡し幅・掛かり代・縁の厚み、「ワイヤーを取り外して、水道の蛇口を避けて設置することもできます」の取り外せる本数と逃がし幅、丸めた状態の寸法はいずれも公式に印字がありません。",
+      "use_cases": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "承認済みの販売先がなく、掲載できる写真を照合できていません。"
+      },
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "広げた状態で幅260×奥行580×高さ8mm。公式の印字はcmで、仕様表が「W26×D58×H0.8cm」、公式サイズ図が「約58cm」「約26cm」「約0.8cm」です。丸めた状態の寸法は公式に印字されていません。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、およびサイズ図画像 7835_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "使うときだけ広げてシンクの上に渡す平面型です。公式の条件は「対応サイズ：奥行き：54cm以下のシンク」だけで、必要な渡し幅・掛かり代・縁の厚みは印字されていません。折って幅を調整でき、「ワイヤーを取り外して、水道の蛇口を避けて設置することもできます」と記載されています。耐荷重は4kgです。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行・「耐荷重」行、紹介本文、「商品説明」セクション1枚目・5枚目のキャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "水受けトレーはなく、排水方向についての記載も公式にありません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はないため、受け皿の要否は実物で確認してください。",
+          "exact_model": "7835",
+          "source_url": "https://www.yamajitsu.co.jp/products/242645",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "水受けトレーはなく、排水方向についての記載も公式にありません。シンクの上に渡す旨は書かれていますが、排水先を明言した文はないため、受け皿の要否は実物で確認してください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "installation": {
+        "width_mm": 260,
+        "depth_mm": 580,
+        "height_mm": 8,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      }
+    },
+    {
+      "product_id": "PRD-YAMAZAKI-3492",
+      "exact_model": "3492",
+      "name": "山崎実業 伸縮水切りワイヤーバスケット タワー 3492",
+      "anchor": "product-dish-rack-3492",
+      "official_url": "https://www.yamajitsu.co.jp/products/241233",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅540×奥行195×高さ140mm（幅は最も伸ばした状態の値。公式の印字はcmで「W44〜54×D19.5×H14cm」、幅は44〜54cm＝440〜540mmの伸縮式です。公式サイズ図も「44〜54cm」「19.5cm」「14cm」で「約」は付いていません。同じ「商品サイズ」欄に「カトラリーポケットサイズ：W15×D5.5×H11cm」も併記）",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行、および同セクションのサイズ図画像 3492_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "内寸",
+          "text": "W33×D18×H11.5cm（公式サイズ図にも「バスケット内寸 W33×D18×H11.5cm」と表示）",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「内寸」行、および同セクションのサイズ図画像 3492_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "質量（公式表記は「商品重量」）",
+          "text": "1500g",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「商品重量」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "材質（公式表記は「品質表示」）",
+          "text": "ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)　カトラリーポケット：ABS樹脂",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「品質表示」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "付属品",
+          "text": "クッション×4",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「付属品」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐荷重",
+          "text": "5kg",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「耐荷重」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "耐熱・耐冷",
+          "text": "耐熱：90℃／耐冷：カトラリーポケット：-40℃（公式は「耐熱」行に90℃、「耐冷」行に「カトラリーポケット：-40℃」と分けて印字）",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「耐熱」行・「耐冷」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "対応するシンクの条件（公式表記は「対応サイズ」）",
+          "text": "仕様表の「対応サイズ」行は「シンク内寸37cm〜47cm」（「約」なし）。紹介本文は「伸縮可能でシンクの内寸約37cm〜47cmまでに対応。」（「約」付き）。値は同じで表記だけが異なります。本クラスタで唯一「内寸」を条件にしている商品です。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、および商品ページ冒頭の紹介本文",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "置き方（公式の設置前提）",
+          "text": "紹介見出しは「伸縮式で様々なサイズのシンクに対応する水切り」。紹介本文は「伸縮可能でシンクの内寸約37cm〜47cmまでに対応。水切れが良く、よく使う食器類から調理道具までたっぷり収納できます。」。商品説明の画像キャプションは「伸縮式でシンクの奥行きに合わせてぴったりフィット」「シンクのフチに引っ掛けるので、浮かせて設置できます」。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "商品ページ冒頭の紹介見出し・紹介本文、および「商品説明」セクション1枚目・2枚目の画像キャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "脚・支持のしかた（シンク縁への引っ掛け）",
+          "text": "本品に脚はなく、支持は「シンクのフチに引っ掛けるので、浮かせて設置できます」という掛け方です。公式サイズ図では上部の伸縮レールが左右に張り出して描かれていますが、掛かり代の寸法線・数値はありません。掛けられるシンク縁の厚み・形状の条件、掛かる部分の耐荷重条件も印字されていません（耐荷重5kgは本体の値）。付属品は「クッション×4」とだけ書かれ、取り付け位置や用途は印字されていません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「商品説明」セクション2枚目の画像キャプション、「Product Details 仕様・サイズ」表の「付属品」行・「耐荷重」行、およびサイズ図画像 3492_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品に脚はなく、支持は「シンクのフチに引っ掛けるので、浮かせて設置できます」という掛け方です。公式サイズ図では上部の伸縮レールが左右に張り出して描かれていますが、掛かり代の寸法線・数値はありません。掛けられるシンク縁の厚み・形状の条件、掛かる部分の耐荷重条件も印字されていません（耐荷重5kgは本体の値）。付属品は「クッション×4」とだけ書かれ、取り付け位置や用途は印字されていません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "カトラリーポケットの取り付け位置",
+          "text": "「カトラリーポケットはバスケットの内側、外側のどちらでも取り付け可能」。カトラリーポケットサイズは「W15×D5.5×H11cm」。外側に取り付けたときの本体＋ポケットの合計奥行は印字されていません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「商品説明」セクション3枚目の画像キャプション、および「Product Details 仕様・サイズ」表の「商品サイズ」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "生産国",
+          "text": "中国",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「生産国」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "排水の向き（水受け・水はけ）",
+          "text": "公式商品ページに水受けトレー・排水方向の記載はありません。品質表示はワイヤーバスケット（スチール）とカトラリーポケット（ABS樹脂）のみ、付属品はクッション×4のみで、「水はけ」も「水止栓」も挙げられていません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるのみで、排水先を明言した文はありません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに水受けトレー・排水方向の記載はありません。品質表示はワイヤーバスケット（スチール）とカトラリーポケット（ABS樹脂）のみ、付属品はクッション×4のみで、「水はけ」も「水止栓」も挙げられていません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるのみで、排水先を明言した文はありません。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "組み立ての要否",
+          "text": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。付属品「クッション×4」の取り付けが必要かどうかも印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番3492の項目はありません。伸縮の段階（何cm刻みか）と固定方法・ロックの有無も未掲載です。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「よくある質問」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "公式商品ページに組み立ての要否・手順・必要工具の記載はありません。付属品「クッション×4」の取り付けが必要かどうかも印字されていません。公式Q&Aの「動画（組み立て方法・解説）」一覧にも品番3492の項目はありません。伸縮の段階（何cm刻みか）と固定方法・ロックの有無も未掲載です。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "食洗機対応（本品の可否）",
+          "text": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂（カトラリーポケット）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "商品ページ全体（「仕様・サイズ」表・紹介本文・「商品説明」セクション）",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "本品の可否は確認できていません。公式商品ページに食洗機の可否は1行も印字されていません。メーカーの公式Q&Aは品番を名指しせず材質でしか答えておらず、本品はスチール（ワイヤーバスケット）とABS樹脂（カトラリーポケット）の複合です。そのQ&Aの原文は別項「【材質別の共通注意】…」2件に分けて記載しています。記事で本品の可否を断定しないでください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」スチール製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番3492についての回答ではありません。「スチール製品」の項：「スチール製品は、食器洗い乾燥機の使用をご使用いただけません。お手入れの際は、薄めた中性洗剤などで洗った後、乾いた布で水分をよく拭き取り乾かしてください。」。本品の品質表示のうち「ワイヤーバスケット：スチール(ユニクロメッキ+粉体塗装)」がこの材質に当たります。Q&Aは材質別の案内で、本品の型番・複合構成に対する可否判定ではありません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「スチール製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "【材質別の共通注意】メーカー公式Q&A「食洗機は使用できますか？」樹脂製品の項（本品の型番を名指しした可否ではありません）",
+          "text": "以下はメーカーの材質別Q&Aの原文で、品番3492についての回答ではありません。「樹脂製品」の項：「食洗機（食器洗い乾燥機）の洗浄温度は一般的に60度から80度とされていることが多いようですが、メーカーや機種により異なります。食洗機を使用できない製品もありますので、製品及び食洗機の取扱説明書をよくご確認のうえ、ご使用ください。」。本品の品質表示のうち「カトラリーポケット：ABS樹脂」が樹脂パーツです。この案内は条件付きで、本品の可否を確定しません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/a/help/article/68032",
+          "locator": "公式Q&A「お手入れ方法について」＞「食洗機は使用できますか？　」の「樹脂製品」見出し下の段落（JS描画。レンダリング後の本文で確認）",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "label": "採用色と品番の対応",
+          "text": "公式ページのバリエーションは「伸縮水切りワイヤーバスケット タワー - ホワイト」sku 3492 と「同 - ブラック」sku 3493 の2色。2026-09-16時点の「仕様・サイズ」表の「品番」行には3492と3493の2品番が並記され、「カラー」行は「ホワイト SKU:3492」です。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "商品ページ埋め込みの構造化データ（ProductGroup / hasVariant の name・sku）、および「Product Details 仕様・サイズ」表の「品番」行・「カラー」行",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "シンクのフチに引っ掛けて浮かせる伸縮式。幅は44〜54cmに伸縮し、対応サイズは「シンク内寸37cm〜47cm」、耐荷重5kgです。",
+      "fit": [
+        "シンクの内寸が37cm〜47cmに入る人（このクラスタで唯一「内寸」を条件にしています）",
+        "「シンクのフチに引っ掛けるので、浮かせて設置できます」で作業台を空けたい人"
+      ],
+      "avoid": [
+        "シンクの「奥行」で条件を合わせたい場合（本品の条件は「内寸」です）",
+        "水受けが要る置き方をする場合（公式に水受けトレー・排水方向の記載がありません）"
+      ],
+      "caution": "耐荷重5kgは本体の値で、縁に掛かる部分の条件は別に示されていません。掛けられるシンク縁の厚み・形状と掛かり代、伸縮の段階と固定方法・ロックの有無、カトラリーポケットを外側に付けたときの合計奥行は公式に印字がありません。付属品は「クッション×4」とだけ書かれ、取り付け位置や用途は印字されていません。",
+      "use_cases": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "承認済みの販売先がなく、掲載できる写真を照合できていません。"
+      },
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "最も伸ばした状態で幅540×奥行195×高さ140mm。公式の印字はcmで「W44〜54×D19.5×H14cm」、幅は44〜54cm（440〜540mm）の伸縮式です。バスケット内寸はW33×D18×H11.5cmです。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「商品サイズ」行・「内寸」行、およびサイズ図画像 3492_size_image1.jpg",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "シンクのフチに引っ掛けて浮かせて設置します。公式の条件は「対応サイズ：シンク内寸37cm〜47cm」（紹介本文は「シンクの内寸約37cm〜47cmまでに対応」）で、本クラスタで唯一シンクの「内寸」を条件にしています。幅を44〜54cmに伸縮させて合わせます。掛けられる縁の厚み・形状、掛かり代、伸縮の段階と固定方法は公式に印字されていません。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の「対応サイズ」行、紹介本文、「商品説明」セクション1枚目・2枚目のキャプション",
+          "checked_at": "2026-09-16",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "水受けトレーはなく、排水方向についての記載も公式にありません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるだけで、排水先を明言した文はないため、シンク上へ掛ける以外の置き方では受け皿を別に用意するか確認してください。",
+          "exact_model": "3492",
+          "source_url": "https://www.yamajitsu.co.jp/products/241233",
+          "locator": "「Product Details 仕様・サイズ」表の全行、紹介本文・「商品説明」セクション全キャプション",
+          "checked_at": "2026-09-16",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "水受けトレーはなく、排水方向についての記載も公式にありません。「シンクのフチに引っ掛けるので、浮かせて設置できます」とあるだけで、排水先を明言した文はないため、シンク上へ掛ける以外の置き方では受け皿を別に用意するか確認してください。",
+            "next_action": "対象型番の公式商品ページ・公式Q&A・取扱説明書の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "installation": {
+        "width_mm": 540,
+        "depth_mm": 195,
+        "height_mm": 140,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      }
     }
   ],
   "offers": [
@@ -12580,6 +14003,96 @@
         "kind": "research_pending",
         "impact": "参考価格と画像は未確認。",
         "next_action": "本体単体の販売ページと利用可能な画像を照合する。",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-YAMAZAKI-4314-official-gaps",
+      "product_id": "PRD-YAMAZAKI-4314",
+      "topic": "脚の位置・脚間距離・接地幅、シンク縁の厚み条件、水はけの張り出し寸法",
+      "kind": "manufacturer_inquiry",
+      "status": "OPEN",
+      "impact": "公式が印字しているのは「奥行50cm以内のシンク　厚み1.8cmのまな板」だけで、脚の接地位置とシンク縁の条件、水はけの張り出し寸法と可動角度がないため、置けるかどうかを公式資料だけでは確定できません。",
+      "target_url": "https://www.yamajitsu.co.jp/products/241440",
+      "next_check_on": "2026-12-16",
+      "alternative": "公式に数値がない項目は適合の判定に使いません。置けるかどうかは、置き場所・シンクの奥行と内寸・蛇口・脚の接地面・排水先を自分で測ってから判断してください。",
+      "target_label": "山崎実業 4314 公式商品ページ（仕様・サイズ／サイズ図）",
+      "unknown_reason": {
+        "kind": "manufacturer_not_published",
+        "impact": "公式が印字しているのは「奥行50cm以内のシンク　厚み1.8cmのまな板」だけで、脚の接地位置とシンク縁の条件、水はけの張り出し寸法と可動角度がないため、置けるかどうかを公式資料だけでは確定できません。",
+        "next_action": "対象型番の公式商品ページ・公式Q&Aの改訂を再確認し、未掲載が続く場合はメーカーへ問い合わせる",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-YAMAZAKI-5070-official-gaps",
+      "product_id": "PRD-YAMAZAKI-5070",
+      "topic": "上段から食器を出し入れする上方の余白、水切りトレーが受けられる水量、脚の位置",
+      "kind": "manufacturer_inquiry",
+      "status": "OPEN",
+      "impact": "高さ335mmの2段ですが、上段の出し入れに要る上方の余白、水切りトレーが受けられる水量、脚の位置と渡し幅の印字がないため、棚下への設置可否とトレーの運用を公式資料だけでは確定できません。",
+      "target_url": "https://www.yamajitsu.co.jp/products/241827",
+      "next_check_on": "2026-12-16",
+      "alternative": "公式に数値がない項目は適合の判定に使いません。置けるかどうかは、置き場所・シンクの奥行と内寸・蛇口・脚の接地面・排水先を自分で測ってから判断してください。",
+      "target_label": "山崎実業 5070 公式商品ページ（仕様・サイズ／サイズ図）",
+      "unknown_reason": {
+        "kind": "manufacturer_not_published",
+        "impact": "高さ335mmの2段ですが、上段の出し入れに要る上方の余白、水切りトレーが受けられる水量、脚の位置と渡し幅の印字がないため、棚下への設置可否とトレーの運用を公式資料だけでは確定できません。",
+        "next_action": "対象型番の公式商品ページ・公式Q&Aの改訂を再確認し、未掲載が続く場合はメーカーへ問い合わせる",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-SHIMOMURA-42666-official-gaps",
+      "product_id": "PRD-SHIMOMURA-42666",
+      "topic": "対応するシンクの条件、耐荷重、水受けトレーの引き出し方向と必要な余白",
+      "kind": "manufacturer_inquiry",
+      "status": "OPEN",
+      "impact": "「商品の仕様」表に耐荷重の行も対応サイズに当たる行もなく、引き出し式トレーの向きと必要な前後の余白も印字がないため、荷重と設置の適合をこの商品で判定できません。",
+      "target_url": "https://www.simomura-kihan.co.jp/products/category/detail---id-289.html",
+      "next_check_on": "2026-12-16",
+      "alternative": "公式に数値がない項目は適合の判定に使いません。置けるかどうかは、置き場所・シンクの奥行と内寸・蛇口・脚の接地面・排水先を自分で測ってから判断してください。",
+      "target_label": "下村企販 42666 公式商品ページ（商品の仕様）",
+      "unknown_reason": {
+        "kind": "manufacturer_not_published",
+        "impact": "「商品の仕様」表に耐荷重の行も対応サイズに当たる行もなく、引き出し式トレーの向きと必要な前後の余白も印字がないため、荷重と設置の適合をこの商品で判定できません。",
+        "next_action": "対象型番の公式商品ページ・公式Q&Aの改訂を再確認し、未掲載が続く場合はメーカーへ問い合わせる",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-YAMAZAKI-7835-official-gaps",
+      "product_id": "PRD-YAMAZAKI-7835",
+      "topic": "丸めた／折り畳んだ状態の寸法、折りの段階、取り外せるワイヤー本数、水受けの有無",
+      "kind": "manufacturer_inquiry",
+      "status": "OPEN",
+      "impact": "公式サイズ図は広げた状態だけで、丸めた状態の寸法と折りの段階、蛇口を避けるために取り外せるワイヤーの本数と逃がし幅、水受けの有無がないため、収納場所と排水先を公式資料だけでは決められません。",
+      "target_url": "https://www.yamajitsu.co.jp/products/242645",
+      "next_check_on": "2026-12-16",
+      "alternative": "公式に数値がない項目は適合の判定に使いません。置けるかどうかは、置き場所・シンクの奥行と内寸・蛇口・脚の接地面・排水先を自分で測ってから判断してください。",
+      "target_label": "山崎実業 7835 公式商品ページ（仕様・サイズ／サイズ図）",
+      "unknown_reason": {
+        "kind": "manufacturer_not_published",
+        "impact": "公式サイズ図は広げた状態だけで、丸めた状態の寸法と折りの段階、蛇口を避けるために取り外せるワイヤーの本数と逃がし幅、水受けの有無がないため、収納場所と排水先を公式資料だけでは決められません。",
+        "next_action": "対象型番の公式商品ページ・公式Q&Aの改訂を再確認し、未掲載が続く場合はメーカーへ問い合わせる",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-YAMAZAKI-3492-official-gaps",
+      "product_id": "PRD-YAMAZAKI-3492",
+      "topic": "伸縮の段階と固定方法、掛かり代とシンク縁の厚み・形状、水受けの有無",
+      "kind": "manufacturer_inquiry",
+      "status": "OPEN",
+      "impact": "「シンク内寸37cm〜47cm」以外に掛かり代と縁の厚み・形状の条件がなく、伸縮の段階と固定方法・ロックの有無、水受けの有無も印字がないため、フチへ掛けられるかを公式資料だけでは確定できません。",
+      "target_url": "https://www.yamajitsu.co.jp/products/241233",
+      "next_check_on": "2026-12-16",
+      "alternative": "公式に数値がない項目は適合の判定に使いません。置けるかどうかは、置き場所・シンクの奥行と内寸・蛇口・脚の接地面・排水先を自分で測ってから判断してください。",
+      "target_label": "山崎実業 3492 公式商品ページ（仕様・サイズ／サイズ図）",
+      "unknown_reason": {
+        "kind": "manufacturer_not_published",
+        "impact": "「シンク内寸37cm〜47cm」以外に掛かり代と縁の厚み・形状の条件がなく、伸縮の段階と固定方法・ロックの有無、水受けの有無も印字がないため、フチへ掛けられるかを公式資料だけでは確定できません。",
+        "next_action": "対象型番の公式商品ページ・公式Q&Aの改訂を再確認し、未掲載が続く場合はメーカーへ問い合わせる",
         "owner": "暮らしのしるべ編集部"
       }
     }

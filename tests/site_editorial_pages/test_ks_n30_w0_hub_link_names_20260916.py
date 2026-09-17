@@ -194,12 +194,25 @@ def test_a_post_this_wave_touched_either_cards_its_change_or_only_renamed_the_li
         for row in ledger.values()
         if row.get("body_source") and row["post_type"] == "post"
     }
+    added = {
+        path
+        for path in _git(
+            "diff", "--name-only", "--diff-filter=A", base, "--", ARTICLE_PREFIX
+        ).splitlines()
+        if path in by_source
+    }
+    # A body that did not exist at the base commit is not a link this wave
+    # renamed; it is an article a later wave wrote. Wave 0 added none, so the
+    # added set has to be exactly the rows still waiting for their post id.
+    assert added == {
+        row["body_source"] for row in ledger.values() if row.get("mode") == "new"
+    }, sorted(added)
     changed = [
         path
         for path in _git(
             "diff", "--name-only", base, "--", ARTICLE_PREFIX
         ).splitlines()
-        if path in by_source
+        if path in by_source and path not in added
     ]
     assert len(changed) == 12, changed
 

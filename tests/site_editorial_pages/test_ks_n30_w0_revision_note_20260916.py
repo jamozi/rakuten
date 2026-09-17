@@ -262,6 +262,8 @@ def breadcrumbs(ledger, documents, tmp_path_factory) -> dict[str, dict]:
         }
         for key, row in ledger.items()
         if row["post_type"] == "post"
+        and row["mode"] == "existing"
+        and (row.get("listing") or {}).get("state") == "published"
     }
     payload = tmp_path_factory.mktemp("breadcrumbs") / "payload.json"
     payload.write_text(
@@ -295,6 +297,27 @@ def measured_alignment(ledger, documents, breadcrumbs) -> dict[str, list[str]]:
         if heading in RETIRED_LABELS.values():
             stale["listings"].append(f"{key}: {heading!r}")
     return stale
+
+
+def test_the_breadcrumb_check_covers_exactly_the_posts_wordpress_has(
+    ledger, breadcrumbs
+) -> None:
+    """The breadcrumb the theme prints belongs to a post that exists.
+
+    next30 Wave 1 added three ``mode:"new"`` rows whose post id is still null.
+    The theme cannot render a breadcrumb for one, so the payload is built from
+    the ledger's published posts; the assertion keeps that set honest instead of
+    letting a future wave quietly shrink what this note is measured against.
+    """
+    published = {
+        row["slug"]
+        for row in ledger.values()
+        if row["post_type"] == "post"
+        and row["mode"] == "existing"
+        and (row.get("listing") or {}).get("state") == "published"
+    }
+    assert set(breadcrumbs) == published
+    assert breadcrumbs
 
 
 def test_the_note_keeps_the_old_and_the_new_page_names(revision_note) -> None:

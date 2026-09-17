@@ -5022,6 +5022,36 @@
           "html": "<figure class=\"ps-product-image ps-rakuten-product-photo\" aria-label=\"TUMI 19 DEGREE フロント・アクセス・エクスパンダブル・キャリーオン 0228793DTX / 1589906153の商品画像\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"small-carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-300\" data-raos-cta-id=\"purchase-image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-300-condition-front-main\" data-raos-placement=\"top_summary\" data-raos-snapshot-id=\"ps-6dce56817aa0fd0854dfb9892e290270\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"small-carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-240\" data-raos-cta-id=\"purchase-image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-240-condition-front-main\" data-raos-placement=\"top_summary\" data-raos-snapshot-id=\"ps-6dce56817aa0fd0854dfb9892e290270\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>0228793DTX / 1589906153／BlackTexture（広告）</figcaption></figure>"
         }
       }
+    },
+    {
+      "article_id": "dish-rack-installation-measurement",
+      "slug": "dish-rack-installation-measurement",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-bbe2a2f2f2d824f790f9297151cb719a",
+      "body_sha256": "9f4f785fc5a8f2bde542826368b7da4b5ac5d7c80b5208369ab977e65e9a8a1d",
+      "bindings": [],
+      "media": {}
+    },
+    {
+      "article_id": "slim-dish-rack-under-20cm",
+      "slug": "slim-dish-rack-under-20cm",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-ddbf363d36dc3a55da9d5caff7b03cbf",
+      "body_sha256": "290f3150309f76364e1544c56895d0f3d1e8230cc57222476f22b57790b9a988",
+      "bindings": [],
+      "media": {}
+    },
+    {
+      "article_id": "dish-rack-no-space",
+      "slug": "dish-rack-no-space",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-7205273eb44540c4aaf8ad4e62e0d6c5",
+      "body_sha256": "862123516d84c98b3d3a90d3dddcf429dbb5d60b4ff358b075b323e0bbdd0aa7",
+      "bindings": [],
+      "media": {}
     }
   ]
 }
