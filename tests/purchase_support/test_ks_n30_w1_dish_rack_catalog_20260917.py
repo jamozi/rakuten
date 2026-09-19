@@ -161,6 +161,8 @@ CONDITION_SLOTS = {
         ("m-fixed", "PRD-YAMAZAKI-5070"),
         ("m-fixed", "PRD-SHIMOMURA-42666"),
         ("m-over-sink", "PRD-YAMAZAKI-4314"),
+        # 5070 prints 「（シンク渡し使用時）」 in its 対応サイズ row (round 2).
+        ("m-over-sink", "PRD-YAMAZAKI-5070"),
         ("m-over-sink", "PRD-YAMAZAKI-7835"),
         ("m-over-sink", "PRD-YAMAZAKI-3492"),
         ("m-temporary", "PRD-YAMAZAKI-7835"),

@@ -5028,8 +5028,8 @@
       "slug": "dish-rack-installation-measurement",
       "post_type": "post",
       "kind": "curated_comparison",
-      "snapshot_id": "ps-bbe2a2f2f2d824f790f9297151cb719a",
-      "body_sha256": "9f4f785fc5a8f2bde542826368b7da4b5ac5d7c80b5208369ab977e65e9a8a1d",
+      "snapshot_id": "ps-2d2acffcdbf5fd212a52d0f3ba40aa41",
+      "body_sha256": "444e91580a1e9c44ff972c71e3d0d7b9be4f1dd8adfebf6fbdb1bc5821963aff",
       "bindings": [],
       "media": {}
     },
@@ -5038,8 +5038,8 @@
       "slug": "slim-dish-rack-under-20cm",
       "post_type": "post",
       "kind": "curated_comparison",
-      "snapshot_id": "ps-ddbf363d36dc3a55da9d5caff7b03cbf",
-      "body_sha256": "290f3150309f76364e1544c56895d0f3d1e8230cc57222476f22b57790b9a988",
+      "snapshot_id": "ps-2218e26c642791c08608f05fd0ef754e",
+      "body_sha256": "5cd9b8b8ed5881643d509c7ad40c078488cb171e3fde817289145d84435b75a4",
       "bindings": [],
       "media": {}
     },
@@ -5048,8 +5048,8 @@
       "slug": "dish-rack-no-space",
       "post_type": "post",
       "kind": "curated_comparison",
-      "snapshot_id": "ps-7205273eb44540c4aaf8ad4e62e0d6c5",
-      "body_sha256": "862123516d84c98b3d3a90d3dddcf429dbb5d60b4ff358b075b323e0bbdd0aa7",
+      "snapshot_id": "ps-02e08c15c0950a362e03b77894fde0c1",
+      "body_sha256": "c4e3426ec561c9d3e740856d90b21641675cf0e7a2b86ec617aeadfb75b86c25",
       "bindings": [],
       "media": {}
     }

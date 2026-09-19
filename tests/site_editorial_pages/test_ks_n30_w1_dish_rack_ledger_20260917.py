@@ -58,7 +58,7 @@ READER_ROLES = {
             "kind": "internal",
             "target": "slim-dish-rack-under-20cm",
             "anchor": "",
-            "label": "短辺20cm以下の3商品を比べる",
+            "label": "短辺20cm以下のすき間に据え置く3商品を比べる",
         },
         "next_question": {
             "question": "置く場所そのものが取れない？",
