@@ -12,9 +12,17 @@ Three ways the same defect shows up, one rule each:
 
 * **Attribution.** 「4314・5070・7835はシンクの「奥行」」 hands three 型番 one quoted
   word. Every 型番 in such a group has to print that word in its 対応サイズ row,
-  and a count in front of the group (「3商品（…）は『奥行』」) has to be the number
+  and a count in front of the group (「3商品（…）は「奥行」」) has to be the number
   of the wave's products that print it -- otherwise the caption says three where
-  the body two screens down says two.
+  the body two screens down says two. The quotation counts whether it is the
+  axis word on its own or the whole 対応サイズ row value that carries it, and it
+  counts in any sentence: 「4314・5070・7835はシンクの「奥行」に合わせます。」 states
+  the same falsehood without the word 条件 in it, and 「7835は「奥行50cm以内のシンク」
+  と条件に印字しています。」 pins 4314's row value on 7835 without ever setting an
+  axis word alone. A 商品サイズ row value (「幅40.3×奥行18×高さ16cm」) carries 奥行
+  too but names a side of the product rather than the シンク, so it is left to
+  the ownership rule -- every 対応サイズ row in this wave names the シンク, and no
+  商品サイズ row does.
 * **Ownership.** 「Wは公式の「幅」、Dは公式の「奥行」」 calls 幅 and 奥行 the makers'
   words for 4314 and 7835, but 山崎実業's 商品サイズ row prints 「W55.5×D16.5×H16cm」
   and 「W26×D58×H0.8cm」 -- W and D, never 幅 or 奥行. Only 下村企販 42666 prints
@@ -69,26 +77,43 @@ AXIS_WORDS = ("奥行き", "奥行", "内寸")
 SIDE_WORDS = ("奥行き", "奥行", "幅", "高さ", "W", "D", "H")
 #: A word in either quotation style the bodies use.
 QUOTED = re.compile(r"[「『]([^」』]+)[」』]")
-#: A sentence that attributes a printed condition rather than naming a table row.
-CONDITION_CLAIM = re.compile(r"条件|印字")
 #: A sentence that says the printed axis words do not agree.
 DISAGREEMENT = re.compile(r"揃|そろ")
 #: A sentence that says these are the only axis words the makers print.
 CLOSED_LIST = re.compile(r"公式[がは][^。]*印字しているのは[^。]*だけ")
 
 _MODEL = "|".join(sorted(WAVE_PRODUCTS.values(), key=len, reverse=True))
-#: 「4314・5070は…「奥行」」 -- a run of 型番 handed one quoted axis word.
+#: 「4314・5070は…「奥行」」 -- a run of 型番 handed one quotation.
 ATTRIBUTION = re.compile(
     rf"(?P<count>(\d+)商品（)?"
     rf"(?P<models>(?:{_MODEL})(?:[・、](?:{_MODEL}))*)"
     rf"[^「『」』。]{{0,14}}"
-    rf"[「『](?P<axis>{'|'.join(AXIS_WORDS)})[」』]"
+    rf"[「『](?P<quoted>[^「『」』]+)[」』]"
 )
 #: 「公式の「幅」」「メーカー表記の「奥行」」 -- a side word claimed as the maker's own.
 OWNED = re.compile(
     rf"(?:メーカー|公式)(?:表記)?の[^「『」』。]{{0,6}}"
     rf"[「『](?P<word>{'|'.join(SIDE_WORDS)})[」』]"
 )
+
+
+def quoted_axis(quoted: str) -> str | None:
+    """The axis word a quotation hands a product, or None if it hands none.
+
+    A quotation is an axis claim when it is the axis word on its own (「奥行」)
+    and equally when it is the 対応サイズ row value that carries the word
+    (「奥行50cm以内のシンク」) -- the second is how the same false attribution
+    reads when the body quotes the row instead of the word. Every 対応サイズ row
+    in this wave names the シンク the condition is about; a 商品サイズ row names a
+    side of the product (「幅40.3×奥行18×高さ16cm」) and never the シンク, so the
+    シンク is what tells a condition quotation from a size quotation, and the
+    ownership rule is what guards the latter.
+    """
+
+    for word in AXIS_WORDS:  # longest first, so 奥行き never reads as 奥行
+        if quoted == word or (word in quoted and "シンク" in quoted):
+            return word
+    return None
 
 
 @pytest.fixture(scope="module")
@@ -212,16 +237,17 @@ def test_a_group_of_models_is_only_given_the_axis_word_all_of_them_print(
 ) -> None:
     for where, text in reader_texts:
         for sentence in sentences(text):
-            if not CONDITION_CLAIM.search(sentence):
-                continue
             for match in ATTRIBUTION.finditer(sentence):
-                quoted = match.group("axis")
+                quoted = quoted_axis(match.group("quoted"))
+                if quoted is None:
+                    continue
                 models = re.split(r"[・、]", match.group("models"))
                 for model in models:
                     assert axes[model] == quoted, (
                         f"{where}: {model} prints "
                         f"{axes[model] and f'「{axes[model]}」' or 'no 対応サイズ row'} "
-                        f"but this sentence hands it 「{quoted}」: "
+                        f"but this sentence hands it 「{quoted}」 "
+                        f"(quoting 「{match.group('quoted')}」): "
                         f"{sentence.strip()!r}"
                     )
                 if match.group("count") is None:
