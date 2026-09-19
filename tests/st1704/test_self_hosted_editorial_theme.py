@@ -259,6 +259,15 @@ def test_theme_stamp_generator_converges_once_is_idempotent_and_rotates(
     monkeypatch.setattr(theme_builder, "THEME_BUILDER_SOURCE_PATH", builder_path)
     monkeypatch.setattr(theme_builder, "DESIGN_HANDOFF_PATH", handoff_path)
     monkeypatch.setattr(theme_builder, "OPERATIONS_RUNBOOK_PATH", runbook_path)
+    # The reader runtime asset is the one payload keyed by ``ROOT / …`` instead of
+    # by ``THEME_ROOT``, so without this the generator writes the tracked theme --
+    # identical bytes, but through a staged ``.<name>.<pid>.<n>.tmp`` that makes a
+    # concurrent ``--check`` see a path outside SOURCE_FILES and fail.
+    monkeypatch.setattr(
+        theme_builder,
+        "READER_RUNTIME_ASSET_PATH",
+        theme_root / "assets/reader-measurement-runtime.v1.json",
+    )
 
     contract_path = theme_root / "theme-contract.v1.json"
     stale_contract = _load_json(contract_path)

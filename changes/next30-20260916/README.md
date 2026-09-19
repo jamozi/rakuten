@@ -224,7 +224,7 @@ DF07 の `/easy-maintenance/` も同じ扱いで、W1-B に `easy-maintenance`�
 ## 未解決
 
 - 固定ページ `laundry` の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）
-- 本番プロファイルの `allow_new_posts` の現在値（W1-A の前にオーナー確認が要る）
+- 本番プロファイルの `allow_new_posts` は 2026-09-20 の `status`（読み取りのみ）で **true** と実測した。オーナーが管理画面で外しうる値なので公開の直前に測り直す（`decisions.v1.json` の `publication_prerequisites` が一次情報）
 - `approved-layout-baselines.v1.json` の Before/After 了承（W0-A の公開前提）
 - `/categories/` のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。そろえ方はオーナー判断
 - カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は候補内なので揃えても候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには別の候補が要る

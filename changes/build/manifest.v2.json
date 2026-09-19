@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "0e9e98dc8f3f6b363e31f0d2dc296b58f324791b2fcba8d96096a6530d723752",
+          "sha256": "c80d92c3b04baf353bc831326165638cbd420632aaf3fec516ef938670699a40",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 698146,
-          "sha256": "e5e7ea8f2b4c41596d13cfb4667f9f557122e69cd80be520ad90d71a6ee22670",
+          "sha256": "b5f69199098d311ed3f3371e3efcf9a55148e2c606b262f93ab95deee6c7183f",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -2006,13 +2006,13 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
-          "bytes": 35110,
-          "sha256": "922da2e5995d84ccd763f1782403fa27469e9ba363a7b18856abafd34cfe0701",
+          "bytes": 35195,
+          "sha256": "856c8a12259e5e3251e80cbe2b06a501ebdc5c12077d8dc123bb45e848f7643d",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dish-rack-installation-measurement.html"
         },
         {
-          "bytes": 36800,
-          "sha256": "3990bfa644e478c368a6c53456351b602fad8f10d43487e573a9506bd1dc9361",
+          "bytes": 36797,
+          "sha256": "4a2dbe2abfa02a4c36240dc4a47cf4bc342ffead79bc4fbab2da724ba3334067",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dish-rack-no-space.html"
         },
         {
@@ -27168,7 +27168,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "ea51b46e315a27a9913f384f81479714feebf33a395ac1d2644293b605106373",
+          "sha256": "14419e56dfe452e944332e7d3d0f3978a0e482262efc58342103c69c4d8567bc",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27399,7 +27399,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "d8c56483e25cadc56799866f7e3b71bce1a7842759711c99404d085a9a4d148c",
+          "sha256": "f5f12fd1c7497096359ab223402c267464614dbd2db67abb4fb5df33a63759e2",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30339,7 +30339,7 @@
         },
         {
           "bytes": 28434,
-          "sha256": "081e7fc2f25449ad485b69b2f4f7cdd3e4858d6fb088c3020106190a351d0946",
+          "sha256": "f7a0022880dfed44465149a27daf6af1b0b34d4c5a21bf9b6200306c028bcfbe",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31202,7 +31202,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "39840e28c0a4b093c30b228cb8446a6872708c2745f749648badc24a8926d391",
+          "sha256": "dc1f0e80c568e7705c202837ffadc8081994fa235c43473a16a3c0708a2aa07b",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

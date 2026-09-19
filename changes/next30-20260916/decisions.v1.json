@@ -260,12 +260,13 @@
       "category": "kitchen",
       "role": "guide",
       "page_kind": "task_guide",
-      "note": "脚・蛇口・水受けの干渉（5 商品とも未掲載）をこの記事が丸ごと持つ。落ちた A06 の排水先の採寸を採寸ステップ⑥で引き受ける。"
+      "note": "脚・蛇口・水受けの干渉（5 商品とも未掲載）をこの記事が丸ごと持つ。落ちた A06 の排水先の採寸を採寸ステップ⑥で引き受ける。",
+      "excerpt": "山崎実業4314・5070・7835・3492と下村企販42666を対象に、公式が印字しているシンク条件と外形を自宅の採寸へどう当てはめるかを示します。脚の位置、蛇口下に要る高さ、水受けの引き出し方向は公式に数値がないため、自分で測る手順に分けました。"
     },
     {
       "article_id": "A02",
       "slug": "slim-dish-rack-under-20cm",
-      "title": "短辺20cm以下の水切りラック3商品を比べる",
+      "title": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
       "cluster": "水切りラック",
       "cluster_key": "WR",
       "verdict": "RESHAPE",
@@ -274,7 +275,20 @@
       "category": "kitchen",
       "role": "comparison",
       "page_kind": "condition_comparison",
-      "note": "落ちた A06 の排水方式の比較を「水受け・排水方式」列で引き受ける。取り出し空間は 3 商品とも未掲載のため比較表に行を置かない。"
+      "note": "落ちた A06 の排水方式の比較を「水受け・排水方式」列で引き受ける。取り出し空間は 3 商品とも未掲載のため比較表に行を置かない。",
+      "title_history": [
+        {
+          "recorded_on": "2026-09-16",
+          "title": "短辺20cm以下の水切りラック3商品を比べる",
+          "reason": "intake の題名をオーナーが承認した時点の記録。"
+        },
+        {
+          "recorded_on": "2026-09-20",
+          "title": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
+          "reason": "本文が実際に使う基準は「短辺20cm以下」かつ「すき間の面に据え置く」の 2 つ。公式が短辺20cm以下を印字するのは 4314（165mm）・5070（160mm）・42666（180mm）・3492（195mm）の 4 商品で、3492 は公式が「シンクのフチに引っ掛けるので、浮かせて設置できます」と印字しているため据え置く 3 商品から外れる（2026-09-20 に https://www.yamajitsu.co.jp/products/241233 を再取得して確認）。承認時の題名は短辺だけを名乗るので、外した 1 商品の理由を題名が持たない。本文の基準どおりに狭めた題名を記録し、公開はこの題名で行う。ラウンド 2 で本文を狭めて以来、記録だけが古い側だった。"
+        }
+      ],
+      "excerpt": "公式が印字している短辺（奥行）20cm以下は、山崎実業4314の165mm、5070の160mm、下村企販42666の180mm、山崎実業3492の195mmの4商品です。このうち、公式が「シンクのフチに引っ掛けるので、浮かせて設置できます」と印字している3492を除いた3商品を、外形・内寸・材質・耐荷重・水受けで比べます。食器を出し入れするのに要る上方と前方の空間は3商品とも未掲載のため、適合の判定には使いません。"
     },
     {
       "article_id": "A03",
@@ -288,7 +302,8 @@
       "category": "kitchen",
       "role": "comparison",
       "page_kind": "broad_comparison",
-      "note": "HUB 4 本のうちこの 1 本だけ role=comparison（5 商品の方式別一覧が公式の「置き方」の印字だけで成立するため）。"
+      "note": "HUB 4 本のうちこの 1 本だけ role=comparison（5 商品の方式別一覧が公式の「置き方」の印字だけで成立するため）。",
+      "excerpt": "作業台に常設する・シンクの上に渡す・使う時だけ広げるの3方式を、公式が印字している置き方と外形・耐荷重で切り分けます。排水先は7835と3492に水受けの記載がなく、42666は引き出す向きが未掲載のため、方式を決めた後に自分で確かめる手順にしました。"
     },
     {
       "article_id": "A04",
@@ -1177,7 +1192,7 @@
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
-    "本番プロファイルの allow_new_posts の現在値（W1-A の前にオーナー確認が要る）",
+    "本番プロファイルの allow_new_posts は 2026-09-20 の status（読み取りのみ）で true と実測した。オーナーが管理画面で外しうる値なので、公開の直前に測り直す（publication_prerequisites を参照）",
     "approved-layout-baselines.v1.json の Before/After 了承（W0-A の公開前提）",
     "/categories/ のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。4 つとも品目でそろえるか場所・行為でそろえるかはオーナー判断",
     "カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は W0-A の候補内なので揃えても公開候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには travel・preparedness の本文が加わるため別の候補が要る",
@@ -1319,5 +1334,54 @@
         "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>食洗機</h2>"
       }
     }
-  ]
+  ],
+  "reader_source_elements": {
+    "recorded_on": "2026-09-20",
+    "statement": "読者向けの本文と更新履歴は読み取り元を言葉で書く（「商品ページ冒頭の紹介本文」）。HTML の要素名はこの記録だけが持つ。",
+    "entries": [
+      {
+        "product_id": "PRD-YAMAZAKI-5070",
+        "url": "https://www.yamajitsu.co.jp/products/241827",
+        "field": "紹介本文",
+        "reader_wording": "商品ページ冒頭の紹介本文",
+        "element": "div.s-main-product__intro-text",
+        "heading_element": "h2.s-main-product__intro-title",
+        "refetched_on": "2026-09-20",
+        "note": "2026-09-20 に再取得し、全 7 文が記録どおりであること、見出しが「シーンに合わせて使い方様々！スリムなワイヤーバスケット2段」であることを確認した。"
+      }
+    ]
+  },
+  "publication_prerequisites": {
+    "recorded_on": "2026-09-20",
+    "statement": "W1-A を公開する前に残っている前提。片方は実測で閉じ、もう片方はオーナーの了承を待つ。",
+    "items": [
+      {
+        "id": "allow_new_posts",
+        "statement": "本番プロファイルの allow_new_posts が true であること（mode:\"new\" の 3 行が要求する）。",
+        "state": "MEASURED",
+        "value": true,
+        "measured_on": "2026-09-20",
+        "measurement": {
+          "command": "scripts/raos_wordpress_publication_request.py direct --owner-checkout <owner> status",
+          "read_only": true,
+          "schema": "RAOSOwnerDirectStatusV1",
+          "profile": "owner-direct-v1",
+          "enabled": true,
+          "allow_new_posts": true,
+          "targets": 45
+        },
+        "note": "2026-09-16 の測定と同じ値。status は読み取りだけで、prepare・preview・publish は行っていない。公開の直前に測り直す（オーナーが管理画面で外しうる値なので、記録は測った日と対になる）。"
+      },
+      {
+        "id": "approved_layout_baselines",
+        "statement": "approved-layout-baselines.v1.json の Before/After をオーナーが了承すること。",
+        "state": "OPEN",
+        "blocks": [
+          "W0-A",
+          "W1-A"
+        ],
+        "note": "オーナーがレビューページで Before/After を見るまで開いたまま。記録の側では閉じられない。"
+      }
+    ]
+  }
 }
