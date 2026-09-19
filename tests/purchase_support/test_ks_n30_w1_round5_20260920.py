@@ -114,6 +114,23 @@ def roots(bodies: dict[str, str]) -> dict[str, Element]:
     return {slug: fragment(text) for slug, text in bodies.items()}
 
 
+@pytest.fixture(scope="module")
+def reader_texts(bodies: dict[str, str], catalog: dict) -> list[tuple[str, str]]:
+    """Every published body of the wave and every reader-facing history entry.
+
+    Round 5 read A01 alone, so the identical sentence in A03 -- which sends the
+    reader to A01 for the wording -- went unread. A guard that reads one of
+    three bodies cannot say the wave is clean.
+    """
+
+    texts = []
+    for slug in WAVE:
+        texts.append((f"{slug} body", visible_text(bodies[slug])))
+        for entry in article_of(catalog, slug).get("history", []):
+            texts.append((f"{slug} history {entry['date']}", entry["text"]))
+    return texts
+
+
 def shipped(decisions: dict, ledger: dict[str, dict]) -> list[dict]:
     """The recorded articles that already have a row in the publication ledger."""
 
@@ -201,7 +218,7 @@ def test_a_changed_title_keeps_the_wording_it_replaced_and_says_why(
 
 
 def test_the_condition_table_quotes_each_makers_own_axis_word(
-    catalog: dict, bodies: dict[str, str]
+    catalog: dict, reader_texts: list[tuple[str, str]]
 ) -> None:
     axes = {
         model: printed_axis(catalog, product_id)
@@ -214,27 +231,28 @@ def test_the_condition_table_quotes_each_makers_own_axis_word(
         "7835": "奥行き",
         "3492": "内寸",
     }, axes
-    for sentence in sentences(visible_text(bodies[MEASURE])):
-        quoted = set(QUOTED.findall(sentence))
-        if not quoted & set(AXIS_WORDS) or not CONDITION_CLAIM.search(sentence):
-            # 「「内寸」行」 in the source list names a row of the maker's spec
-            # table, not the axis a product is judged on; only a sentence about
-            # the printed 条件 attributes an axis word to a 型番.
-            continue
-        for model, word in axes.items():
-            if word is None or model not in sentence:
+    for where, text in reader_texts:
+        for sentence in sentences(text):
+            quoted = set(QUOTED.findall(sentence))
+            if not quoted & set(AXIS_WORDS) or not CONDITION_CLAIM.search(sentence):
+                # 「「内寸」行」 in the source list names a row of the maker's spec
+                # table, not the axis a product is judged on; only a sentence
+                # about the printed 条件 attributes an axis word to a 型番.
                 continue
-            assert word in quoted, (
-                f"{model} prints 「{word}」 in its 対応サイズ row; this sentence "
-                f"quotes {sorted(quoted & set(AXIS_WORDS))} for it: "
-                f"{sentence.strip()!r}"
-            )
-        if "表2" in sentence and "奥行" in quoted:
-            assert "奥行き" in quoted, (
-                "表2 carries 7835, whose row prints 「奥行き」, so a sentence that "
-                "sends the reader to 表2 for 「奥行」 names both: "
-                f"{sentence.strip()!r}"
-            )
+            for model, word in axes.items():
+                if word is None or model not in sentence:
+                    continue
+                assert word in quoted, (
+                    f"{where}: {model} prints 「{word}」 in its 対応サイズ row; this "
+                    f"sentence quotes {sorted(quoted & set(AXIS_WORDS))} for it: "
+                    f"{sentence.strip()!r}"
+                )
+            if "表2" in sentence and "奥行" in quoted:
+                assert "奥行き" in quoted, (
+                    f"{where}: 表2 carries 7835, whose row prints 「奥行き」, so a "
+                    "sentence that sends the reader to 表2 for 「奥行」 names both: "
+                    f"{sentence.strip()!r}"
+                )
 
 
 def test_no_reader_facing_text_of_the_wave_prints_a_css_selector(

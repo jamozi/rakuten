@@ -149,8 +149,14 @@ def short_side_mm(catalog: dict, product_id: str) -> int:
     return int(match.group(1))
 
 
+#: The axis words a 対応サイズ row can print, longest first: 7835 prints 「奥行き」
+#: where 4314 and 5070 print 「奥行」, and collapsing the two is the slip this wave
+#: exists to point at, so the longer word is matched first.
+AXIS_WORDS = ("奥行き", "奥行", "内寸")
+
+
 def sink_axis(catalog: dict, product_id: str) -> str | None:
-    """奥行 / 内寸 / None, read off the printed 対応サイズ row alone.
+    """奥行き / 奥行 / 内寸 / None, read off the printed 対応サイズ row alone.
 
     The fact text quotes the row and then annotates it (「…「内寸」とは印字されて
     いません」), so the annotation is cut before the axis is read.
@@ -159,10 +165,9 @@ def sink_axis(catalog: dict, product_id: str) -> str | None:
     if fact is None or fact.get("state") != "KNOWN":
         return None
     printed = re.split(r"（原文ママ|。", fact["text"])[0]
-    if "奥行" in printed:
-        return "奥行"
-    if "内寸" in printed:
-        return "内寸"
+    for word in AXIS_WORDS:
+        if word in printed:
+            return word
     return None
 
 
@@ -280,8 +285,6 @@ def test_every_product_count_is_recomputed_from_the_catalog(bodies, roots, catal
     scoped = len(shown_products(roots[SLIM]))
     for slug in WAVE:
         shown = shown_products(roots[slug])
-        depth = {pid for pid in shown if sink_axis(catalog, pid) == "奥行"}
-        inner = {pid for pid in shown if sink_axis(catalog, pid) == "内寸"}
         clears = {
             pid
             for pid in WAVE_PRODUCTS
@@ -292,8 +295,17 @@ def test_every_product_count_is_recomputed_from_the_catalog(bodies, roots, catal
             for match in COUNTED_PRODUCTS.finditer(sentence):
                 claimed = int(match.group(1).translate(ASCII_DIGITS))
                 if "奥行" in sentence and "内寸" in sentence:
-                    allowed = {len(depth - inner)}
-                    why = "the products whose 対応サイズ row prints 奥行"
+                    # Such a sentence counts one axis word at a time, and the
+                    # words are not interchangeable: 7835 prints 「奥行き」 where
+                    # 4314 and 5070 print 「奥行」. Which word a given count goes
+                    # with is pinned by the round-6 attribution rule; here the
+                    # count only has to be one the printed rows support.
+                    allowed = {
+                        len({pid for pid in shown if sink_axis(catalog, pid) == word})
+                        for word in AXIS_WORDS
+                        if word in sentence
+                    }
+                    why = "the products printing an axis word the sentence names"
                 elif "短辺" in sentence and "20cm" in sentence:
                     # A threshold sentence counts either the products that clear
                     # it or the ones compared here; which products are dropped is
