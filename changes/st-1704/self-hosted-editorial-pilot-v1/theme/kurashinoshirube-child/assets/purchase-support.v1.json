@@ -5028,8 +5028,8 @@
       "slug": "dish-rack-installation-measurement",
       "post_type": "post",
       "kind": "curated_comparison",
-      "snapshot_id": "ps-68efe232d9fa02190966142a9fdaed1a",
-      "body_sha256": "7d2de7346f452117d0eace7ad8654f527db350fb3e39a8a044db3d043d1b849c",
+      "snapshot_id": "ps-28607865286d1a711a87c20b9f09d258",
+      "body_sha256": "922da2e5995d84ccd763f1782403fa27469e9ba363a7b18856abafd34cfe0701",
       "bindings": [],
       "media": {}
     },
@@ -5048,8 +5048,8 @@
       "slug": "dish-rack-no-space",
       "post_type": "post",
       "kind": "curated_comparison",
-      "snapshot_id": "ps-46f2410bc8f16024aa40ebf8dd303851",
-      "body_sha256": "cc757208ba8493f4eb117f3a4ce550158329dfe335e00b77f044f6a2360a3338",
+      "snapshot_id": "ps-c488d97126f9784385294639c552c453",
+      "body_sha256": "3990bfa644e478c368a6c53456351b602fad8f10d43487e573a9506bd1dc9361",
       "bindings": [],
       "media": {}
     }

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "0ed49f4a8d2f99210b37cd1d37bb1b7a658edb0c0ec25d19c2e872f8072a52a2",
+          "sha256": "0e9e98dc8f3f6b363e31f0d2dc296b58f324791b2fcba8d96096a6530d723752",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 698146,
-          "sha256": "f88eda18d0aecf8e9b5a05b560b1b7eae2b500a3495e6f71c98528edfcc3d78a",
+          "sha256": "e5e7ea8f2b4c41596d13cfb4667f9f557122e69cd80be520ad90d71a6ee22670",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -2007,12 +2007,12 @@
         },
         {
           "bytes": 35110,
-          "sha256": "7d2de7346f452117d0eace7ad8654f527db350fb3e39a8a044db3d043d1b849c",
+          "sha256": "922da2e5995d84ccd763f1782403fa27469e9ba363a7b18856abafd34cfe0701",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dish-rack-installation-measurement.html"
         },
         {
-          "bytes": 36799,
-          "sha256": "cc757208ba8493f4eb117f3a4ce550158329dfe335e00b77f044f6a2360a3338",
+          "bytes": 36800,
+          "sha256": "3990bfa644e478c368a6c53456351b602fad8f10d43487e573a9506bd1dc9361",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dish-rack-no-space.html"
         },
         {
@@ -27168,7 +27168,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "35906a99afdc6f69024f3347d9a5211ade454528a57a86ae75f8f57274df4afa",
+          "sha256": "ea51b46e315a27a9913f384f81479714feebf33a395ac1d2644293b605106373",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27399,7 +27399,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "89a78dbd7ce6b3b883d4c0c1aac42879e01575240dbeed61d184c89a57d38fbe",
+          "sha256": "d8c56483e25cadc56799866f7e3b71bce1a7842759711c99404d085a9a4d148c",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30339,7 +30339,7 @@
         },
         {
           "bytes": 28434,
-          "sha256": "d556a6cecf63c48e6370611c53d63e548ae808963161131927f92820b26d90e8",
+          "sha256": "081e7fc2f25449ad485b69b2f4f7cdd3e4858d6fb088c3020106190a351d0946",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31202,7 +31202,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "b6778eb3a6287fed2ebf38d7224852fd1ea0dd0ee0f0eb9945e1903e804e4ab2",
+          "sha256": "39840e28c0a4b093c30b228cb8446a6872708c2745f749648badc24a8926d391",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

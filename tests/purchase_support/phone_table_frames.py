@@ -45,6 +45,24 @@ The purpose and hub pages put their tables in ``.ks-editorial-table``, which is
 inset a further 1rem on each side; the same run measured 254/294/309/324 there.
 Those tables are listed for completeness -- every one of them already frames a
 whole data cell at 320px with room to spare.
+
+The two A01 tables were measured again on 2026-09-20 with the same harness::
+
+    node tests/purchase_support/phone_table_frames.mjs \
+        dish-rack-installation-measurement 320,360,375,390
+
+(playwright, Chromium 152.0.7977.8, the committed theme and the published body).
+The sticky first column and the first data column come out the same at all four
+widths, so ``MEASURE_TABLE_COLUMNS`` holds one pair per table rather than one per
+width::
+
+    表1 (.ks-measure-sheet-table)      52.0 + 217.33   table width 704
+    表2 (.ks-measure-condition-table)  88.0 + 194.66   table width 672
+
+Chromium lays a column out in 1/64px units, so a rendered data column is the
+declared share rounded down: 表2's three columns come back 194.66 / 194.66 /
+194.69 out of 584px, not 194.67 each. The numbers an article publishes are the
+rendered ones, which is why they are recorded here instead of divided out.
 """
 
 from __future__ import annotations
@@ -60,6 +78,13 @@ ARTICLE_SCROLL_FRAME = {320: 286.0, 360: 326.0, 375: 341.0, 390: 356.0}
 
 #: Inner width of ``.ks-editorial-table`` on a purpose or hub page.
 PURPOSE_SCROLL_FRAME = {320: 254.0, 360: 294.0, 375: 309.0, 390: 324.0}
+
+#: Rendered ``(sticky first column, first data column)`` of A01's two tables, in
+#: px, identical at 320/360/375/390px. Measured, not divided out; see above.
+MEASURE_TABLE_COLUMNS = {
+    "ks-measure-sheet-table": (52.0, 217.33),
+    "ks-measure-condition-table": (88.0, 194.66),
+}
 
 PHONE_QUERY = "@media (max-width:600px) {"
 
