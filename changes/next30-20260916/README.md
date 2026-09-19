@@ -66,8 +66,8 @@ KEEP は A11（除湿の 3 方式）だけ。
 
 ## 検証済みの商品カタログ（波ごとに取り込む）
 
-`products.candidate.v1.json` は 17 商品の検証済みカタログの写し（sha256 `a0551667…2213d`、
-コピー元は調査作業の `next30/products.catalog.json`）。リポジトリの検証器
+`products.candidate.v1.json` は 17 商品の検証済みカタログの写し（sha256 `906b4eae…a0060`、
+コピー元は調査作業の `next30/products.catalog.json`。2026-09-19 の W1 ラウンド 3 で、5070 と 3492 の紹介本文の引用 2 件を公式ページの再取得に合わせて訂正した）。リポジトリの検証器
 （`python/raos/application/editorial/purchase_support.py`）へ商品配列をそのまま渡した出力:
 
 ```

@@ -2244,8 +2244,8 @@
       "post_id": null,
       "post_type": "post",
       "slug": "slim-dish-rack-under-20cm",
-      "title": "短辺20cm以下の水切りラック3商品を比べる",
-      "excerpt": "シンク横の短辺20cm以下に置ける山崎実業4314・5070と下村企販42666を、公式の外形・内寸・材質・耐荷重・水受けで比べます。食器を出し入れするのに要る上方と前方の空間は3商品とも未掲載のため、適合の判定には使いません。",
+      "title": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
+      "excerpt": "公式が印字している短辺（奥行）20cm以下は、山崎実業4314の165mm、5070の160mm、下村企販42666の180mm、山崎実業3492の195mmの4商品です。このうち、公式が「シンクのフチに引っ掛けるので、浮かせて設置できます」と印字している3492を除いた3商品を、外形・内寸・材質・耐荷重・水受けで比べます。食器を出し入れするのに要る上方と前方の空間は3商品とも未掲載のため、適合の判定には使いません。",
       "taxonomies": {
         "category": [
           5
@@ -2256,7 +2256,7 @@
       "body_source": "changes/wordpress-direct-publish-v1/articles/slim-dish-rack-under-20cm.html",
       "reader_role": {
         "page_kind": "condition_comparison",
-        "primary_intent": "シンク横の短辺20cm以下に置ける水切りラックを選びたい",
+        "primary_intent": "短辺20cm以下のすき間に据え置ける水切りラックを選びたい",
         "reader": "すき間に常設したい人",
         "decision_after_reading": "3商品のどれを候補にするか",
         "main_cta": {

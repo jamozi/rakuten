@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 144bc86c336f878199d2a3d39d7d9809a7993e45cc47b97fefc53a24de8e1de6;
+  --raos-theme-runtime-revision-base: 8ce7ac1ce5d00eda48e5d7535782898ea8a8a3dbce5936cbb397bab3ad74f74b;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -5362,3 +5362,23 @@ body .ks-editorial-page :is(#space-zones-table,#housework-record-table,#housewor
 .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table tbody th { width:9rem; }
 .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table :is(thead th:first-child, tbody th) { position:sticky; left:0; z-index:1; background:#f4f6f8; }
 .ps-article[data-raos-article-id="compact-robot-vacuum-shortlist"] table.robot-space-table thead th:first-child { z-index:3; }
+
+/* W1 (2026-09-19): the 採寸シート and the 照合表 of the dish-rack measuring
+   guide. Contained by default, four columns shared 286px at a 320px viewport --
+   71.5px each, 3-5 characters per line, 表2's rows 1008-1212px tall. They opt out
+   with data-ks-table-layout="scroll" and scroll inside .ps-table-scroll instead,
+   the sticky first column staying in view. table-layout is fixed, so the data
+   columns share (min-width - first column) and the pair below fits the measured
+   frame (viewport - 34px: 286px at 320px). */
+.ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) { border-collapse:collapse; width:100%; margin:0; table-layout:fixed; font-size:15px; line-height:1.75; }
+.ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) > caption { caption-side:top; padding:10px 12px; text-align:left; font-size:13px; background:var(--ps-soft); }
+.ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) :is(th,td) { padding:10px 8px; vertical-align:top; text-align:left; border-bottom:1px solid var(--ps-line); overflow-wrap:anywhere; word-break:normal; }
+.ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) :is(thead th:first-child, tbody th) { position:sticky; left:0; z-index:2; min-width:0; background:#f4f6f8; }
+.ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) thead th:first-child { z-index:3; }
+@media (max-width:600px) {
+  .ps-article[data-raos-article-id="dish-rack-installation-measurement"] table:is(.ks-measure-sheet-table,.ks-measure-condition-table) { table-layout:fixed!important; }
+  .ps-article[data-raos-article-id="dish-rack-installation-measurement"] table.ks-measure-sheet-table { min-width:44rem!important; }
+  .ps-article[data-raos-article-id="dish-rack-installation-measurement"] table.ks-measure-sheet-table :is(thead th:first-child, tbody th) { width:3.25rem!important; min-width:0!important; }
+  .ps-article[data-raos-article-id="dish-rack-installation-measurement"] table.ks-measure-condition-table { min-width:42rem!important; }
+  .ps-article[data-raos-article-id="dish-rack-installation-measurement"] table.ks-measure-condition-table :is(thead th:first-child, tbody th) { width:5.5rem!important; min-width:0!important; }
+}

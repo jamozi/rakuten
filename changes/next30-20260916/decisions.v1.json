@@ -112,8 +112,8 @@
   },
   "product_catalog": {
     "file": "changes/next30-20260916/products.candidate.v1.json",
-    "copied_from": "next30/products.catalog.json（ラウンド 3 の訂正を適用した検証済みカタログ）",
-    "sha256": "a0551667f5787fc27a1347edb3356caea2142585d3586a6e8844284c7662213d",
+    "copied_from": "next30/products.catalog.json（ラウンド 3 の訂正を適用した検証済みカタログ。2026-09-19 に W1 のラウンド 3 で 2 件を訂正: 5070 の「置き方」fact が紹介本文を冒頭 5 文で切っていたのを公式ページ再取得で全文に、3492 の「対応するシンクの条件」fact が紹介本文の冒頭 1 文を全文のように引いていたのを「冒頭」と明記に。product 数・fact 数・state の集計は変わっていない）",
+    "sha256": "906b4eae6c40474c28fd68555bc927a99bd77865224c56d0f76f55fca6a40060",
     "products": 17,
     "facts": 284,
     "guide_facts": 29,

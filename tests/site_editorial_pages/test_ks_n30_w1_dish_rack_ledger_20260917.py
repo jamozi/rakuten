@@ -45,7 +45,7 @@ PUBLISHED_POSTS_AT_BASE = 20
 
 TITLES = {
     "dish-rack-installation-measurement": "水切りラックを置けるか測る｜シンク・脚・蛇口の確認",
-    "slim-dish-rack-under-20cm": "短辺20cm以下の水切りラック3商品を比べる",
+    "slim-dish-rack-under-20cm": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
     "dish-rack-no-space": "水切りかごを置く場所がない｜3つの方式から選ぶ",
 }
 READER_ROLES = {
@@ -79,7 +79,7 @@ READER_ROLES = {
     },
     "slim-dish-rack-under-20cm": {
         "page_kind": "condition_comparison",
-        "primary_intent": "シンク横の短辺20cm以下に置ける水切りラックを選びたい",
+        "primary_intent": "短辺20cm以下のすき間に据え置ける水切りラックを選びたい",
         "reader": "すき間に常設したい人",
         "decision_after_reading": "3商品のどれを候補にするか",
         "main_cta": {
