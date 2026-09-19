@@ -75,7 +75,9 @@ VERBATIM = {
         ),
         "対応するシンクの条件（公式表記は「対応サイズ」）": (
             "奥行50cm以内のシンク　厚み1.8cmのまな板（原文ママ。条件はシンクの「奥行」で、"
-            "「内寸」とは印字されていません）"
+            "この行にシンクの「内寸」は印字されていません。"
+            "仕様表には別に「内寸」行がありますが、"
+            "値は「開口部：W54.5×D16cm　高さ：11.5cm」で本体側の寸法です）"
         ),
         "耐荷重": "8kg",
     },
@@ -88,7 +90,10 @@ VERBATIM = {
         "対応するシンクの条件（公式表記は「対応サイズ」）": (
             "厚み2cmまでのまな板・奥行50cm以内のシンク（シンク渡し使用時）"
             "（原文ママ。シンクの条件は「奥行」で、しかも「シンク渡し使用時」という使用条件が"
-            "付いています。「内寸」とは印字されていません）"
+            "付いています。この行にシンクの「内寸」は印字されていません。"
+            "仕様表には別に「内寸」行がありますが、値は"
+            "「ワイヤーバスケット：W54.5×D15.4×H11.5cm　 ワイヤーバスケットのスリット幅：2cm　"
+            "ハンドル部：W15.5×D2cm」で本体側の寸法です）"
         ),
         "耐荷重": "ワイヤーバスケット：8kg  水切りトレー：5kg  フック：1つにつき250g",
     },
@@ -115,7 +120,7 @@ VERBATIM = {
         ),
         "対応するシンクの条件（公式表記は「対応サイズ」）": (
             "奥行き：54cm以下のシンク（原文ママ。条件はシンクの「奥行き」だけで、"
-            "「内寸」や渡し幅は印字されていません）"
+            "渡し幅は印字されていません。仕様表に「内寸」行そのものがありません）"
         ),
         "耐荷重": "4kg",
     },
@@ -243,9 +248,7 @@ def test_the_cells_the_tables_quote_are_the_printed_text(racks):
         for label, text in cells.items():
             assert label in labelled, (pid, label)
             assert labelled[label]["text"] == text, (pid, label)
-            expected = (
-                "UNKNOWN" if (pid, label) in UNKNOWN_CELLS else "KNOWN"
-            )
+            expected = "UNKNOWN" if (pid, label) in UNKNOWN_CELLS else "KNOWN"
             assert labelled[label]["state"] == expected, (pid, label)
 
 
@@ -261,9 +264,7 @@ def test_the_dish_racks_sell_nothing_and_withhold_their_photos(catalog, racks):
 
 def test_every_dish_rack_has_an_open_research_issue(catalog):
     issues = {
-        i["product_id"]
-        for i in catalog["research_issues"]
-        if i["status"] != "RESOLVED"
+        i["product_id"] for i in catalog["research_issues"] if i["status"] != "RESOLVED"
     }
     assert set(DISH_RACKS) <= issues
 

@@ -97,7 +97,7 @@
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "4ce54c8d9956032e9f9df7587b223d569fa4fbbb8047845a35076527a8d68da6",
+      "sha256": "0df84855a166e0d86d65b71aa25d66d4d136ceea0ca8903c6689f45504b55767",
       "size": 2879
     },
     {
@@ -107,12 +107,12 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "8b9538d122a0ec351a09870fd14c526239ae07896167130a8d62d96eed4e1aa6",
+      "sha256": "60384f2c0f207e8423fc1ca833e4513e3146b889553064ba810e1c3b3f1e47eb",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "1228e781321f1c83c15c261c3b67b36aabb361242d27534d08f858d5c688a432",
+      "sha256": "f170cb29379cb06f60a3c34160e62e23bf592b68f579cec2baa99208e53fd13c",
       "size": 81279
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "c8d9bd334a0c32fcecce4c9abbf829658b49b1d74a24d4a2e9ddf3539e211f40",
+      "sha256": "f6c7c5dd2f70a23d906891c3690f218cc26060c97e7d322a45f1ef6179a26716",
       "size": 54277
     },
     {
