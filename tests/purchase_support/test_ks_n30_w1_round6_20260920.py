@@ -61,7 +61,15 @@ PUBLISHED = ROOT / "changes/wordpress-direct-publish-v1/articles"
 MEASURE = "dish-rack-installation-measurement"
 SLIM = "slim-dish-rack-under-20cm"
 NO_SPACE = "dish-rack-no-space"
+#: next30 Wave 2 writes about the same five racks, so the same attribution rule
+#: has to read its bodies too: a guard that stops at the wave it was written for
+#: leaves the next wave free to hand a maker another maker's word.
+TIERS = "dish-rack-one-tier-vs-two-tier"
+FOLDABLE = "foldable-rack-vs-extendable-basket"
+WITH_DISHWASHER = "dish-rack-with-dishwasher"
 WAVE = (MEASURE, SLIM, NO_SPACE)
+WAVE_TWO = (TIERS, FOLDABLE, WITH_DISHWASHER)
+DISH_RACK_ARTICLES = WAVE + WAVE_TWO
 
 #: product_id -> the model number the bodies print.
 WAVE_PRODUCTS = {
@@ -208,12 +216,12 @@ def reader_texts(catalog: dict) -> list[tuple[str, str]]:
     """Every published body of the wave and every reader-facing history entry."""
 
     texts: list[tuple[str, str]] = []
-    for slug in WAVE:
+    for slug in DISH_RACK_ARTICLES:
         body = (PUBLISHED / (slug + ".html")).read_text(encoding="utf-8")
         texts.append((f"{slug} body", visible_text(body)))
         for entry in article_of(catalog, slug).get("history", []):
             texts.append((f"{slug} history {entry['date']}", entry["text"]))
-    assert len(texts) == 13, texts
+    assert len(texts) >= 16, texts
     return texts
 
 
@@ -224,7 +232,7 @@ def test_every_body_and_history_of_the_wave_is_read(
 
     where = [name for name, _ in reader_texts]
     assert [name for name in where if name.endswith(" body")] == [
-        f"{slug} body" for slug in WAVE
+        f"{slug} body" for slug in DISH_RACK_ARTICLES
     ], where
     for slug in WAVE:
         assert sum(1 for name in where if name.startswith(f"{slug} history")) >= 3, (
