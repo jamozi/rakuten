@@ -1118,6 +1118,182 @@
         "dishwasher-branch-faucet-guide (552)"
       ]
     },
+    "published": {
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "candidate": "W0-A",
+      "candidate_id": "6a7bc2c6b5f5c8f9e4514067093188326f5688b8b4f4b5702367b70dedd70d8c",
+      "snapshot_id": "4a8ff9a72ee145ff2df259bf43237f97de695f03b8b7c618e696df031578196f",
+      "commit": "cd8c6eec13ccaab894eac5acf9790ac2efa9b5a3",
+      "tree": "85f19b74ec5d6484e92300c41760edf27c7d7137",
+      "branch": "claude/ks-n30-w0-20260916",
+      "theme": true,
+      "documents_published": 19,
+      "documents": [
+        "about-ad-policy (10)",
+        "home (15)",
+        "categories (130)",
+        "cleaning (131)",
+        "comparisons (133)",
+        "guides (135)",
+        "kitchen (136)",
+        "compact-robot-vacuum-shortlist (30)",
+        "countertop-dishwasher-for-small-households (41)",
+        "roomba-mini-vs-switchbot-k11-pro (85)",
+        "solota-vs-rakua-mini-plus (86)",
+        "dishwasher-installation-measurement (262)",
+        "dishwasher-water-supply-methods (263)",
+        "dishwasher-detergent-guide (264)",
+        "dishwasher-cleaning-guide (265)",
+        "dishwasher-running-cost (266)",
+        "standard-dishwasher-comparison (550)",
+        "large-dishwasher-comparison (551)",
+        "dishwasher-branch-faucet-guide (552)"
+      ],
+      "published_at": "2026-09-17T00:35:35Z〜00:37:38Z",
+      "published_window": {
+        "start_utc": "2026-09-17T00:35:35Z",
+        "end_utc": "2026-09-17T00:37:38Z",
+        "start_jst": "2026-09-17T09:35:35+09:00",
+        "end_jst": "2026-09-17T09:37:38+09:00",
+        "readback_checked_at_jst": "2026-09-17T09:37:43+09:00",
+        "measured_from": {
+          "start": "publishW0_start.txt（publish を呼ぶ直前に書いた UTC の時刻）",
+          "end": "publishW0.log（publish の戻り値を書き終えた時刻。JST 09:37:38）",
+          "readback": "readback_W0.txt の 1 行目「checked_at 2026-09-17T09:37:43+0900 W0」"
+        }
+      },
+      "authorization": {
+        "user_statement": "公開して",
+        "confirmation_source_thread": "7b238a17-f16f-4f75-9e66-251570af7781",
+        "scope": "W0-A の 19 documents ＋テーマ（proposal 20 件＝上限ちょうど）"
+      },
+      "git_sync": {
+        "status": "noop",
+        "phase": "complete",
+        "publication": "ALREADY_COMPLETED_NO_REPUBLISH",
+        "branch": "codex/publish-4a8ff9a72ee145ff2df259bf43237f97de695f03b8b7c618e696df031578196f",
+        "note": "publish 側の Git 同期は noop（公開は完了しており再公開しない）。snapshot_id は候補の source_sha256 と同じ値で、commit・tree は publish が読んだ作業ツリーそのもの。"
+      },
+      "gates_before_publish": {
+        "at_commit": "cd8c6eec",
+        "pytest": {
+          "command": ".venv/bin/python -m pytest（候補作成前・全体）",
+          "result": "3279 passed, 442 subtests passed in 335.93s (0:05:35)",
+          "passed": 3279,
+          "subtests": 442,
+          "failed": 0,
+          "skipped": 0,
+          "log": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0_pytest.txt"
+        },
+        "make_check": {
+          "command": "make check BASE=origin/main",
+          "result": "RAOS_STATUS_V2 status=PASS / RAOS_CHECK name=status result=0",
+          "returncode": 0,
+          "log": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0_make_check.log"
+        },
+        "preview": {
+          "command": "owner-direct preview（ローカル WordPress・390px と 1440px）",
+          "result": "preview PASS failures [] urls 20 shots 40",
+          "status": "PASS",
+          "failures": 0,
+          "urls": 20,
+          "screenshots": 40,
+          "log": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0_preview.log"
+        },
+        "candidate": {
+          "command": "owner-direct prepare",
+          "result": "{\"candidate_id\": \"6a7bc2c6…\", \"publication_ready\": true}",
+          "documents": 19,
+          "theme": true,
+          "proposals": 20,
+          "limit": 20,
+          "log": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0.log"
+        }
+      },
+      "readback": {
+        "status": "PASS",
+        "method": "公開後にログインなし（匿名）で本文を読み直し、候補の内容と突き合わせた",
+        "checks": [
+          {
+            "check": "公開後に更新された文書の数",
+            "measured": "更新された文書 (2026-09-17T00:35Z 以降): 19 / 期待 19",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "期待していて更新されていない文書",
+            "measured": "期待にあって未更新: []",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "候補外で更新された文書",
+            "measured": "期待外で更新: []",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "本文に残った内部語",
+            "measured": "内部語 0 []",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "楽天の画像クレジット",
+            "measured": "楽天画像ページのクレジット 15/15",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "免責文リンク",
+            "measured": "免責文リンク 54",
+            "source": "readback_W0.txt"
+          },
+          {
+            "check": "カテゴリページの名前",
+            "measured": "/kitchen/ は「台所の道具の選び方・比較」、/cleaning/ は「掃除の道具の選び方・比較」",
+            "source": "匿名照合（2026-09-17T09:37 JST）。台帳の title と同じ値 / 再測定ログ: scratchpad の readback_W0_specific.txt (2026-09-17T10:38 JST、本番を匿名取得して再測定)"
+          },
+          {
+            "check": "方針ページの扱う領域",
+            "measured": "8 分野を列挙し、まだ記事のない 4 分野に「準備中」の断りが付く。改定内容は旧名「食洗機の選び方・比較」「ロボット掃除機の選び方・比較」と新名「台所の道具の選び方・比較」「掃除の道具の選び方・比較」の両方を書いている",
+            "source": "匿名照合（2026-09-17T09:37 JST）。測り方は tests/site_editorial_pages/test_ks_n30_w0_revision_note_20260916.py / 再測定ログ: scratchpad の readback_W0_specific.txt (2026-09-17T10:38 JST、本番を匿名取得して再測定)"
+          },
+          {
+            "check": "旧いハブ名を名乗る記事",
+            "measured": "旧名のリンク文言は 0 本。記事から /kitchen/・/cleaning/ へ張るリンク 21 本はすべて新しいページ名で始まる（台所 9＋5＋1＋1＋1・掃除 2＋2）",
+            "source": "匿名照合（2026-09-17T09:37 JST）と、公開した本文の再測定（tests/purchase_support/test_ks_n30_w0_publication_20260917.py） / 再測定ログ: scratchpad の readback_W0_specific.txt (2026-09-17T10:38 JST、本番を匿名取得して再測定)"
+          },
+          {
+            "check": "552 の記事内ナビの区切り",
+            "measured": "3 本のリンクが「台所の道具の選び方・比較蛇口を確認費用を確認」と 1 本につながった状態ではなくなっている（公開前の実描画では隣接リンクの水平間隔 0px → 19.19px、折り返す場合は縦 8px）",
+            "source": "匿名照合（2026-09-17T09:37 JST）と、公開前の実描画（tests/purchase_support/test_ks_n30_w0_article_nav_20260916.py） / 再測定ログ: scratchpad の readback_W0_specific.txt (2026-09-17T10:38 JST、本番を匿名取得して再測定)"
+          }
+        ],
+        "log": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/readback_W0.txt"
+      },
+      "approved_layouts_accepted": {
+        "articles": [
+          "standard-dishwasher-comparison",
+          "large-dishwasher-comparison",
+          "compact-robot-vacuum-shortlist"
+        ],
+        "user_statement": "公開して",
+        "recorded_in": "changes/site-improvements-20260913/approved-layout-baselines.v1.json",
+        "note": "公開と同じ指示で 3 本の pending_revision が latest_accepted に移り、W4 の了承は previous_accepted へ下がった。publication_authorized は 3 本とも false のまま（公開の認可は波ごとの指示で与える）。"
+      },
+      "logs": {
+        "candidate": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0.log",
+        "pytest": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0_pytest.txt",
+        "make_check": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/candW0_make_check.log",
+        "publish": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/publishW0.log",
+        "readback": "/tmp/claude-1000/-home-minami/7b238a17-f16f-4f75-9e66-251570af7781/scratchpad/readback_W0.txt",
+        "note": "ログは作業端末の scratchpad にあり、Git には入っていない。記録された数値はこのファイルが一次情報。"
+      },
+      "before_after": {
+        "path": "output/ks-20260915/w0-review/review.html",
+        "rows": 19,
+        "before_screenshots": 38,
+        "after_screenshots": 38,
+        "checklist": "output/ks-20260915/w0-review/W0-確認項目.md",
+        "note": "オーナーに提示し「公開して」の回答を得た。承認済みレイアウト 3 本の了承もこの提示に基づく。"
+      }
+    },
     "hub_link_labels_rewritten": {
       "why": "テーマは記事のパンくずと BreadcrumbList をハブの post_title から刷るので、本文側が旧名のままだと 1 ページに同じ URL の名前が 2 つ出る。",
       "new_labels": {
@@ -1188,12 +1364,7 @@
       "total": 8,
       "note": "base 9fa8ee45 との実測（articles.v1.json の全フィールドを再帰比較）。行数は 5（categories・cleaning・compact-robot-vacuum-shortlist・home・kitchen）。"
     },
-    "base_note": "main の commit（PR #293 の squash）。作業ブランチは公開済みの W4b の内容 9fa8ee45 から分岐し、のちに main を取り込んだ。9fa8ee45 は候補作成用の commit で main には無い。",
-    "approved_layout_pending": [
-      "standard-dishwasher-comparison",
-      "large-dishwasher-comparison",
-      "compact-robot-vacuum-shortlist"
-    ]
+    "base_note": "main の commit（PR #293 の squash）。作業ブランチは公開済みの W4b の内容 9fa8ee45 から分岐し、のちに main を取り込んだ。9fa8ee45 は候補作成用の commit で main には無い。"
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
@@ -1498,7 +1669,20 @@
         "DF04",
         "DF07"
       ],
-      "note": "候補Bの対象に本文3本が入るのは、台帳の mode・post_id・listing が候補の同一性フィールドだから。本文そのものは1バイトも変えていない。"
+      "note": "候補Bの対象に本文3本が入るのは、台帳の mode・post_id・listing が候補の同一性フィールドだから。本文そのものは1バイトも変えていない。",
+      "published_at_gmt": "2026-09-20T04:45:48Z〜04:46:19Z",
+      "documents_published": [
+        "guides",
+        "home",
+        "kitchen",
+        "categories",
+        "purposes",
+        "about-ad-policy",
+        "comparisons",
+        "small-space",
+        "easy-maintenance",
+        "updates"
+      ]
     },
     "not_touched": [
       "A02・A03の比較表の行の高さ(オーナー決定: このまま公開)",

@@ -193,6 +193,79 @@ short_title を刷るので、「掃除」の見出しの下ではまだ扱っ�
 触っていないもの: 既存記事の `listing.category`、記事本文の中身、洗濯・乾燥カテゴリ、
 画像の alt（商品種別ではなく画像そのものの説明）、テーマの記事パンくずのハブ label（「キッチン・家事」「掃除・時短」）。
 
+## 公開（2026-09-17）
+
+W0-A は 2026-09-17 に本番へ公開し、匿名（ログインなし）の読み直しで照合した。
+状態は `PUBLISHED_AND_READBACK_VERIFIED`。一次情報は `decisions.v1.json` の
+`wave_zero_applied.published`。
+
+| 項目 | 値 |
+| --- | --- |
+| 候補 | W0-A ／ `6a7bc2c6b5f5c8f9e4514067093188326f5688b8b4f4b5702367b70dedd70d8c` |
+| commit | `cd8c6eec`（tree `85f19b74`、ブランチ `claude/ks-n30-w0-20260916`） |
+| 公開した文書 | 19 本＋テーマ（proposal 20 件＝上限ちょうど）。内訳は上の表と同じ 19 行 |
+| 公開時刻 | 2026-09-17T00:35:35Z〜00:37:38Z（JST 09:35:35〜09:37:38） |
+| 認可 | オーナーの「公開して」（thread `7b238a17-f16f-4f75-9e66-251570af7781`） |
+| 状態 | `PUBLISHED_AND_READBACK_VERIFIED`（publish の戻り値。Git 同期は noop・`ALREADY_COMPLETED_NO_REPUBLISH`） |
+
+公開前のゲートは commit `cd8c6eec` で実行した: pytest は
+`3279 passed, 442 subtests passed in 335.93s (0:05:35)`、`make check BASE=origin/main` は
+戻り値 0（`RAOS_STATUS_V2 status=PASS`）、preview は `preview PASS failures [] urls 20`
+（19 本＋記事一覧の 20 URL を 390px と 1440px で 40 枚撮影）。候補は
+`{"candidate_id": "6a7bc2c6…", "publication_ready": true}`。
+
+匿名照合で測った値（形容ではなく実測値をそのまま書く）:
+
+- 更新された文書 (2026-09-17T00:35Z 以降): 19 / 期待 19
+- 期待にあって未更新: []
+- 期待外で更新: []
+- 内部語 0 []／楽天画像ページのクレジット 15/15／免責文リンク 54
+- カテゴリページの名前は `/kitchen/` が「台所の道具の選び方・比較」、`/cleaning/` が「掃除の道具の選び方・比較」
+- 方針ページは扱う領域を 8 分野で並べ、まだ記事のない 4 分野に「準備中」の断りが付く。改定内容は旧名（「食洗機の選び方・比較」「ロボット掃除機の選び方・比較」）と新名（「台所の道具の選び方・比較」「掃除の道具の選び方・比較」）の両方を書いている
+- 旧いハブ名を名乗る記事は 0 本（記事から `/kitchen/`・`/cleaning/` へ張るリンク 21 本はすべて新しいページ名で始まる）
+- `/dishwasher-branch-faucet-guide/`（552）の記事内ナビは「台所の道具の選び方・比較蛇口を確認費用を確認」と 1 本につながった状態ではなくなっている
+
+同じ指示で `approved-layout-baselines.v1.json` の 3 本
+（`standard-dishwasher-comparison`・`large-dishwasher-comparison`・`compact-robot-vacuum-shortlist`）の
+`pending_revision` を `latest_accepted` に移した。了承の範囲は公開した本文そのもので、
+`body_sha256` と `snapshot_id` はこのブランチが公開した本文から測っている。W4 の了承は
+`previous_accepted` に下がり、`publication_authorized` は 3 本とも false のまま
+（公開の認可は波ごとの指示で与えるため）。測り方は
+`tests/purchase_support/test_ks_n30_w0_publication_20260917.py` が持つ。
+
+## 公開（2026-09-20・第 1 波）
+
+W1 は 2 候補に分けて公開した。一次情報は `decisions.v1.json` の `wave_one_applied`。
+
+| 項目 | 候補 A | 候補 B |
+| --- | --- | --- |
+| 候補 | `0dd94322d61c62b525ff6a6ac3d6a925e6da30f70aad358c1c1fd16adb33a96e` | `57a0766f90091aaf805b08081d041fdfb7b75730dab0d941d5cfd73e1b6ef676` |
+| commit | `97465f81` | `65ba5784` |
+| 文書 | 本文 3 本＋テーマ | 13 文書＋テーマ |
+| 公開時刻 | 2026-09-20T03:32:56Z〜03:33:04Z | 2026-09-20T04:45:48Z〜04:46:19Z |
+| 状態 | `PUBLISHED_AND_READBACK_VERIFIED` | `PUBLISHED_AND_READBACK_VERIFIED` |
+
+候補 A は新規投稿 3 件（`dish-rack-installation-measurement` 750 ／ `slim-dish-rack-under-20cm` 751 ／
+`dish-rack-no-space` 752）。`mode:"new"` の行は `listing` を持てない（`LEDGER_IDENTITY_STALE`）ので、
+このときハブは 1 行も変わらず、3 本は URL からしか到達できない状態だった。
+
+候補 B は投稿 ID が決まってから、台帳の 3 行を `mode:"existing"` ＋ `post_id` ＋ `listing` にして
+ハブが読む projection に入れ、同じ候補で先送りを 4 件消化した（DF02 台所ハブ・DF03 方針ページの「準備中」・
+DF04 新着カードの代替テキスト・DF07 手入れの棚見出し）。
+
+匿名照合で測った値:
+
+- 候補 A: 更新 3 / 期待 3、期待外の更新 0、内部語 0、楽天クレジット 15/15。本文は本番と一語一句一致
+  （差分はテーマが実行時に足す「記事内の目次へ戻る ↑」だけ）
+- 候補 B: 更新 10 / 期待 13、期待外の更新 0、内部語 0、楽天クレジット 15/15。
+  本文 3 本は内容が同じため `modified_gmt` が動かず、10 文書の更新にとどまった
+- 公開後のハブ: `/`（新着 4 枚の先頭 3 枚）、`/kitchen/`（`#dish-rack` の棚）、`/categories/`（台所の記事 14 本・比較 7 本・ガイド 7 本）、
+  `/updates/`、`/comparisons/`（751・752）、`/guides/`（750）、`/small-space/`（3 本）、
+  `/easy-maintenance/`（棚見出しは 台所・掃除・スーツケース）、`/about-ad-policy/`（準備中は 3 分野）
+
+オーナーの認可は「公開して」（2026-09-20）。同じ指示で判断をもらった 3 件（表の行の高さ・3492 の「奥行き」・
+参考価格の書き方）は `wave_one_applied.owner_decisions_20260920` に記録した。
+
 ## 先送り（deferrals）
 
 先送りした作業は `decisions.v1.json` の `deferrals` が一次情報で、各項目はそれを**実際に強制する波**を名乗る。
