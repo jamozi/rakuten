@@ -55,7 +55,12 @@
           "before": "食洗機の選び方・比較",
           "after": "台所の道具の選び方・比較",
           "excerpt_before": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。",
-          "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
+          "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。",
+          "excerpt_revised": {
+            "in": "W1-B",
+            "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機と水切りラックで、容量別の比較と、設置・給水・洗剤・費用のガイド、水切りラックの置き方・比較・採寸へ案内します。",
+            "why": "DF02。W1-A で水切りラックの3本が台所の棚に載ったので、W0 が書いた「いま掲載しているのは卓上食洗機で」が偽になった。W0 の excerpt_after はそのまま W0 が書いた値として残す。"
+          }
         },
         "cleaning": {
           "before": "ロボット掃除機の選び方・比較",
@@ -112,8 +117,8 @@
   },
   "product_catalog": {
     "file": "changes/next30-20260916/products.candidate.v1.json",
-    "copied_from": "next30/products.catalog.json（ラウンド 3 の訂正を適用した検証済みカタログ）",
-    "sha256": "a0551667f5787fc27a1347edb3356caea2142585d3586a6e8844284c7662213d",
+    "copied_from": "next30/products.catalog.json（ラウンド 3 の訂正を適用した検証済みカタログ。2026-09-19 に W1 のラウンド 3 で 2 件を訂正: 5070 の「置き方」fact が紹介本文を冒頭 5 文で切っていたのを公式ページ再取得で全文に、3492 の「対応するシンクの条件」fact が紹介本文の冒頭 1 文を全文のように引いていたのを「冒頭」と明記に。product 数・fact 数・state の集計は変わっていない）",
+    "sha256": "906b4eae6c40474c28fd68555bc927a99bd77865224c56d0f76f55fca6a40060",
     "products": 17,
     "facts": 284,
     "guide_facts": 29,
@@ -139,10 +144,16 @@
       ],
       "negative_controls": "10 件の変異をすべて ValueError で捕捉（unmutated catalog still passes: True）"
     },
-    "wired_into_live_catalog": false,
+    "wired_into_live_catalog": [
+      "PRD-YAMAZAKI-4314",
+      "PRD-YAMAZAKI-5070",
+      "PRD-SHIMOMURA-42666",
+      "PRD-YAMAZAKI-7835",
+      "PRD-YAMAZAKI-3492"
+    ],
     "live_catalog": "changes/reader-purchase-support-v1/purchase-support.v1.json",
-    "import_planned_in": "W1-A",
-    "import_note": "取り込み時は 17 商品すべてに research_issues[] を 1 件以上付ける（PURCHASE_DESTINATION_OR_ISSUE_REQUIRED）。承認済み offer はゼロなので参考価格の欄は「価格は確認中」、導線は official_verify の参照リンクだけになる。",
+    "import_planned_in": "W1-A（水切りラック 5 商品・取り込み済み）／W3-A（衣類乾燥除湿機 3 商品）／W5-A（ノンフライヤー 4 商品）／W7-A（軽量コードレス掃除機 3 商品と付属品 2 商品）",
+    "import_note": "17 商品をまとめて入れることはできない。PURCHASE_UNUSED_PRODUCT は「どの comparison / curated_comparison からも参照されない商品」で落ちるため、その波の記事が参照する商品だけを、その波の候補 A で入れる。取り込む商品には research_issues[] を 1 件以上付ける（PURCHASE_DESTINATION_OR_ISSUE_REQUIRED）。承認済み offer はゼロなので参考価格の欄は「価格は確認中」、外向きの導線は official_verify の参照リンクだけになる。商品写真は image_review.state を UNVERIFIED（理由つき）にして未掲載にする（image_review が無いと resolve_product_media が PURCHASE_MEDIA_REVIEW_REQUIRED で落ちる）。",
     "conflicts": [
       {
         "product_id": "PRD-SHARP-CV-U71",
@@ -254,12 +265,13 @@
       "category": "kitchen",
       "role": "guide",
       "page_kind": "task_guide",
-      "note": "脚・蛇口・水受けの干渉（5 商品とも未掲載）をこの記事が丸ごと持つ。落ちた A06 の排水先の採寸を採寸ステップ⑥で引き受ける。"
+      "note": "脚・蛇口・水受けの干渉（5 商品とも未掲載）をこの記事が丸ごと持つ。落ちた A06 の排水先の採寸を採寸ステップ⑥で引き受ける。",
+      "excerpt": "山崎実業4314・5070・7835・3492と下村企販42666を対象に、公式が印字しているシンク条件と外形を自宅の採寸へどう当てはめるかを示します。脚の位置、蛇口下に要る高さ、水受けの引き出し方向は公式に数値がないため、自分で測る手順に分けました。"
     },
     {
       "article_id": "A02",
       "slug": "slim-dish-rack-under-20cm",
-      "title": "短辺20cm以下の水切りラック3商品を比べる",
+      "title": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
       "cluster": "水切りラック",
       "cluster_key": "WR",
       "verdict": "RESHAPE",
@@ -268,7 +280,20 @@
       "category": "kitchen",
       "role": "comparison",
       "page_kind": "condition_comparison",
-      "note": "落ちた A06 の排水方式の比較を「水受け・排水方式」列で引き受ける。取り出し空間は 3 商品とも未掲載のため比較表に行を置かない。"
+      "note": "落ちた A06 の排水方式の比較を「水受け・排水方式」列で引き受ける。取り出し空間は 3 商品とも未掲載のため比較表に行を置かない。",
+      "title_history": [
+        {
+          "recorded_on": "2026-09-16",
+          "title": "短辺20cm以下の水切りラック3商品を比べる",
+          "reason": "intake の題名をオーナーが承認した時点の記録。"
+        },
+        {
+          "recorded_on": "2026-09-20",
+          "title": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
+          "reason": "本文が実際に使う基準は「短辺20cm以下」かつ「すき間の面に据え置く」の 2 つ。公式が短辺20cm以下を印字するのは 4314（165mm）・5070（160mm）・42666（180mm）・3492（195mm）の 4 商品で、3492 は公式が「シンクのフチに引っ掛けるので、浮かせて設置できます」と印字しているため据え置く 3 商品から外れる（2026-09-20 に https://www.yamajitsu.co.jp/products/241233 を再取得して確認）。承認時の題名は短辺だけを名乗るので、外した 1 商品の理由を題名が持たない。本文の基準どおりに狭めた題名を記録し、公開はこの題名で行う。ラウンド 2 で本文を狭めて以来、記録だけが古い側だった。"
+        }
+      ],
+      "excerpt": "公式が印字している短辺（奥行）20cm以下は、山崎実業4314の165mm、5070の160mm、下村企販42666の180mm、山崎実業3492の195mmの4商品です。このうち、公式が「シンクのフチに引っ掛けるので、浮かせて設置できます」と印字している3492を除いた3商品を、外形・内寸・材質・耐荷重・水受けで比べます。食器を出し入れするのに要る上方と前方の空間は3商品とも未掲載のため、適合の判定には使いません。"
     },
     {
       "article_id": "A03",
@@ -282,7 +307,8 @@
       "category": "kitchen",
       "role": "comparison",
       "page_kind": "broad_comparison",
-      "note": "HUB 4 本のうちこの 1 本だけ role=comparison（5 商品の方式別一覧が公式の「置き方」の印字だけで成立するため）。"
+      "note": "HUB 4 本のうちこの 1 本だけ role=comparison（5 商品の方式別一覧が公式の「置き方」の印字だけで成立するため）。",
+      "excerpt": "作業台に常設する・シンクの上に渡す・使う時だけ広げるの3方式を、公式が印字している置き方と外形・耐荷重で切り分けます。排水先は7835と3492に水受けの記載がなく、42666は引き出す向きが未掲載のため、方式を決めた後に自分で確かめる手順にしました。"
     },
     {
       "article_id": "A04",
@@ -1342,7 +1368,7 @@
   },
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
-    "本番プロファイルの allow_new_posts の現在値（W1-A の前にオーナー確認が要る）",
+    "本番プロファイルの allow_new_posts は 2026-09-20 の status（読み取りのみ）で true と実測した。オーナーが管理画面で外しうる値なので、公開の直前に測り直す（publication_prerequisites を参照）",
     "/categories/ のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。4 つとも品目でそろえるか場所・行為でそろえるかはオーナー判断",
     "カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は W0-A の候補内なので揃えても公開候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには travel・preparedness の本文が加わるため別の候補が要る",
     "/guides/ のジャンプ先 3 つがカテゴリ名を書いた見出しではなく記事カードに着地する（W0 はジャンプのラベルだけを「台所」「掃除」に改称したので、ラベルと着地先の食い違いは新しくなっている）",
@@ -1355,7 +1381,9 @@
     "DH01 / CV-U71 の衣類乾燥モード名（取扱説明書・仕様ページ・商品ページで不一致）",
     "AF04 / YCW-C120 の食洗機対応（UNKNOWN のまま）",
     "catalog 全 284 facts の再監査（各波の候補 A で、その波が使う fact だけを再照合する運用）",
-    "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）"
+    "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）",
+    "purchase-support.v1.json の kind:\"guide\" は新記事に使えない（W1-A で実測）。render_guide は purchase_support.py:2366 で STAGES の 5 slug（dishwasher-installation-measurement / -water-supply-methods / -running-cost / -detergent-guide / -cleaning-guide）から stage を引くため、それ以外の slug では StopIteration になる。本文も MAIN_SLUG（卓上食洗機 4 機種）の機種索引と stage 別の表で組まれるので、水切りラックの記事には合わない。W1-A の A01 はカタログ側だけを kind:\"curated_comparison\"（commerce_anchor:\"guide-evidence\"・commerce_presentation:\"comparison_rows\"）にし、台帳の listing.role と reader_role.page_kind は guide / task_guide のまま公開する（カタログの kind は role を変えない: tests/site_editorial_pages/test_ledger_listings.py:478）。残る guide 8 本（A08・A10・A11・A15・A17・A24・A25・A26）も同じ扱いにするか、render_guide を汎用化するかは未決。reader_intro / reader_steps / reader_unknowns_note は curated_comparison では読まれないため、A01 の採寸 6 ステップは本文テンプレートに書く。",
+    "purchase-support.v1.json の kind:\"guide\" が新記事に使えない件は W1-A で実測済み。A01 は curated_comparison のまま listing.role=guide で /guides/ に載せた(2026-09-20)。render_guide を slug に依存しない形へ直すかは別途"
   ],
   "deferrals": [
     {
@@ -1401,6 +1429,15 @@
       "where_quote": {
         "changes/reader-purchase-support-v1/articles/kitchen.html": "いま掲載しているのは卓上食洗機です。",
         "changes/site-improvements-20260913/entry-pages.v1.json": "いまは卓上食洗機。"
+      },
+      "applied_in": {
+        "wave": "W1",
+        "candidate": "B",
+        "prepared_on": "2026-09-20"
+      },
+      "where_quote_after": {
+        "changes/reader-purchase-support-v1/articles/kitchen.html": "いま掲載しているのは卓上食洗機と水切りラックです。",
+        "changes/site-improvements-20260913/entry-pages.v1.json": "いまは卓上食洗機と水切りラック。"
       }
     },
     {
@@ -1480,7 +1517,177 @@
       "why": "home・categories・comparisons は同じ記事の束を「台所」「掃除」と呼ぶのに、134 の棚見出しだけが「食洗機」「掃除機」のまま。W0-A は 19 documents＋テーマ＝20 で上限ちょうどなので、この波では 134 を足せない（足すと 21）。方針ページの改定内容はこの面を名乗らないように直したので、読者向けの文と記録は食い違わない。W1-B は同じ一覧 4 本（home・categories・updates・comparisons）と悩み別の small-space を持つ最初の未公開候補で、134 を足しても 9＋テーマ＝10 で枠に収まる。",
       "where_quote": {
         "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>食洗機</h2>"
+      },
+      "applied_in": {
+        "wave": "W1",
+        "candidate": "B",
+        "prepared_on": "2026-09-20"
+      },
+      "where_quote_after": {
+        "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>台所</h2><div class=\"ks-editorial-table ks-readable-scroll\" role=\"region\" aria-label=\"台所の手入れと部品\""
       }
     }
-  ]
+  ],
+  "reader_source_elements": {
+    "recorded_on": "2026-09-20",
+    "statement": "読者向けの本文と更新履歴は読み取り元を言葉で書く（「商品ページ冒頭の紹介本文」）。HTML の要素名はこの記録だけが持つ。",
+    "entries": [
+      {
+        "product_id": "PRD-YAMAZAKI-5070",
+        "url": "https://www.yamajitsu.co.jp/products/241827",
+        "field": "紹介本文",
+        "reader_wording": "商品ページ冒頭の紹介本文",
+        "element": "div.s-main-product__intro-text",
+        "heading_element": "h2.s-main-product__intro-title",
+        "refetched_on": "2026-09-20",
+        "note": "2026-09-20 に再取得し、全 7 文が記録どおりであること、見出しが「シーンに合わせて使い方様々！スリムなワイヤーバスケット2段」であることを確認した。"
+      }
+    ]
+  },
+  "publication_prerequisites": {
+    "recorded_on": "2026-09-20",
+    "statement": "W1-A を公開する前に残っている前提。片方は実測で閉じ、もう片方はオーナーの了承を待つ。",
+    "items": [
+      {
+        "id": "allow_new_posts",
+        "statement": "本番プロファイルの allow_new_posts が true であること（mode:\"new\" の 3 行が要求する）。",
+        "state": "MEASURED",
+        "value": true,
+        "measured_on": "2026-09-20",
+        "measurement": {
+          "command": "scripts/raos_wordpress_publication_request.py direct --owner-checkout <owner> status",
+          "read_only": true,
+          "schema": "RAOSOwnerDirectStatusV1",
+          "profile": "owner-direct-v1",
+          "enabled": true,
+          "allow_new_posts": true,
+          "targets": 45
+        },
+        "note": "2026-09-16・2026-09-20 の status で true。2026-09-20 の W1-A の公開で実際に 投稿750・751・752 が作成されたので、公開時点の値としても確かめられた。以後の波でも公開の直前に測り直す。"
+      },
+      {
+        "id": "approved_layout_baselines",
+        "statement": "approved-layout-baselines.v1.json の Before/After をオーナーが了承すること。",
+        "state": "ACCEPTED",
+        "blocks": [],
+        "note": "W0-A・W1-A ともオーナーが Before/After を見て「公開して」と述べ、公開した。approved-layout-baselines.v1.json 自体は承認済みレイアウトの比較記事5本の記録で、水切りラックの3本はその5本に含まれない(publication_authorized は false のまま)。",
+        "accepted_on": "2026-09-20",
+        "accepted_by": "オーナー",
+        "user_statement": "公開して",
+        "shown": [
+          "公開テーマのCSSを当てた本文3本の単体HTML(390px・1440pxのスクリーンショット付き)",
+          "candidate 0dd94322… の preview(ローカルWordPress)の描画 status PASS・failures なし"
+        ]
+      }
+    ]
+  },
+  "wave_one_applied": {
+    "wave": "W1",
+    "branch": "claude/ks-n30-w1-20260917",
+    "base_commit": "cd8c6eec",
+    "base_on_origin_main": true,
+    "articles": [
+      "A01",
+      "A02",
+      "A03"
+    ],
+    "owner_statement": "公開して",
+    "owner_statement_on": "2026-09-20",
+    "owner_decisions_20260920": [
+      "A02の表AとA03の表Bのスマホ(320px)での行の高さ: このまま公開",
+      "3492の商品説明キャプションが使う「奥行き」と条件の「内寸」の違い: 今のまま(条件は「内寸」とだけ書く)",
+      "「照合できた販売先がないため参考価格を出さない」の書き方: 今のまま(既公開23本と合わせて別途検討)"
+    ],
+    "candidate_a": {
+      "candidate": "0dd94322d61c62b525ff6a6ac3d6a925e6da30f70aad358c1c1fd16adb33a96e",
+      "commit": "97465f8128a24fb4678f89d0a477ec6272ac8458",
+      "documents": 3,
+      "theme": true,
+      "contains_new_articles": true,
+      "post_ids": {
+        "dish-rack-installation-measurement": 750,
+        "slim-dish-rack-under-20cm": 751,
+        "dish-rack-no-space": 752
+      },
+      "published_at_gmt": "2026-09-20T03:32:56Z〜03:33:04Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T12:33:51+0900",
+        "public_documents": 42,
+        "updated": 3,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15",
+        "body_match": "本文は本番と一語一句一致(差分はテーマが実行時に足す「記事内の目次へ戻る ↑」だけ)"
+      },
+      "note": "公開直後はハブ側が未更新で、3本はURLからのみ到達できた。候補Bで閉じた。"
+    },
+    "candidate_b": {
+      "candidate": "57a0766f90091aaf805b08081d041fdfb7b75730dab0d941d5cfd73e1b6ef676",
+      "commit": "65ba57845da9f4c74adada3b3a1c6f614b9c9024",
+      "documents": 13,
+      "theme": true,
+      "contents": [
+        "home (15)",
+        "categories (130)",
+        "updates (143)",
+        "comparisons (133)",
+        "guides (135)",
+        "kitchen (136)",
+        "about-ad-policy (10)",
+        "easy-maintenance (134)",
+        "small-space (141)",
+        "purposes (140)",
+        "dish-rack-installation-measurement (750)",
+        "slim-dish-rack-under-20cm (751)",
+        "dish-rack-no-space (752)"
+      ],
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T13:46:41+0900",
+        "public_documents": 42,
+        "updated": 10,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15",
+        "note": "本文3本は内容が同じため modified_gmt が動かず、更新は10文書だった。"
+      },
+      "hub_state_after": {
+        "home": "新着4枚の先頭3枚が水切りラック",
+        "kitchen": "#dish-rack の棚(測る→比べる→置き場所がない)",
+        "categories": "台所の記事 14本（比較7本・ガイド7本）",
+        "comparisons": "751・752",
+        "guides": "750",
+        "updates": "3本を公開日順",
+        "small-space": "「キッチンに置く」に3本",
+        "easy-maintenance": "棚見出しは 台所・掃除・スーツケース",
+        "about-ad-policy": "準備中はノンフライヤー・衣類乾燥除湿機・軽量コードレス掃除機の3分野"
+      },
+      "deferrals_applied": [
+        "DF02",
+        "DF03",
+        "DF04",
+        "DF07"
+      ],
+      "note": "候補Bの対象に本文3本が入るのは、台帳の mode・post_id・listing が候補の同一性フィールドだから。本文そのものは1バイトも変えていない。",
+      "published_at_gmt": "2026-09-20T04:45:48Z〜04:46:19Z",
+      "documents_published": [
+        "guides",
+        "home",
+        "kitchen",
+        "categories",
+        "purposes",
+        "about-ad-policy",
+        "comparisons",
+        "small-space",
+        "easy-maintenance",
+        "updates"
+      ]
+    },
+    "not_touched": [
+      "A02・A03の比較表の行の高さ(オーナー決定: このまま公開)",
+      "listing.card_image は3本とも null のまま(カテゴリの編集イメージを共有)",
+      "laundry の固定ページ(W3の前提、オーナー作業)"
+    ]
+  }
 }

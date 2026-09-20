@@ -1510,8 +1510,8 @@
       "slug": "kitchen",
       "post_type": "page",
       "kind": "hub",
-      "snapshot_id": "ps-0a1b1d7229be3e1b03f34e23cf05f6ec",
-      "body_sha256": "a18e4efe5c971abd93a9efbca2b4aaf937239ed817995fd3b7640a55a50d015a",
+      "snapshot_id": "ps-fac697782c85316def1342b093ccb5f3",
+      "body_sha256": "6d18dfc859c12083f85d48d83c28fa5ff44eef3bea76364e4519ac3cf8622908",
       "bindings": [],
       "media": {}
     },
@@ -1520,8 +1520,8 @@
       "slug": "about-ad-policy",
       "post_type": "page",
       "kind": "policy",
-      "snapshot_id": "ps-eaca1a10498188625a797ed32c637cca",
-      "body_sha256": "65e1eac70c62baa92d4e6f7b26a9fc2e4e79626000722b6360fea90ae9a6d8f4",
+      "snapshot_id": "ps-4d4c84aa16c70fa5f1ee91ab6408c08e",
+      "body_sha256": "38b9519270f107005afa928eea5d350a4030d6e47c045e74c72875710477bfbe",
       "bindings": [],
       "media": {}
     },
@@ -5022,6 +5022,36 @@
           "html": "<figure class=\"ps-product-image ps-rakuten-product-photo\" aria-label=\"TUMI 19 DEGREE フロント・アクセス・エクスパンダブル・キャリーオン 0228793DTX / 1589906153の商品画像\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"small-carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-300\" data-raos-cta-id=\"purchase-image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-300-condition-front-main\" data-raos-placement=\"top_summary\" data-raos-snapshot-id=\"ps-6dce56817aa0fd0854dfb9892e290270\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"small-carry-on-suitcase-comparison\" data-raos-product-id=\"PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX\" data-raos-seller-id=\"rakuten-galleria\" data-raos-offer-id=\"image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-240\" data-raos-cta-id=\"purchase-image-PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX-240-condition-front-main\" data-raos-placement=\"top_summary\" data-raos-snapshot-id=\"ps-6dce56817aa0fd0854dfb9892e290270\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1674.d83a3011.575e1675.25f0a8f9/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fgalleria%2Ftum00363%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1674.d83a3011.575e1675.25f0a8f9/?me_id=1210849&item_id=10043264&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fgalleria%2Fcabinet%2F202603_7%2Ftum00363.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>0228793DTX / 1589906153／BlackTexture（広告）</figcaption></figure>"
         }
       }
+    },
+    {
+      "article_id": "dish-rack-installation-measurement",
+      "slug": "dish-rack-installation-measurement",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-572b4c65ed4a838ca706cc7e412ba53b",
+      "body_sha256": "9c08d7a1ff11361d0a9d40f8b7121ef530bc43e4595f0544510869fac064f35b",
+      "bindings": [],
+      "media": {}
+    },
+    {
+      "article_id": "slim-dish-rack-under-20cm",
+      "slug": "slim-dish-rack-under-20cm",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-517cd07cd66cce27a485bf1d258ac13d",
+      "body_sha256": "5eb6d050fee58db9eda8720328667bd52757b8b27e1b3b585385ca4847fac6cd",
+      "bindings": [],
+      "media": {}
+    },
+    {
+      "article_id": "dish-rack-no-space",
+      "slug": "dish-rack-no-space",
+      "post_type": "post",
+      "kind": "curated_comparison",
+      "snapshot_id": "ps-eef019120446472419e2f626c9de923b",
+      "body_sha256": "195656b808949ba38e73138a88255933f73432d4ff17a772be3dbfa426f80d80",
+      "bindings": [],
+      "media": {}
     }
   ]
 }

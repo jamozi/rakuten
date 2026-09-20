@@ -11,9 +11,10 @@ outside itself:
     a layout is not a publish.
 ``published.documents``
     must be the documents this wave actually changed. They are measured by
-    diffing every ledger row's published body against the wave's
-    ``base_commit`` (``b5618eed`` / PR #293), which is on main and so present in
-    every clone -- not read back out of the plan the record itself wrote.
+    diffing every ledger row's published body between the wave's ``base_commit``
+    (``b5618eed`` / PR #293, on main and so present in every clone) and the
+    wave's own ``commit`` -- not read back out of the plan the record itself
+    wrote, and not against the working tree, which a later wave has added to.
 ``published.published_window`` and ``gates_before_publish``
     must be the moments and the numbers the logs carry, the two clocks naming
     the same instants.
@@ -126,22 +127,29 @@ def wave_candidate(wave: str, candidate: str) -> dict:
     return row["candidate_a" if candidate == "A" else "candidate_b"]
 
 
-def documents_changed_since(base: str) -> set[str]:
-    """Ledger rows whose published body differs from the one ``base`` carries.
+def ledger_rows_at(commit: str) -> dict[str, dict]:
+    raw = blob(commit, "changes/wordpress-direct-publish-v1/articles.v1.json")
+    assert raw is not None, commit
+    rows = json.loads(raw.decode("utf-8"))["articles"]
+    return {row["article_key"]: row for row in rows}
+
+
+def documents_changed_between(base: str, commit: str) -> set[str]:
+    """Ledger rows whose published body differs between two commits.
 
     This is what a publish sends: the ledger's own bodies, generated pages
-    included, as they stand in this tree against the commit the wave started
-    from. Reading the two ends out of git rather than out of the record is the
-    whole point -- a record cannot then set the scope of its own audit.
+    included, as the wave's own commit carried them against the commit the wave
+    started from. Reading both ends out of git rather than out of the record is
+    the whole point -- a record cannot then set the scope of its own audit. The
+    later end is the wave's commit and not the working tree, because a wave that
+    lands on top of this one adds its own documents to the tree and would make
+    this wave look bigger than it was.
     """
     changed = set()
-    for key, row in ledger_rows().items():
+    for key, row in ledger_rows_at(commit).items():
         source = row.get("body_source") or row.get("patch_source")
         assert source, key
-        before = blob(base, source)
-        path = ROOT / source
-        after = path.read_bytes() if path.exists() else None
-        if before != after:
+        if blob(base, source) != blob(commit, source):
             changed.add(key)
     return changed
 
@@ -216,7 +224,12 @@ def test_the_recorded_documents_are_the_documents_this_wave_changed() -> None:
         assert key in rows, key
         assert rows[key]["post_id"] == post_id, (key, rows[key]["post_id"])
 
-    measured = documents_changed_since(base)
+    commit = record["commit"]
+    assert commit_is_present(commit), (
+        f"{commit} is not in this clone, so the bodies this publish sent cannot "
+        "be measured against the commit the wave started from."
+    )
+    measured = documents_changed_between(base, commit)
     assert set(documents) == measured, set(documents).symmetric_difference(measured)
 
 

@@ -71,22 +71,35 @@ def test_the_record_files_exist() -> None:
     assert facts == 284, facts
     recorded = document["product_catalog"]
     assert recorded["products"] == 17 and recorded["facts"] == 284, recorded
-    assert recorded["wired_into_live_catalog"] is False, recorded
+    # The candidate is imported one wave at a time (PURCHASE_UNUSED_PRODUCT keeps a
+    # product out until the article that references it is written), so the record
+    # names the products already served and has to agree with the live catalog in
+    # both directions: nothing wired that the record omits, nothing recorded that
+    # is not there.
+    wired = recorded["wired_into_live_catalog"]
+    candidates = [product["product_id"] for product in products]
+    assert isinstance(wired, list) and len(wired) == len(set(wired)), recorded
+    assert set(wired) <= set(candidates), recorded
+    live = json.loads(
+        (ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    served = {product["product_id"] for product in live["products"]}
+    for product_id in candidates:
+        assert (product_id in served) == (product_id in wired), product_id
 
-    # The copy is a candidate: nothing has imported it into the served catalog yet.
     text = README.read_text(encoding="utf-8")
     assert "products.candidate.v1.json" in text
     assert "purchase-support.v1.json" in text, (
         "the README does not name the live catalog"
     )
-    assert "取り込んでいません" in text, (
-        "the README does not say the catalog is unwired"
+    assert "PURCHASE_UNUSED_PRODUCT" in text, (
+        "the README does not say why the import is split across the waves"
     )
-    live = (
-        ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json"
-    ).read_text(encoding="utf-8")
-    for product_id in (product["product_id"] for product in products):
-        assert product_id not in live, f"{product_id} is already in the live catalog"
+    assert str(len(wired)) + " 商品" in text, (
+        "the README does not state how many products are served"
+    )
 
 
 def test_the_decisions_file_gives_every_intake_article_a_verdict() -> None:
@@ -326,7 +339,17 @@ def test_wave_zero_records_the_category_pages_as_widened() -> None:
     for key, change in names.items():
         assert ledger[key]["title"] == change["after"], key
         assert change["before"] != change["after"], key
-        assert ledger[key]["excerpt"] == change["excerpt_after"], key
+        # W0's excerpt_after is what W0 wrote. A later wave that puts a new kind
+        # of article on the shelf has to say so in the excerpt too (DF02), and
+        # records that revision here rather than overwriting W0's value -- so the
+        # ledger is still compared with one pinned string, the newest one.
+        revised = change.get("excerpt_revised")
+        expected = revised["excerpt_after"] if revised else change["excerpt_after"]
+        assert ledger[key]["excerpt"] == expected, key
+        if revised:
+            assert revised["in"].startswith("W"), key
+            assert revised["excerpt_after"] != change["excerpt_after"], key
+            assert revised["why"].strip(), key
 
 
 # A candidate is a publish batch with a hard ceiling: 20 proposals, one of which
@@ -394,10 +417,25 @@ def test_each_deferral_quotes_wording_the_named_file_really_carries() -> None:
     )
     for row in rows:
         quotes = row.get("where_quote", {})
+        rewritten = row.get("where_quote_after", {})
+        assert set(rewritten) <= set(quotes), (row["id"], sorted(rewritten))
+        if rewritten:
+            applied = row["applied_in"]
+            assert (applied["wave"], applied["candidate"]) == (
+                row["wave"],
+                row["candidate"],
+            ), (row["id"], applied)
         for path, quote in quotes.items():
             assert path in row["where"], (row["id"], path)
             text = (ROOT / path).read_text(encoding="utf-8")
-            assert quote in text, (row["id"], path, quote)
+            if path in rewritten:
+                # The candidate this deferral names has already rewritten the
+                # file: the deferred wording has to be gone and the wording the
+                # record says replaced it has to be there.
+                assert quote not in text, (row["id"], path, quote)
+                assert rewritten[path] in text, (row["id"], path, rewritten[path])
+            else:
+                assert quote in text, (row["id"], path, quote)
 
 
 # --- the record answers to the artifact ------------------------------------
@@ -420,9 +458,13 @@ def test_a_deferral_lists_every_document_its_quoted_wording_reaches() -> None:
     documents = projection.reader_documents()
     for row in deferrals():
         listed = row.get("documents", [])
+        after = row.get("where_quote_after", {})
         for path, quote in row.get("where_quote", {}).items():
-            reached = sorted(key for key, body in documents.items() if quote in body)
-            assert reached, (row["id"], path, quote)
+            # A file the deferral already rewrote is measured by the wording
+            # that replaced it; the deferred sentence reaches nothing by design.
+            wording = after.get(path, quote)
+            reached = sorted(key for key, body in documents.items() if wording in body)
+            assert reached, (row["id"], path, wording)
             for key in reached:
                 assert key in listed, (row["id"], path, key, listed)
 

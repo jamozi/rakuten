@@ -87,7 +87,7 @@ class DirectoryTests(unittest.TestCase):
             if record["comparison_count"]
         }
         self.assertEqual(article_links, {"/" + slug + "/" for slug in comparisons})
-        self.assertEqual(len(article_links), 14)
+        self.assertEqual(len(article_links), 16)
         hrefs = {h for h, _, _ in doc.links}
         for slug, record in comparisons.items():
             route = "/" + slug + "/"
@@ -125,6 +125,8 @@ class DirectoryTests(unittest.TestCase):
                 "/dishwasher-cleaning-guide/",
                 "/dishwasher-running-cost/",
                 "/dishwasher-branch-faucet-guide/",
+                # next30 W1: the first guide outside the dishwasher set.
+                "/dish-rack-installation-measurement/",
             },
         )
         self.assertEqual(
@@ -162,7 +164,7 @@ class DirectoryTests(unittest.TestCase):
             self.assertIn("掲載順・評価は報酬条件と切り離しています", text)
             doc = Document(text)
             cards = [n for n in doc.nodes if n.tag == "article"]
-            self.assertEqual(len(cards), 9 if slug == "guides" else 14)
+            self.assertEqual(len(cards), 10 if slug == "guides" else 16)
             for card in cards:
                 content = text[card.start : card.end]
                 self.assertEqual(

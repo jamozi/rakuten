@@ -35,7 +35,7 @@ PURPOSES = {
     "easy-maintenance": (
         "手入れを続けやすいものを選びたい",
         "自分に残る作業と部品代は？",
-        "食洗機・掃除機・スーツケースごとに確認できます。",
+        "台所・掃除・スーツケースごとに確認できます。",
     ),
     "comfortable-travel": (
         "旅行の荷物・移動を楽にしたい",
@@ -744,8 +744,11 @@ def render_pages(
                         + "-editorial-ai-20260910.webp",
                         "width": 762,
                         "height": 506,
-                        "alt": data["categories"][article["category"]]["name"]
-                        + "のある暮らしの編集イメージ",
+                        # DF04: an alt built from the category display name says
+                        # 「掃除のある暮らしの編集イメージ」 about a picture nobody wrote that
+                        # sentence for. HOME_CATEGORIES already carries a caption written
+                        # for these very images, so the card borrows its own category's.
+                        "alt": dict(HOME_CATEGORIES)[article["category"]],
                     }
                 return (
                     f'<img src="{escape(image["src"], quote=True)}"'
@@ -1093,7 +1096,16 @@ def render_pages(
                     + card(
                         "solota-vs-rakua-mini-plus",
                         "本体寸法と開扉時寸法を別々に比較する",
-                    ),
+                    )
+                    + card(
+                        "dish-rack-installation-measurement",
+                        "水切りラックの置き場所を測る",
+                    )
+                    + card(
+                        "slim-dish-rack-under-20cm",
+                        "短辺20cm以下のすき間に据え置く",
+                    )
+                    + card("dish-rack-no-space", "置く場所がないときの3方式"),
                 )
                 + section(
                     "床に置く",
@@ -1310,7 +1322,7 @@ def render_pages(
             )
             maintenance_groups = [
                 (
-                    "食洗機",
+                    "台所",
                     [
                         "dishwasher-cleaning-guide",
                         "dishwasher-detergent-guide",
@@ -1332,7 +1344,7 @@ def render_pages(
                     ),
                 ),
                 (
-                    "掃除機",
+                    "掃除",
                     [
                         "compact-robot-vacuum-shortlist",
                         "roomba-mini-vs-switchbot-k11-pro",
@@ -1381,8 +1393,8 @@ def render_pages(
                         ],
                         label + "の手入れと部品",
                         {
-                            "食洗機": "maintenance-dishwasher-table",
-                            "掃除機": "maintenance-vacuum-table",
+                            "台所": "maintenance-dishwasher-table",
+                            "掃除": "maintenance-vacuum-table",
                             "スーツケース": "maintenance-suitcase-table",
                         }[label],
                     )

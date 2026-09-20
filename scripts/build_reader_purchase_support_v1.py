@@ -85,6 +85,12 @@ TEMPLATE_INPUT_PATHS: Final = (
     / "changes/reader-purchase-support-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
     ROOT
     / "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/dish-rack-installation-measurement.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/slim-dish-rack-under-20cm.html",
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/dish-rack-no-space.html",
 )
 ARTICLE_OUTPUT_PATHS: Final = (
     *(
@@ -130,6 +136,12 @@ ARTICLE_OUTPUT_PATHS: Final = (
     / "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.html",
     ROOT
     / "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/dish-rack-installation-measurement.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/slim-dish-rack-under-20cm.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/dish-rack-no-space.html",
 )
 RUNTIME_OUTPUT_PATH: Final = (
     ROOT

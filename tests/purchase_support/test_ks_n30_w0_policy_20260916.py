@@ -24,8 +24,17 @@ SKIPPED_TAGS = frozenset({"script", "style", "template", "code", "pre"})
 # The groups the programme adds, beside the four the page already declared.
 ADDED_GROUPS = ("水切りラック", "衣類乾燥除湿機", "ノンフライヤー・熱風調理器", "軽量コードレス掃除機")
 DECLARED_GROUPS = ("卓上食洗機", "機内持ち込みスーツケース", "ロボット掃除機", "ポータブル電源")
-# Wave 0 revises the operating policy only; the other two policy pages are untouched.
-REVISED_ON = "2026-09-16"
+# ADDED_GROUPS split in two by the revision the page currently records: the
+# groups whose first articles are published (W1: 水切りラック, posts 750/751/752)
+# and the groups still declared with no published article. Every wave moves one
+# group across, and the two tuples have to keep partitioning ADDED_GROUPS, so a
+# later wave cannot drop a group from both and quietly empty the 準備中 check.
+PUBLISHED_GROUPS = ("水切りラック",)
+PENDING_GROUPS = ("衣類乾燥除湿機", "ノンフライヤー・熱風調理器", "軽量コードレス掃除機")
+assert set(PUBLISHED_GROUPS) | set(PENDING_GROUPS) == set(ADDED_GROUPS)
+assert not set(PUBLISHED_GROUPS) & set(PENDING_GROUPS)
+# Wave 1 revises the operating policy only; the other two policy pages are untouched.
+REVISED_ON = "2026-09-20"
 
 
 @pytest.fixture(scope="module")
@@ -122,7 +131,7 @@ def test_about_policy_records_the_wave_zero_revision(roots) -> None:
     note = visible_text(times[0].parent)
     assert "改定内容：" in note
     assert "扱う領域" in note
-    for group in ADDED_GROUPS:
+    for group in PUBLISHED_GROUPS:
         assert group in note, group
 
 
@@ -149,9 +158,9 @@ def test_scope_says_which_declared_groups_have_no_article_yet(roots) -> None:
     scope = visible_text(bullet(roots["about-ad-policy"], "扱う領域："))
     pending = [s for s in sentences(scope) if "準備中" in s]
     assert len(pending) == 1, scope
-    for group in ADDED_GROUPS:
+    for group in PENDING_GROUPS:
         assert group in pending[0], group
-    for group in DECLARED_GROUPS:
+    for group in DECLARED_GROUPS + PUBLISHED_GROUPS:
         assert group not in pending[0], group
 
 
@@ -217,8 +226,8 @@ def test_the_revision_note_counts_the_scope_the_way_the_page_counts_it(roots) ->
 # exist — the cards were renamed by this same wave, and the menus never carried
 # either page at all.
 RENAMED_PAGES = (
-    ("食洗機の選び方・比較", "台所の道具の選び方・比較"),
-    ("ロボット掃除機の選び方・比較", "掃除の道具の選び方・比較"),
+    ("食洗機", "台所"),
+    ("掃除機", "掃除"),
 )
 MENU_PARTS = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme"
@@ -231,11 +240,11 @@ MENU_PARTS = (
 def test_the_revision_note_names_the_old_and_the_new_page_names(roots) -> None:
     """A reader who bookmarked the old name has to find it in the note."""
     note = revision_note(roots["about-ad-policy"])
-    renamed = [s for s in sentences(note) if "改称" in s]
+    renamed = [s for s in sentences(note) if "そろえ" in s]
     assert len(renamed) == 1, note
     for before, after in RENAMED_PAGES:
-        assert before in renamed[0], (before, renamed)
-        assert after in renamed[0], (after, renamed)
+        assert f"「{before}」" in renamed[0], (before, renamed)
+        assert f"「{after}」" in renamed[0], (after, renamed)
 
 
 def test_the_revision_note_claims_no_menu_that_never_carried_these_pages(

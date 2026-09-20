@@ -254,7 +254,19 @@ class LedgerRoles(unittest.TestCase):
         ]
 
     def test_every_ledger_row_has_a_reader_role(self):
-        self.assertEqual(len(self.registry["articles"]), 39)
+        rows = self.registry["articles"]
+        posts = [r for r in rows if r["post_type"] == "post"]
+        # 19 pages and the 23 published posts: the three next30 Wave 1 rows
+        # were given their post ids on 2026-09-20, so no row is left in mode new.
+        self.assertEqual(
+            (
+                len(rows),
+                len(rows) - len(posts),
+                sum(r["mode"] == "existing" for r in posts),
+                sum(r["mode"] == "new" for r in posts),
+            ),
+            (42, 19, 23, 0),
+        )
         for row in self.registry["articles"]:
             with self.subTest(key=row["article_key"]):
                 value = row["reader_role"]

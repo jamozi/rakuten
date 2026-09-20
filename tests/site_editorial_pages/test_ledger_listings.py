@@ -27,15 +27,24 @@ spec.loader.exec_module(builder)
 
 from raos.application.editorial import site_editorial_pages as editorial  # noqa: E402
 
+# next30 Wave 1 was published on 2026-09-20, so no row is waiting for a post id.
+AWAITING_PUBLICATION: tuple[str, ...] = ()
 NEW_POST_IDS = {
+    "dish-rack-installation-measurement": 750,
+    "slim-dish-rack-under-20cm": 751,
+    "dish-rack-no-space": 752,
     "compact-dishwasher-comparison": 549,
     "standard-dishwasher-comparison": 550,
     "large-dishwasher-comparison": 551,
     "dishwasher-branch-faucet-guide": 552,
     "small-carry-on-suitcase-comparison": 553,
 }
-# Anonymous GET /wp-json/wp/v2/posts/<id>?_fields=id,date_gmt,modified_gmt,slug on 2026-09-15.
+# Anonymous GET /wp-json/wp/v2/posts/<id>?_fields=id,date_gmt,modified_gmt,slug on
+# 2026-09-15, and on 2026-09-20 for the three next30 Wave 1 posts.
 REST_DATE_GMT = {
+    "dish-rack-installation-measurement": "2026-09-20T03:33:04Z",
+    "slim-dish-rack-under-20cm": "2026-09-20T03:33:00Z",
+    "dish-rack-no-space": "2026-09-20T03:32:56Z",
     "compact-dishwasher-comparison": "2026-09-13T10:57:35Z",
     "standard-dishwasher-comparison": "2026-09-13T10:58:27Z",
     "large-dishwasher-comparison": "2026-09-13T10:58:06Z",
@@ -174,8 +183,23 @@ class LedgerListings(unittest.TestCase):
                 self.assertEqual(article["post_id"], rows[article["slug"]]["post_id"])
 
     def test_every_post_row_has_a_complete_listing(self):
-        posts = [r for r in self.registry["articles"] if r["post_type"] == "post"]
-        self.assertEqual(len(posts), 20)
+        rows = [r for r in self.registry["articles"] if r["post_type"] == "post"]
+        posts = [r for r in rows if editorial.is_published(r)]
+        # A listing describes a post that exists. A row still waiting for its
+        # post id carries none: writing one would make the hubs link a 404, and
+        # metadata() refuses it as LEDGER_IDENTITY_STALE. Wave 1 minted 750-752
+        # on 2026-09-20, so the waiting list is now empty.
+        self.assertEqual(
+            [r["article_key"] for r in rows if not editorial.is_published(r)],
+            list(AWAITING_PUBLICATION),
+        )
+        for row in rows:
+            if not editorial.is_published(row):
+                with self.subTest(slug=row["slug"]):
+                    self.assertEqual(row["mode"], "new")
+                    self.assertIsNone(row["post_id"])
+                    self.assertNotIn("listing", row)
+        self.assertEqual(len(posts), 23)
         for row in posts:
             with self.subTest(slug=row["slug"]):
                 listing = row["listing"]
@@ -190,11 +214,11 @@ class LedgerListings(unittest.TestCase):
                     self.assertTrue(listing["comparison_anchor"])
         self.assertEqual(
             Counter(r["listing"]["role"] for r in posts),
-            {"comparison": 14, "guide": 6},
+            {"comparison": 16, "guide": 7},
         )
         self.assertEqual(
             Counter(r["listing"]["category"] for r in posts),
-            {"kitchen": 11, "travel": 5, "cleaning": 2, "preparedness": 2},
+            {"kitchen": 14, "travel": 5, "cleaning": 2, "preparedness": 2},
         )
 
     def test_comparison_index_is_every_ledger_comparison_with_its_own_anchors(self):
@@ -204,7 +228,7 @@ class LedgerListings(unittest.TestCase):
             for r in published_posts(self.registry)
             if r["listing"]["role"] == "comparison"
         ]
-        self.assertEqual(len(expected), 14)
+        self.assertEqual(len(expected), 16)
         self.assertEqual(sorted(heading_slugs(html)), sorted(expected))
         for row in published_posts(self.registry):
             listing = row["listing"]
@@ -341,7 +365,7 @@ class LedgerListings(unittest.TestCase):
 
     def test_ledger_rows_alone_add_and_withdraw_articles(self):
         self.assertIn(
-            "台所の記事 11本（比較5本・ガイド6本）", self.pages["categories"]
+            "台所の記事 14本（比較7本・ガイド7本）", self.pages["categories"]
         )
         changed = copy.deepcopy(self.registry)
         source = next(
@@ -368,30 +392,48 @@ class LedgerListings(unittest.TestCase):
             'href="/dishwasher-sample-guide/"',
             section(pages["updates"], "new-articles"),
         )
-        self.assertIn("台所の記事 12本（比較5本・ガイド7本）", pages["categories"])
+        self.assertIn("台所の記事 15本（比較7本・ガイド8本）", pages["categories"])
         source["listing"]["state"] = "withdrawn"
         pages, meta, _ = editorial.render_pages(changed, self.catalog, self.data, {})
         self.assertNotIn("dishwasher-branch-faucet-guide", meta)
         for slug, html in pages.items():
             self.assertNotIn("/dishwasher-branch-faucet-guide/", html, slug)
-        self.assertIn("台所の記事 11本（比較5本・ガイド6本）", pages["categories"])
+        self.assertIn("台所の記事 14本（比較7本・ガイド7本）", pages["categories"])
 
     def test_home_recent_uses_publication_day_then_editorial_order(self):
         recent = section(self.pages["home"], "km-updates-title")
         self.assertEqual(
             re.findall(r'<a class="ks-recent-image" href="/([^/]+)/"', recent),
             [
+                "dish-rack-installation-measurement",
+                "slim-dish-rack-under-20cm",
+                "dish-rack-no-space",
                 "small-carry-on-suitcase-comparison",
-                "compact-dishwasher-comparison",
-                "standard-dishwasher-comparison",
-                "large-dishwasher-comparison",
             ],
         )
         images = re.findall(
-            r'<a class="ks-recent-image" href="[^"]+"><img src="([^"]+)"', recent
+            r'<a class="ks-recent-image" href="[^"]+"><img src="([^"]+)"'
+            r' width="\d+" height="\d+" alt="([^"]+)"',
+            recent,
         )
-        self.assertEqual(len(set(images)), 4)
-        self.assertTrue(all(src.startswith("/wp-content/themes/") for src in images))
+        # DF04: the three Wave 1 rows carry no listing.card_image, so their cards
+        # fall back to the kitchen picture and borrow its HOME_CATEGORIES caption.
+        fallback = (
+            "https://kurashinoshirube.com/wp-content/uploads/2026/09/"
+            "ks-kitchen-editorial-ai-20260910.webp",
+            "食器と食洗機のあるキッチンのイメージ",
+        )
+        self.assertEqual(
+            images,
+            [fallback] * 3
+            + [
+                (
+                    "/wp-content/themes/kurashinoshirube-child/assets/images/"
+                    "travel-small-20260913.webp",
+                    "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ",
+                )
+            ],
+        )
         reordered = copy.deepcopy(self.registry)
         reordered["articles"].reverse()
         pages, _, _ = editorial.render_pages(reordered, self.catalog, self.data, {})
