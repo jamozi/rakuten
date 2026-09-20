@@ -212,7 +212,14 @@ class WaveOneLedgerRows(unittest.TestCase):
                     ),
                     LISTINGS[key],
                 )
-                self.assertEqual(listing["change_log"], [])
+                # A first publication carries no change_log. Wave 2 touched all
+                # three on 2026-09-20 -- two gained a route, 750 also carries the
+                # correction of its 7835 source line -- so each now holds exactly
+                # that one entry, and nothing older.
+                log = listing["change_log"]
+                self.assertEqual([entry["date"] for entry in log], ["2026-09-20"])
+                self.assertIn(log[0]["kind"], {"content", "correction"})
+                self.assertTrue(log[0]["summary"].strip())
 
     def test_the_body_the_row_names_is_generated_and_present(self):
         for key in WAVE_ONE:
@@ -252,14 +259,26 @@ class WaveOneLedgerRows(unittest.TestCase):
         self.assertEqual(len(intents), len(set(intents)))
 
     def test_the_projection_the_hubs_read_grows_by_exactly_the_three(self):
-        """Regression: the second candidate adds these three listings and no others."""
+        """Regression: wave 1 adds three listings, wave 2 three more, no others."""
+        # The owner-direct publisher minted three more ids on 2026-09-20 — 766,
+        # 767 and 768 for wave 2's dish-rack comparisons — so the projection the
+        # hubs read grows by six rows, not three. Pinned by id like wave 1's: a
+        # seventh listing still has to be accounted for.
+        wave_two_post_ids = {
+            "dish-rack-one-tier-vs-two-tier": 766,
+            "foldable-rack-vs-extendable-basket": 767,
+            "dish-rack-with-dishwasher": 768,
+        }
+        published_post_ids = {**POST_IDS, **wave_two_post_ids}
         bodies = builder.load_bodies(self.registry)
         meta = editorial.metadata(self.registry, self.catalog, self.data, bodies)
-        self.assertEqual(len(meta), PUBLISHED_POSTS_AT_BASE + len(WAVE_ONE))
-        for key in WAVE_ONE:
+        self.assertEqual(
+            len(meta), PUBLISHED_POSTS_AT_BASE + len(published_post_ids)
+        )
+        for key, post_id in published_post_ids.items():
             with self.subTest(key=key):
                 self.assertIn(key, meta)
-                self.assertEqual(meta[key]["post_id"], POST_IDS[key])
+                self.assertEqual(meta[key]["post_id"], post_id)
                 self.assertTrue(editorial.is_published(self.rows[key]))
 
     def test_a_published_listing_on_a_new_row_is_refused(self):
@@ -279,14 +298,28 @@ class WaveOneLedgerRows(unittest.TestCase):
             editorial.metadata(registry, self.catalog, self.data, bodies)
 
     def test_the_published_articles_of_the_base_commit_are_untouched(self):
+        # Wave 2 published three more dish-rack rows on 2026-09-20 (766/767/768).
+        # Like wave 1's, they are new posts, not edits to the 20 the base commit
+        # had, so they are set aside here instead of being weighed against it.
+        wave_two = (
+            "dish-rack-one-tier-vs-two-tier",
+            "foldable-rack-vs-extendable-basket",
+            "dish-rack-with-dishwasher",
+        )
         published = {
             row["article_key"]: row["post_id"]
             for row in self.registry["articles"]
             if row["post_type"] == "post" and editorial.is_published(row)
         }
-        self.assertEqual(len(published), PUBLISHED_POSTS_AT_BASE + len(WAVE_ONE))
         self.assertEqual(
-            {key: pid for key, pid in published.items() if key not in WAVE_ONE},
+            len(published), PUBLISHED_POSTS_AT_BASE + len(WAVE_ONE) + len(wave_two)
+        )
+        self.assertEqual(
+            {
+                key: pid
+                for key, pid in published.items()
+                if key not in WAVE_ONE and key not in wave_two
+            },
             BASE_PUBLISHED_POSTS,
         )
 

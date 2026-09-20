@@ -27,13 +27,9 @@ spec.loader.exec_module(builder)
 
 from raos.application.editorial import site_editorial_pages as editorial  # noqa: E402
 
-# next30 Wave 1 was published on 2026-09-20, so no row is waiting for a post id.
-AWAITING_PUBLICATION: tuple[str, ...] = (
-    # next30 Wave 2: bodies written, post ids not minted yet.
-    "dish-rack-one-tier-vs-two-tier",
-    "foldable-rack-vs-extendable-basket",
-    "dish-rack-with-dishwasher",
-)
+# next30 Wave 2 was published on 2026-09-20 (766 / 767 / 768), so no row is
+# waiting for a post id.
+AWAITING_PUBLICATION: tuple[str, ...] = ()
 NEW_POST_IDS = {
     "dish-rack-installation-measurement": 750,
     "slim-dish-rack-under-20cm": 751,
@@ -192,7 +188,7 @@ class LedgerListings(unittest.TestCase):
         posts = [r for r in rows if editorial.is_published(r)]
         # A listing describes a post that exists. A row still waiting for its
         # post id carries none: writing one would make the hubs link a 404, and
-        # metadata() refuses it as LEDGER_IDENTITY_STALE. Wave 1 minted 750-752
+        # metadata() refuses it as LEDGER_IDENTITY_STALE. Wave 2 minted 766-768
         # on 2026-09-20, so the waiting list is now empty.
         self.assertEqual(
             [r["article_key"] for r in rows if not editorial.is_published(r)],
@@ -204,7 +200,7 @@ class LedgerListings(unittest.TestCase):
                     self.assertEqual(row["mode"], "new")
                     self.assertIsNone(row["post_id"])
                     self.assertNotIn("listing", row)
-        self.assertEqual(len(posts), 23)
+        self.assertEqual(len(posts), 26)
         for row in posts:
             with self.subTest(slug=row["slug"]):
                 listing = row["listing"]
@@ -219,11 +215,11 @@ class LedgerListings(unittest.TestCase):
                     self.assertTrue(listing["comparison_anchor"])
         self.assertEqual(
             Counter(r["listing"]["role"] for r in posts),
-            {"comparison": 16, "guide": 7},
+            {"comparison": 19, "guide": 7},
         )
         self.assertEqual(
             Counter(r["listing"]["category"] for r in posts),
-            {"kitchen": 14, "travel": 5, "cleaning": 2, "preparedness": 2},
+            {"kitchen": 17, "travel": 5, "cleaning": 2, "preparedness": 2},
         )
 
     def test_comparison_index_is_every_ledger_comparison_with_its_own_anchors(self):
@@ -233,7 +229,7 @@ class LedgerListings(unittest.TestCase):
             for r in published_posts(self.registry)
             if r["listing"]["role"] == "comparison"
         ]
-        self.assertEqual(len(expected), 16)
+        self.assertEqual(len(expected), 19)
         self.assertEqual(sorted(heading_slugs(html)), sorted(expected))
         for row in published_posts(self.registry):
             listing = row["listing"]
@@ -370,7 +366,7 @@ class LedgerListings(unittest.TestCase):
 
     def test_ledger_rows_alone_add_and_withdraw_articles(self):
         self.assertIn(
-            "台所の記事 14本（比較7本・ガイド7本）", self.pages["categories"]
+            "台所の記事 17本（比較10本・ガイド7本）", self.pages["categories"]
         )
         changed = copy.deepcopy(self.registry)
         source = next(
@@ -397,23 +393,23 @@ class LedgerListings(unittest.TestCase):
             'href="/dishwasher-sample-guide/"',
             section(pages["updates"], "new-articles"),
         )
-        self.assertIn("台所の記事 15本（比較7本・ガイド8本）", pages["categories"])
+        self.assertIn("台所の記事 18本（比較10本・ガイド8本）", pages["categories"])
         source["listing"]["state"] = "withdrawn"
         pages, meta, _ = editorial.render_pages(changed, self.catalog, self.data, {})
         self.assertNotIn("dishwasher-branch-faucet-guide", meta)
         for slug, html in pages.items():
             self.assertNotIn("/dishwasher-branch-faucet-guide/", html, slug)
-        self.assertIn("台所の記事 14本（比較7本・ガイド7本）", pages["categories"])
+        self.assertIn("台所の記事 17本（比較10本・ガイド7本）", pages["categories"])
 
     def test_home_recent_uses_publication_day_then_editorial_order(self):
         recent = section(self.pages["home"], "km-updates-title")
         self.assertEqual(
             re.findall(r'<a class="ks-recent-image" href="/([^/]+)/"', recent),
             [
+                "dish-rack-one-tier-vs-two-tier",
+                "foldable-rack-vs-extendable-basket",
+                "dish-rack-with-dishwasher",
                 "dish-rack-installation-measurement",
-                "slim-dish-rack-under-20cm",
-                "dish-rack-no-space",
-                "small-carry-on-suitcase-comparison",
             ],
         )
         images = re.findall(
@@ -421,24 +417,15 @@ class LedgerListings(unittest.TestCase):
             r' width="\d+" height="\d+" alt="([^"]+)"',
             recent,
         )
-        # DF04: the three Wave 1 rows carry no listing.card_image, so their cards
-        # fall back to the kitchen picture and borrow its HOME_CATEGORIES caption.
+        # DF04: none of the six next30 dish-rack rows carries a listing.card_image,
+        # so their cards fall back to the kitchen picture and borrow its
+        # HOME_CATEGORIES caption. All four newest cards are now such rows.
         fallback = (
             "https://kurashinoshirube.com/wp-content/uploads/2026/09/"
             "ks-kitchen-editorial-ai-20260910.webp",
             "食器と食洗機のあるキッチンのイメージ",
         )
-        self.assertEqual(
-            images,
-            [fallback] * 3
-            + [
-                (
-                    "/wp-content/themes/kurashinoshirube-child/assets/images/"
-                    "travel-small-20260913.webp",
-                    "小さなスーツケースと少量の着替えを揃えた旅支度のイメージ",
-                )
-            ],
-        )
+        self.assertEqual(images, [fallback] * 4)
         reordered = copy.deepcopy(self.registry)
         reordered["articles"].reverse()
         pages, _, _ = editorial.render_pages(reordered, self.catalog, self.data, {})
@@ -511,12 +498,14 @@ class LedgerListings(unittest.TestCase):
         card = card_for(pages["comparisons"], subject["slug"])
         self.assertIn(f"公開日：{subject['listing']['published_on']}", card)
         self.assertNotIn("内容更新日：", card)
-        for slug in (
-            "compact-dishwasher-comparison",
-            "standard-dishwasher-comparison",
-            "large-dishwasher-comparison",
+        # 549 and 550 gained a route to /dish-rack-with-dishwasher/ on 2026-09-20;
+        # 551 was not touched that day, so its card still shows the 2026-09-16 date.
+        for slug, day in (
+            ("compact-dishwasher-comparison", "2026-09-20"),
+            ("standard-dishwasher-comparison", "2026-09-20"),
+            ("large-dishwasher-comparison", "2026-09-16"),
         ):
-            self.assertIn("内容更新日：2026-09-16", card_for(html, slug))
+            self.assertIn(f"内容更新日：{day}", card_for(html, slug))
         record = self.meta["large-dishwasher-comparison"]
         self.assertEqual(
             (record["comparison_count"], record["reference_count"]), (4, 2)

@@ -60,13 +60,16 @@ CARRIED_BY_THE_THEME = (
     "dishwasher-installation-measurement",
     "dishwasher-running-cost",
 )
-# Wave 1 published three more articles with no advertising, and for these the
+# Waves 1 and 2 published six articles with no advertising, and for these the
 # statement is the body's: they are row comparisons, and the renderer writes the
 # 断り into that body itself (purchase_support.bind_comparison_rows), so the
 # theme has to stand aside for the verified snapshot instead of adding a second.
 CARRIED_BY_THE_BODY = (
     "dish-rack-installation-measurement",
     "dish-rack-no-space",
+    "dish-rack-one-tier-vs-two-tier",
+    "dish-rack-with-dishwasher",
+    "foldable-rack-vs-extendable-basket",
     "slim-dish-rack-under-20cm",
 )
 

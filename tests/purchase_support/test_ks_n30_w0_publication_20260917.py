@@ -328,8 +328,25 @@ def test_the_readback_findings_still_hold_in_the_bodies_that_were_published() ->
     assert set(old.values()) == {change["after"] for change in names.values()}, old
 
 
+#: The commit of *main* that carries what the W0 candidate put in front of
+#: readers: 「暮らしのしるべ: KS next30 W0」 (PR #294). Pinned for the same reason
+#: as ``ks_w4_batch.PUBLISHED_COMMIT``: an acceptance names the body this
+#: candidate published, and the working tree now carries a later wave's bodies
+#: -- next30 W2 regenerated standard-dishwasher-comparison with a new snapshot
+#: id -- so reading the tree would turn a record that is still exactly right
+#: into a red rule, one that could only be quieted by rewriting the owner's
+#: acceptance.
+W0_PUBLISHED_COMMIT = "6b1ad534f662418a555a5d911a7bf6efcd07440e"
+
+
 def test_the_accepted_layouts_name_the_body_this_candidate_published() -> None:
     record = published()
+    assert commit_is_present(W0_PUBLISHED_COMMIT), (
+        f"{W0_PUBLISHED_COMMIT} is not in this clone, so an acceptance cannot "
+        "be checked against the body it names. CI checks out with "
+        "fetch-depth: 0 (.github/workflows/ci.yml), so fetch the full history "
+        "rather than letting this rule pass unmeasured."
+    )
     keys = contents(record["documents"])
     articles = json.loads(BASELINES.read_text(encoding="utf-8"))["articles"]
     for slug in ACCEPTED:
@@ -349,7 +366,8 @@ def test_the_accepted_layouts_name_the_body_this_candidate_published() -> None:
         assert accepted["source_paths"], slug
         assert slug in keys, slug
 
-        raw = (ARTICLE_DIR / f"{slug}.html").read_bytes()
+        raw = blob(W0_PUBLISHED_COMMIT, f"{ARTICLE_DIR.relative_to(ROOT)}/{slug}.html")
+        assert raw is not None, slug
         assert accepted["body_sha256"] == hashlib.sha256(raw).hexdigest(), slug
         assert SNAPSHOT.fullmatch(accepted["snapshot_id"]), slug
         assert accepted["snapshot_id"] in raw.decode("utf-8"), slug
