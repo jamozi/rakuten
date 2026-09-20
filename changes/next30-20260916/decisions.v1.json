@@ -1198,7 +1198,6 @@
   "unresolved": [
     "固定ページ laundry の作成・委譲登録・ハブ登録（オーナー作業。未了なら W0-B と W3 は開始できない）",
     "本番プロファイルの allow_new_posts は 2026-09-20 の status（読み取りのみ）で true と実測した。オーナーが管理画面で外しうる値なので、公開の直前に測り直す（publication_prerequisites を参照）",
-    "approved-layout-baselines.v1.json の Before/After 了承（W0-A の公開前提）",
     "/categories/ のリードが商品種別・場所・行為の混在（スーツケース・台所・掃除・ポータブル電源）。4 つとも品目でそろえるか場所・行為でそろえるかはオーナー判断",
     "カテゴリページのパンくずの区切り記号が 4 ページで不揃い（kitchen は ＞、cleaning は ／、travel・preparedness は /）。kitchen と cleaning は W0-A の候補内なので揃えても公開候補は増えないが、どの記号に寄せるかは編集判断。4 ページ揃えるには travel・preparedness の本文が加わるため別の候補が要る",
     "/guides/ のジャンプ先 3 つがカテゴリ名を書いた見出しではなく記事カードに着地する（W0 はジャンプのラベルだけを「台所」「掃除」に改称したので、ラベルと着地先の食い違いは新しくなっている）",
@@ -1212,7 +1211,8 @@
     "AF04 / YCW-C120 の食洗機対応（UNKNOWN のまま）",
     "catalog 全 284 facts の再監査（各波の候補 A で、その波が使う fact だけを再照合する運用）",
     "listing.card_image は 25 本すべて null（カード画像を出すならカテゴリごとの webp と alt のオーナー承認が要る）",
-    "purchase-support.v1.json の kind:\"guide\" は新記事に使えない（W1-A で実測）。render_guide は purchase_support.py:2366 で STAGES の 5 slug（dishwasher-installation-measurement / -water-supply-methods / -running-cost / -detergent-guide / -cleaning-guide）から stage を引くため、それ以外の slug では StopIteration になる。本文も MAIN_SLUG（卓上食洗機 4 機種）の機種索引と stage 別の表で組まれるので、水切りラックの記事には合わない。W1-A の A01 はカタログ側だけを kind:\"curated_comparison\"（commerce_anchor:\"guide-evidence\"・commerce_presentation:\"comparison_rows\"）にし、台帳の listing.role と reader_role.page_kind は guide / task_guide のまま公開する（カタログの kind は role を変えない: tests/site_editorial_pages/test_ledger_listings.py:478）。残る guide 8 本（A08・A10・A11・A15・A17・A24・A25・A26）も同じ扱いにするか、render_guide を汎用化するかは未決。reader_intro / reader_steps / reader_unknowns_note は curated_comparison では読まれないため、A01 の採寸 6 ステップは本文テンプレートに書く。"
+    "purchase-support.v1.json の kind:\"guide\" は新記事に使えない（W1-A で実測）。render_guide は purchase_support.py:2366 で STAGES の 5 slug（dishwasher-installation-measurement / -water-supply-methods / -running-cost / -detergent-guide / -cleaning-guide）から stage を引くため、それ以外の slug では StopIteration になる。本文も MAIN_SLUG（卓上食洗機 4 機種）の機種索引と stage 別の表で組まれるので、水切りラックの記事には合わない。W1-A の A01 はカタログ側だけを kind:\"curated_comparison\"（commerce_anchor:\"guide-evidence\"・commerce_presentation:\"comparison_rows\"）にし、台帳の listing.role と reader_role.page_kind は guide / task_guide のまま公開する（カタログの kind は role を変えない: tests/site_editorial_pages/test_ledger_listings.py:478）。残る guide 8 本（A08・A10・A11・A15・A17・A24・A25・A26）も同じ扱いにするか、render_guide を汎用化するかは未決。reader_intro / reader_steps / reader_unknowns_note は curated_comparison では読まれないため、A01 の採寸 6 ステップは本文テンプレートに書く。",
+    "purchase-support.v1.json の kind:\"guide\" が新記事に使えない件は W1-A で実測済み。A01 は curated_comparison のまま listing.role=guide で /guides/ に載せた(2026-09-20)。render_guide を slug に依存しない形へ直すかは別途"
   ],
   "deferrals": [
     {
@@ -1392,18 +1392,118 @@
           "allow_new_posts": true,
           "targets": 45
         },
-        "note": "2026-09-16 の測定と同じ値。status は読み取りだけで、prepare・preview・publish は行っていない。公開の直前に測り直す（オーナーが管理画面で外しうる値なので、記録は測った日と対になる）。"
+        "note": "2026-09-16・2026-09-20 の status で true。2026-09-20 の W1-A の公開で実際に 投稿750・751・752 が作成されたので、公開時点の値としても確かめられた。以後の波でも公開の直前に測り直す。"
       },
       {
         "id": "approved_layout_baselines",
         "statement": "approved-layout-baselines.v1.json の Before/After をオーナーが了承すること。",
-        "state": "OPEN",
-        "blocks": [
-          "W0-A",
-          "W1-A"
-        ],
-        "note": "オーナーがレビューページで Before/After を見るまで開いたまま。記録の側では閉じられない。"
+        "state": "ACCEPTED",
+        "blocks": [],
+        "note": "W0-A・W1-A ともオーナーが Before/After を見て「公開して」と述べ、公開した。approved-layout-baselines.v1.json 自体は承認済みレイアウトの比較記事5本の記録で、水切りラックの3本はその5本に含まれない(publication_authorized は false のまま)。",
+        "accepted_on": "2026-09-20",
+        "accepted_by": "オーナー",
+        "user_statement": "公開して",
+        "shown": [
+          "公開テーマのCSSを当てた本文3本の単体HTML(390px・1440pxのスクリーンショット付き)",
+          "candidate 0dd94322… の preview(ローカルWordPress)の描画 status PASS・failures なし"
+        ]
       }
+    ]
+  },
+  "wave_one_applied": {
+    "wave": "W1",
+    "branch": "claude/ks-n30-w1-20260917",
+    "base_commit": "cd8c6eec",
+    "base_on_origin_main": true,
+    "articles": [
+      "A01",
+      "A02",
+      "A03"
+    ],
+    "owner_statement": "公開して",
+    "owner_statement_on": "2026-09-20",
+    "owner_decisions_20260920": [
+      "A02の表AとA03の表Bのスマホ(320px)での行の高さ: このまま公開",
+      "3492の商品説明キャプションが使う「奥行き」と条件の「内寸」の違い: 今のまま(条件は「内寸」とだけ書く)",
+      "「照合できた販売先がないため参考価格を出さない」の書き方: 今のまま(既公開23本と合わせて別途検討)"
+    ],
+    "candidate_a": {
+      "candidate": "0dd94322d61c62b525ff6a6ac3d6a925e6da30f70aad358c1c1fd16adb33a96e",
+      "commit": "97465f8128a24fb4678f89d0a477ec6272ac8458",
+      "documents": 3,
+      "theme": true,
+      "contains_new_articles": true,
+      "post_ids": {
+        "dish-rack-installation-measurement": 750,
+        "slim-dish-rack-under-20cm": 751,
+        "dish-rack-no-space": 752
+      },
+      "published_at_gmt": "2026-09-20T03:32:56Z〜03:33:04Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T12:33:51+0900",
+        "public_documents": 42,
+        "updated": 3,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15",
+        "body_match": "本文は本番と一語一句一致(差分はテーマが実行時に足す「記事内の目次へ戻る ↑」だけ)"
+      },
+      "note": "公開直後はハブ側が未更新で、3本はURLからのみ到達できた。候補Bで閉じた。"
+    },
+    "candidate_b": {
+      "candidate": "57a0766f90091aaf805b08081d041fdfb7b75730dab0d941d5cfd73e1b6ef676",
+      "commit": "65ba57845da9f4c74adada3b3a1c6f614b9c9024",
+      "documents": 13,
+      "theme": true,
+      "contents": [
+        "home (15)",
+        "categories (130)",
+        "updates (143)",
+        "comparisons (133)",
+        "guides (135)",
+        "kitchen (136)",
+        "about-ad-policy (10)",
+        "easy-maintenance (134)",
+        "small-space (141)",
+        "purposes (140)",
+        "dish-rack-installation-measurement (750)",
+        "slim-dish-rack-under-20cm (751)",
+        "dish-rack-no-space (752)"
+      ],
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T13:46:41+0900",
+        "public_documents": 42,
+        "updated": 10,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15",
+        "note": "本文3本は内容が同じため modified_gmt が動かず、更新は10文書だった。"
+      },
+      "hub_state_after": {
+        "home": "新着4枚の先頭3枚が水切りラック",
+        "kitchen": "#dish-rack の棚(測る→比べる→置き場所がない)",
+        "categories": "台所の記事 14本（比較7本・ガイド7本）",
+        "comparisons": "751・752",
+        "guides": "750",
+        "updates": "3本を公開日順",
+        "small-space": "「キッチンに置く」に3本",
+        "easy-maintenance": "棚見出しは 台所・掃除・スーツケース",
+        "about-ad-policy": "準備中はノンフライヤー・衣類乾燥除湿機・軽量コードレス掃除機の3分野"
+      },
+      "deferrals_applied": [
+        "DF02",
+        "DF03",
+        "DF04",
+        "DF07"
+      ],
+      "note": "候補Bの対象に本文3本が入るのは、台帳の mode・post_id・listing が候補の同一性フィールドだから。本文そのものは1バイトも変えていない。"
+    },
+    "not_touched": [
+      "A02・A03の比較表の行の高さ(オーナー決定: このまま公開)",
+      "listing.card_image は3本とも null のまま(カテゴリの編集イメージを共有)",
+      "laundry の固定ページ(W3の前提、オーナー作業)"
     ]
   }
 }

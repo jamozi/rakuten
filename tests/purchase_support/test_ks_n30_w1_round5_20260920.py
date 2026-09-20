@@ -312,7 +312,14 @@ def test_the_record_carries_the_measured_publication_prerequisites(
     assert allow["measurement"]["profile"] == "owner-direct-v1", allow
 
     baselines = items["approved_layout_baselines"]
-    assert baselines["state"] == "OPEN", baselines
-    assert any("Before/After" in entry for entry in decisions["unresolved"]), (
-        "the owner's Before/After sign-off dropped out of 未解決"
+    # The owner saw the Before/After of wave 1 on 2026-09-20 and said 公開して, so
+    # the prerequisite is closed -- but closing it has to carry the statement, the
+    # day and what was shown, or the record would only assert its own conclusion.
+    assert baselines["state"] == "ACCEPTED", baselines
+    assert baselines["blocks"] == [], baselines
+    assert baselines["accepted_on"] == "2026-09-20", baselines
+    assert baselines["user_statement"] == "公開して", baselines
+    assert baselines["shown"], baselines
+    assert not any("Before/After 了承" in entry for entry in decisions["unresolved"]), (
+        "未解決 still waits for a sign-off the record says the owner gave"
     )
