@@ -49,8 +49,9 @@ def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
     validate_catalog(catalog)
     html, runtime = compile(catalog)
     # next30 Wave 1 (2026-09-17) added the three dish-rack articles and the five
-    # dish-rack products; every catalog article still compiles to one body.
-    assert len(html) == len(catalog["articles"]) == 26
+    # dish-rack products, and Wave 2 (2026-09-20) three more articles on the same
+    # five; every catalog article still compiles to one body.
+    assert len(html) == len(catalog["articles"]) == 29
     assert len(catalog["products"]) == 59
     roots = {slug: fragment(body) for slug, body in html.items()}
     for slug, root in roots.items():

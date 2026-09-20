@@ -28,7 +28,12 @@ spec.loader.exec_module(builder)
 from raos.application.editorial import site_editorial_pages as editorial  # noqa: E402
 
 # next30 Wave 1 was published on 2026-09-20, so no row is waiting for a post id.
-AWAITING_PUBLICATION: tuple[str, ...] = ()
+AWAITING_PUBLICATION: tuple[str, ...] = (
+    # next30 Wave 2: bodies written, post ids not minted yet.
+    "dish-rack-one-tier-vs-two-tier",
+    "foldable-rack-vs-extendable-basket",
+    "dish-rack-with-dishwasher",
+)
 NEW_POST_IDS = {
     "dish-rack-installation-measurement": 750,
     "slim-dish-rack-under-20cm": 751,

@@ -2370,6 +2370,111 @@
           "status": "live"
         }
       }
+    },
+    {
+      "article_key": "dish-rack-one-tier-vs-two-tier",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dish-rack-one-tier-vs-two-tier",
+      "title": "水切りラックは1段か2段か｜4314と5070",
+      "excerpt": "山崎実業4314と5070は「1段か2段か」では分かれません。段数を印字しているのは5070だけで、その印字は「1段でも2段でも使える」です。4314の公式ページに「段」の語はありません。両方の仕様表に同じ行がある9項目と、片方にしかない3行を並べます。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dish-rack-one-tier-vs-two-tier.html",
+      "reader_role": {
+        "page_kind": "head_to_head",
+        "primary_intent": "4314と5070を「1段か2段か」で選び分けられるのかを確かめたい",
+        "reader": "水切りラックの段数で迷っている人",
+        "decision_after_reading": "段数以外のどの印字で2商品を選び分けるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "",
+          "label": "置けるかどうかを先に測る"
+        },
+        "next_question": {
+          "question": "短辺20cm以下のすき間で3商品を見る？",
+          "target": "slim-dish-rack-under-20cm",
+          "anchor": "",
+          "status": "live"
+        }
+      }
+    },
+    {
+      "article_key": "foldable-rack-vs-extendable-basket",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "foldable-rack-vs-extendable-basket",
+      "title": "折り畳み7835と伸縮3492｜掛かる条件で選ぶ",
+      "excerpt": "7835の「対応サイズ」行は「奥行き：54cm以下のシンク」、3492の同じ行は「シンク内寸37cm〜47cm」。測る場所も条件の形も違うため、片方の数字でもう片方は判定できません。収納したときの寸法は2商品とも印字がなく、場所の空けやすさは比べません。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/foldable-rack-vs-extendable-basket.html",
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "シンクの上に渡す7835とフチに掛ける3492の、どちらが自宅のシンクに掛かるかを決めたい",
+        "reader": "シンクに渡す・フチに掛ける方式まで絞り込んだ人",
+        "decision_after_reading": "シンクのどこを測り、どちらの「対応サイズ」行に当てはめるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "guide-steps",
+          "label": "置き場所の寸法から確かめる"
+        },
+        "next_question": {
+          "question": "置く場所そのものが取れない？",
+          "target": "dish-rack-no-space",
+          "anchor": "",
+          "status": "live"
+        }
+      }
+    },
+    {
+      "article_key": "dish-rack-with-dishwasher",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dish-rack-with-dishwasher",
+      "title": "食洗機と水切りラックの併用｜手洗い分だけ置く",
+      "excerpt": "卓上食洗機を台に置いたまま手洗い分だけを載せる場合に、公式が「耐荷重」行と「対応サイズ」行の両方を印字している山崎実業4商品を、その2行だけで並べます。対応サイズはどれもシンクの条件で、台の条件を印字した商品はありません。下村企販42666は2行ともないため扱いません。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dish-rack-with-dishwasher.html",
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "食洗機を置いたまま手洗い分だけを載せる水切りラックを選びたい",
+        "reader": "卓上食洗機を使っている人",
+        "decision_after_reading": "自分のシンクの語で条件に入るのはどれか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "",
+          "label": "置けるかどうかは6か所を測ってから決める"
+        },
+        "next_question": {
+          "question": "食洗機の置き場所は足りている？",
+          "target": "dishwasher-installation-measurement",
+          "anchor": "",
+          "status": "live"
+        }
+      }
     }
   ]
 }

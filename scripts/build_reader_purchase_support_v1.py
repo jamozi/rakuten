@@ -87,10 +87,13 @@ TEMPLATE_INPUT_PATHS: Final = (
     / "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
     ROOT
     / "changes/reader-purchase-support-v1/articles/dish-rack-installation-measurement.html",
+    ROOT / "changes/reader-purchase-support-v1/articles/slim-dish-rack-under-20cm.html",
+    ROOT / "changes/reader-purchase-support-v1/articles/dish-rack-no-space.html",
     ROOT
-    / "changes/reader-purchase-support-v1/articles/slim-dish-rack-under-20cm.html",
+    / "changes/reader-purchase-support-v1/articles/dish-rack-one-tier-vs-two-tier.html",
     ROOT
-    / "changes/reader-purchase-support-v1/articles/dish-rack-no-space.html",
+    / "changes/reader-purchase-support-v1/articles/foldable-rack-vs-extendable-basket.html",
+    ROOT / "changes/reader-purchase-support-v1/articles/dish-rack-with-dishwasher.html",
 )
 ARTICLE_OUTPUT_PATHS: Final = (
     *(
@@ -140,8 +143,13 @@ ARTICLE_OUTPUT_PATHS: Final = (
     / "changes/wordpress-direct-publish-v1/articles/dish-rack-installation-measurement.html",
     ROOT
     / "changes/wordpress-direct-publish-v1/articles/slim-dish-rack-under-20cm.html",
+    ROOT / "changes/wordpress-direct-publish-v1/articles/dish-rack-no-space.html",
     ROOT
-    / "changes/wordpress-direct-publish-v1/articles/dish-rack-no-space.html",
+    / "changes/wordpress-direct-publish-v1/articles/dish-rack-one-tier-vs-two-tier.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/foldable-rack-vs-extendable-basket.html",
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/dish-rack-with-dishwasher.html",
 )
 RUNTIME_OUTPUT_PATH: Final = (
     ROOT

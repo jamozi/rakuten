@@ -212,7 +212,11 @@ def test_every_record_carries_a_locator_and_a_check_date(racks):
         for record in records(product):
             name = record.get("label") or record.get("field")
             assert record["locator"].strip(), (pid, name)
-            assert record["checked_at"] == "2026-09-16", (pid, name)
+            # 2026-09-16 is the day the five were verified for wave 1. A record
+            # re-read later carries that later day instead, and wave 2 added a
+            # few: the rule is that every record names a day it was read on,
+            # and that the day is one of the wave's verification days.
+            assert record["checked_at"] in {"2026-09-16", "2026-09-20"}, (pid, name)
             assert record["exact_model"] == IDENTITIES[pid][0], (pid, name)
 
 
