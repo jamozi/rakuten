@@ -1692,5 +1692,79 @@
       "listing.card_image は3本とも null のまま(カテゴリの編集イメージを共有)",
       "laundry の固定ページ(W3の前提、オーナー作業)"
     ]
+  },
+  "wave_two_applied": {
+    "wave": "W2",
+    "branch": "claude/ks-n30-w2-20260920",
+    "base_commit": "c8020c53",
+    "base_on_origin_main": true,
+    "articles": [
+      "A04",
+      "A05",
+      "A07"
+    ],
+    "owner_statement": "公開して",
+    "owner_statement_on": "2026-09-20",
+    "owner_decisions_20260920": [
+      "印字されたcmをmmに換算した併記: このまま続ける(括弧で原文のcmを必ず添える)"
+    ],
+    "candidate_a": {
+      "candidate": "d3e287916120d644e68a6de4ba4d45c16fdd391a190f5758295b35c3ac050b01",
+      "commit": "3c64d4b0b5140d18e8ce8ffc68cada55a30b1721",
+      "documents": 6,
+      "theme": true,
+      "contains_new_articles": true,
+      "post_ids": {
+        "dish-rack-one-tier-vs-two-tier": 766,
+        "foldable-rack-vs-extendable-basket": 767,
+        "dish-rack-with-dishwasher": 768
+      },
+      "also_republished": [
+        "dish-rack-installation-measurement (750)",
+        "countertop-dishwasher-for-small-households (41)",
+        "solota-vs-rakua-mini-plus (86)"
+      ],
+      "published_at_gmt": "2026-09-20T06:54:14Z〜2026-09-20T06:54:28Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T15:54:49+0900",
+        "updated": 6,
+        "expected": 6,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15"
+      },
+      "note": "750は7835の出典の訂正(「仕様・サイズ」表の行として品番・カラーを数えていた)。41と86は商品の記録に取扱説明書のfactを足したことで出典一覧の行が増えた。"
+    },
+    "candidate_b": {
+      "candidate": "a33713427390faeb54c801b3536cc79d1c6d9ef8b4993a96b9da2e31acbe9eda",
+      "commit": "1d922b753e8b081095bd4101fb91ba2090abe540",
+      "documents": 17,
+      "theme": true,
+      "published_at_gmt": "2026-09-20T07:31:06Z〜2026-09-20T07:31:52Z",
+      "publication_status": "PUBLISHED_AND_READBACK_VERIFIED",
+      "readback": {
+        "checked_at": "2026-09-20T16:32:12+0900",
+        "updated": 12,
+        "expected": 17,
+        "unexpected_updates": 0,
+        "internal_words": 0,
+        "rakuten_credit": "15/15",
+        "note": "候補Aで公開した5文書は内容が同じためmodified_gmtが動かず、更新は12文書だった。"
+      },
+      "hub_state_after": {
+        "home": "新着4枚の先頭3枚が第2波",
+        "kitchen": "#dish-rack の棚が3枚から6枚",
+        "categories": "台所の記事 17本（比較10本・ガイド7本）",
+        "comparisons": "19本",
+        "updates": "2026-09-20 の内容更新が5本",
+        "follow_up_links": "750・751・752の末尾と、549・550から /dish-rack-with-dishwasher/ へ"
+      },
+      "note": "候補の対象は origin/main との差分で決まるため、候補Aで公開済みの6文書も鍵に含まれる(再送しても内容が同じなので本番は動かない)。"
+    },
+    "not_touched": [
+      "/small-space/ の「キッチンに置く」は第1波の3本のまま(第2波の3本は採寸の記事ではないため)",
+      "listing.card_image は6本とも null のまま"
+    ]
   }
 }
