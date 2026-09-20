@@ -129,6 +129,10 @@ EXPECTED_MEDIA = {
     "dish-rack-installation-measurement": set(),
     "slim-dish-rack-under-20cm": set(),
     "dish-rack-no-space": set(),
+    # next30 Wave 2 keeps the same withheld-photo rule as Wave 1.
+    "dish-rack-one-tier-vs-two-tier": set(),
+    "foldable-rack-vs-extendable-basket": set(),
+    "dish-rack-with-dishwasher": set(),
 }
 
 

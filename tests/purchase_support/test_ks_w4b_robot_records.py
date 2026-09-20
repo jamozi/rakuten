@@ -410,7 +410,8 @@ def test_content_treatment_record_covers_the_ledger_with_the_planned_judgements(
         by_treatment.setdefault(entry["treatment"], set()).add(entry["post_id"])
         assert entry["approval"]["state"] == "owner_review_pending"
     assert by_treatment.get("update") == {553, 549, 41, 86}
-    assert len(by_treatment.get("keep", set())) == 19
+    # next30 W1 added 750-752 and W2 added 766-768, all kept as their own questions.
+    assert len(by_treatment.get("keep", set())) == 22
     assert "merge_candidate" not in by_treatment and "new_candidate" not in by_treatment
     assert record["new_candidates"] == []
     assert record["model_diff_trial"]["state"] == "deferred"

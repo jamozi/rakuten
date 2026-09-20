@@ -391,8 +391,18 @@ def test_printed_japanese_is_quoted_as_the_maker_prints_it(bodies):
     # 5070 prints 「約」 on the size drawing only; the article keeps both spellings.
     assert "約55×約14.8×約3.5cm" in bodies[SLIM] or "約55" in bodies[SLIM]
     # 42666 prints no 段数 row, so the article never calls it a one-tier rack.
+    # Wave 2 wrote /dish-rack-one-tier-vs-two-tier/, whose question is exactly
+    # 「1段か2段か」; a link to it may carry that question in its label, because the
+    # label names an article and not a rack. Everywhere else the ban stands, so
+    # the link is cut out of the body before the check rather than exempted.
+    link = re.compile(
+        r'<a href="/dish-rack-one-tier-vs-two-tier/"[^>]*>[^<]*</a>'
+    )
     for slug in WAVE:
-        assert "1段" not in bodies[slug], f"{slug} prints no 段数 the maker does not"
+        outside_the_link = link.sub("", bodies[slug])
+        assert "1段" not in outside_the_link, (
+            f"{slug} prints no 段数 the maker does not"
+        )
 
 
 def test_quotations_match_the_tracked_catalog_when_the_wave_rows_land(bodies):

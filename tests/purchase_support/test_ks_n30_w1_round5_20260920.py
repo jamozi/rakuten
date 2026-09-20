@@ -135,7 +135,17 @@ def shipped(decisions: dict, ledger: dict[str, dict]) -> list[dict]:
     """The recorded articles that already have a row in the publication ledger."""
 
     rows = [row for row in decisions["articles"] if row["slug"] in ledger]
-    assert [row["article_id"] for row in rows] == ["A01", "A02", "A03"], rows
+    # W1 shipped A01-A03 on 2026-09-20; W2 added A04/A05/A07 to the ledger as
+    # unpublished rows in the same programme, so the shipped set is pinned as
+    # the union rather than widened to "whatever the ledger holds".
+    assert [row["article_id"] for row in rows] == [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A07",
+    ], rows
     return rows
 
 

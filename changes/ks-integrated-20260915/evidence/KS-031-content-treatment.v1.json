@@ -568,6 +568,54 @@
         "state": "owner_review_pending",
         "approved_at": null
       }
+    },
+    {
+      "article_key": "dish-rack-one-tier-vs-two-tier",
+      "post_id": 766,
+      "cluster": "dish-rack",
+      "question": "4314と5070を「1段か2段か」で選び分けられるか",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第2波の新規記事。公式が段数を印字しているのは5070だけで、その印字は「1段でも2段でも使える」。段数で選べないことを示し、両方の仕様表にある9行で比べる問いは、条件で絞る751とも方式を選ぶ752とも違う",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "foldable-rack-vs-extendable-basket",
+      "post_id": 767,
+      "cluster": "dish-rack",
+      "question": "折り畳み7835と伸縮3492を、掛かる条件で選び分ける",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第2波の新規記事。752が3方式の切り分けを持つのに対し、この記事は「シンクの上に渡す」「フチに掛ける」の2商品だけを、対応サイズ行の軸(奥行き／内寸)の違いで比べる",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dish-rack-with-dishwasher",
+      "post_id": 768,
+      "cluster": "dish-rack",
+      "question": "食洗機を使っていて、手洗いに残る分だけを置くならどれか",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第2波の新規記事。食洗機側の説明書が「洗えないもの」に挙げている行という、水切りラックの他記事が持たない前提を丸ごと扱う。42666は耐荷重も対応サイズも印字がないため対象外",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
     }
   ],
   "consolidation_checks": [
@@ -638,7 +686,7 @@
       41,
       86
     ],
-    "keep": 19,
+    "keep": 22,
     "merge_candidate": 0,
     "new_candidate": 0
   },

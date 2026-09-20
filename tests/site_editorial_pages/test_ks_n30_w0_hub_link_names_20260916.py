@@ -210,12 +210,20 @@ def test_a_post_this_wave_touched_either_cards_its_change_or_only_renamed_the_li
         ).splitlines()
         if path in by_source
     }
+    # The bodies wave 2 published on 2026-09-20 (posts 766/767/768). Pinned by
+    # name like wave 1's: a seventh added body still has to be accounted for.
+    w2_published_bodies = (
+        "dish-rack-one-tier-vs-two-tier",
+        "foldable-rack-vs-extendable-basket",
+        "dish-rack-with-dishwasher",
+    )
     # A body that did not exist at the base commit is not a link this wave
-    # renamed; it is an article a later wave wrote. Wave 0 added none and wave 1
-    # added the three bodies it published, so the added set has to be exactly
-    # those three plus the rows still waiting for their post id.
+    # renamed; it is an article a later wave wrote. Wave 0 added none, wave 1
+    # added the three bodies it published and wave 2 its own three, so the added
+    # set has to be exactly those six plus the rows still waiting for a post id.
     assert added == {
-        f"{ARTICLE_PREFIX}{slug}.html" for slug in W1_PUBLISHED_BODIES
+        f"{ARTICLE_PREFIX}{slug}.html"
+        for slug in W1_PUBLISHED_BODIES + w2_published_bodies
     } | {
         row["body_source"] for row in ledger.values() if row.get("mode") == "new"
     }, sorted(added)
@@ -226,7 +234,10 @@ def test_a_post_this_wave_touched_either_cards_its_change_or_only_renamed_the_li
         ).splitlines()
         if path in by_source and path not in added
     ]
-    assert len(changed) == 12, changed
+    # 12 after wave 1. Wave 2 put a link to /dish-rack-with-dishwasher/ into
+    # compact-dishwasher-comparison, which no earlier wave had touched, so the
+    # posts this branch changed rather than added are now 13.
+    assert len(changed) == 13, changed
 
     label_only = []
     for path in changed:

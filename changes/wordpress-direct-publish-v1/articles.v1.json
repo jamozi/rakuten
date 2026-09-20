@@ -1905,6 +1905,11 @@
             "date": "2026-09-16",
             "kind": "content",
             "summary": "冒頭の選び方を3枚のカードに整理し、説明書の設置余白を出典の種類ごとに分けた表を追加しました。公式仕様の表記に合わせ、扉を開いたときの寸法に「約」を付けました。"
+          },
+          {
+            "date": "2026-09-20",
+            "kind": "content",
+            "summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。"
           }
         ],
         "specification_checked_on": null,
@@ -1972,6 +1977,11 @@
             "date": "2026-09-16",
             "kind": "content",
             "summary": "13機種の扉を開いた奥行と乾燥方式を、折りたたみの中の表から主表へ移し、周囲の余白と出典の注記を開いたまま読めるようにしました。型番別の数値が対象とする機種を明記し、公式仕様の表記に合わせて扉を開いたときの寸法に「約」を付けました。NP-TSK2の扉を開いた奥行は、公式仕様の＜上433,下362＞に合わせて2つとも載せています。設置の目安62cm以上は公式の設置案内の図の表記どおり「約」を外し、出典を注記に加えました。"
+          },
+          {
+            "date": "2026-09-20",
+            "kind": "content",
+            "summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。"
           }
         ],
         "specification_checked_on": null,
@@ -2226,7 +2236,13 @@
         "published_at_gmt": "2026-09-20T03:33:04Z",
         "published_on": "2026-09-20",
         "home_order": null,
-        "change_log": [],
+        "change_log": [
+          {
+            "date": "2026-09-20",
+            "kind": "correction",
+            "summary": "7835の出典の書き方を直しました。「仕様・サイズ」表の行として品番・カラーを数えていましたが、この2つは商品名の下と購入欄の表示で、表の行は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行です。あわせて、条件に入る候補が絞れたあとの読み先(1段か2段か・折り畳みと伸縮・食洗機との併用)を追記しました。"
+          }
+        ],
         "specification_checked_on": null,
         "sales_checked_at": null
       },
@@ -2292,7 +2308,13 @@
         "published_at_gmt": "2026-09-20T03:33:00Z",
         "published_on": "2026-09-20",
         "home_order": null,
-        "change_log": [],
+        "change_log": [
+          {
+            "date": "2026-09-20",
+            "kind": "content",
+            "summary": "4314と5070で迷うときの読み先と、食洗機を使っている場合の読み先を追記しました。"
+          }
+        ],
         "specification_checked_on": null,
         "sales_checked_at": null
       },
@@ -2348,7 +2370,13 @@
         "published_at_gmt": "2026-09-20T03:32:56Z",
         "published_on": "2026-09-20",
         "home_order": null,
-        "change_log": [],
+        "change_log": [
+          {
+            "date": "2026-09-20",
+            "kind": "content",
+            "summary": "シンクの上に渡す・フチに掛ける方式で7835と3492のどちらかを選ぶときの読み先と、食洗機を使っている場合の読み先を追記しました。"
+          }
+        ],
         "specification_checked_on": null,
         "sales_checked_at": null
       },
@@ -2366,6 +2394,174 @@
         "next_question": {
           "question": "置き場所の寸法から確かめる？",
           "target": "dish-rack-installation-measurement",
+          "anchor": "",
+          "status": "live"
+        }
+      }
+    },
+    {
+      "article_key": "dish-rack-one-tier-vs-two-tier",
+      "mode": "existing",
+      "post_id": 766,
+      "post_type": "post",
+      "slug": "dish-rack-one-tier-vs-two-tier",
+      "title": "水切りラックは1段か2段か｜4314と5070",
+      "excerpt": "山崎実業4314と5070は「1段か2段か」では分かれません。段数を印字しているのは5070だけで、商品名・紹介見出し・紹介本文は「2段」、「商品説明」1枚目のキャプションは「1段でも2段でも使える」です。4314の公式ページに「段」の語はありません。両方の仕様表に同じ行がある9行と、片方にしかない3行を並べます。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dish-rack-one-tier-vs-two-tier.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "1段か2段かで選べるかを見る",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 2,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "tier-compare",
+        "offers_anchor": null,
+        "card_image": null,
+        "published_at_gmt": "2026-09-20T06:54:28Z",
+        "published_on": "2026-09-20",
+        "home_order": null,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "head_to_head",
+        "primary_intent": "4314と5070を「1段か2段か」で選び分けられるのかを確かめたい",
+        "reader": "水切りラックの段数で迷っている人",
+        "decision_after_reading": "段数以外のどの印字で2商品を選び分けるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "",
+          "label": "置けるかどうかを先に測る"
+        },
+        "next_question": {
+          "question": "短辺20cm以下のすき間で3商品を見る？",
+          "target": "slim-dish-rack-under-20cm",
+          "anchor": "",
+          "status": "live"
+        }
+      }
+    },
+    {
+      "article_key": "foldable-rack-vs-extendable-basket",
+      "mode": "existing",
+      "post_id": 767,
+      "post_type": "post",
+      "slug": "foldable-rack-vs-extendable-basket",
+      "title": "折り畳み7835と伸縮3492｜掛かる条件で選ぶ",
+      "excerpt": "7835の「対応サイズ」行は「奥行き：54cm以下のシンク」、3492の同じ行は「シンク内寸37cm〜47cm」。測る場所も条件の形も違うため、片方の数字でもう片方は判定できません。収納したときの寸法は2商品とも印字がなく、場所の空けやすさは比べません。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/foldable-rack-vs-extendable-basket.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "折り畳みと伸縮を条件で比べる",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 2,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "hold-compare",
+        "offers_anchor": null,
+        "card_image": null,
+        "published_at_gmt": "2026-09-20T06:54:24Z",
+        "published_on": "2026-09-20",
+        "home_order": null,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "シンクの上に渡す7835とフチに掛ける3492の、どちらが自宅のシンクに掛かるかを決めたい",
+        "reader": "シンクに渡す・フチに掛ける方式まで絞り込んだ人",
+        "decision_after_reading": "シンクのどこを測り、どちらの「対応サイズ」行に当てはめるか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "guide-steps",
+          "label": "置き場所の寸法から確かめる"
+        },
+        "next_question": {
+          "question": "置く場所そのものが取れない？",
+          "target": "dish-rack-no-space",
+          "anchor": "",
+          "status": "live"
+        }
+      }
+    },
+    {
+      "article_key": "dish-rack-with-dishwasher",
+      "mode": "existing",
+      "post_id": 768,
+      "post_type": "post",
+      "slug": "dish-rack-with-dishwasher",
+      "title": "食洗機と水切りラックの併用｜手洗い分だけ置く",
+      "excerpt": "卓上食洗機を台に置いたまま手洗い分だけを載せる場合に、公式が「耐荷重」行と「対応サイズ」行の両方を印字している山崎実業4商品を、その2行だけで並べます。対応サイズはどれもシンクの条件で、台の条件を印字した商品はありません。下村企販42666は2行ともないため扱いません。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dish-rack-with-dishwasher.html",
+      "listing": {
+        "state": "published",
+        "role": "comparison",
+        "category": "kitchen",
+        "short_title": "食洗機と併用する分だけ置く",
+        "task_label": null,
+        "main_label": "主比較",
+        "main_count": 4,
+        "reference_count": 0,
+        "reference_label": null,
+        "reference_unit": null,
+        "comparison_anchor": "with-dishwasher",
+        "offers_anchor": null,
+        "card_image": null,
+        "published_at_gmt": "2026-09-20T06:54:18Z",
+        "published_on": "2026-09-20",
+        "home_order": null,
+        "change_log": [],
+        "specification_checked_on": null,
+        "sales_checked_at": null
+      },
+      "reader_role": {
+        "page_kind": "condition_comparison",
+        "primary_intent": "食洗機を置いたまま手洗い分だけを載せる水切りラックを選びたい",
+        "reader": "卓上食洗機を使っている人",
+        "decision_after_reading": "自分のシンクの語で条件に入るのはどれか",
+        "main_cta": {
+          "kind": "internal",
+          "target": "dish-rack-installation-measurement",
+          "anchor": "",
+          "label": "置けるかどうかは6か所を測ってから決める"
+        },
+        "next_question": {
+          "question": "食洗機の置き場所は足りている？",
+          "target": "dishwasher-installation-measurement",
           "anchor": "",
           "status": "live"
         }

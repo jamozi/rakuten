@@ -68,7 +68,11 @@ def test_the_record_files_exist() -> None:
     products = json.loads(CATALOG.read_text(encoding="utf-8"))
     assert len(products) == 17, len(products)
     facts = sum(len(product["facts"]) for product in products)
-    assert facts == 284, facts
+    # 284 facts were verified for the programme on 2026-09-16. Wave 2 re-read
+    # four maker pages on 2026-09-20 and recorded six printed things the first
+    # pass had not: the 5070 tier captions, each rack's spec-table row list and
+    # where 品番 and カラー are really printed.
+    assert facts == 290, facts
     recorded = document["product_catalog"]
     assert recorded["products"] == 17 and recorded["facts"] == 284, recorded
     # The candidate is imported one wave at a time (PURCHASE_UNUSED_PRODUCT keeps a

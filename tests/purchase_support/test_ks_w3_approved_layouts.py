@@ -639,18 +639,28 @@ def published_documents() -> dict[str, set[str]]:
     return documents
 
 
+#: The commit of *main* that carries what the 2026-09-17 W0 candidate put in
+#: front of readers: 「暮らしのしるべ: KS next30 W0」 (PR #294), the counterpart of
+#: ``ks_w4_batch.PUBLISHED_COMMIT`` for that publish.
+W0_PUBLISHED_COMMIT = "6b1ad534f662418a555a5d911a7bf6efcd07440e"
+
+
 def body_a_reader_can_open(slug: str, candidate: str) -> bytes:
     """The bytes the named candidate put in front of readers.
 
     The 2026-09-16 batch is read from the commit that carried it to main
-    (``ks_w4_batch.PUBLISHED_COMMIT``). The 2026-09-17 W0 candidate published
-    from its own wave branch, which no clone of main has to carry, so its bodies
-    are read from the tracked files this tree holds: the publish read this very
-    ledger and the record names the tree it sent (``published.tree``). Once W0
-    reaches main, pin this to that commit the way the W4 line is pinned.
+    (``ks_w4_batch.PUBLISHED_COMMIT``); the 2026-09-17 W0 candidate from the
+    commit that carried *it* (``W0_PUBLISHED_COMMIT``, PR #294). Neither is read
+    from the working tree, because the tree carries the *next* candidate --
+    next30 W2 regenerated standard-dishwasher-comparison with a new snapshot id
+    -- and reading the tree would turn a record that is still exactly right into
+    a red rule, one that could only be quieted by rewriting the owner's
+    acceptance. A missing object raises; it never skips.
     """
     if candidate == next30_publish()["candidate_id"]:
-        return (ks_w4_batch.ARTICLES / f"{slug}.html").read_bytes()
+        return ks_w4_batch.blob(
+            W0_PUBLISHED_COMMIT, f"{ks_w4_batch.ARTICLE_PREFIX}{slug}.html"
+        )
     return ks_w4_batch.published_body(slug)
 
 

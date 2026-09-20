@@ -53,6 +53,9 @@ WRITTEN_BY_THE_RENDERER = frozenset(
     {
         "dish-rack-installation-measurement",
         "dish-rack-no-space",
+        "dish-rack-one-tier-vs-two-tier",
+        "dish-rack-with-dishwasher",
+        "foldable-rack-vs-extendable-basket",
         "slim-dish-rack-under-20cm",
     }
 )
@@ -100,13 +103,13 @@ def disclosure_text(body: str) -> str | None:
 def test_the_kitchen_shelf_holds_the_articles_this_sentence_covers(
     ledger,
 ) -> None:
-    """The sentence is about a known shelf: fourteen articles, eight with no ads."""
+    """The sentence is about a known shelf: seventeen articles, eleven with no ads."""
     keys = kitchen_articles(ledger)
-    assert len(keys) == 14, keys
+    assert len(keys) == 17, keys
     documents = projection.reader_documents()
     with_ads = [key for key in keys if carries_advertising(documents[key])]
     assert len(with_ads) == 6, with_ads
-    assert len(keys) - len(with_ads) == 8
+    assert len(keys) - len(with_ads) == 11
 
 
 def test_every_kitchen_article_with_advertising_says_so_inside_the_article(

@@ -684,13 +684,18 @@
       "has_ads": true,
       "published_at": "2026-09-13T10:57:35Z",
       "published_on": "2026-09-13",
-      "updated_on": "2026-09-16",
-      "change_summary": "冒頭の選び方を3枚のカードに整理し、説明書の設置余白を出典の種類ごとに分けた表を追加しました。公式仕様の表記に合わせ、扉を開いたときの寸法に「約」を付けました。",
+      "updated_on": "2026-09-20",
+      "change_summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。",
       "change_log": [
         {
           "date": "2026-09-16",
           "kind": "content",
           "summary": "冒頭の選び方を3枚のカードに整理し、説明書の設置余白を出典の種類ごとに分けた表を追加しました。公式仕様の表記に合わせ、扉を開いたときの寸法に「約」を付けました。"
+        },
+        {
+          "date": "2026-09-20",
+          "kind": "content",
+          "summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。"
         }
       ],
       "specification_checked_on": null,
@@ -738,13 +743,18 @@
       "has_ads": true,
       "published_at": "2026-09-13T10:58:27Z",
       "published_on": "2026-09-13",
-      "updated_on": "2026-09-16",
-      "change_summary": "13機種の扉を開いた奥行と乾燥方式を、折りたたみの中の表から主表へ移し、周囲の余白と出典の注記を開いたまま読めるようにしました。型番別の数値が対象とする機種を明記し、公式仕様の表記に合わせて扉を開いたときの寸法に「約」を付けました。NP-TSK2の扉を開いた奥行は、公式仕様の＜上433,下362＞に合わせて2つとも載せています。設置の目安62cm以上は公式の設置案内の図の表記どおり「約」を外し、出典を注記に加えました。",
+      "updated_on": "2026-09-20",
+      "change_summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。",
       "change_log": [
         {
           "date": "2026-09-16",
           "kind": "content",
           "summary": "13機種の扉を開いた奥行と乾燥方式を、折りたたみの中の表から主表へ移し、周囲の余白と出典の注記を開いたまま読めるようにしました。型番別の数値が対象とする機種を明記し、公式仕様の表記に合わせて扉を開いたときの寸法に「約」を付けました。NP-TSK2の扉を開いた奥行は、公式仕様の＜上433,下362＞に合わせて2つとも載せています。設置の目安62cm以上は公式の設置案内の図の表記どおり「約」を外し、出典を注記に加えました。"
+        },
+        {
+          "date": "2026-09-20",
+          "kind": "content",
+          "summary": "食洗機を置いたあと、手洗いに残る分を載せる水切りラックの記事への案内を追記しました。"
         }
       ],
       "specification_checked_on": null,
@@ -908,9 +918,15 @@
       "has_ads": false,
       "published_at": "2026-09-20T03:33:04Z",
       "published_on": "2026-09-20",
-      "updated_on": null,
-      "change_summary": null,
-      "change_log": [],
+      "updated_on": "2026-09-20",
+      "change_summary": "7835の出典の書き方を直しました。「仕様・サイズ」表の行として品番・カラーを数えていましたが、この2つは商品名の下と購入欄の表示で、表の行は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行です。あわせて、条件に入る候補が絞れたあとの読み先(1段か2段か・折り畳みと伸縮・食洗機との併用)を追記しました。",
+      "change_log": [
+        {
+          "date": "2026-09-20",
+          "kind": "correction",
+          "summary": "7835の出典の書き方を直しました。「仕様・サイズ」表の行として品番・カラーを数えていましたが、この2つは商品名の下と購入欄の表示で、表の行は商品サイズ・商品重量・対応サイズ・品質表示・生産国・耐荷重の6行です。あわせて、条件に入る候補が絞れたあとの読み先(1段か2段か・折り畳みと伸縮・食洗機との併用)を追記しました。"
+        }
+      ],
       "specification_checked_on": null,
       "sales_checked_at": null
     },
@@ -941,9 +957,15 @@
       "has_ads": false,
       "published_at": "2026-09-20T03:33:00Z",
       "published_on": "2026-09-20",
-      "updated_on": null,
-      "change_summary": null,
-      "change_log": [],
+      "updated_on": "2026-09-20",
+      "change_summary": "4314と5070で迷うときの読み先と、食洗機を使っている場合の読み先を追記しました。",
+      "change_log": [
+        {
+          "date": "2026-09-20",
+          "kind": "content",
+          "summary": "4314と5070で迷うときの読み先と、食洗機を使っている場合の読み先を追記しました。"
+        }
+      ],
       "specification_checked_on": null,
       "sales_checked_at": null
     },
@@ -975,6 +997,110 @@
       "home_order": null,
       "has_ads": false,
       "published_at": "2026-09-20T03:32:56Z",
+      "published_on": "2026-09-20",
+      "updated_on": "2026-09-20",
+      "change_summary": "シンクの上に渡す・フチに掛ける方式で7835と3492のどちらかを選ぶときの読み先と、食洗機を使っている場合の読み先を追記しました。",
+      "change_log": [
+        {
+          "date": "2026-09-20",
+          "kind": "content",
+          "summary": "シンクの上に渡す・フチに掛ける方式で7835と3492のどちらかを選ぶときの読み先と、食洗機を使っている場合の読み先を追記しました。"
+        }
+      ],
+      "specification_checked_on": null,
+      "sales_checked_at": null
+    },
+    "dish-rack-one-tier-vs-two-tier": {
+      "article_key": "dish-rack-one-tier-vs-two-tier",
+      "slug": "dish-rack-one-tier-vs-two-tier",
+      "post_id": 766,
+      "title": "水切りラックは1段か2段か｜4314と5070",
+      "excerpt": "山崎実業4314と5070は「1段か2段か」では分かれません。段数を印字しているのは5070だけで、商品名・紹介見出し・紹介本文は「2段」、「商品説明」1枚目のキャプションは「1段でも2段でも使える」です。4314の公式ページに「段」の語はありません。両方の仕様表に同じ行がある9行と、片方にしかない3行を並べます。",
+      "category": "kitchen",
+      "role": "comparison",
+      "short_title": "1段か2段かで選べるかを見る",
+      "task_label": null,
+      "main_label": "主比較",
+      "comparison_count": 2,
+      "reference_count": 0,
+      "reference_label": null,
+      "reference_unit": null,
+      "models": [
+        "4314",
+        "5070"
+      ],
+      "comparison_anchor": "tier-compare",
+      "offers_anchor": null,
+      "card_image": null,
+      "home_order": null,
+      "has_ads": false,
+      "published_at": "2026-09-20T06:54:28Z",
+      "published_on": "2026-09-20",
+      "updated_on": null,
+      "change_summary": null,
+      "change_log": [],
+      "specification_checked_on": null,
+      "sales_checked_at": null
+    },
+    "foldable-rack-vs-extendable-basket": {
+      "article_key": "foldable-rack-vs-extendable-basket",
+      "slug": "foldable-rack-vs-extendable-basket",
+      "post_id": 767,
+      "title": "折り畳み7835と伸縮3492｜掛かる条件で選ぶ",
+      "excerpt": "7835の「対応サイズ」行は「奥行き：54cm以下のシンク」、3492の同じ行は「シンク内寸37cm〜47cm」。測る場所も条件の形も違うため、片方の数字でもう片方は判定できません。収納したときの寸法は2商品とも印字がなく、場所の空けやすさは比べません。",
+      "category": "kitchen",
+      "role": "comparison",
+      "short_title": "折り畳みと伸縮を条件で比べる",
+      "task_label": null,
+      "main_label": "主比較",
+      "comparison_count": 2,
+      "reference_count": 0,
+      "reference_label": null,
+      "reference_unit": null,
+      "models": [
+        "7835",
+        "3492"
+      ],
+      "comparison_anchor": "hold-compare",
+      "offers_anchor": null,
+      "card_image": null,
+      "home_order": null,
+      "has_ads": false,
+      "published_at": "2026-09-20T06:54:24Z",
+      "published_on": "2026-09-20",
+      "updated_on": null,
+      "change_summary": null,
+      "change_log": [],
+      "specification_checked_on": null,
+      "sales_checked_at": null
+    },
+    "dish-rack-with-dishwasher": {
+      "article_key": "dish-rack-with-dishwasher",
+      "slug": "dish-rack-with-dishwasher",
+      "post_id": 768,
+      "title": "食洗機と水切りラックの併用｜手洗い分だけ置く",
+      "excerpt": "卓上食洗機を台に置いたまま手洗い分だけを載せる場合に、公式が「耐荷重」行と「対応サイズ」行の両方を印字している山崎実業4商品を、その2行だけで並べます。対応サイズはどれもシンクの条件で、台の条件を印字した商品はありません。下村企販42666は2行ともないため扱いません。",
+      "category": "kitchen",
+      "role": "comparison",
+      "short_title": "食洗機と併用する分だけ置く",
+      "task_label": null,
+      "main_label": "主比較",
+      "comparison_count": 4,
+      "reference_count": 0,
+      "reference_label": null,
+      "reference_unit": null,
+      "models": [
+        "4314",
+        "5070",
+        "7835",
+        "3492"
+      ],
+      "comparison_anchor": "with-dishwasher",
+      "offers_anchor": null,
+      "card_image": null,
+      "home_order": null,
+      "has_ads": false,
+      "published_at": "2026-09-20T06:54:18Z",
       "published_on": "2026-09-20",
       "updated_on": null,
       "change_summary": null,
