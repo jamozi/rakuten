@@ -55,7 +55,12 @@
           "before": "食洗機の選び方・比較",
           "after": "台所の道具の選び方・比較",
           "excerpt_before": "食洗機を洗う量と給水方法から選ぶ入口。容量別の比較と、設置・機能・費用の確認へ案内します。",
-          "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
+          "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。",
+          "excerpt_revised": {
+            "in": "W1-B",
+            "excerpt_after": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機と水切りラックで、容量別の比較と、設置・給水・洗剤・費用のガイド、水切りラックの置き方・比較・採寸へ案内します。",
+            "why": "DF02。W1-A で水切りラックの3本が台所の棚に載ったので、W0 が書いた「いま掲載しているのは卓上食洗機で」が偽になった。W0 の excerpt_after はそのまま W0 が書いた値として残す。"
+          }
         },
         "cleaning": {
           "before": "ロボット掃除機の選び方・比較",
@@ -1253,6 +1258,15 @@
       "where_quote": {
         "changes/reader-purchase-support-v1/articles/kitchen.html": "いま掲載しているのは卓上食洗機です。",
         "changes/site-improvements-20260913/entry-pages.v1.json": "いまは卓上食洗機。"
+      },
+      "applied_in": {
+        "wave": "W1",
+        "candidate": "B",
+        "prepared_on": "2026-09-20"
+      },
+      "where_quote_after": {
+        "changes/reader-purchase-support-v1/articles/kitchen.html": "いま掲載しているのは卓上食洗機と水切りラックです。",
+        "changes/site-improvements-20260913/entry-pages.v1.json": "いまは卓上食洗機と水切りラック。"
       }
     },
     {
@@ -1332,6 +1346,14 @@
       "why": "home・categories・comparisons は同じ記事の束を「台所」「掃除」と呼ぶのに、134 の棚見出しだけが「食洗機」「掃除機」のまま。W0-A は 19 documents＋テーマ＝20 で上限ちょうどなので、この波では 134 を足せない（足すと 21）。方針ページの改定内容はこの面を名乗らないように直したので、読者向けの文と記録は食い違わない。W1-B は同じ一覧 4 本（home・categories・updates・comparisons）と悩み別の small-space を持つ最初の未公開候補で、134 を足しても 9＋テーマ＝10 で枠に収まる。",
       "where_quote": {
         "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>食洗機</h2>"
+      },
+      "applied_in": {
+        "wave": "W1",
+        "candidate": "B",
+        "prepared_on": "2026-09-20"
+      },
+      "where_quote_after": {
+        "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html": "<h2>台所</h2><div class=\"ks-editorial-table ks-readable-scroll\" role=\"region\" aria-label=\"台所の手入れと部品\""
       }
     }
   ],

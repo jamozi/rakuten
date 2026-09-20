@@ -51,8 +51,9 @@ REWRITTEN_BY_THIS_WAVE = (
     "solota-vs-rakua-mini-plus",
 )
 
-#: next30 Wave 1 (2026-09-17): bodies generated, post ids not minted yet, so
-#: the theme cannot be asked which sheets they get.
+#: next30 Wave 1: published 2026-09-20 as 750 / 751 / 752, so the theme can be
+#: asked which sheets they get. They keep their own measurement because the
+#: control below reads the same bodies under theme.css alone.
 AWAITING_PUBLICATION = (
     "dish-rack-installation-measurement",
     "slim-dish-rack-under-20cm",
@@ -197,11 +198,10 @@ def rendered(stylesheets, tmp_path_factory) -> dict[str, dict]:
 def rendered_before_publication(stylesheets, tmp_path_factory) -> dict[str, dict]:
     """The wave-1 bodies under the sheets they get, and under theme.css alone."""
     rows = {row["article_key"]: row for row in ledger_rows()}
-    sheets = stylesheets[SHEET_REFERENCE]
     plan = {}
     for key in AWAITING_PUBLICATION:
         body = rows[key]["body_source"]
-        plan[key] = {"sheets": sheets, "body": body}
+        plan[key] = {"sheets": stylesheets[key], "body": body}
         plan[key + UNSTYLED] = {"sheets": ["theme.css"], "body": body}
     return measure(plan, tmp_path_factory, "navigation-wave-one")
 
@@ -262,18 +262,25 @@ def test_the_navigation_of_a_post_outside_the_runtime_is_styled_by_the_theme(
 def test_the_rows_awaiting_publication_read_as_separate_links(
     stylesheets, rendered_before_publication
 ) -> None:
-    """Wave 1's three bodies, measured against the sheets publication will give them.
+    """Wave 1's three bodies, measured under the sheets the theme enqueues for them.
 
-    They are not in `published_posts()` yet, so nothing else here reads them. The
-    second half is the control: the same body under theme.css alone -- 552's
-    condition -- has to run together, or a green first half would only mean the
-    measurement stopped looking.
+    They are published now (750 / 751 / 752), so the theme is asked for their own
+    sheets instead of borrowing the reference article's, and each one is pinned to
+    the same three sheets. The second half is the control: the same body under
+    theme.css alone -- 552's condition -- has to run together, or a green first
+    half would only mean the measurement stopped looking.
     """
     assert stylesheets[SHEET_REFERENCE] == [
         "theme.css",
         "editorial-v2.css",
         "purchase-support.css",
     ], stylesheets[SHEET_REFERENCE]
+    for key in AWAITING_PUBLICATION:
+        assert stylesheets[key] == [
+            "theme.css",
+            "editorial-v2.css",
+            "purchase-support.css",
+        ], (key, stylesheets[key])
     joined, measured, unstyled = [], set(), set()
     for slug, width, nav in navigations(rendered_before_publication):
         for pair in nav["pairs"]:

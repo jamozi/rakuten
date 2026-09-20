@@ -1,23 +1,25 @@
-"""next30 Wave 1 (2026-09-17): the three dish-rack rows enter the ledger unpublished.
+"""next30 Wave 1 (2026-09-17): the three dish-rack rows carry their publication identity.
 
-A new article reaches the site in two candidates, and this file pins the first
-one. The owner-direct publisher is the only thing that can mint a post id, so a
-row for an article nobody has published yet has to say so: ``mode:"new"`` with
-``post_id`` still null. Everything a listing carries — the hub card, the count
-on /comparisons/, the published date — is a claim about a post that exists, so
-a row in that state carries no ``listing`` at all. Writing one anyway is not a
-harmless placeholder: ``metadata`` raises ``LEDGER_IDENTITY_STALE`` for a
-``mode:"new"`` row whose listing says published (site_editorial_pages.py:367),
-and every generated hub would otherwise link a URL that 404s.
+A new article reaches the site in two candidates, and this file now pins the
+second one. The owner-direct publisher is the only thing that can mint a post
+id, and on 2026-09-20 it minted three: 750, 751 and 752. A row that holds one
+says so — ``mode:"existing"`` with the id — and only such a row may carry a
+``listing``, because everything a listing carries — the hub card, the count on
+/comparisons/, the published date — is a claim about a post that exists.
+Writing one on a row that still has no id is not a harmless placeholder:
+``metadata`` raises ``LEDGER_IDENTITY_STALE`` for a ``mode:"new"`` row whose
+listing says published (site_editorial_pages.py:370), and every generated hub
+would otherwise link a URL that 404s. The negative control below still proves
+that guard, on a copied row instead of on the three that are now live.
 
 So the invariant this wave has to hold is narrow and testable: the three rows
 exist, they are complete enough for the publisher and for ``validate_reader_roles``
 (which checks identity for every row and link targets only for published ones),
 their bodies exist on disk where ``load_bodies`` reads them, and the projection
-the hubs are built from does not grow by a single entry. The second candidate,
-after the post ids exist, is what turns them into ``mode:"existing"`` rows with a
-full listing; until then /home/, /categories/, /comparisons/, /guides/ and
-/updates/ must look exactly as they did at the wave's base commit.
+the hubs are built from grows by exactly these three entries and no others —
+the 20 posts that were public at the wave's base commit keep their publication
+and the post id each already had, so /home/, /categories/, /comparisons/,
+/guides/ and /updates/ gained the three dish-rack articles and lost nothing.
 """
 
 from __future__ import annotations
@@ -42,7 +44,43 @@ BODY_DIRECTORY = "changes/wordpress-direct-publish-v1/articles"
 FULL_TAXONOMIES = {"category": [5], "post_format": [], "post_tag": []}
 # The 20 posts that were public at the wave's base commit (cd8c6eec).
 PUBLISHED_POSTS_AT_BASE = 20
+# The ids the owner-direct publisher minted for the three on 2026-09-20.
+POST_IDS = {
+    "dish-rack-installation-measurement": 750,
+    "slim-dish-rack-under-20cm": 751,
+    "dish-rack-no-space": 752,
+}
 
+# (state, role, category, task_label, main_count, comparison_anchor, published_at_gmt)
+LISTINGS = {
+    "dish-rack-installation-measurement": (
+        "published",
+        "guide",
+        "kitchen",
+        "水切りラックを置けるか測る",
+        0,
+        None,
+        "2026-09-20T03:33:04Z",
+    ),
+    "slim-dish-rack-under-20cm": (
+        "published",
+        "comparison",
+        "kitchen",
+        None,
+        3,
+        "slim-compare",
+        "2026-09-20T03:33:00Z",
+    ),
+    "dish-rack-no-space": (
+        "published",
+        "comparison",
+        "kitchen",
+        None,
+        5,
+        "rack-methods",
+        "2026-09-20T03:32:56Z",
+    ),
+}
 TITLES = {
     "dish-rack-installation-measurement": "水切りラックを置けるか測る｜シンク・脚・蛇口の確認",
     "slim-dish-rack-under-20cm": "短辺20cm以下のすき間に据え置く水切りラック3商品を比べる",
@@ -115,29 +153,66 @@ READER_ROLES = {
     },
 }
 
+# The 20 posts public at the base commit, with the id each already had.
+BASE_PUBLISHED_POSTS = {
+    "carry-on-suitcase-comparison": 19,
+    "carry-on-suitcase-under-100-seats": 82,
+    "lightweight-carry-on-suitcase-under-3kg": 83,
+    "front-open-carry-on-suitcase-with-stopper": 84,
+    "countertop-dishwasher-for-small-households": 41,
+    "solota-vs-rakua-mini-plus": 86,
+    "dishwasher-installation-measurement": 262,
+    "dishwasher-water-supply-methods": 263,
+    "dishwasher-detergent-guide": 264,
+    "dishwasher-cleaning-guide": 265,
+    "dishwasher-running-cost": 266,
+    "compact-robot-vacuum-shortlist": 30,
+    "roomba-mini-vs-switchbot-k11-pro": 85,
+    "portable-power-station-guide": 28,
+    "anker-solix-c300-c800-c1000-differences": 29,
+    "compact-dishwasher-comparison": 549,
+    "standard-dishwasher-comparison": 550,
+    "large-dishwasher-comparison": 551,
+    "dishwasher-branch-faucet-guide": 552,
+    "small-carry-on-suitcase-comparison": 553,
+}
+
 
 class WaveOneLedgerRows(unittest.TestCase):
     def setUp(self):
         self.data, self.registry, self.catalog = builder.load_inputs()
         self.rows = {row["article_key"]: row for row in self.registry["articles"]}
 
-    def test_the_three_rows_are_new_posts_without_a_publication_identity(self):
+    def test_the_three_rows_carry_the_post_id_the_publisher_minted(self):
         for key in WAVE_ONE:
             with self.subTest(key=key):
                 row = self.rows[key]
                 self.assertEqual(
                     (row["mode"], row["post_id"], row["post_type"], row["slug"]),
-                    ("new", None, "post", key),
+                    ("existing", POST_IDS[key], "post", key),
                 )
                 self.assertEqual(row["title"], TITLES[key])
                 self.assertTrue(row["excerpt"].strip())
                 self.assertEqual(row["taxonomies"], FULL_TAXONOMIES)
 
-    def test_an_unpublished_row_carries_no_listing(self):
-        """A listing is a claim about a post that exists; these posts do not yet."""
+    def test_a_published_row_carries_the_listing_its_post_earned(self):
+        """A listing is a claim about a post that exists; these three now do."""
         for key in WAVE_ONE:
             with self.subTest(key=key):
-                self.assertNotIn("listing", self.rows[key])
+                listing = self.rows[key]["listing"]
+                self.assertEqual(
+                    (
+                        listing["state"],
+                        listing["role"],
+                        listing["category"],
+                        listing["task_label"],
+                        listing["main_count"],
+                        listing["comparison_anchor"],
+                        listing["published_at_gmt"],
+                    ),
+                    LISTINGS[key],
+                )
+                self.assertEqual(listing["change_log"], [])
 
     def test_the_body_the_row_names_is_generated_and_present(self):
         for key in WAVE_ONE:
@@ -176,33 +251,44 @@ class WaveOneLedgerRows(unittest.TestCase):
         intents = [row["reader_role"]["primary_intent"] for row in self.registry["articles"]]
         self.assertEqual(len(intents), len(set(intents)))
 
-    def test_the_projection_the_hubs_read_does_not_grow(self):
-        """Regression: the first candidate publishes bodies, never a listing entry."""
+    def test_the_projection_the_hubs_read_grows_by_exactly_the_three(self):
+        """Regression: the second candidate adds these three listings and no others."""
         bodies = builder.load_bodies(self.registry)
         meta = editorial.metadata(self.registry, self.catalog, self.data, bodies)
-        self.assertEqual(len(meta), PUBLISHED_POSTS_AT_BASE)
+        self.assertEqual(len(meta), PUBLISHED_POSTS_AT_BASE + len(WAVE_ONE))
         for key in WAVE_ONE:
             with self.subTest(key=key):
-                self.assertNotIn(key, meta)
-                self.assertFalse(editorial.is_published(self.rows[key]))
+                self.assertIn(key, meta)
+                self.assertEqual(meta[key]["post_id"], POST_IDS[key])
+                self.assertTrue(editorial.is_published(self.rows[key]))
 
     def test_a_published_listing_on_a_new_row_is_refused(self):
-        """Negative control: the stale-identity guard is what makes 'no listing' safe."""
+        """Negative control: the stale-identity guard is what binds listing to post id.
+
+        Proved on a copy of a live row — same valid published listing, no minted
+        id — so the three rows the hubs now read stay exactly as published.
+        """
         registry = copy.deepcopy(self.registry)
-        row = next(r for r in registry["articles"] if r["article_key"] == WAVE_ONE[0])
-        row["listing"] = {"state": "published"}
+        row = copy.deepcopy(self.rows[WAVE_ONE[0]])
+        row["article_key"] = row["slug"] = WAVE_ONE[0] + "-unminted-copy"
+        row["mode"] = "new"
+        row["post_id"] = None
+        registry["articles"].append(row)
         bodies = builder.load_bodies(registry)
         with self.assertRaisesRegex(ValueError, "LEDGER_IDENTITY_STALE"):
             editorial.metadata(registry, self.catalog, self.data, bodies)
 
     def test_the_published_articles_of_the_base_commit_are_untouched(self):
         published = {
-            row["article_key"]
+            row["article_key"]: row["post_id"]
             for row in self.registry["articles"]
             if row["post_type"] == "post" and editorial.is_published(row)
         }
-        self.assertEqual(len(published), PUBLISHED_POSTS_AT_BASE)
-        self.assertTrue(published.isdisjoint(WAVE_ONE))
+        self.assertEqual(len(published), PUBLISHED_POSTS_AT_BASE + len(WAVE_ONE))
+        self.assertEqual(
+            {key: pid for key, pid in published.items() if key not in WAVE_ONE},
+            BASE_PUBLISHED_POSTS,
+        )
 
 
 if __name__ == "__main__":

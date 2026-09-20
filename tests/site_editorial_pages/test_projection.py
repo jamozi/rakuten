@@ -216,14 +216,43 @@ class ProjectionTest(unittest.TestCase):
         self.assertNotIn("AI編集イメージ・実物写真ではありません", home)
         self.assertNotIn("hb.afl.rakuten.co.jp", home)
         self.assertIn("/comparison-policy/", home)
-        recent_images = re.findall(
-            r'<a class="ks-recent-image" href="[^"]+"><img src="([^"]+)"', home
+        import json
+
+        from raos.application.editorial.site_editorial_pages import HOME_CATEGORIES
+
+        recent_cards = re.findall(
+            r'<a class="ks-recent-image" href="/([^/"]+)/"><img src="([^"]+)"'
+            r' width="\d+" height="\d+" alt="([^"]+)"',
+            home,
         )
-        self.assertEqual(len(recent_images), 4)
-        self.assertEqual(len(set(recent_images)), 4)
-        self.assertTrue(
-            all(src.startswith("/wp-content/themes/") for src in recent_images)
-        )
+        self.assertEqual(len(recent_cards), 4)
+        registry = json.loads((ROOT / builder.INPUT_PATHS[1]).read_text())
+        category = {
+            r["slug"]: r["listing"]["category"]
+            for r in registry["articles"]
+            if "listing" in r
+        }
+        caption = dict(HOME_CATEGORIES)
+        # Every recent card carries a picture. A card either has its own -- a theme
+        # asset no other card repeats -- or borrows its own category's editorial
+        # image with that category's caption (DF04). The three dish-rack articles
+        # withhold their product photographs and no dish-rack picture exists, so
+        # they share the kitchen image; a missing image, one global placeholder or
+        # another category's picture still fails.
+        own = [src for _, src, _ in recent_cards if src.startswith("/")]
+        self.assertEqual(len(own), len(set(own)))
+        for slug, src, alt in recent_cards:
+            with self.subTest(slug=slug):
+                if src.startswith("/"):
+                    self.assertTrue(src.startswith("/wp-content/themes/"), src)
+                else:
+                    self.assertEqual(
+                        src,
+                        "https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-"
+                        + category[slug]
+                        + "-editorial-ai-20260910.webp",
+                    )
+                    self.assertEqual(alt, caption[category[slug]])
 
 
 if __name__ == "__main__":

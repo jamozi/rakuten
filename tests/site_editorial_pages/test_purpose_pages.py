@@ -245,12 +245,12 @@ class FailsBeforeW4a(PurposeBase):
         self.assertIn("費用がかからないとは扱いません", body)
         for phrase in ("0円", "交換不要", "無料"):
             self.assertNotIn(phrase, body)
-        dish = section_after(page, "食洗機")
+        dish = section_after(page, "台所")
         for model in ("SS-MA251", "TDWS25SBL / TDWS25SRD", "NP-TSP1-W"):
             self.assertIn(model, row_with(dish, model))
         self.assertIn("週1回", row_with(dish, "NP-TSP1-W"))
         self.assertIn("毎回", row_with(dish, "SS-MA251"))
-        robot = section_after(page, "掃除機")
+        robot = section_after(page, "掃除")
         k11 = text(row_with(robot, "K11+ Pro"))
         for phrase in (
             "90日ごと",
@@ -646,8 +646,20 @@ class Regression(PurposeBase):
             body = text(self.pages[slug])
             with self.subTest(slug=slug):
                 self.assertNotRegex(body, r"[0-9]+\s*分(短縮|減|節約)")
-                for phrase in ("時短になります", "1位", "おすすめ順", "設置できます"):
+                for phrase in ("時短になります", "1位", "おすすめ順"):
                     self.assertNotIn(phrase, body)
+                # 「設置できます」 is the site's own promise only when the page says
+                # it. A02 names 3492 and sets it aside on the maker's printed
+                # sentence, so every occurrence has to stay inside that
+                # attributed quotation.
+                self.assertEqual(
+                    body.count("設置できます"),
+                    len(
+                        re.findall(
+                            r"公式が「[^」]*設置できます」と印字している", body
+                        )
+                    ),
+                )
         self.assertIn(
             "運転時間と人の作業時間は異なります", text(self.pages["save-housework"])
         )

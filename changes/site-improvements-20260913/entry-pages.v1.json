@@ -55,7 +55,7 @@
       "images": [
         "<figure class=\"ks-category-visual\" id=\"ks-visual-kitchen\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-kitchen-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"食器と小型食洗機のあるキッチンのイメージ\"><figcaption>AI生成の編集イメージ。実物写真・収納例・設置図ではありません。</figcaption></figure>"
       ],
-      "description": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機で、容量別の比較と、設置・給水・洗剤・費用のガイドへ案内します。"
+      "description": "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。いま掲載しているのは卓上食洗機と水切りラックで、容量別の比較と、設置・給水・洗剤・費用のガイド、水切りラックの置き方・比較・採寸へ案内します。"
     },
     "cleaning": {
       "title": "掃除の道具の選び方・比較",
@@ -144,7 +144,7 @@
         "next-step"
       ],
       "images": [],
-      "description": "食洗機・掃除機・スーツケースごとに確認できます。"
+      "description": "台所・掃除・スーツケースごとに確認できます。"
     },
     "comfortable-travel": {
       "title": "旅行を快適にしたい",
@@ -234,7 +234,7 @@
     "kitchen": {
       "post_id": 136,
       "name": "台所",
-      "lead": "いまは卓上食洗機。置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
+      "lead": "いまは卓上食洗機と水切りラック。置き場所・いつもの食器・毎回の給水から、続けられる一台と置き場を。",
       "choose": {
         "article_key": "dishwasher-installation-measurement",
         "anchor": "guide-measurement-steps",
@@ -243,7 +243,7 @@
       "checks": "設置と給排水、洗いたい食器の適合、必要部品、送料込みの購入総額、洗剤と手入れを確認します。「工事不要」はすべての設置確認が不要という意味ではありません。",
       "hold": "置き場所やアースの条件が分からない、普段の食器が入るか不明、給水や手入れを続けにくい場合は、メーカーや適切な施工業者へ確認してください。",
       "representative": "standard-dishwasher-comparison",
-      "decides": "卓上食洗機の食器量と給水方法を決める"
+      "decides": "卓上食洗機の食器量と給水方法、水切りラックの置き方を決める"
     },
     "cleaning": {
       "post_id": 131,
@@ -600,7 +600,7 @@
     "easy-maintenance": {
       "groups": [
         {
-          "label": "食洗機",
+          "label": "台所",
           "rows": [
             {
               "product_id": "PRD-SIROCA-SS-MA251",
@@ -751,7 +751,7 @@
           ]
         },
         {
-          "label": "掃除機",
+          "label": "掃除",
           "rows": [
             {
               "product_id": "PRD-SWITCHBOT-K11-PRO",
@@ -1276,6 +1276,30 @@
         "date_gmt": "2026-08-13T15:42:00",
         "slug": "privacy-policy",
         "link": "https://kurashinoshirube.com/privacy-policy/"
+      },
+      "750": {
+        "id": 750,
+        "date": "2026-09-20T12:33:04",
+        "date_gmt": "2026-09-20T03:33:04",
+        "slug": "dish-rack-installation-measurement",
+        "link": "https://kurashinoshirube.com/dish-rack-installation-measurement/",
+        "checked_on": "2026-09-20"
+      },
+      "751": {
+        "id": 751,
+        "date": "2026-09-20T12:33:00",
+        "date_gmt": "2026-09-20T03:33:00",
+        "slug": "slim-dish-rack-under-20cm",
+        "link": "https://kurashinoshirube.com/slim-dish-rack-under-20cm/",
+        "checked_on": "2026-09-20"
+      },
+      "752": {
+        "id": 752,
+        "date": "2026-09-20T12:32:56",
+        "date_gmt": "2026-09-20T03:32:56",
+        "slug": "dish-rack-no-space",
+        "link": "https://kurashinoshirube.com/dish-rack-no-space/",
+        "checked_on": "2026-09-20"
       }
     }
   },

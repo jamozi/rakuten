@@ -1,5 +1,5 @@
 """Wave 0 of next30: the advertising sentence on /kitchen/ has to hold for the
-eleven articles the shelf actually carries.
+fourteen articles the shelf actually carries.
 
 Base 9fa8ee45 said 「比較記事には広告を含みます。」 — false since the 給水方法 guide
 started carrying advertising links of its own, so the wave replaced it. The
@@ -14,8 +14,10 @@ own articles' bodies say: 「広告リンクを含む記事は、記事の中で
 
 What the renderer really emits, read back below from the published bodies: an
 article carries a disclosure naming 広告 before its first advertising link
-exactly when it has one, and adds nothing to its body when it has none. The
-sentence on the hub is pinned to that, and the pin reads the rendered bodies so
+exactly when it has one, and adds nothing to its body when it has none — except
+the three Wave 1 dish-rack row comparisons, where the renderer writes the 断り
+into the body itself and it names no 広告 because there is none. The sentence on
+the hub is pinned to that, and the pin reads the rendered bodies so
 the claim cannot drift when an article gains or loses its advertising links.
 """
 
@@ -43,6 +45,18 @@ FORBIDDEN_NOTES = (
     "比較記事には広告を含みます",
 )
 DISCLOSURE_CLASS = "ps-disclosure"
+# The three Wave 1 dish-rack articles carry no advertising either, but they are
+# row comparisons, and purchase_support.bind_comparison_rows writes the 断り into
+# that body itself; the theme then stands aside for the verified snapshot
+# (test_ks_n30_w0_advertising_notice_20260916.py), so the body's is the only one.
+WRITTEN_BY_THE_RENDERER = frozenset(
+    {
+        "dish-rack-installation-measurement",
+        "dish-rack-no-space",
+        "slim-dish-rack-under-20cm",
+    }
+)
+NO_AFFILIATE_DISCLOSURE = "この記事にアフィリエイトリンクはありません。公式資料による比較で、実機試験ではありません。"
 # The renderer marks an advertising link with rel="sponsored nofollow …".
 ADVERTISING_REL = "sponsored"
 
@@ -86,13 +100,13 @@ def disclosure_text(body: str) -> str | None:
 def test_the_kitchen_shelf_holds_the_articles_this_sentence_covers(
     ledger,
 ) -> None:
-    """The sentence is about a known shelf: eleven articles, five with no ads."""
+    """The sentence is about a known shelf: fourteen articles, eight with no ads."""
     keys = kitchen_articles(ledger)
-    assert len(keys) == 11, keys
+    assert len(keys) == 14, keys
     documents = projection.reader_documents()
     with_ads = [key for key in keys if carries_advertising(documents[key])]
     assert len(with_ads) == 6, with_ads
-    assert len(keys) - len(with_ads) == 5
+    assert len(keys) - len(with_ads) == 8
 
 
 def test_every_kitchen_article_with_advertising_says_so_inside_the_article(
@@ -112,10 +126,16 @@ def test_every_kitchen_article_with_advertising_says_so_inside_the_article(
 def test_a_kitchen_article_without_advertising_carries_no_disclosure(
     documents, ledger
 ) -> None:
-    """Its notice is the theme's; a body 断り here would be the second one."""
-    for key in kitchen_articles(ledger):
+    """Its notice is the theme's, unless the renderer wrote the body's own one."""
+    keys = kitchen_articles(ledger)
+    assert WRITTEN_BY_THE_RENDERER <= set(keys), WRITTEN_BY_THE_RENDERER
+    for key in keys:
         body = documents[key]
         if carries_advertising(body):
+            continue
+        if key in WRITTEN_BY_THE_RENDERER:
+            # Exactly one, and it says the article carries no affiliate link.
+            assert disclosure_text(body) == NO_AFFILIATE_DISCLOSURE, key
             continue
         assert DISCLOSURE_CLASS not in body, key
         assert "この記事に広告リンクはありません" not in body, key

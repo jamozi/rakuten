@@ -122,7 +122,7 @@ class HubContracts(unittest.TestCase):
             and (r.get("listing") or {}).get("state") == "published"
             and r["listing"]["role"] == "guide"
         ]
-        self.assertEqual(len(guides), 6)
+        self.assertEqual(len(guides), 7)
         cards = [doc.text[n.start : n.end] for n in doc.nodes if n.tag == "article"]
         self.assertEqual(len(cards), len(guides) + 3)
         links = [

@@ -57,8 +57,12 @@ SURFACE_WORDS = {
     "back_links": "戻るリンク",
     "listings": "一覧",
 }
-# The three surfaces this wave really did align. The note may not drop them.
-ALIGNED_BY_THIS_WAVE = ("cards", "breadcrumb", "back_links")
+# Every surface the programme has aligned so far; none may go stale again, no
+# matter which wave's revision the note currently records.
+ALIGNED_SO_FAR = ("cards", "breadcrumb", "back_links", "listings")
+# The surface this wave really did align — W1 reached /easy-maintenance/ (134),
+# the one listing W0 had to leave behind (DF07). The note may not drop it.
+ALIGNED_BY_THIS_WAVE = ("listings",)
 
 # The theme, run for real: the two category pages as stored pages (the breadcrumb
 # reads their titles), one post at a time with the snapshot the owner-direct
@@ -323,8 +327,8 @@ def test_the_breadcrumb_check_covers_exactly_the_posts_wordpress_has(
 def test_the_note_keeps_the_old_and_the_new_page_names(revision_note) -> None:
     """A reader who bookmarked the old name has to find both names in the note."""
     for hub in HUB_KEYS:
-        assert OLD_TITLES[hub] in revision_note, hub
-        assert NEW_TITLES[hub] in revision_note, hub
+        assert f"「{RETIRED_LABELS[hub]}」" in revision_note, hub
+        assert f"「{LABELS[hub]}」" in revision_note, hub
 
 
 def test_every_surface_the_note_names_really_carries_the_new_name(
@@ -355,11 +359,13 @@ def test_the_note_names_no_surface_that_still_uses_the_old_wording(
 def test_the_note_still_names_every_surface_this_wave_aligned(
     ledger, documents, breadcrumbs, alignment_claim
 ) -> None:
-    """Narrowing the claim may not empty it: the three aligned surfaces stay."""
+    """Narrowing the claim may not empty it: the surface this wave aligned stays
+    named, and no surface an earlier wave aligned may go stale again."""
     stale = measured_alignment(ledger, documents, breadcrumbs)
     named = named_surfaces(alignment_claim)
-    for surface in ALIGNED_BY_THIS_WAVE:
+    for surface in ALIGNED_SO_FAR:
         assert stale[surface] == [], (surface, stale[surface])
+    for surface in ALIGNED_BY_THIS_WAVE:
         assert surface in named, (surface, alignment_claim)
 
 

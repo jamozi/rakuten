@@ -60,9 +60,9 @@ from raos.application.editorial.reader_html import Element  # noqa: E402
 
 ANALYTICS_JS = RUNTIME_JS.with_name("purchase-analytics.js")
 # Each policy page carries the date of the revision it was last published with;
-# next30 Wave 0 (2026-09-16) revises the operating policy only.
+# next30 Wave 1 (2026-09-20) revises the operating policy only.
 POLICY_REVISED_ON = {
-    "about-ad-policy": "2026-09-16",
+    "about-ad-policy": "2026-09-20",
     "comparison-policy": "2026-09-15",
     "privacy-policy": "2026-09-15",
 }

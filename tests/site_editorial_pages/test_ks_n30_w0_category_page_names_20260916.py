@@ -38,8 +38,8 @@ TITLES = {"kitchen": "台所の道具の選び方・比較", "cleaning": "掃除
 EXCERPTS = {
     "kitchen": (
         "台所で使う道具を、置き場所と毎日の手間から選ぶ入口。"
-        "いま掲載しているのは卓上食洗機で、容量別の比較と、"
-        "設置・給水・洗剤・費用のガイドへ案内します。"
+        "いま掲載しているのは卓上食洗機と水切りラックで、容量別の比較と、"
+        "設置・給水・洗剤・費用のガイド、水切りラックの置き方・比較・採寸へ案内します。"
     ),
     "cleaning": (
         "掃除の道具を、置き場所と任せたい作業、残る手入れから選ぶ入口。"
@@ -51,9 +51,10 @@ LABELS = {"kitchen": "台所", "cleaning": "掃除"}
 STOCK_TODAY = {"kitchen": "卓上食洗機", "cleaning": "ロボット掃除機"}
 RETIRED_TITLES = ("食洗機の選び方・比較", "ロボット掃除機の選び方・比較")
 # Groups the programme will publish later. Until their wave lands, neither the
-# page name nor the hub body may claim them.
+# page name nor the hub body may claim them. 水切りラック left this tuple when wave 1
+# published its three articles (posts 750/751/752); each later wave removes
+# exactly the group it published and no other.
 ABSENT_GROUPS = (
-    "水切りラック",
     "ノンフライヤー",
     "熱風調理",
     "衣類乾燥除湿機",

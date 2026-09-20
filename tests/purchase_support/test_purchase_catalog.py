@@ -544,7 +544,7 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     root = fragment(articles["kitchen"])
     for identity, phrase in [
         ("kitchen-start", "台所の道具を、洗う量と手間から。"),
-        ("kitchen-start", "いま掲載しているのは卓上食洗機です。"),
+        ("kitchen-start", "いま掲載しているのは卓上食洗機と水切りラックです。"),
         ("kitchen-axes", "普段の食器の量と形"),
         ("kitchen-comparisons", "大容量を比べる"),
         ("purchase-checks", "送料・必要品を含む総額"),

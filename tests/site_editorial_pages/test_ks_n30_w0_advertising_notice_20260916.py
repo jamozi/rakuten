@@ -60,6 +60,15 @@ CARRIED_BY_THE_THEME = (
     "dishwasher-installation-measurement",
     "dishwasher-running-cost",
 )
+# Wave 1 published three more articles with no advertising, and for these the
+# statement is the body's: they are row comparisons, and the renderer writes the
+# 断り into that body itself (purchase_support.bind_comparison_rows), so the
+# theme has to stand aside for the verified snapshot instead of adding a second.
+CARRIED_BY_THE_BODY = (
+    "dish-rack-installation-measurement",
+    "dish-rack-no-space",
+    "slim-dish-rack-under-20cm",
+)
 
 # The theme, run for real: one WordPress post per published article, its stored
 # body, and the applied snapshot the owner-direct publisher records for it, so
@@ -247,19 +256,30 @@ def test_an_article_with_advertising_names_it_before_its_first_link(
 def test_an_article_without_advertising_says_so_where_the_reader_opens_it(
     posts, theme
 ) -> None:
-    silent = []
+    from_theme = []
+    from_body = []
     for key, row in posts.items():
         body = stored_body(row)
         if advertising_links(body):
             continue
-        silent.append(row["slug"])
         notice = theme[row["slug"]]
         assert notice["affiliate"] is False, key
+        statements = body_statements(body)
+        if statements:
+            # The renderer wrote this 断り, so the theme has to stand aside for
+            # it — and it may do that only for a verified snapshot.
+            from_body.append(row["slug"])
+            assert len(statements) == 1, (key, statements)
+            assert THEME_NOTICE in statements[0].text(), (key, statements[0].text())
+            assert notice["verified"] is True, (key, notice)
+            assert notice["notice"] == "", (key, notice)
+            continue
+        # Nothing in the body, so the theme prints the only statement there is.
+        from_theme.append(row["slug"])
         assert notice["notice"].startswith(THEME_NOTICE_OPENING), (key, notice)
         assert THEME_NOTICE in notice["notice"], (key, notice)
-        # A body 断り here would be a second statement, not a first one.
-        assert body_statements(body) == [], key
-    assert sorted(silent) == sorted(CARRIED_BY_THE_THEME), silent
+    assert sorted(from_theme) == sorted(CARRIED_BY_THE_THEME), from_theme
+    assert sorted(from_body) == sorted(CARRIED_BY_THE_BODY), from_body
 
 
 def test_the_theme_and_the_body_agree_on_which_articles_carry_advertising(

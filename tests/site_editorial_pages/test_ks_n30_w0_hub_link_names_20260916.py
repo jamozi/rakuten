@@ -103,11 +103,12 @@ def test_every_article_calls_a_hub_by_the_name_the_hub_answers_to(
 
 
 def test_only_the_revision_note_still_quotes_a_retired_page_title(documents) -> None:
-    """One exception, and it is the point: the note tells the reader what changed.
+    """No exception left: the note now records a revision that renamed nothing.
 
-    Everywhere else a retired title is a stale name for a live URL. In the
-    revision note it is the名前 the reader had bookmarked, quoted once beside the
-    name that replaced it, which is the only way that record means anything.
+    W0 was the rename, so its note quoted each retired title once beside the
+    name that replaced it. W1's note records a different revision, so that one
+    exception is spent and a retired title is a stale name for a live URL
+    everywhere — on the policy page too.
     """
     policy = documents["about-ad-policy"]
     note = [
@@ -117,8 +118,8 @@ def test_only_the_revision_note_still_quotes_a_retired_page_title(documents) -> 
     ]
     assert len(note) == 1, policy[:400]
     for title in RETIRED_TITLES:
-        assert note[0].count(title) == 1, (title, note)
-        assert policy.count(title) == 1, (title, "quoted outside the revision note")
+        assert note[0].count(title) == 0, (title, note)
+        assert policy.count(title) == 0, (title, "quoted anywhere on the policy page")
     for key, body in documents.items():
         if key == "about-ad-policy":
             continue
@@ -161,6 +162,14 @@ def test_no_internal_link_or_heading_still_reads_as_the_old_shelf(documents) -> 
 DECISIONS = ROOT / "changes/next30-20260916/decisions.v1.json"
 ARTICLE_PREFIX = "changes/wordpress-direct-publish-v1/articles/"
 DAY = "2026-09-16"
+# The bodies wave 1 published (posts 750/751/752). They did not exist at wave 0's
+# base commit, so they are articles a later wave wrote, not links this wave
+# renamed. Pinned by name: a fourth added body still has to be accounted for.
+W1_PUBLISHED_BODIES = (
+    "dish-rack-installation-measurement",
+    "slim-dish-rack-under-20cm",
+    "dish-rack-no-space",
+)
 HUB_ANCHOR = re.compile(
     r'(<a\b[^>]*href="[^"]*/(?:kitchen|cleaning)/"[^>]*>).*?(</a>)', re.S
 )
@@ -202,9 +211,12 @@ def test_a_post_this_wave_touched_either_cards_its_change_or_only_renamed_the_li
         if path in by_source
     }
     # A body that did not exist at the base commit is not a link this wave
-    # renamed; it is an article a later wave wrote. Wave 0 added none, so the
-    # added set has to be exactly the rows still waiting for their post id.
+    # renamed; it is an article a later wave wrote. Wave 0 added none and wave 1
+    # added the three bodies it published, so the added set has to be exactly
+    # those three plus the rows still waiting for their post id.
     assert added == {
+        f"{ARTICLE_PREFIX}{slug}.html" for slug in W1_PUBLISHED_BODIES
+    } | {
         row["body_source"] for row in ledger.values() if row.get("mode") == "new"
     }, sorted(added)
     changed = [
@@ -238,6 +250,9 @@ def test_a_post_this_wave_touched_either_cards_its_change_or_only_renamed_the_li
 def test_the_rename_is_announced_once_where_the_site_records_revisions(
     documents,
 ) -> None:
-    """The reader is told the links were renamed — on the policy page, not per article."""
+    """The reader is told what was renamed — on the policy page, not per article."""
     policy = documents["about-ad-policy"]
-    assert "戻るリンクの文言は新しいページ名に合わせた" in policy, policy[:400]
+    assert (
+        "棚見出し「食洗機」「掃除機」を、ほかの一覧と同じ「台所」「掃除」にそろえた"
+        in policy
+    ), policy[:400]

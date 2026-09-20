@@ -339,7 +339,17 @@ def test_wave_zero_records_the_category_pages_as_widened() -> None:
     for key, change in names.items():
         assert ledger[key]["title"] == change["after"], key
         assert change["before"] != change["after"], key
-        assert ledger[key]["excerpt"] == change["excerpt_after"], key
+        # W0's excerpt_after is what W0 wrote. A later wave that puts a new kind
+        # of article on the shelf has to say so in the excerpt too (DF02), and
+        # records that revision here rather than overwriting W0's value -- so the
+        # ledger is still compared with one pinned string, the newest one.
+        revised = change.get("excerpt_revised")
+        expected = revised["excerpt_after"] if revised else change["excerpt_after"]
+        assert ledger[key]["excerpt"] == expected, key
+        if revised:
+            assert revised["in"].startswith("W"), key
+            assert revised["excerpt_after"] != change["excerpt_after"], key
+            assert revised["why"].strip(), key
 
 
 # A candidate is a publish batch with a hard ceiling: 20 proposals, one of which
@@ -407,10 +417,25 @@ def test_each_deferral_quotes_wording_the_named_file_really_carries() -> None:
     )
     for row in rows:
         quotes = row.get("where_quote", {})
+        rewritten = row.get("where_quote_after", {})
+        assert set(rewritten) <= set(quotes), (row["id"], sorted(rewritten))
+        if rewritten:
+            applied = row["applied_in"]
+            assert (applied["wave"], applied["candidate"]) == (
+                row["wave"],
+                row["candidate"],
+            ), (row["id"], applied)
         for path, quote in quotes.items():
             assert path in row["where"], (row["id"], path)
             text = (ROOT / path).read_text(encoding="utf-8")
-            assert quote in text, (row["id"], path, quote)
+            if path in rewritten:
+                # The candidate this deferral names has already rewritten the
+                # file: the deferred wording has to be gone and the wording the
+                # record says replaced it has to be there.
+                assert quote not in text, (row["id"], path, quote)
+                assert rewritten[path] in text, (row["id"], path, rewritten[path])
+            else:
+                assert quote in text, (row["id"], path, quote)
 
 
 # --- the record answers to the artifact ------------------------------------
@@ -433,9 +458,13 @@ def test_a_deferral_lists_every_document_its_quoted_wording_reaches() -> None:
     documents = projection.reader_documents()
     for row in deferrals():
         listed = row.get("documents", [])
+        after = row.get("where_quote_after", {})
         for path, quote in row.get("where_quote", {}).items():
-            reached = sorted(key for key, body in documents.items() if quote in body)
-            assert reached, (row["id"], path, quote)
+            # A file the deferral already rewrote is measured by the wording
+            # that replaced it; the deferred sentence reaches nothing by design.
+            wording = after.get(path, quote)
+            reached = sorted(key for key, body in documents.items() if wording in body)
+            assert reached, (row["id"], path, wording)
             for key in reached:
                 assert key in listed, (row["id"], path, key, listed)
 

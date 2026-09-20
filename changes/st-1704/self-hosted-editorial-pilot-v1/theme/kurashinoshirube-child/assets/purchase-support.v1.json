@@ -1510,8 +1510,8 @@
       "slug": "kitchen",
       "post_type": "page",
       "kind": "hub",
-      "snapshot_id": "ps-0a1b1d7229be3e1b03f34e23cf05f6ec",
-      "body_sha256": "a18e4efe5c971abd93a9efbca2b4aaf937239ed817995fd3b7640a55a50d015a",
+      "snapshot_id": "ps-fac697782c85316def1342b093ccb5f3",
+      "body_sha256": "6d18dfc859c12083f85d48d83c28fa5ff44eef3bea76364e4519ac3cf8622908",
       "bindings": [],
       "media": {}
     },
@@ -1520,8 +1520,8 @@
       "slug": "about-ad-policy",
       "post_type": "page",
       "kind": "policy",
-      "snapshot_id": "ps-eaca1a10498188625a797ed32c637cca",
-      "body_sha256": "65e1eac70c62baa92d4e6f7b26a9fc2e4e79626000722b6360fea90ae9a6d8f4",
+      "snapshot_id": "ps-4d4c84aa16c70fa5f1ee91ab6408c08e",
+      "body_sha256": "38b9519270f107005afa928eea5d350a4030d6e47c045e74c72875710477bfbe",
       "bindings": [],
       "media": {}
     },

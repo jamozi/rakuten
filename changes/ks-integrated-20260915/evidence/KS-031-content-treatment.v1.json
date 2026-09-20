@@ -520,6 +520,54 @@
         "state": "owner_review_pending",
         "approved_at": null
       }
+    },
+    {
+      "article_key": "dish-rack-installation-measurement",
+      "post_id": 750,
+      "cluster": "dish-rack",
+      "question": "候補の水切りラックが自宅のシンク周りに置けるかを、公式条件と自分の採寸で判断する",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第1波で新規に公開した記事で、統合・更新の対象になる既存記事がない。公式が印字していない脚・蛇口下・水受けの干渉をこの1本が引き受けており、比較記事2本の前段として独立している",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "slim-dish-rack-under-20cm",
+      "post_id": 751,
+      "cluster": "dish-rack",
+      "question": "短辺20cm以下のすき間に据え置ける水切りラックはどれか",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第1波の新規記事。公式の印字で短辺20cm以下に絞れる3商品の条件比較で、置き方そのものを扱う752とは問いが違う",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
+    },
+    {
+      "article_key": "dish-rack-no-space",
+      "post_id": 752,
+      "cluster": "dish-rack",
+      "question": "水切りかごを置く場所がないとき、どの方式を選ぶか",
+      "inbound_links_20260915": 0,
+      "search": "2026-09-20 公開。検索エンジンへの登録はこれから",
+      "treatment": "keep",
+      "reason": "next30 第1波の新規記事。常設・シンク渡し・都度収納の3方式で5商品を切り分けており、条件で絞る751とは問いが違う",
+      "actions": [],
+      "linked_tasks": [],
+      "approval": {
+        "state": "owner_review_pending",
+        "approved_at": null
+      }
     }
   ],
   "consolidation_checks": [
@@ -590,7 +638,7 @@
       41,
       86
     ],
-    "keep": 16,
+    "keep": 19,
     "merge_candidate": 0,
     "new_candidate": 0
   },
